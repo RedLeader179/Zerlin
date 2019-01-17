@@ -1,22 +1,29 @@
+/*
+Zerlin
+TCSS 491 - Computational Worlds
+Joshua Atherton, Michael Josten, Steven Golob
+*/
+
+
+
+
 var AM = new AssetManager();
 
-AM.queueDownload("./img/RobotUnicorn.png");
-AM.queueDownload("./img/guy.jpg");
-AM.queueDownload("./img/mushroomdude.png");
-AM.queueDownload("./img/runningcat.png");
-AM.queueDownload("./img/notthere.png");
+AM.queueDownload("../img/testBackground.jpeg");
+AM.queueDownload("../img/Zerlin1 (2).png");
+AM.queueDownload("../img/Lightsaber.png");
 
 AM.downloadAll(function () {
     var canvas = document.getElementById("gameWorld");
     var ctx = canvas.getContext("2d");
 
-    var img = AM.getAsset("./img/mushroomdude.png");
-
-    ctx.drawImage(img,
-                  0, 0,  // source from sheet
-                  189, 230, // width and height of source
-                  200, 200, // destination coordinates
-                  95, 115); // destination width and height
+    var gameEngine = new GameEngine();
+    gameEngine.init(ctx);
+    gameEngine.start();
+    
+    gameEngine.addEntity(new Layer1(gameEngine, AM.getAsset("../img/testBackground.jpeg")));
+    gameEngine.addEntity(new Zerlin(gameEngine, AM.getAsset("../img/Zerlin1 (2).png")));
+    gameEngine.addEntity(new Lightsaber(gameEngine, AM.getAsset("../img/Lightsaber.png")));
 
     console.log("All Done!");
 });
