@@ -61,6 +61,9 @@ Zerlin.prototype.slash = function() {
 function Lightsaber(game, spritesheet) {
     this.image = spritesheet;
     this.ctx = game.ctx;
+    this.angle = 0;
+    this.armSocketX = 12;//.. find exact arm socket location on body image for rotation
+    this.armSocketY = 150;//...
     Entity.call(this, game, 270, 220, 0, 0);
 }
 
@@ -68,17 +71,21 @@ Lightsaber.prototype = new Entity();
 Lightsaber.prototype.constructor = Lightsaber;
 
 Lightsaber.prototype.update = function () {
-    this.x += this.game.clockTick * this.deltaX;
-    this.y += this.game.clockTick * this.deltaY; // ultimately deltaY should always be 0 (does not move vertically)
-    // if (this.x > 800) this.x = -230; // add logic here to prevent scrolling off edge of map ?
+    // rotate 
+    this.angle += this.game.clockTick * Math.PI / 4;
 
     Entity.prototype.update.call(this);
 
 }
 
 Lightsaber.prototype.draw = function () {
-    this.ctx.drawImage(this.image,
-                   this.x, this.y,
-                   132, 210);
+    this.ctx.save();
+    this.ctx.translate(this.x + this.armSocketX, this.y + this.armSocketY);
+    this.ctx.rotate(this.angle + Math.PI/2);
+    this.ctx.drawImage(this.image, -this.armSocketX, -this.armSocketY);
+    this.ctx.restore();
+    // this.ctx.drawImage(this.image,
+    //                this.x, this.y,
+    //                132, 210);
 	
 }

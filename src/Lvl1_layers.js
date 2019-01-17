@@ -28,5 +28,5 @@ Layer1.prototype.update = function () {
 Layer1.prototype.draw = function () {
     this.ctx.drawImage(this.image,
                    this.x, this.y,
-                   1882, 700);
+                   2800, 700);
 }
