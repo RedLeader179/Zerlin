@@ -1,3 +1,12 @@
+/*
+Zerlin
+TCSS 491 - Computational Worlds
+Joshua Atherton, Michael Josten, Steven Golob
+*/
+
+
+
+
 function AssetManager() {
     this.successCount = 0;
     this.errorCount = 0;
