@@ -3,6 +3,9 @@ Zerlin
 TCSS 491 - Computational Worlds
 Joshua Atherton, Michael Josten, Steven Golob
 */
+/*
+ * Animate spriteSheets.
+ */
 class Animation {
 	constructor(spriteSheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale) {
 		this.spriteSheet = spriteSheet;
@@ -46,9 +49,10 @@ class Animation {
  * Manage and animate backgrounds.
  */
 //add all of the parallax images to be drawn to this class
-class ParallaxBackgroundManager extends Entity {
+class ParallaxBackgroundManager extends Entity { //add scroll direction here
     constructor() {
         super();
+        this.scrollDirection = 1;
         this.parralaxBackgroundsArray = [];
     }
     addBackgroundImage(background) {
@@ -57,52 +61,53 @@ class ParallaxBackgroundManager extends Entity {
     update() {}
     draw() {
         this.parralaxBackgroundsArray.forEach(element => {
+            element.scrollDirection = this.scrollDirection;
             element.update();
             element.draw();
         });
     }
+    // /** //todo: remove
+    //  * Set scroll direction to right(1), stopped(0), left(-1).
+    //  * @param {number} direction
+    //  */
+    // scrollDirection(direction) {
+    //     if (direction == -1 || direction == 0 || direction == 1) {
+    //         this.scrollDirection = Number(direction);
+    //     } else {
+    //         console.log('Parameter should be -1, 0, or 1');
+    //     }
+    // }
 }
 
-// an individual image to be drawn whith its follower
-class ParallaxBackground extends Entity {
-    constructor(game, backgroundImage, speed, scrollDirection, startX, startY, imageWidth) {
+// an individual image to be drawn with its follower
+class ParallaxBackground extends Entity {  
+    constructor(game, backgroundImage, speed, startX, startY) {
         super(game, startX, startY);
         this.backgroundImage = backgroundImage;
         this.speed = speed;
-        this.scrollDirection = scrollDirection;
         this.startX = startX;
-        this.imageWidth = imageWidth;
+        this.imageWidth = this.backgroundImage.width;
+        console.log(this.backgroundImage.width);
         this.ctx = game.ctx;
-
-        //image 1x leads, 2x follows initially
-        if (typeof this.scrollDirection  === 'string') {
-            if (this.scrollDirection === 'left') {
-                this.scrollDirection = -1;
-                this.image1X = this.startX;
-                this.image2X = this.imageWidth + this.startX;
-            } else { //right
-                this.scrollDirection = 1;
-                this.image1X = this.startX;
-                this.image2X = this.startX - this.imageWidth;
-            }
-        } else {
-            console.log("scroll direction takes in string param 'left' or 'right'");
-        }
+        //setup initially for background to scroll to the left
+        this.scrollDirection = -1;
+        this.image1X = this.startX;
+        this.image2X = this.startX + this.imageWidth;
     }
-    update() { // !! Todo: left scroll works but right scroll still wrong
+    update() { // !! Todo: left scroll works but right scroll is off wrong
         this.image1X += this.speed * this.scrollDirection; 
         this.image2X += this.speed * this.scrollDirection; 
 
         if (this.scrollDirection === 1) { //right scroll
-            if(this.image1X >= this.imageWidth + this.startX) {
-                this.image1X = this.imageWidth - this.startX;
+            if(this.image1X === this.imageWidth + this.startX) {
+                this.image1X = this.startX - this.imageWidth ;
             } else if(this.image2X >= this.imageWidth + this.startX) {
-                this.image2X = this.imageWidth - this.startX;
+                this.image2X = this.startX - this.imageWidth + 1.9; // weird fix but still gets off after a while
             }
         } else if (this.scrollDirection === -1) { //left scroll
-            if (this.image1X <= this.startX - this.imageWidth) { 
+            if (this.image1X === this.startX - this.imageWidth) { 
                 this.image1X = this.startX + this.imageWidth; 
-            } else if (this.image2X <= this.startX - this.imageWidth) {
+            } else if (this.image2X === this.startX - this.imageWidth) {
                 this.image2X = this.startX + this.imageWidth; 
             }
         }

@@ -10,6 +10,7 @@ AM.queueDownload("../img/testBackground2.jpg");
 AM.queueDownload("../img/Zerlin1 (2).png");
 AM.queueDownload("../img/Lightsaber with point of rotation drawn.png");
 AM.queueDownload("../img/star508x374.png");
+AM.queueDownload("../img/testStars1.png");
 
 AM.downloadAll(function () {
     var canvas = document.getElementById("gameWorld");
@@ -21,7 +22,7 @@ AM.downloadAll(function () {
     const parallaxBackgroundManager = new ParallaxBackgroundManager(); 
     parallaxBackgroundManager.addBackgroundImage(
         new ParallaxBackground(gameEngine, AM.getAsset('../img/star508x374.png'), 
-        2, 'left', 300, 10, 508));
+        2, 960, 60));
     gameEngine.addEntity(parallaxBackgroundManager);
     
     // gameEngine.addEntity(new Layer1(gameEngine, AM.getAsset("../img/testBackground2.jpg")));
