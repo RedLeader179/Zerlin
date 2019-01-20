@@ -22,12 +22,15 @@ class GameEngine {
         this.ctx = null;
         this.surfaceWidth = null;
         this.surfaceHeight = null;
+        this.moveLeft = null;
+        this.moveRight = null;
     }
     init(ctx) {
         this.ctx = ctx;
         this.surfaceWidth = this.ctx.canvas.width;
         this.surfaceHeight = this.ctx.canvas.height;
         this.timer = new Timer();
+        this.startInput();
         console.log('game initialized');
     }
     start() {
@@ -42,6 +45,8 @@ class GameEngine {
         this.clockTick = this.timer.tick();
         this.update();
         this.draw();
+        // this.moveLeft = null;
+        // this.moveRight = null;
     }
     draw() {
         this.ctx.clearRect(0, 0, this.surfaceWidth, this.surfaceHeight);
@@ -61,6 +66,25 @@ class GameEngine {
     addEntity(entity) {
         console.log('added entity');
         this.entities.push(entity);
+    }
+
+    startInput () {
+        console.log('Starting input');
+        var that = this;
+    
+        this.ctx.canvas.addEventListener("keydown", (e) => {
+            if (String.fromCharCode(e.which) === 'D') that.moveRight = true;
+            if (String.fromCharCode(e.which) === 'A') that.moveLeft = true;
+            e.preventDefault();
+        }, false);
+
+        this.ctx.canvas.addEventListener("keyup", function (e) {
+            if (String.fromCharCode(e.which) === 'D') that.moveRight = false;
+            if (String.fromCharCode(e.which) === 'A') that.moveLeft = false;
+            e.preventDefault();
+        }, false);
+    
+        console.log('Input started');
     }
 }
 

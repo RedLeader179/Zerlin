@@ -21,8 +21,8 @@ AM.downloadAll(function () {
 
     const parallaxBackgroundManager = new ParallaxBackgroundManager(gameEngine); 
     parallaxBackgroundManager.addBackgroundImage(
-        new ParallaxBackground(gameEngine, AM.getAsset('../img/star508x374.png'), 
-        2, 960, 60));
+        new ParallaxBackground(gameEngine, AM.getAsset('../img/testStars1.png'), 
+        2, 0, 0));
     gameEngine.addEntity(parallaxBackgroundManager);
     
     // gameEngine.addEntity(new Layer1(gameEngine, AM.getAsset("../img/testBackground2.jpg")));

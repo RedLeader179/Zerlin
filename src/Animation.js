@@ -44,7 +44,6 @@ class Animation {
 	}
 }
 
-
 /**
  * Manage and animate backgrounds.
  */
@@ -52,14 +51,27 @@ class Animation {
 class ParallaxBackgroundManager extends Entity { 
     constructor(game) {
         super(game, 0, 0);
-        this.scrollDirection = 1;
+        this.scrollDirection = 0; // change to 0 by default
         this.parralaxBackgroundsArray = [];
     }
     addBackgroundImage(background) {
         this.parralaxBackgroundsArray.push(background);
     }
-    update() {}
+    update() {
+        // console.log(`right: ${this.game.moveRight} left: ${this.game.moveRight}`);
+        if(this.game.moveRight)  {
+            console.log('right');
+            this.scrollDirection = 1;
+        } else if (this.game.moveLeft) {
+            this.scrollDirection = -1;
+            console.log('left');
+        } else if (!this.game.moveLeft || !this.game.moveRight) {
+            this.scrollDirection = 0;
+            // console.log('stop');
+        }  
+    }
     draw() {
+        // console.log('direction: ' + this.scrollDirection);
         this.parralaxBackgroundsArray.forEach(element => {
             element.scrollDirection = this.scrollDirection;
             element.update();
@@ -76,7 +88,7 @@ class ParallaxBackground extends Entity {
         this.speed = speed;
         this.startX = startX;
         this.imageWidth = this.backgroundImage.width;
-        console.log(this.backgroundImage.width);
+
         this.ctx = game.ctx;
         //setup initially for background to scroll to the left
         this.scrollDirection = -1;
