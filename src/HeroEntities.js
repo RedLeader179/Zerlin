@@ -8,12 +8,12 @@ Joshua Atherton, Michael Josten, Steven Golob
 
 
 function Zerlin(game, spritesheet) {
-    this.animation = new Animation(spritesheet, 102, 270, 600, 0.1, 6, true, 1);
+    this.animation = new Animation(spritesheet, 102, 270, 600, 0.1, 6, true, 0.4);
     this.ctx = game.ctx;
     this.movingRight = true;
     // this.armSocketX = ... find exact arm socket location on body image for rotation
     // this.armSocketY = ...
-    Entity.call(this, game, 250, 250, 0, 0);
+    Entity.call(this, game, 250, 400, 0, 0);
 }
 
 Zerlin.prototype = new Entity();
