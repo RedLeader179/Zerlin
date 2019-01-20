@@ -23,6 +23,7 @@ function GameEngine() {
     this.ctx = null;
     this.surfaceWidth = null;
     this.surfaceHeight = null;
+    this.mouse = {x: 100, y: 100};
 }
 
 GameEngine.prototype.init = function (ctx) {
@@ -30,6 +31,7 @@ GameEngine.prototype.init = function (ctx) {
     this.surfaceWidth = this.ctx.canvas.width;
     this.surfaceHeight = this.ctx.canvas.height;
     this.timer = new Timer();
+    this.startInput();
     console.log('game initialized');
 }
 
@@ -51,9 +53,19 @@ GameEngine.prototype.loop = function () {
 GameEngine.prototype.draw = function () {
     this.ctx.clearRect(0, 0, this.surfaceWidth, this.surfaceHeight);
     this.ctx.save();
+    this.ctx.translate(this.ctx.canvas.width/2, this.ctx.canvas.height/2); // Zerlin's center point for origin
     for (var i = 0; i < this.entities.length; i++) {
         this.entities[i].draw(this.ctx);
     }
+
+    // draws axis' for debugging placement of entities
+    this.ctx.beginPath();
+    this.ctx.moveTo(-this.ctx.canvas.width/2 + 40, 0);
+    this.ctx.lineTo(this.ctx.canvas.width/2 - 40, 0);
+    this.ctx.moveTo(0, -this.ctx.canvas.height/2 + 40);
+    this.ctx.lineTo(0, this.ctx.canvas.height/2 - 40);
+    this.ctx.stroke();
+
     this.ctx.restore();
 }
 
@@ -69,6 +81,98 @@ GameEngine.prototype.addEntity = function (entity) {
     console.log('added entity');
     this.entities.push(entity);
 }
+
+GameEngine.prototype.startInput = function () {
+    console.log('Starting input');
+
+    var that = this;
+
+    var getXandY = function (e) {
+        var x = e.clientX - that.ctx.canvas.getBoundingClientRect().left;
+        var y = e.clientY - that.ctx.canvas.getBoundingClientRect().top;
+
+        x -= that.ctx.canvas.width/2; // adjust to origin
+        y -= that.ctx.canvas.height/2;
+
+        // if (x < 1024) {             // what's this for?
+        //     x = Math.floor(x / 32);
+        //     y = Math.floor(y / 32);
+        // }
+
+        return { x: x, y: y };
+    }
+
+    // event listeners are added here
+
+    // this.ctx.canvas.addEventListener("click", function (e) {
+    //     that.click = getXandY(e);
+    //     console.log("Left Click Event - X,Y " + e.clientX + ", " + e.clientY);
+    // }, false);
+
+    this.ctx.canvas.addEventListener("contextmenu", function (e) {
+        // that.click = getXandY(e);
+        // console.log("Right Click Event - X,Y " + e.clientX + ", " + e.clientY);
+        e.preventDefault();
+    }, false);
+
+    this.ctx.canvas.addEventListener("mousemove", function (e) {
+        that.mouse = getXandY(e);
+    }, false);
+
+
+    this.ctx.canvas.addEventListener("mousedown", function (e) {
+        // console.log(e);
+        if (e.button === 2) { // change back to right click
+            console.log('1');
+            that.rightClickDown = true;
+        }
+        // if (e.button === 0) {
+        //     // left click down
+        // }
+        e.preventDefault();
+    }, false);
+
+    this.ctx.canvas.addEventListener("mouseup", function (e) {
+        console.log(e);
+        if (e.button === 2) { // change back to right click
+            console.log('2');
+            that.rightClickDown = false;
+        }
+        // if (e.button === 0) {
+        //     // left click up
+        // }
+        e.preventDefault();
+    }, false);
+
+
+    // this.ctx.canvas.addEventListener("mousewheel", function (e) {
+    //     that.wheel = e;
+    //     console.log("Click Event - X,Y " + e.clientX + ", " + e.clientY + " Delta " + e.deltaY);
+    // }, false);
+
+    this.ctx.canvas.addEventListener("keydown", function (e) {
+        console.log("Key Down Event - Char " + e.code + " Code " + e.keyCode);
+    }, false);
+
+    this.ctx.canvas.addEventListener("keypress", function (e) {
+        if (e.code === "KeyD") that.d = true;
+        else if (e.code === "KeyA") that.a = true;
+        that.chars[e.code] = true;
+        // console.log(e);
+        console.log("Key Pressed Event - Char " + e.charCode + " Code " + e.keyCode);
+    }, false);
+
+    this.ctx.canvas.addEventListener("keyup", function (e) {
+        if (e.code === "KeyD") that.d = false;
+        else if (e.code === "KeyA") that.a = false;
+        that.chars[e.code] = false;
+        // console.log(e);
+        console.log("Key Up Event - Char " + e.code + " Code " + e.keyCode);
+    }, false);
+
+    console.log('Input started');
+}
+
 
 function Timer() {
     this.gameTime = 0;
@@ -128,4 +232,8 @@ Entity.prototype.rotateAndCache = function (image, angle) {
     //offscreenCtx.strokeStyle = "red";
     //offscreenCtx.strokeRect(0,0,size,size);
     return offscreenCanvas;
+}
+
+Entity.prototype.scaleAndCache = function (image, scale) {
+
 }
