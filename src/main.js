@@ -19,7 +19,7 @@ AM.downloadAll(function () {
     var gameEngine = new GameEngine();
     gameEngine.init(ctx);
 
-    const parallaxBackgroundManager = new ParallaxBackgroundManager(); 
+    const parallaxBackgroundManager = new ParallaxBackgroundManager(gameEngine); 
     parallaxBackgroundManager.addBackgroundImage(
         new ParallaxBackground(gameEngine, AM.getAsset('../img/star508x374.png'), 
         2, 960, 60));

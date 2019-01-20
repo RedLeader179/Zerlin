@@ -49,9 +49,9 @@ class Animation {
  * Manage and animate backgrounds.
  */
 //add all of the parallax images to be drawn to this class
-class ParallaxBackgroundManager extends Entity { //add scroll direction here
-    constructor() {
-        super();
+class ParallaxBackgroundManager extends Entity { 
+    constructor(game) {
+        super(game, 0, 0);
         this.scrollDirection = 1;
         this.parralaxBackgroundsArray = [];
     }
@@ -66,17 +66,6 @@ class ParallaxBackgroundManager extends Entity { //add scroll direction here
             element.draw();
         });
     }
-    // /** //todo: remove
-    //  * Set scroll direction to right(1), stopped(0), left(-1).
-    //  * @param {number} direction
-    //  */
-    // scrollDirection(direction) {
-    //     if (direction == -1 || direction == 0 || direction == 1) {
-    //         this.scrollDirection = Number(direction);
-    //     } else {
-    //         console.log('Parameter should be -1, 0, or 1');
-    //     }
-    // }
 }
 
 // an individual image to be drawn with its follower
@@ -94,15 +83,12 @@ class ParallaxBackground extends Entity {
         this.image1X = this.startX;
         this.image2X = this.startX + this.imageWidth;
     }
-    update() { // !! Todo: left scroll works but right scroll is off wrong
-        this.image1X += this.speed * this.scrollDirection; 
-        this.image2X += this.speed * this.scrollDirection; 
-
+    update() { 
         if (this.scrollDirection === 1) { //right scroll
             if(this.image1X === this.imageWidth + this.startX) {
-                this.image1X = this.startX - this.imageWidth ;
+                this.image1X = this.startX - this.imageWidth;
             } else if(this.image2X >= this.imageWidth + this.startX) {
-                this.image2X = this.startX - this.imageWidth + 1.9; // weird fix but still gets off after a while
+                this.image2X = this.startX - this.imageWidth;
             }
         } else if (this.scrollDirection === -1) { //left scroll
             if (this.image1X === this.startX - this.imageWidth) { 
@@ -111,7 +97,9 @@ class ParallaxBackground extends Entity {
                 this.image2X = this.startX + this.imageWidth; 
             }
         }
-        // console.log(`this x: ${this.x}    start x: ${this.startX}`);
+        //move images left or right
+        this.image1X += this.speed * this.scrollDirection; 
+        this.image2X += this.speed * this.scrollDirection; 
     }
     draw() {
         this.ctx.drawImage(this.backgroundImage, this.image1X, this.y); 
