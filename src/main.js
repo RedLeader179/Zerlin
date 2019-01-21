@@ -57,3 +57,24 @@ AM.downloadAll(function () {
     console.log("All Done!");
 });
 
+//Todo: do better
+window.addEventListener('load', function () {
+    function sound(src) {
+        this.sound = document.createElement("audio");
+        this.sound.src = src;
+        this.sound.setAttribute("preload", "auto");
+        this.sound.setAttribute("controls", "none");
+        this.sound.style.display = "none";
+        document.body.appendChild(this.sound);
+        this.play = function(){
+          this.sound.play();
+        }
+        this.stop = function(){
+          this.sound.pause();
+        }
+    }
+    var backgroundMusic = new sound('../sound/kashyyyk.mp3');
+    backgroundMusic.play();
+});
+
+
