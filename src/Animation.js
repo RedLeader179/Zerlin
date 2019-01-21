@@ -50,7 +50,7 @@ class Animation {
 //add all of the parallax images to be drawn to this class
 class ParallaxBackgroundManager extends Entity { 
     constructor(game) {
-        super(game, 0, 0);
+        super(game, 0, 0, 0, 0);
         this.scrollDirection = 0; // change to 0 by default
         this.parralaxBackgroundsArray = [];
     }
@@ -83,7 +83,7 @@ class ParallaxBackgroundManager extends Entity {
 // an individual image to be drawn with its follower
 class ParallaxBackground extends Entity {  
     constructor(game, backgroundImage, speed, startX, startY) {
-        super(game, startX, startY);
+        super(game, startX, startY, 0, 0);
         this.backgroundImage = backgroundImage;
         this.speed = speed;
         this.startX = startX;
@@ -99,7 +99,7 @@ class ParallaxBackground extends Entity {
         if (this.scrollDirection === 1) { //right scroll
             if(this.image1X === this.imageWidth + this.startX) {
                 this.image1X = this.startX - this.imageWidth;
-            } else if(this.image2X >= this.imageWidth + this.startX) {
+            } else if(this.image2X === this.imageWidth + this.startX) {
                 this.image2X = this.startX - this.imageWidth;
             }
         } else if (this.scrollDirection === -1) { //left scroll
@@ -118,6 +118,43 @@ class ParallaxBackground extends Entity {
         this.ctx.drawImage(this.backgroundImage, this.image2X, this.y);
     }
 }
+
+/**
+ * Tile manager. //not implemented
+ */
+class TileManager extends Entity {
+    constructor(game, tileArray) {
+        super(game, 0, 0, 0, 0);
+        this.leftCornerTile = tileArray[0];
+        this.centerTile = tileArray[1];
+        this.rightTile = tileArray[3];
+        // this.bottomFillerTile = tileArray[4];
+    }
+}
+//Draw a tile of given size.
+class Tile extends Entity{
+    constructor(game, image, startX, startY, tileArray) {
+        super(game, image, startX, startY, 0, 0);
+        this.leftCornerTile = tileArray[0];
+        this.centerTile = tileArray[1];
+        this.rightTile = tileArray[2];
+
+        this.ctx = game.ctx;
+    }
+    update() {
+
+    }
+    draw() { //code this with a loop to draw whatever length platform the user wants
+        this.ctx.drawImage(this.leftCornerTile, 40, 640); 
+        this.ctx.drawImage(this.centerTile, 100, 640); 
+        this.ctx.drawImage(this.centerTile, 160, 640);
+        this.ctx.drawImage(this.centerTile, 220, 640); 
+        this.ctx.drawImage(this.centerTile, 280, 640);  
+        this.ctx.drawImage(this.rightTile, 340, 640); 
+    }
+
+}
+
 
 
 
