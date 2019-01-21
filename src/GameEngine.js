@@ -73,14 +73,14 @@ class GameEngine {
         var that = this;
     
         this.ctx.canvas.addEventListener("keydown", (e) => {
-            if (String.fromCharCode(e.which) === 'D') that.moveRight = true;
-            if (String.fromCharCode(e.which) === 'A') that.moveLeft = true;
+            if (String.fromCharCode(e.which) === 'D') that.moveLeft = true;
+            if (String.fromCharCode(e.which) === 'A') that.moveRight = true;
             e.preventDefault();
         }, false);
 
         this.ctx.canvas.addEventListener("keyup", function (e) {
-            if (String.fromCharCode(e.which) === 'D') that.moveRight = false;
-            if (String.fromCharCode(e.which) === 'A') that.moveLeft = false;
+            if (String.fromCharCode(e.which) === 'D') that.moveLeft = false;
+            if (String.fromCharCode(e.which) === 'A') that.moveRight = false;
             e.preventDefault();
         }, false);
     
