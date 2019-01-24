@@ -16,6 +16,7 @@ window.requestAnimationFrame = (function () {
             };
 })();
 
+
 class GameEngine {
     constructor() {
         this.entities = [];
@@ -24,6 +25,7 @@ class GameEngine {
         this.surfaceHeight = null;
         this.moveLeft = null;
         this.moveRight = null;
+        this.mouse = null;
     }
     init(ctx) {
         this.ctx = ctx;
@@ -71,9 +73,15 @@ class GameEngine {
     startInput () {
         console.log('Starting input');
         var that = this;
+
+        var getXandY = e => {
+            var x = e.clientX - that.ctx.canvas.getBoundingClientRect().left;
+            var y = e.clientY - that.ctx.canvas.getBoundingClientRect().top;
+            return { x: x, y: y };
+        }
     
         this.ctx.canvas.addEventListener("keydown", (e) => {
-            if (String.fromCharCode(e.which) === 'D') that.moveLeft = true;
+            if (String.fromCharCode(e.which) === 'D') that.moveLeft  = true; //todo: fix droids use that.d = true
             if (String.fromCharCode(e.which) === 'A') that.moveRight = true;
             e.preventDefault();
         }, false);
@@ -82,6 +90,11 @@ class GameEngine {
             if (String.fromCharCode(e.which) === 'D') that.moveLeft = false;
             if (String.fromCharCode(e.which) === 'A') that.moveRight = false;
             e.preventDefault();
+        }, false);
+
+        this.ctx.canvas.addEventListener("mousemove", function(e) {
+            that.mouse = getXandY(e);
+            //console.log(e);
         }, false);
     
         console.log('Input started');
@@ -104,6 +117,7 @@ class Timer {
         return gameDelta;
     }
 }
+
 
 
 class Entity {
@@ -144,7 +158,10 @@ class Entity {
         //offscreenCtx.strokeRect(0,0,size,size);
         return offscreenCanvas;
     }
+    outsideScreen() {
+        return (this.x < 0 || 
+            this.x > this.game.surfaceWidth ||
+            this.y < 0 ||
+            this.y > this.game.surfaceHeight);
+    }
 }
-
-
-

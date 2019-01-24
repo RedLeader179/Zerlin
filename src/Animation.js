@@ -60,14 +60,11 @@ class ParallaxBackgroundManager extends Entity {
     update() {
         // console.log(`right: ${this.game.moveRight} left: ${this.game.moveRight}`);
         if(this.game.moveRight)  {
-            console.log('right');
             this.scrollDirection = 1;
         } else if (this.game.moveLeft) {
             this.scrollDirection = -1;
-            console.log('left');
         } else if (!this.game.moveLeft || !this.game.moveRight) {
             this.scrollDirection = 0;
-            // console.log('stop');
         }  
     }
     draw() {
