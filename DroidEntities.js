@@ -11,7 +11,7 @@ var BASIC_DROID_Y_VELOCITY = 1;
 var BASIC_DROID_ORBITAL_HEIGHT = 200;
 //Math is weird, higher the number, lower the speed. couldn't think of anyway to make this work
 //possible refinement needed. use a number between 0 and 1 for speed up;
-var BASIC_DROID_LASER_SPEED = 1; 
+var BASIC_DROID_LASER_SPEED = 100; 
 var BASIC_DROID_LASER_LENGTH = 10;
 var BASIC_DROID_LASER_WIDTH = 10;
 /*
@@ -138,8 +138,8 @@ class DroidLaser extends Entity {
 
             //Speed formula of lasers, can modify with speed field
             var d = Math.sqrt(Math.pow((this.targetX - this.x), 2) + Math.pow((this.targetY - this.y), 2));
-            this.x += (this.deltaX / d) * this.speed;
-            this.y += (this.deltaY / d) * this.speed;
+            this.x += (this.deltaX / d) * this.game.clockTick * this.speed;
+            this.y += (this.deltaY / d) * this.game.clockTick * this.speed;
             
         }
         super.update();
