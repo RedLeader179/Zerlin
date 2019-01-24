@@ -20,4 +20,22 @@ class DroidJosh extends Entity {
 }
 
 
+class Chewbacca extends Entity {
+    constructor(game, spritesheet) {
+        super(game, 150, 511, 0, 0);
+        //animation 
+        //(spriteSheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale) {
+        this.animation = new Animation(spritesheet, 30, 72, 150, 0.35, 4, true, 1.9);
+        this.ctx = game.ctx;
+    }
+    update() {
+        // this.x += this.game.clockTick * this.deltaX;
+        // this.y += this.game.clockTick * this.deltaY;
+    }
+    draw() {
+        this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    }
+}
+
+
 

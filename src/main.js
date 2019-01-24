@@ -20,6 +20,8 @@ AM.queueDownload("../img/forestLeftTile.png"); //tiles are 60x60
 AM.queueDownload("../img/forestMiddleTile.png");
 AM.queueDownload("../img/forestRightTile.png");
 
+AM.queueDownload("../img/chewbaccaStand.png");
+
 
 AM.downloadAll(function () {
     var canvas = document.getElementById("gameWorld");
@@ -47,11 +49,14 @@ AM.downloadAll(function () {
     gameEngine.addEntity(parallaxBackgroundManager);
     
     gameEngine.addEntity(new DroidJosh(gameEngine, AM.getAsset("../img/droid-j-row.png")));
+
     
     gameEngine.addEntity(new Tile(gameEngine, AM.getAsset('../img/forestLeftTile.png'),
     10, 10, [AM.getAsset('../img/forestLeftTile.png'), 
              AM.getAsset('../img/forestMiddleTile.png'),
              AM.getAsset('../img/forestRightTile.png'), '']));
+
+    gameEngine.addEntity(new Chewbacca(gameEngine, AM.getAsset("../img/chewbaccaStand.png")));
     
     gameEngine.start();
     console.log("All Done!");
