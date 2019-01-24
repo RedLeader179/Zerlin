@@ -93,13 +93,13 @@ class ParallaxBackground extends Entity {
         this.image2X = this.startX + this.imageWidth;
     }
     update() { 
-        if (this.scrollDirection === 1) { //right scroll
+        if (this.scrollDirection === -1) { // left scroll
             if(this.image1X === this.imageWidth + this.startX) {
                 this.image1X = this.startX - this.imageWidth;
             } else if(this.image2X === this.imageWidth + this.startX) {
                 this.image2X = this.startX - this.imageWidth;
             }
-        } else if (this.scrollDirection === -1) { //left scroll
+        } else if (this.scrollDirection === 1) { // right scroll
             if (this.image1X === this.startX - this.imageWidth) { 
                 this.image1X = this.startX + this.imageWidth; 
             } else if (this.image2X === this.startX - this.imageWidth) {
@@ -107,8 +107,8 @@ class ParallaxBackground extends Entity {
             }
         }
         //move images left or right
-        this.image1X -= this.speed * this.scrollDirection; 
-        this.image2X -= this.speed * this.scrollDirection; 
+        this.image1X -= this.speed * this.scrollDirection * this.game.clockTick; 
+        this.image2X -= this.speed * this.scrollDirection * this.game.clockTick; 
     }
     draw() {
         this.ctx.drawImage(this.backgroundImage, this.image1X, this.y); 

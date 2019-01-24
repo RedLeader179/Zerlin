@@ -45,19 +45,19 @@ Joshua Atherton, Michael Josten, Steven Golob
 	    const parallaxBackgroundManager = new ParallaxBackgroundManager(gameEngine); 
 	    parallaxBackgroundManager.addBackgroundImage(
 	        new ParallaxBackground(gameEngine, AM.getAsset('../img/backgroundTrees4.png'), 
-	        2 / 4, 0, 0));
+	        10, 0, 0));
 	    parallaxBackgroundManager.addBackgroundImage(
 	        new ParallaxBackground(gameEngine, AM.getAsset('../img/backgroundStars.png'), 
-	        3 / 4, 0, 0));
+	        20, 0, 0));
 	    parallaxBackgroundManager.addBackgroundImage(
 	        new ParallaxBackground(gameEngine, AM.getAsset('../img/backgroundTrees3.png'), 
-	        4 / 4, 0, 0));
+	        30, 0, 0));
 	    parallaxBackgroundManager.addBackgroundImage(
 	        new ParallaxBackground(gameEngine, AM.getAsset('../img/backgroundTrees2.png'), 
-	        5 / 4, 0, 0));
+	        40, 0, 0));
 	    parallaxBackgroundManager.addBackgroundImage(
 	        new ParallaxBackground(gameEngine, AM.getAsset('../img/backgroundTrees1.png'), 
-	        6 / 4, 0, 0));
+	        60, 0, 0));
 	    gameEngine.addEntity(parallaxBackgroundManager);
 	    
 	    gameEngine.addEntity(new Tile(gameEngine, AM.getAsset('../img/forestLeftTile.png'),
