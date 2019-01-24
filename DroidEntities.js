@@ -11,7 +11,9 @@ var BASIC_DROID_Y_VELOCITY = 1;
 var BASIC_DROID_ORBITAL_HEIGHT = 200;
 //Math is weird, higher the number, lower the speed. couldn't think of anyway to make this work
 //possible refinement needed. use a number between 0 and 1 for speed up;
-var BASIC_DROID_LASER_SPEED = 4; 
+var BASIC_DROID_LASER_SPEED = 100; 
+var BASIC_DROID_LASER_LENGTH = 10;
+var BASIC_DROID_LASER_WIDTH = 10;
 /*
 * Basic droid that will shoot 1 laser every interval
 */
@@ -55,12 +57,12 @@ class BasicDroid extends Entity {
     }
     shoot(targetX, targetY) {
         var droidLaser = new DroidLaser(this.game, this.x + 20, this.y + 20, BASIC_DROID_LASER_SPEED, 
-            targetX, targetY);
+            targetX, targetY, BASIC_DROID_LASER_LENGTH, BASIC_DROID_LASER_WIDTH);
         this.game.addEntity(droidLaser);
         //TODO - play shooting sound
         console.log("shot laser at X: " + targetX + " Y: " + targetY);
         //set after droid is done firing
-        //this.fire = false;
+        this.fire = false;
     }
     /*
      * calculate movement so that it will try to fly around the location of the 
@@ -104,13 +106,14 @@ class BasicDroid extends Entity {
 }
 
 class DroidLaser extends Entity {
-    constructor(game, startX, startY, speed, targetX, targetY) {
+    constructor(game, startX, startY, speed, targetX, targetY, length, width) {
         super(game, startX, startY, 0, 0);
-        console.log("created DroidLaser Entity");
+        //console.log("created DroidLaser Entity");
         this.speed = speed;
         this.targetX = targetX;
         this.targetY = targetY;
-        this.length = 20;
+        this.length = length;
+        this.width = width;
 
         this.deltaX = this.targetX - this.x;
         this.deltaY = this.targetY - this.y;
@@ -118,6 +121,8 @@ class DroidLaser extends Entity {
         var newEndPoint = this.extendTargetPoint();
         this.targetX = newEndPoint.x;
         this.targetY = newEndPoint.y;
+        this.deltaX = this.targetX - this.x;
+        this.deltaY = this.targetY - this.y;
         // console.log("dx = %f, dy = %f", this.deltaX, this.deltaY);
         // console.log("slope = %f", this.slope);
         // console.log("draw from X: %d, Y: %d, TO X: %d, Y: %d", this.x, this.y, this.targetX, this.targetY);
@@ -127,15 +132,15 @@ class DroidLaser extends Entity {
         //if laser goes out of bounds then remove from world
         if (this.outsideScreen()) {
             this.removeFromWorld = true;
-            console.log("laser removed from world");
+            //console.log("laser removed from world");
         } else {
             //change the x and y coordinates 
 
-            //TODO change formula, current formula slows down when deltaX and deltaY are small
-            //IE the point to shoot is very close to the starting point.
-            //perhaps can look up a speed formula or something.
-            this.x += (this.deltaX * this.game.clockTick) / this.speed;
-            this.y += (this.deltaY * this.game.clockTick) / this.speed;
+            //Speed formula of lasers, can modify with speed field
+            var d = Math.sqrt(Math.pow((this.targetX - this.x), 2) + Math.pow((this.targetY - this.y), 2));
+            this.x += (this.deltaX / d) * this.game.clockTick * this.speed;
+            this.y += (this.deltaY / d) * this.game.clockTick * this.speed;
+            
         }
         super.update();
     }
@@ -146,7 +151,7 @@ class DroidLaser extends Entity {
         
         ctx.save();
         //green outer layer of laser
-        ctx.lineWidth = 10;
+        ctx.lineWidth = this.width;
         ctx.strokeStyle = "green";
         ctx.lineCap = "round";
         ctx.beginPath();
@@ -156,7 +161,7 @@ class DroidLaser extends Entity {
         ctx.closePath();
 
         //white inner layer of laser.
-        ctx.lineWidth = 5;
+        ctx.lineWidth = this.width / 2;
         ctx.strokeStyle = "white";
         ctx.lineCap = "round";
         ctx.beginPath();
