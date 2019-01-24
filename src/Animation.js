@@ -22,7 +22,7 @@ function Animation(spriteSheet, frameWidth, frameHeight, sheetWidth, frameDurati
 
 Animation.prototype.drawFrame = function(tick, ctx, x, y) {
 	this.elapsedTime += tick;
-	if (this.isDone()) { // TODO: fix bug with finishing one frame early/late mentioned in class (1/15/19)
+	if (this.isDone()) { // TODO: fix bug with finishing one tick early/late mentioned in class (1/15/19)
 		if (this.loop) {
 			this.elapsedTime = this.elapsedTime - this.totalTime;
 		} else {

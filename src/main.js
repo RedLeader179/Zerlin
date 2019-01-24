@@ -6,29 +6,34 @@ Joshua Atherton, Michael Josten, Steven Golob
 
 
 
+(function () {
+	var AM = new AssetManager();
 
-var AM = new AssetManager();
+	AM.queueDownload("../img/Zerlin bobbing walking.png");
+	AM.queueDownload("../img/Zerlin left bobbing walking.png");
+	AM.queueDownload("../img/Zerlin backwards bobbing walking.png");
+	AM.queueDownload("../img/Zerlin left backwards bobbing walking.png");
+	AM.queueDownload("../img/Zerlin standing.png");
+	AM.queueDownload("../img/Zerlin standing left.png");
 
-// AM.queueDownload("../img/testBackground2.jpg");
-AM.queueDownload("../img/Zerlin1 (2).png");
-AM.queueDownload("../img/Zerlin1 (2) left.png");
-AM.queueDownload("../img/Lightsaber with point of rotation drawn.png");
-AM.queueDownload("../img/Lightsaber with point of rotation drawn left.png");
-AM.queueDownload("../img/lightsaber upside down.png");
-AM.queueDownload("../img/lightsaber upside down left.png");
-// AM.queueDownload("../img/lightsaber upside down left.png");
+	AM.queueDownload("../img/Lightsaber with point of rotation drawn.png");
+	AM.queueDownload("../img/Lightsaber with point of rotation drawn left.png");
+	AM.queueDownload("../img/lightsaber upside down.png");
+	AM.queueDownload("../img/lightsaber upside down left.png");
 
-AM.downloadAll(function () {
-    var canvas = document.getElementById("gameWorld");
-    var ctx = canvas.getContext("2d");
+	AM.queueDownload("../img/Zerlin somersault.png");
 
-    var gameEngine = new GameEngine();
-    gameEngine.init(ctx);
-    gameEngine.start();
-    
-    // gameEngine.addEntity(new Layer1(gameEngine, AM.getAsset("../img/testBackground2.jpg")));
-    gameEngine.addEntity(new Zerlin(gameEngine, AM));
-    gameEngine.addEntity(new Lightsaber(gameEngine, AM));
 
-    console.log("All Done!");
-});
+	AM.downloadAll(function () {
+	    var canvas = document.getElementById("gameWorld");
+	    var ctx = canvas.getContext("2d");
+
+	    var gameEngine = new GameEngine();
+	    gameEngine.init(ctx);
+	    gameEngine.start();
+	    
+	    gameEngine.addZerlin(new Zerlin(gameEngine, AM));
+
+	    console.log("All Done!");
+	});	
+})();

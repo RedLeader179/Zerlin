@@ -4,7 +4,7 @@ TCSS 491 - Computational Worlds
 Joshua Atherton, Michael Josten, Steven Golob
 */
 
-
+var PHI = 1.618;
 
 
 window.requestAnimFrame = (function () {
@@ -20,10 +20,12 @@ window.requestAnimFrame = (function () {
 
 function GameEngine() {
     this.entities = [];
+    this.Zerlin = null;
     this.ctx = null;
     this.surfaceWidth = null;
     this.surfaceHeight = null;
     this.mouse = {x: 100, y: 100};
+    this.keys = {};
 }
 
 GameEngine.prototype.init = function (ctx) {
@@ -33,6 +35,11 @@ GameEngine.prototype.init = function (ctx) {
     this.timer = new Timer();
     this.startInput();
     console.log('game initialized');
+}
+
+GameEngine.prototype.addZerlin = function(Zerlin) {
+    this.Zerlin = Zerlin;
+    this.addEntity(Zerlin);
 }
 
 GameEngine.prototype.start = function () {
@@ -50,31 +57,28 @@ GameEngine.prototype.loop = function () {
     this.draw();
 }
 
-GameEngine.prototype.draw = function () {
-    this.ctx.clearRect(0, 0, this.surfaceWidth, this.surfaceHeight);
-    this.ctx.save();
-    this.ctx.translate(this.ctx.canvas.width/2, this.ctx.canvas.height/2); // Zerlin's center point for origin
-    for (var i = 0; i < this.entities.length; i++) {
-        this.entities[i].draw(this.ctx);
-    }
-
-    // draws axis' for debugging placement of entities
-    this.ctx.beginPath();
-    this.ctx.moveTo(-this.ctx.canvas.width/2 + 40, 0);
-    this.ctx.lineTo(this.ctx.canvas.width/2 - 40, 0);
-    this.ctx.moveTo(0, -this.ctx.canvas.height/2 + 40);
-    this.ctx.lineTo(0, this.ctx.canvas.height/2 - 40);
-    this.ctx.stroke();
-
-    this.ctx.restore();
-}
-
 GameEngine.prototype.update = function () {
     var entitiesCount = this.entities.length;
     for (var i = 0; i < entitiesCount; i++) {
         var entity = this.entities[i];
         entity.update();
     }
+}
+
+GameEngine.prototype.draw = function () {
+    this.ctx.clearRect(0, 0, this.surfaceWidth, this.surfaceHeight);
+    this.ctx.save();
+    for (var i = 0; i < this.entities.length; i++) {
+        this.entities[i].draw(this.ctx);
+    }
+
+    // draws axis' for debugging placement of entities
+    this.ctx.beginPath();
+    this.ctx.moveTo(this.ctx.canvas.width * (2 - PHI), 0);
+    this.ctx.lineTo(this.ctx.canvas.width * (2 - PHI), this.ctx.canvas.height);
+    this.ctx.stroke();
+
+    this.ctx.restore();
 }
 
 GameEngine.prototype.addEntity = function (entity) {
@@ -91,9 +95,6 @@ GameEngine.prototype.startInput = function () {
         var x = e.clientX - that.ctx.canvas.getBoundingClientRect().left;
         var y = e.clientY - that.ctx.canvas.getBoundingClientRect().top;
 
-        x -= that.ctx.canvas.width/2; // adjust to origin
-        y -= that.ctx.canvas.height/2;
-
         // if (x < 1024) {             // what's this for?
         //     x = Math.floor(x / 32);
         //     y = Math.floor(y / 32);
@@ -104,14 +105,7 @@ GameEngine.prototype.startInput = function () {
 
     // event listeners are added here
 
-    // this.ctx.canvas.addEventListener("click", function (e) {
-    //     that.click = getXandY(e);
-    //     console.log("Left Click Event - X,Y " + e.clientX + ", " + e.clientY);
-    // }, false);
-
     this.ctx.canvas.addEventListener("contextmenu", function (e) {
-        // that.click = getXandY(e);
-        // console.log("Right Click Event - X,Y " + e.clientX + ", " + e.clientY);
         e.preventDefault();
     }, false);
 
@@ -121,53 +115,26 @@ GameEngine.prototype.startInput = function () {
 
 
     this.ctx.canvas.addEventListener("mousedown", function (e) {
-        // console.log(e);
-        if (e.button === 2) { // change back to right click
-            console.log('1');
+        if (e.button === 2) { // right click
             that.rightClickDown = true;
         }
-        // if (e.button === 0) {
-        //     // left click down
-        // }
-        e.preventDefault();
     }, false);
 
     this.ctx.canvas.addEventListener("mouseup", function (e) {
-        console.log(e);
-        if (e.button === 2) { // change back to right click
-            console.log('2');
+        if (e.button === 2) { // right click
             that.rightClickDown = false;
         }
-        // if (e.button === 0) {
-        //     // left click up
-        // }
-        e.preventDefault();
     }, false);
-
-
-    // this.ctx.canvas.addEventListener("mousewheel", function (e) {
-    //     that.wheel = e;
-    //     console.log("Click Event - X,Y " + e.clientX + ", " + e.clientY + " Delta " + e.deltaY);
-    // }, false);
 
     this.ctx.canvas.addEventListener("keydown", function (e) {
+        if (that.keys[e.code]) { return; } // prevent repeating calls when key is held down
         console.log("Key Down Event - Char " + e.code + " Code " + e.keyCode);
-    }, false);
-
-    this.ctx.canvas.addEventListener("keypress", function (e) {
-        if (e.code === "KeyD") that.d = true;
-        else if (e.code === "KeyA") that.a = true;
-        that.chars[e.code] = true;
-        // console.log(e);
-        console.log("Key Pressed Event - Char " + e.charCode + " Code " + e.keyCode);
+        that.keys[e.code] = true;
     }, false);
 
     this.ctx.canvas.addEventListener("keyup", function (e) {
-        if (e.code === "KeyD") that.d = false;
-        else if (e.code === "KeyA") that.a = false;
-        that.chars[e.code] = false;
-        // console.log(e);
         console.log("Key Up Event - Char " + e.code + " Code " + e.keyCode);
+        that.keys[e.code] = false;
     }, false);
 
     console.log('Input started');
