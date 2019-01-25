@@ -94,16 +94,16 @@ class ParallaxBackground extends Entity {
     }
     update() { 
         if (this.scrollDirection === -1) { // left scroll
-            if(this.image1X === this.imageWidth + this.startX) {
-                this.image1X = this.startX - this.imageWidth;
-            } else if(this.image2X === this.imageWidth + this.startX) {
-                this.image2X = this.startX - this.imageWidth;
+            if(this.image1X > this.imageWidth + this.startX) {
+                this.image1X = this.image2X - this.imageWidth;
+            } else if(this.image2X > this.imageWidth + this.startX) {
+                this.image2X = this.image1X - this.imageWidth;
             }
         } else if (this.scrollDirection === 1) { // right scroll
-            if (this.image1X === this.startX - this.imageWidth) { 
-                this.image1X = this.startX + this.imageWidth; 
-            } else if (this.image2X === this.startX - this.imageWidth) {
-                this.image2X = this.startX + this.imageWidth; 
+            if (this.image1X < this.startX - this.imageWidth) { 
+                this.image1X = this.image2X + this.imageWidth; 
+            } else if (this.image2X < this.startX - this.imageWidth) {
+                this.image2X = this.image1X + this.imageWidth; 
             }
         }
         //move images left or right
