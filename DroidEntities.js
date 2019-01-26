@@ -26,6 +26,7 @@ var BASIC_DROID_MAX_RANDOM_TARGET_HEIGHT = 40;
 var BASIC_DROID_LASER_SPEED = 100; 
 var BASIC_DROID_LASER_LENGTH = 10;
 var BASIC_DROID_LASER_WIDTH = 20;
+var LASER_ZERLIN_MOVEMENT = 1;
 
 /**
  * This class will serve as the parent for all droid entities
@@ -254,7 +255,6 @@ class DroidLaser extends Entity {
         //Droid Laser Fields
         this.color = "green";
         this.secondaryColor = "white";
-        this.angle = 0 //TODO: find angle of line with arctan???
         this.isDeflected = false;
 
         var distFromStartToTarget = distance({x: targetX, y: targetY}, {x: this.x, y: this.y});
@@ -272,6 +272,10 @@ class DroidLaser extends Entity {
         this.y = this.y + unitVectorDeltaY * this.length;
         this.tailX = startX;
         this.tailY = startY;
+        /* find angle of laser */
+        this.angle = this.findAngle(this.x, this.y, this.tailX, this.tailY);
+        console.log("Laser angle = %d", this.angle);
+        
     }
     update() {
         this.removeFromWorld = this.outsideScreen(); // will be removed in GameEngine
@@ -280,6 +284,20 @@ class DroidLaser extends Entity {
         this.y += this.deltaY * this.game.clockTick;
         this.tailX += this.deltaX * this.game.clockTick;
         this.tailY += this.deltaY * this.game.clockTick;
+
+        //check zerlin movement and move laser accordingly
+        /* when a or d is pressed then move the lasers left or right
+        * dont move when both a and d are pressed at the same time
+        */
+        if (this.game.keys['KeyD'] && this.game.keys['KeyA']);
+        else if (this.game.keys['KeyD']) {
+            this.x = this.x - LASER_ZERLIN_MOVEMENT;
+            this.tailX = this.tailX - LASER_ZERLIN_MOVEMENT;
+        } 
+        else if (this.game.keys['KeyA']) {
+            this.x = this.x + LASER_ZERLIN_MOVEMENT;
+            this.tailX = this.tailX + LASER_ZERLIN_MOVEMENT;
+        }
 
         //check collision with droid
         for (var i = 0; i < this.game.entities.length; i++) {
@@ -346,6 +364,18 @@ class DroidLaser extends Entity {
         return collideLineWithCircle(this.x, this.y, this.tailX, this.tailY, otherDroid.boundCircle.x,
             otherDroid.boundCircle.y, otherDroid.boundCircle.radius);
         
+    }
+    /**
+     * this method will return the angle of a line in radians 
+     */
+    findAngle(x1, y1, x2, y2) {
+        var dy = y2 - y1;
+        var dx = x2 - x1;
+        var theta = Math.atan2(dy, dx); //range (-PI to PI)
+        theta *= 180 / Math.PI; //rads to degress, range(-180 to 180)
+        if (theta < 0) 
+            theta = 360 + theta; //range(0 to 360)
+        return theta;
     }
 
 }
