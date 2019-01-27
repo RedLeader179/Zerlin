@@ -342,7 +342,7 @@ class GameEngine {
         this.ctx.canvas.addEventListener("click", function(e) {
             that.click = getXandY(e);
             //debug
-            that.addEntity(new DroidLaser(that, 300, 300, 20, that.click.x, that.click.y, 20, 10));
+            //that.addEntity(new DroidLaser(that, 300, 300, 20, that.click.x, that.click.y, 20, 10));
             //console.log("click X: %d, Y: %d", that.click.x, that.click.y);
             //console.log(e);
         }, false);

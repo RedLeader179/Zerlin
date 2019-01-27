@@ -155,7 +155,7 @@ class BasicDroid extends AbstractDroid {
         //update coordinates so the droid will orbit the center of the canvas
 
         /* droid movement */
-        //this.calcMovement(this.targetOrbitalPoint); //un comment after debug
+        this.calcMovement(this.targetOrbitalPoint); //un comment after debug
 
         /* bounding circle movement */
         this.boundCircle.x = this.x + this.frameWidth * this.scale;
@@ -171,10 +171,10 @@ class BasicDroid extends AbstractDroid {
             //this.shoot(this.game.Zerlin.x, this.game.Zerlin.y);
 
             //shoot randomly in target direction
-            // this.shootRandom(this.game.Zerlin.x + 50, 
-            //     this.game.Zerlin.y + 50, 
-            //     BASIC_DROID_MAX_RANDOM_TARGET_WIDTH,
-            //     BASIC_DROID_MAX_RANDOM_TARGET_HEIGHT);
+            this.shootRandom(this.game.Zerlin.x + 50, 
+                this.game.Zerlin.y + 50, 
+                BASIC_DROID_MAX_RANDOM_TARGET_WIDTH,
+                BASIC_DROID_MAX_RANDOM_TARGET_HEIGHT);
         }
         
         
@@ -255,7 +255,7 @@ class DroidLaser extends Entity {
         //Droid Laser Fields
         this.color = "green";
         this.secondaryColor = "white";
-        this.isDeflected = false;
+        this.isDeflected = true; //set to false TODO
 
         var distFromStartToTarget = distance({x: targetX, y: targetY}, {x: this.x, y: this.y});
         var unitVectorDeltaX = ((targetX - startX) / distFromStartToTarget);
@@ -383,6 +383,8 @@ class DroidLaser extends Entity {
 /**
  * this class will just play the droid explosion animation
  * and when the animation is done, this entity will be removed from world
+ * TODO: Make the sprite sheet animation able to be passed in for ifferent animations.
+ * although if sprite sheet is null then use the static animation.
  */
 class DroidExplosion extends Entity {
     constructor(game, x, y) {
