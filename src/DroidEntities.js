@@ -124,17 +124,12 @@ class BasicDroid extends AbstractDroid {
         //Animation(spritesheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale)
         this.idleAnimation = new Animation(spritesheet, 100, 100, 1400, 0.1, 14, true, 0.5);
         this.animation = this.idleAnimation;
-        
-        /* animation frame width, height and scale for calculating bounding circle */
-        this.frameHeight = this.animation.frameHeight * this.animation.scale;
-        this.frameWidth = this.animation.frameWidth * this.animation.scale;
-        this.scale = this.animation.scale;
 
         /* bounding circle fields */
         this.radius = 25;
         this.boundCircle = {radius: this.radius, 
-            x: this.x + this.frameWidth * this.scale,
-            y: this.y + this.frameHeight * this.scale};
+            x: this.x + (this.animation.frameWidth * this.animation.scale) / 2,
+            y: this.y + (this.animation.frameHeight * this.animation.scale) / 2};
 
         /* shooting fields */
         this.fire = false;
@@ -255,7 +250,7 @@ class DroidLaser extends Entity {
         //Droid Laser Fields
         this.color = "green";
         this.secondaryColor = "white";
-        this.isDeflected = true; //set to false TODO
+        this.isDeflected = false; //set to false TODO
 
         var distFromStartToTarget = distance({x: targetX, y: targetY}, {x: this.x, y: this.y});
         var unitVectorDeltaX = ((targetX - startX) / distFromStartToTarget);
