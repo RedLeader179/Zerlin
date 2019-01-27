@@ -8,7 +8,8 @@ Joshua Atherton, Michael Josten, Steven Golob
 (function () {
 	var AM = new AssetManager();
 
-	AM.queueDownload("../img/basic_droid.png");
+	//AM.queueDownload("../img/basic_droid.png");
+	AM.queueDownload("../img/Explosion.png");
 
 	AM.queueDownload("../img/Zerlin bobbing walking.png");
 	AM.queueDownload("../img/Zerlin left bobbing walking.png");
@@ -65,7 +66,7 @@ Joshua Atherton, Michael Josten, Steven Golob
 	             AM.getAsset('../img/forestMiddleTile.png'),
 	             AM.getAsset('../img/forestRightTile.png'), '']));
 
-	    gameEngine.addEntity(new BasicDroid(gameEngine, AM.getAsset("../img/basic_droid.png"), 100, 100));
+		gameEngine.addEntity(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 200, 200));
 
 	    // gameEngine.addZerlin(new Zerlin(gameEngine, AM));
 
