@@ -3,12 +3,12 @@ Zerlin
 TCSS 491 - Computational Worlds
 Joshua Atherton, Michael Josten, Steven Golob
 */
-var BASIC_DROID_SHOOT_INTERVAL = 120;
+var BASIC_DROID_SHOOT_INTERVAL = 2;
 var BASIC_DROID_X_MOVEMENT_SPEED = 150;
 var BASIC_DROID_Y_MOVEMENT_SPEED = 100;
 var BASIC_DROID_X_VELOCITY = 1;
 var BASIC_DROID_Y_VELOCITY = 1;
-var BASIC_DROID_ORBITAL_HEIGHT = 200;
+var BASIC_DROID_ORBITAL_HEIGHT = 0;
 //Math is weird, higher the number, lower the speed. couldn't think of anyway to make this work
 //possible refinement needed. use a number between 0 and 1 for speed up;
 var BASIC_DROID_LASER_SPEED = 100; 
@@ -25,7 +25,7 @@ class BasicDroid extends Entity {
         this.animation = new Animation(spritesheet, 27, 33, 182, 0.5, 3, true, 1);
         this.ctx = game.ctx;
         this.fire = false;
-        this.ticksBeforeFire = BASIC_DROID_SHOOT_INTERVAL
+        this.secondsBeforeFire = BASIC_DROID_SHOOT_INTERVAL;
         
     }
     /* 
@@ -35,11 +35,11 @@ class BasicDroid extends Entity {
     */
     update() {
         //draw it so will circle around above zerlin
-        this.calcMovement(this.game.entities[0]);
-        this.ticksBeforeFire--;
+        this.calcMovement(this.game.Zerlin);
+        this.secondsBeforeFire -= this.game.clockTick;
         //will shoot at every interval
-        if (this.ticksBeforeFire <= 0 && (!this.fire)) {
-            this.ticksBeforeFire = BASIC_DROID_SHOOT_INTERVAL;
+        if (this.secondsBeforeFire <= 0 && (!this.fire)) {
+            this.secondsBeforeFire = BASIC_DROID_SHOOT_INTERVAL;
             this.fire = true;
             this.shoot(this.game.mouse.x, this.game.mouse.y);
         }
@@ -57,7 +57,7 @@ class BasicDroid extends Entity {
     shoot(targetX, targetY) {
         var droidLaser = new DroidLaser(this.game, this.x + 20, this.y + 20, BASIC_DROID_LASER_SPEED, 
             targetX, targetY, BASIC_DROID_LASER_LENGTH, BASIC_DROID_LASER_WIDTH);
-        this.game.addEntity(droidLaser);
+        this.game.addLaser(droidLaser);
         //TODO - play shooting sound
         console.log("shot laser at X: " + targetX + " Y: " + targetY);
         //set after droid is done firing
@@ -104,60 +104,62 @@ class BasicDroid extends Entity {
     }
 }
 
+
+
 class DroidLaser extends Entity {
     constructor(game, startX, startY, speed, targetX, targetY, length, width) {
         super(game, startX, startY, 0, 0);
         //console.log("created DroidLaser Entity");
+
+        var distFromStartToTarget = Math.pow(Math.pow(targetX - startX, 2) + Math.pow(targetY - startY, 2), .5);
+        var unitVectorDeltaX = ((targetX - startX) / distFromStartToTarget);
+        var unitVectorDeltaY = ((targetY - startY) / distFromStartToTarget);
+
+        this.deltaX = unitVectorDeltaX * speed;
+        this.deltaY = unitVectorDeltaY * speed;
+        this.slope = this.deltaY / this.deltaX;
+
         this.speed = speed;
-        this.targetX = targetX;
-        this.targetY = targetY;
         this.length = length;
         this.width = width;
 
-        this.deltaX = this.targetX - this.x;
-        this.deltaY = this.targetY - this.y;
-        this.slope = (this.deltaY * 1.0) / this.deltaX;
-        var newEndPoint = this.extendTargetPoint();
-        this.targetX = newEndPoint.x;
-        this.targetY = newEndPoint.y;
-        this.deltaX = this.targetX - this.x;
-        this.deltaY = this.targetY - this.y;
-        // console.log("dx = %f, dy = %f", this.deltaX, this.deltaY);
-        // console.log("slope = %f", this.slope);
-        // console.log("draw from X: %d, Y: %d, TO X: %d, Y: %d", this.x, this.y, this.targetX, this.targetY);
+        this.isDeflected = false;
 
+        // move laser so tail is touching the starting point upon instantiation, instead of the head
+        this.x = this.x + unitVectorDeltaX * this.length;
+        this.y = this.y + unitVectorDeltaY * this.length;
+        this.tailX = startX;
+        this.tailY = startY;
     }
     update() {
-        //if laser goes out of bounds then remove from world
-        if (this.outsideScreen()) {
-            this.removeFromWorld = true;
-            //console.log("laser removed from world");
-        } else {
-            //change the x and y coordinates 
+        // keep track of previous position for collision detection
+        this.prevX = this.x;
+        this.prevY = this.y;
+        this.x += this.deltaX * this.game.clockTick;
+        this.y += this.deltaY * this.game.clockTick;
+        this.tailX += this.deltaX * this.game.clockTick;
+        this.tailY += this.deltaY * this.game.clockTick;
 
-            //Speed formula of lasers, can modify with speed field
-            var d = Math.sqrt(Math.pow((this.targetX - this.x), 2) + Math.pow((this.targetY - this.y), 2));
-            this.x += (this.deltaX / d) * this.game.clockTick * this.speed;
-            this.y += (this.deltaY / d) * this.game.clockTick * this.speed;
-            
+        if (this.isCollidedWithSaber()) {
+            this.deflect();
+        }
+
+        if (this.isOutsideScreen()) {
+            this.removeFromWorld = true;
         }
         super.update();
     }
     draw() {
         var ctx = this.game.ctx;
-        //draw a line of size length along a tragectory between start and end points.
-        var nextPoint = this.calcNextPoint(this.targetX, this.targetY);
-        
         ctx.save();
         //green outer layer of laser
         ctx.lineWidth = this.width;
-        ctx.strokeStyle = "green";
+        ctx.strokeStyle = this.isDeflected ? "blue" : "green";
         ctx.lineCap = "round";
         ctx.beginPath();
         ctx.moveTo(this.x, this.y);
-        ctx.lineTo(nextPoint.x, nextPoint.y);
+        ctx.lineTo(this.tailX, this.tailY);
         ctx.stroke();
-        ctx.closePath();
 
         //white inner layer of laser.
         ctx.lineWidth = this.width / 2;
@@ -165,59 +167,86 @@ class DroidLaser extends Entity {
         ctx.lineCap = "round";
         ctx.beginPath();
         ctx.moveTo(this.x, this.y);
-        ctx.lineTo(nextPoint.x, nextPoint.y);
+        ctx.lineTo(this.tailX, this.tailY);
         ctx.stroke();
         ctx.closePath();
 
         ctx.restore();
-
         super.draw()
     }
-    /*
-    * this function will extend the target parameters to go past the 
-    * borders of the canvas.
-    * This is mainly to solve a bug in the calcNextPoint method
-    * where when the start point overlappes the end point then it shifts and draws backwards.
-    */
-    extendTargetPoint() {
-        // need to find a point that is accross the canvas boundries 
-        // that is also in a line.
-        var tempX = this.targetX;
-        var tempY = this.targetY;
-        //keep suming tempX and tempY by deltaX and deltaY until the temp X or Y
-        // is less than 0 or is greater than max width or height.
-        while (tempX > -10 && tempX < this.game.surfaceWidth + 10 ||
-            tempY > -10 && tempY < this.game.surfaceHeight + 10) {
-
-            tempX += this.deltaX;
-            tempY += this.deltaY;
+    isCollidedWithSaber() {
+        var lightsaber = this.game.Zerlin.lightsaber;
+        if (lightsaber.hidden) {
+            return false;
         }
-        return {x: tempX, y: tempY};
-        
+        // decrease miss percentage by also checking previous blade
+        return this.isCollidedWithLine(lightsaber.bladeCollar, lightsaber.bladeTip) ||
+                this.isCollidedWithLine(lightsaber.prevBladeCollar, lightsaber.prevBladeTip);
     }
-    /*
-    * This function will calculate the next point along the path of the 
-    * laser tragectory allowing a line to be drawn from the incrementing 
-    * x, y to an arbitrary point some length away.
-    */
-    calcNextPoint(x1, y1) {
+    isCollidedWithLine(p1, p2) {
+        // TODO: possibly change segment intersection using clockwise check (more elegant)
 
-        //d is the distance between (x,y) and the target x and y
-        var d = Math.sqrt(Math.pow((x1 - this.x), 2) + Math.pow((y1 - this.y), 2));
-        //t is the ratio of distances
-        var t = this.length / d;
-        var xt = (1 - t) * this.x + (t * x1);
-        var yt = (1 - t) * this.y + (t * y1);
-        // console.log("START X: %f, Y: %f", this.x, this.y);
-        // console.log("NEXT X: %f, Y: %f", xt, yt);
-        // console.log("TARGET X: %f, Y: %f", x1, y1);
-        
-        return {x: xt, y: yt};
+        // laser's point-slope equation
+        var m1 = this.slope;
+        var b1 = this.y - m1 * this.x;
 
+        // other's point-slope equation
+        var m2 = this.calcSlope(p1, p2);
+        var b2 = p2.y - m2 * p2.x;
 
+        var parallel = m1 === m2;
+        if (!parallel) {
+            var intersection = {};
+
+            // set point slope equations of each equal to eachother
+            // 1. mx + b = nx + c 
+            // 2. (m - n)x = c - b
+            // 3. x = (c - b) / (m - n)
+            intersection.x = (b2 - b1) / (m1 - m2);
+
+            // plug in x to one equation to find y
+            intersection.y = m1 * intersection.x + b1;
+            return this.isPointOnSegment(intersection, {p1: this, p2: {x: this.prevX, y: this.prevY}}) 
+                    && this.isPointOnSegment(intersection, {p1: p1, p2: p2});
+
+        } else { // can't collide if parallel.
+            return false;
+        }
+    }
+    calcSlope(p1, p2) {
+        return (p1.y - p2.y) / (p1.x - p2.x);
+    }
+    isPointOnSegment(pt, segment) {
+        return (pt.x >= Math.min(segment.p1.x, segment.p2.x))
+            && (pt.x <= Math.max(segment.p1.x, segment.p2.x))
+            && (pt.y >= Math.min(segment.p1.y, segment.p2.y))
+            && (pt.y <= Math.max(segment.p1.y, segment.p2.y));
+    }
+    deflect() {
+        this.isDeflected = true;
+
+        var saberAngle = this.game.Zerlin.lightsaber.getSaberAngle();
+        var laserAngle = Math.atan2(this.y - this.prevY, this.x - this.prevX);
+        var newLaserAngle = 2 * saberAngle - laserAngle;
+        var unitVectorDeltaX = Math.cos(newLaserAngle);
+        var unitVectorDeltaY = Math.sin(newLaserAngle);
+        this.deltaX = unitVectorDeltaX * this.speed;
+        this.deltaY = unitVectorDeltaY * this.speed;
+        this.slope = this.deltaY / this.deltaX;
+
+        // move laser so tail is touching the deflection point, instead of the head
+        this.tailX = this.x; // TODO: change to deflection point
+        this.tailY = this.y;
+        this.x = this.x + unitVectorDeltaX * this.length;
+        this.y = this.y + unitVectorDeltaY * this.length;
+    }
+    isOutsideScreen() {
+        return this.tailX < 0 ||
+                this.tailX > this.game.ctx.canvas.width ||
+                this.tailY < 0 ||
+                this.tailY > this.game.ctx.canvas.height;
     }
 
 }
-
 
 

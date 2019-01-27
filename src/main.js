@@ -40,7 +40,6 @@ Joshua Atherton, Michael Josten, Steven Golob
 
 	    var gameEngine = new GameEngine(AM);
 	    gameEngine.init(ctx);
-	    gameEngine.start();
 
 	    const parallaxBackgroundManager = new ParallaxBackgroundManager(gameEngine); 
 	    parallaxBackgroundManager.addBackgroundImage(
@@ -58,14 +57,15 @@ Joshua Atherton, Michael Josten, Steven Golob
 	    parallaxBackgroundManager.addBackgroundImage(
 	        new ParallaxBackground(gameEngine, AM.getAsset('../img/backgroundTrees1.png'), 
 	        60, 0, 0));
-	    gameEngine.addEntity(parallaxBackgroundManager);
+	    gameEngine.parallaxManager = parallaxBackgroundManager;
 	    
-	    gameEngine.addEntity(new Tile(gameEngine, AM.getAsset('../img/forestLeftTile.png'),
+	    gameEngine.addTile(new Tile(gameEngine, AM.getAsset('../img/forestLeftTile.png'),
 	    10, 10, [AM.getAsset('../img/forestLeftTile.png'), 
 	             AM.getAsset('../img/forestMiddleTile.png'),
 	             AM.getAsset('../img/forestRightTile.png'), '']));
 
-	    gameEngine.addEntity(new BasicDroid(gameEngine, AM.getAsset("../img/basic_droid.png"), 100, 100));
+	    gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/basic_droid.png"), 100, 100));
+
 
 	    // gameEngine.addZerlin(new Zerlin(gameEngine, AM));
 
