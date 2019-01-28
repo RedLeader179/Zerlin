@@ -25,7 +25,7 @@ var BASIC_DROID_MAX_RANDOM_TARGET_HEIGHT = 40;
 //Laser constants
 var BASIC_DROID_LASER_SPEED = 400; 
 var BASIC_DROID_LASER_LENGTH = 10;
-var BASIC_DROID_LASER_WIDTH = 20;
+var BASIC_DROID_LASER_WIDTH = 15;
 var LASER_ZERLIN_MOVEMENT = 2.5;
 
 var EXPLOSION_SCALE = 2;
@@ -277,7 +277,7 @@ class DroidLaser extends Entity {
         this.y = this.y + unitVectorDeltaY * this.length;
         this.tailX = startX;
         this.tailY = startY;
-        this.angle = this.findAngle(this.x, this.y, this.tailX, this.tailY);
+        this.angle = this.findAngleRadians(this.x, this.y, this.tailX, this.tailY);
     }
     update() {
         // keep track of previous position for collision detection
@@ -289,9 +289,9 @@ class DroidLaser extends Entity {
         this.tailX += this.deltaX * this.game.clockTick;
         this.tailY += this.deltaY * this.game.clockTick;
 
-        if (this.isCollidedWithSaber()) {
-            this.deflect();
-        }
+        // if (this.isCollidedWithSaber()) {
+        //     this.deflect();
+        // }
 
         if (this.isOutsideScreen()) {
             this.removeFromWorld = true;
@@ -311,16 +311,17 @@ class DroidLaser extends Entity {
         }
 
         //check collision with droid
-        for (var i = 0; i < this.game.droids.length; i++) {
-            var ent = this.game.droids[i];
-            if (this != ent && this.isDeflected && this.collideWithDroid(ent)) {
-                console.log("Collision with droid");
-                this.color = "red";
-                //explode the droid.
-                ent.explode();
-                //increment points
-            }
-        }
+        
+        // for (var i = 0; i < this.game.droids.length; i++) {
+        //     var ent = this.game.droids[i];
+        //     if (this.isDeflected && this.collideWithDroid(ent)) {
+        //         console.log("Collision with droid");
+        //         this.color = "red";
+        //         //explode the droid.
+        //         ent.explode();
+        //         //increment points
+        //     }
+        // }
     
         super.update();
     }
@@ -362,73 +363,73 @@ class DroidLaser extends Entity {
         ctx.restore();
         super.draw()
     }
-    isCollidedWithSaber() {
-        var lightsaber = this.game.Zerlin.lightsaber;
-        if (lightsaber.hidden) {
-            return false;
-        }
-        // decrease miss percentage by also checking previous blade
-        return this.isCollidedWithLine(lightsaber.bladeCollar, lightsaber.bladeTip) ||
-                this.isCollidedWithLine(lightsaber.prevBladeCollar, lightsaber.prevBladeTip);
-    }
-    isCollidedWithLine(p1, p2) {
-        // TODO: possibly change segment intersection using clockwise check (more elegant)
+    // isCollidedWithSaber() {
+    //     var lightsaber = this.game.Zerlin.lightsaber;
+    //     if (lightsaber.hidden) {
+    //         return false;
+    //     }
+    //     // decrease miss percentage by also checking previous blade
+    //     return this.isCollidedWithLine(lightsaber.bladeCollar, lightsaber.bladeTip) ||
+    //             this.isCollidedWithLine(lightsaber.prevBladeCollar, lightsaber.prevBladeTip);
+    // }
+    // isCollidedWithLine(p1, p2) {
+    //     // TODO: possibly change segment intersection using clockwise check (more elegant)
 
-        // laser's point-slope equation
-        var m1 = this.slope;
-        var b1 = this.y - m1 * this.x;
+    //     // laser's point-slope equation
+    //     var m1 = this.slope;
+    //     var b1 = this.y - m1 * this.x;
 
-        // other's point-slope equation
-        var m2 = this.calcSlope(p1, p2);
-        var b2 = p2.y - m2 * p2.x;
+    //     // other's point-slope equation
+    //     var m2 = this.calcSlope(p1, p2);
+    //     var b2 = p2.y - m2 * p2.x;
 
-        var parallel = m1 === m2;
-        if (!parallel) {
-            var intersection = {};
+    //     var parallel = m1 === m2;
+    //     if (!parallel) {
+    //         var intersection = {};
 
-            // set point slope equations of each equal to eachother
-            // 1. mx + b = nx + c 
-            // 2. (m - n)x = c - b
-            // 3. x = (c - b) / (m - n)
-            intersection.x = (b2 - b1) / (m1 - m2);
+    //         // set point slope equations of each equal to eachother
+    //         // 1. mx + b = nx + c 
+    //         // 2. (m - n)x = c - b
+    //         // 3. x = (c - b) / (m - n)
+    //         intersection.x = (b2 - b1) / (m1 - m2);
 
-            // plug in x to one equation to find y
-            intersection.y = m1 * intersection.x + b1;
-            return this.isPointOnSegment(intersection, {p1: this, p2: {x: this.prevX, y: this.prevY}}) 
-                    && this.isPointOnSegment(intersection, {p1: p1, p2: p2});
+    //         // plug in x to one equation to find y
+    //         intersection.y = m1 * intersection.x + b1;
+    //         return this.isPointOnSegment(intersection, {p1: this, p2: {x: this.prevX, y: this.prevY}}) 
+    //                 && this.isPointOnSegment(intersection, {p1: p1, p2: p2});
 
-        } else { // can't collide if parallel.
-            return false;
-        }
-    }
+    //     } else { // can't collide if parallel.
+    //         return false;
+    //     }
+    // }
     calcSlope(p1, p2) {
         return (p1.y - p2.y) / (p1.x - p2.x);
     }
-    isPointOnSegment(pt, segment) {
-        return (pt.x >= Math.min(segment.p1.x, segment.p2.x))
-            && (pt.x <= Math.max(segment.p1.x, segment.p2.x))
-            && (pt.y >= Math.min(segment.p1.y, segment.p2.y))
-            && (pt.y <= Math.max(segment.p1.y, segment.p2.y));
-    }
-    deflect() {
-        this.isDeflected = true;
+    // isPointOnSegment(pt, segment) {
+    //     return (pt.x >= Math.min(segment.p1.x, segment.p2.x))
+    //         && (pt.x <= Math.max(segment.p1.x, segment.p2.x))
+    //         && (pt.y >= Math.min(segment.p1.y, segment.p2.y))
+    //         && (pt.y <= Math.max(segment.p1.y, segment.p2.y));
+    // }
+    // deflect() {
+    //     this.isDeflected = true;
 
-        var saberAngle = this.game.Zerlin.lightsaber.getSaberAngle();
-        var laserAngle = Math.atan2(this.y - this.prevY, this.x - this.prevX);
-        var newLaserAngle = 2 * saberAngle - laserAngle;
-        var unitVectorDeltaX = Math.cos(newLaserAngle);
-        var unitVectorDeltaY = Math.sin(newLaserAngle);
-        this.deltaX = unitVectorDeltaX * this.speed;
-        this.deltaY = unitVectorDeltaY * this.speed;
-        this.slope = this.deltaY / this.deltaX;
+    //     var saberAngle = this.game.Zerlin.lightsaber.getSaberAngle();
+    //     var laserAngle = Math.atan2(this.y - this.prevY, this.x - this.prevX);
+    //     var newLaserAngle = 2 * saberAngle - laserAngle;
+    //     var unitVectorDeltaX = Math.cos(newLaserAngle);
+    //     var unitVectorDeltaY = Math.sin(newLaserAngle);
+    //     this.deltaX = unitVectorDeltaX * this.speed;
+    //     this.deltaY = unitVectorDeltaY * this.speed;
+    //     this.slope = this.deltaY / this.deltaX;
 
-        // move laser so tail is touching the deflection point, instead of the head
-        this.tailX = this.x; // TODO: change to deflection point
-        this.tailY = this.y;
-        this.x = this.x + unitVectorDeltaX * this.length;
-        this.y = this.y + unitVectorDeltaY * this.length;
-        this.angle = this.findAngle(this.x, this.y, this.tailX, this.tailY);
-    }
+    //     // move laser so tail is touching the deflection point, instead of the head
+    //     this.tailX = this.x; // TODO: change to deflection point
+    //     this.tailY = this.y;
+    //     this.x = this.x + unitVectorDeltaX * this.length;
+    //     this.y = this.y + unitVectorDeltaY * this.length;
+    //     this.angle = this.findAngleRadians(this.x, this.y, this.tailX, this.tailY);
+    // }
     isOutsideScreen() {
         return this.tailX < 0 ||
                 this.tailX > this.game.ctx.canvas.width ||
@@ -449,7 +450,7 @@ class DroidLaser extends Entity {
     /**
      * this method will return the angle of a line in radians 
      */
-    findAngle(x1, y1, x2, y2) {
+    findAngleDegrees(x1, y1, x2, y2) {
         var dy = y2 - y1;
         var dx = x2 - x1;
         var theta = Math.atan2(dy, dx); //range (-PI to PI)
@@ -457,6 +458,10 @@ class DroidLaser extends Entity {
         if (theta < 0) 
             theta = 360 + theta; //range(0 to 360)
         return theta;
+    }
+
+    findAngleRadians(x1, y1, x2, y2) {
+        return Math.atan2(y1 - y2, x1 - x2);
     }
 
 }
