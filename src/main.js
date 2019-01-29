@@ -73,10 +73,10 @@ Joshua Atherton, Michael Josten, Steven Golob
 	             AM.getAsset('../img/forestRightTile.png'), '']));
 
 	    gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 100, 100));
-	    gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 700, 500));
-	    gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 800, 310));
-	    gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 492, 368));
-	    gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 1000, 600));
+	    gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 700, 100));
+	    gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 800, 110));
+	    gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 492, 168));
+	    gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 1000, 100));
 
 
 	    // gameEngine.addZerlin(new Zerlin(gameEngine, AM));

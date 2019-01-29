@@ -9,13 +9,13 @@ var DROID_ZERLIN_MOVEMENT = 2.5; //amount a droid will move when left or right k
 //can potentially add in another zerlin move constant for rolling
 
 //basic droid constants
-var BASIC_DROID_SHOOT_INTERVAL = .1;
+var BASIC_DROID_SHOOT_INTERVAL = .5;
 var BASIC_DROID_X_MOVEMENT_SPEED = 150;
 var BASIC_DROID_Y_MOVEMENT_SPEED = 100;
 var BASIC_DROID_X_VELOCITY = 0.35;
 var BASIC_DROID_Y_VELOCITY = 1;
 var BASIC_DROID_ORBITAL_X_OFFSET = 0;
-var BASIC_DROID_ORBITAL_Y_OFFSET = -200;
+var BASIC_DROID_ORBITAL_Y_OFFSET = 0;
 var BASIC_DROID_ZERLIN_MOVE_RIGHT_SPEED = 1;
 
 //random constants ("interesting")
@@ -46,7 +46,7 @@ class AbstractDroid extends Entity {
 
         //collision radius can be changed after instantiation
         this.radius = 35;
-        this.boundCircle = {x: this.x, y: this.y, radius: this.radius};
+        this.boundCircle = new BoundingCircle(this.x, this.y, this.radius);
 
     }
     /**
@@ -311,7 +311,7 @@ class DroidLaser extends Entity {
         }
 
         //check collision with droid
-        
+
         // for (var i = 0; i < this.game.droids.length; i++) {
         //     var ent = this.game.droids[i];
         //     if (this.isDeflected && this.collideWithDroid(ent)) {
