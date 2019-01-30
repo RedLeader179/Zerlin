@@ -35,12 +35,20 @@ class CollisionManager {
 		if (zerlin.slashing && zerlin.slashZone.active) {
 			for (var i = this.game.droids.length - 1; i >= 0; i--) {
 				var droid = this.game.droids[i];
+				// check if droid in circular path of saber and not below zerlin
 				if (collidePointWithCircle(droid.boundCircle.x, 
 										   droid.boundCircle.y, 
 										   zerlin.slashZone.outerCircle.x, 
 										   zerlin.slashZone.outerCircle.y, 
-										   zerlin.slashZone.outerCircle.radius)) {
+										   zerlin.slashZone.outerCircle.radius)
+					&& !collidePointWithCircle(droid.boundCircle.x, 
+										   droid.boundCircle.y, 
+										   zerlin.slashZone.innerCircle.x, 
+										   zerlin.slashZone.innerCircle.y, 
+										   zerlin.slashZone.innerCircle.radius)
+					&& droid.boundCircle.y < (zerlin.y + (zerlin.animation.frameHeight * zerlin.animation.scale))) {
 					droid.explode();
+					console.log(zerlin.y + (zerlin.animation.frameHeight * zerlin.animation.scale));
 				}
 			}	
 		}
@@ -66,7 +74,7 @@ class CollisionManager {
 				if (!laser.isDeflected) {
 					var collision = this.isCollidedWithSaber(laser);
 					if (collision.collided) {
-						this.deflect(laser, saberAngle, collision.intersection);    
+						this.deflectLaser(laser, saberAngle, collision.intersection);    
 					}
 				}
 			}
@@ -124,7 +132,6 @@ class CollisionManager {
 
 	isCollidedLineWithLine(line1, line2) {
 		// TODO: possibly change segment intersection using clockwise check (more elegant)
-
 		var m1 = this.calcSlope(line1.p1, line1.p2);
 		var b1 = line1.p1.y - m1 * line1.p1.x;
 		var m2 = this.calcSlope(line2.p1, line2.p2);
@@ -136,7 +143,7 @@ class CollisionManager {
 			intersection.x = (b2 - b1) / (m1 - m2);
 			intersection.y = m1 * intersection.x + b1;
 			var isCollided = this.isPointOnSegment(intersection, line1) 
-					&& this.isPointOnSegment(intersection, line2);
+							&& this.isPointOnSegment(intersection, line2);
 			return {collided: isCollided, intersection: intersection};
 		} else { // can't collide if parallel.
 			return false;
@@ -151,10 +158,9 @@ class CollisionManager {
 			&& (pt.y >= Math.min(segment.p1.y, segment.p2.y))
 			&& (pt.y <= Math.max(segment.p1.y, segment.p2.y));
 	}
-	deflect(laser, saberAngle, collisionPt) {
+	deflectLaser(laser, saberAngle, collisionPt) {
 		laser.isDeflected = true;
 
-		// var laserAngle = Math.atan2(laser.y - laser.prevY, laser.x - laser.prevX);
 		var newLaserAngle = 2 * saberAngle - laser.angle;
 		var unitVectorDeltaX = Math.cos(newLaserAngle);
 		var unitVectorDeltaY = Math.sin(newLaserAngle);
@@ -164,7 +170,7 @@ class CollisionManager {
 		laser.angle = newLaserAngle;
 
 		// move laser so tail is touching the deflection point, instead of the head
-		laser.tailX = collisionPt.x; // TODO: change to deflection point
+		laser.tailX = collisionPt.x;
 		laser.tailY = collisionPt.y;
 		laser.x = laser.tailX + unitVectorDeltaX * laser.length;
 		laser.y = laser.tailY + unitVectorDeltaY * laser.length;
