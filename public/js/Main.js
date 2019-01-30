@@ -65,6 +65,13 @@ class AssetManager {
 	AM.queueDownload("../img/Zerlin standing.png");
 	AM.queueDownload("../img/Zerlin standing left.png");
 	AM.queueDownload("../img/Zerlin somersault.png");
+	AM.queueDownload("../img/Zerlin left somersault.png");
+	AM.queueDownload("../img/Zerlin falling up.png");
+	AM.queueDownload("../img/Zerlin falling down.png");
+	AM.queueDownload("../img/Zerlin falling up left.png");
+	AM.queueDownload("../img/Zerlin falling down left.png");
+	AM.queueDownload("../img/Zerlin slash.png");
+	AM.queueDownload("../img/Zerlin slash left.png");
 
 	AM.queueDownload("../img/Lightsaber with point of rotation drawn.png");
 	AM.queueDownload("../img/Lightsaber with point of rotation drawn left.png");
