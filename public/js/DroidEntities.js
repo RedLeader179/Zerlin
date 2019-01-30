@@ -25,7 +25,7 @@ var BASIC_DROID_MAX_RANDOM_TARGET_HEIGHT = 40;
 //Laser constants
 var BASIC_DROID_LASER_SPEED = 400; 
 var BASIC_DROID_LASER_LENGTH = 10;
-var BASIC_DROID_LASER_WIDTH = 20;
+var BASIC_DROID_LASER_WIDTH = 10;
 var LASER_ZERLIN_MOVEMENT = 2.5;
 
 var EXPLOSION_SCALE = 2;
@@ -116,6 +116,11 @@ class AbstractDroid extends Entity {
         });
         sound.play();
         console.log("droid exploded");
+        /**
+        * ***! TODO: DELETE AFTER PROTOTYPE: THIS CODE RESPAWNS DROIDS
+        */
+        this.game.addDroid(new BasicDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"),
+        this.game.surfaceWidth * Math.random(), -75));
     }
     collideWithDroid(ent) {
         return ent !== null && collideCircleWithCircle(this.boundCircle.x, this.boundCircle.y, this.boundCircle.radius,
