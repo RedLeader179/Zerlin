@@ -17,11 +17,11 @@ var sound = new Howl({
 });
 
 //todo not linked up yet
-document.getElementById("playPause").onclick( () => {
-  console.log('clicked');
-  if(sound.playing()) {
-    sound.pause();
-  } else {
-    sound.play();
-  }
-});
+// document.getElementById("playPause").onclick( () => {
+//   console.log('clicked');
+//   if(sound.playing()) {
+//     sound.pause();
+//   } else {
+//     sound.play();
+//   }
+// });

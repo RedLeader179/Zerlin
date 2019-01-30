@@ -119,7 +119,33 @@ class AssetManager {
 	    gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 1000, 600));
 
 
-	    // gameEngine.addZerlin(new Zerlin(gameEngine, AM));
+		//for prototype !!!
+		// gameEngine.addZerlin(new Zerlin(gameEngine, AM));
+		//draw a tile on the bottom of the screen
+		//Draw a tile of given size.
+		class Tile extends Entity{
+			constructor(game, startX, startY, tileArray) {
+				super(game, null, startX, startY, 0, 0);
+				this.leftCornerTile = tileArray[0];
+				this.centerTile = tileArray[1];
+				this.rightTile = tileArray[2];
+
+				this.ctx = game.ctx;
+			}
+			update() { } 
+			draw() { //code this with a loop to draw whatever length platform the user wants
+				this.ctx.drawImage(this.leftCornerTile, 0, 680);
+				for (let i = 60; i < 1060; i += 60) {
+					this.ctx.drawImage(this.centerTile, i, 680); 
+				}   
+				this.ctx.drawImage(this.rightTile, 1060, 680); 
+			}
+		}
+		//add the ground tiles
+		gameEngine.addEntity(new Tile(gameEngine,
+			10, 10, [AM.getAsset('../img/forestLeftTile.png'), 
+			AM.getAsset('../img/forestMiddleTile.png'),
+			AM.getAsset('../img/forestRightTile.png'), '']));
 
 	    gameEngine.start();
 	    console.log("All Done!");
