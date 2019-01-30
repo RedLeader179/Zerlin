@@ -118,6 +118,8 @@ class AbstractDroid extends Entity {
         console.log("droid exploded");
         /**
         * ***! TODO: DELETE AFTER PROTOTYPE: THIS CODE RESPAWNS DROIDS
+        * BUG: sometimes multiple lasers will hit the droid bounding circle before the next 
+        * update is called causeing mutliple explosions to be called on the same droid.
         */
         this.game.addDroid(new BasicDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"),
         this.game.surfaceWidth * Math.random(), -75));
