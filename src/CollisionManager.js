@@ -8,7 +8,7 @@ Joshua Atherton, Michael Josten, Steven Golob
 
 
 /*
- * Allows entities to not manage their own collisions
+ * Detects and handles collisions for game entities.
  */
 class CollisionManager {
 
@@ -125,7 +125,6 @@ class CollisionManager {
 	isCollidedLineWithLine(line1, line2) {
 		// TODO: possibly change segment intersection using clockwise check (more elegant)
 
-		// find each line's point slope form
 		var m1 = this.calcSlope(line1.p1, line1.p2);
 		var b1 = line1.p1.y - m1 * line1.p1.x;
 		var m2 = this.calcSlope(line2.p1, line2.p2);
@@ -134,20 +133,11 @@ class CollisionManager {
 		var parallel = m1 === m2;
 		if (!parallel) {
 			var intersection = {};
-
-			// set point slope equations of each equal to eachother
-			// 1. mx + b = nx + c 
-			// 2. (m - n)x = c - b
-			// 3. x = (c - b) / (m - n)
 			intersection.x = (b2 - b1) / (m1 - m2);
-
-			// plug in x to one equation to find y
 			intersection.y = m1 * intersection.x + b1;
-
 			var isCollided = this.isPointOnSegment(intersection, line1) 
 					&& this.isPointOnSegment(intersection, line2);
 			return {collided: isCollided, intersection: intersection};
-
 		} else { // can't collide if parallel.
 			return false;
 		}
