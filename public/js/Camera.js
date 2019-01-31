@@ -8,6 +8,7 @@ Joshua Atherton, Michael Josten, Steven Golob
 
 
 var ZERLIN_POSITION_ON_SCREEN = .382; // = (1 - 1/PHI)
+var BUFFER = 20;
 
 class Camera {
 
@@ -29,11 +30,11 @@ class Camera {
 		this.parallaxManager.draw();
 	}
 
-	isInView(entity) {
-		return entity.x + 100 > this.x &&
-			   entity.x - 20 < this.x + this.width &&
-			   entity.y + 100 > this.y &&
-			   entity.y - 20 < this.y + this.height;
+	isInView(entity, width, height) { // TODO: verify sure things are not drawn when not in view
+		return entity.x + width + BUFFER > this.x &&
+			   entity.x - BUFFER < this.x + this.width &&
+			   entity.y + height + BUFFER > this.y &&
+			   entity.y - BUFFER < this.y + this.height;
 	}
 
 }

@@ -10,13 +10,13 @@ var DROID_ZERLIN_MOVEMENT = 2.5; //amount a droid will move when left or right k
 
 //basic droid constants
 var BASIC_DROID_SHOOT_INTERVAL = .5;
-var BASIC_DROID_X_MOVEMENT_SPEED = 300;
+var BASIC_DROID_X_MOVEMENT_SPEED = 150;
 var BASIC_DROID_Y_MOVEMENT_SPEED = 100;
 var BASIC_DROID_X_VELOCITY = 0.35;
 var BASIC_DROID_Y_VELOCITY = 1;
 var BASIC_DROID_ORBITAL_X_OFFSET = 0;
 var BASIC_DROID_ORBITAL_Y_OFFSET = -200;
-var BASIC_DROID_ORBITAL_HEIGHT = 300;
+var BASIC_DROID_ORBITAL_HEIGHT = 300; // just to make testing easier
 var BASIC_DROID_ZERLIN_MOVE_RIGHT_SPEED = 1;
 
 //random constants ("interesting")
@@ -77,8 +77,9 @@ class AbstractDroid extends Entity {
     }
     draw() {
         var camera = this.game.camera;
+        var dimension = this.boundCircle.radius * 2;
         // only draw if in camera's view
-        if (camera.isInView(this)) {
+        if (camera.isInView(this, dimension, dimension)) {
         //debug: draw the bounding circle around the droid
             if (this.game.showOutlines) {
                 this.game.ctx.beginPath();
@@ -96,7 +97,7 @@ class AbstractDroid extends Entity {
                 this.animation.drawFrame(this.game.clockTick, this.game.ctx, this.x - camera.x, this.y);
             }
             super.draw();
-        }
+        } 
     }
     /**
      * this method will remove the droid from the world and add an explosion to the entity list.
@@ -331,7 +332,7 @@ class DroidLaser extends Entity {
     draw() {
         var cameraX = this.game.camera.x;
         // only draw if in camera's view
-        if (this.game.camera.isInView(this)) {
+        if (this.game.camera.isInView(this, this.length, this.length)) {
             var ctx = this.game.ctx;
 
             //debug laser
@@ -368,7 +369,7 @@ class DroidLaser extends Entity {
             ctx.closePath();
             ctx.restore();
             super.draw();
-        }
+        } 
     }
     // isCollidedWithSaber() {
     //     var lightsaber = this.game.Zerlin.lightsaber;
@@ -505,7 +506,7 @@ class DroidExplosion extends Entity {
     }
     draw() {
         // only draw if in camera's view
-        if (this.game.camera.isInView(this)) {
+        if (this.game.camera.isInView(this, this.animation.frameWidth * EXPLOSION_SCALE, this.animation.frameHeight * EXPLOSION_SCALE)) {
             this.animation.drawFrame(this.game.clockTick, this.game.ctx, this.x - this.game.camera.x, this.y);
             super.draw(this.game.ctx);
         }

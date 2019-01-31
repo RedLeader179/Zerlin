@@ -24,7 +24,6 @@ class GameEngine {
         this.assetManager = assetManager;
         this.showOutlines = true; //debug bit
         this.otherEntities = [];
-        // this.parallaxManager = null;
         this.lasers = [];
         this.droids = [];
         this.tiles = [];
