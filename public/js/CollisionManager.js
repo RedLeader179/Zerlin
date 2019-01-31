@@ -46,7 +46,7 @@ class CollisionManager {
 										   zerlin.slashZone.innerCircle.x, 
 										   zerlin.slashZone.innerCircle.y, 
 										   zerlin.slashZone.innerCircle.radius)
-					&& droid.boundCircle.y < (zerlin.y + (zerlin.animation.frameHeight * zerlin.animation.scale))) {
+					&& droid.boundCircle.y < zerlin.y) {
 					droid.explode();
 					console.log(zerlin.y + (zerlin.animation.frameHeight * zerlin.animation.scale));
 				}
@@ -68,13 +68,12 @@ class CollisionManager {
 
 	laserOnSaber() {
 		if (!this.game.Zerlin.lightsaber.hidden) {
-			var saberAngle = this.game.Zerlin.lightsaber.getSaberAngle();
 			for (var i = this.game.lasers.length - 1; i >= 0; i--) {
 				var laser = this.game.lasers[i];
 				if (!laser.isDeflected) {
 					var collision = this.isCollidedWithSaber(laser);
 					if (collision.collided) {
-						this.deflectLaser(laser, saberAngle, collision.intersection);    
+						this.deflectLaser(laser, collision.intersection);    
 					}
 				}
 			}
@@ -92,7 +91,7 @@ class CollisionManager {
 				laser.y < zerlin.boundingbox.bottom) {
 				laser.removeFromWorld = true;
 				zerlin.hits++;
-				console.log(zerlin.hits);
+				// console.log(zerlin.hits);
 			}
 		}
 	}
@@ -103,8 +102,10 @@ class CollisionManager {
 			console.log("landed");
 			zerlin.falling = false;
 			zerlin.deltaY = 0;
-			zerlin.y = zerlin.temporaryFloorBoundingBox.top - (Z_HEIGHT - Z_FEET_ABOVE_FRAME) * Z_SCALE;
+			zerlin.y = zerlin.temporaryFloorBoundingBox.top + Z_FEET_ABOVE_FRAME * Z_SCALE;
 		}
+
+		// TODO: check Zerlin on platform when not falling (walks over edge)
 	}
 
 
@@ -158,22 +159,22 @@ class CollisionManager {
 			&& (pt.y >= Math.min(segment.p1.y, segment.p2.y))
 			&& (pt.y <= Math.max(segment.p1.y, segment.p2.y));
 	}
-	deflectLaser(laser, saberAngle, collisionPt) {
+	deflectLaser(laser, collisionPt) {
 		laser.isDeflected = true;
 
-		var newLaserAngle = 2 * saberAngle - laser.angle;
-		var unitVectorDeltaX = Math.cos(newLaserAngle);
-		var unitVectorDeltaY = Math.sin(newLaserAngle);
-		laser.deltaX = unitVectorDeltaX * laser.speed;
-		laser.deltaY = unitVectorDeltaY * laser.speed;
+		var zerlin = this.game.Zerlin;
+		laser.angle = 2 * zerlin.lightsaber.getSaberAngle() - laser.angle;
+		laser.deltaX = Math.cos(laser.angle) * laser.speed + zerlin.deltaX;
+		laser.deltaY = Math.sin(laser.angle) * laser.speed + zerlin.deltaY;
+		// TODO: prevent rare ultra slow lasers
 		laser.slope = laser.deltaY / laser.deltaX;
-		laser.angle = newLaserAngle;
 
 		// move laser so tail is touching the deflection point, instead of the head
+		var deltaMagnitude = Math.sqrt(Math.pow(laser.deltaX, 2) + Math.pow(laser.deltaY, 2));
 		laser.tailX = collisionPt.x;
 		laser.tailY = collisionPt.y;
-		laser.x = laser.tailX + unitVectorDeltaX * laser.length;
-		laser.y = laser.tailY + unitVectorDeltaY * laser.length;
+		laser.x = laser.tailX + laser.deltaX / deltaMagnitude * laser.length;
+		laser.y = laser.tailY + laser.deltaY / deltaMagnitude * laser.length;
 		// laser.angle = this.findAngle(this.x, this.y, this.tailX, this.tailY);
 	}
 
@@ -189,8 +190,8 @@ class BoundingBox {
 
         this.left = x;
         this.top = y;
-        this.right = this.left + width;
-        this.bottom = this.top + height;
+        this.right = x + width;
+        this.bottom = y + height;
     }
 
     collide(oth) {
@@ -202,6 +203,26 @@ class BoundingBox {
         }
         return false;
     }
+
+    updateCoordinates(x, y) {
+        this.x = x;
+        this.y = y;
+
+        this.left = x;
+        this.top = y;
+        this.right = x + this.width;
+        this.bottom = y + this.height;
+    }
+
+    translateCoordinates(deltaX, deltaY) {
+        this.x += deltaX;
+        this.y += deltaY;
+        this.left += deltaX;
+        this.top += deltaY;
+        this.right += deltaX;
+        this.bottom += deltaY;
+    }
+
 }
 
 class BoundingCircle {

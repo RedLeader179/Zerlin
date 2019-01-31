@@ -10,12 +10,13 @@ var DROID_ZERLIN_MOVEMENT = 2.5; //amount a droid will move when left or right k
 
 //basic droid constants
 var BASIC_DROID_SHOOT_INTERVAL = .5;
-var BASIC_DROID_X_MOVEMENT_SPEED = 150;
+var BASIC_DROID_X_MOVEMENT_SPEED = 300;
 var BASIC_DROID_Y_MOVEMENT_SPEED = 100;
 var BASIC_DROID_X_VELOCITY = 0.35;
 var BASIC_DROID_Y_VELOCITY = 1;
 var BASIC_DROID_ORBITAL_X_OFFSET = 0;
 var BASIC_DROID_ORBITAL_Y_OFFSET = -200;
+var BASIC_DROID_ORBITAL_HEIGHT = 300;
 var BASIC_DROID_ZERLIN_MOVE_RIGHT_SPEED = 1;
 
 //random constants ("interesting")
@@ -56,12 +57,6 @@ class AbstractDroid extends Entity {
     update() {
         // All droids will move when left or right is pressed but not both at the same time
         if (this.game.keys['KeyD'] && this.game.keys['KeyA']);
-        else if (this.game.keys['KeyD']) {
-            this.x = this.x - DROID_ZERLIN_MOVEMENT;
-        } 
-        else if (this.game.keys['KeyA']) {
-            this.x = this.x + DROID_ZERLIN_MOVEMENT;
-        }
 
         //check collision with other droids.
         // for (var i = 0; i < this.game.entities.length; i++) {
@@ -81,23 +76,27 @@ class AbstractDroid extends Entity {
         super.update();
     }
     draw() {
+        var camera = this.game.camera;
+        // only draw if in camera's view
+        if (camera.isInView(this)) {
         //debug: draw the bounding circle around the droid
-        if (this.game.showOutlines) {
-            this.game.ctx.beginPath();
-            this.game.ctx.strokeStyle = "green";
-            this.game.ctx.arc(this.boundCircle.x, 
-                this.boundCircle.y, this.boundCircle.radius, 0, Math.PI * 2, false);
-            this.game.ctx.stroke();
-            this.game.ctx.closePath();
-            this.game.ctx.closePath();
-            this.game.ctx.restore(); 
+            if (this.game.showOutlines) {
+                this.game.ctx.beginPath();
+                this.game.ctx.strokeStyle = "green";
+                this.game.ctx.arc(this.boundCircle.x - camera.x, 
+                    this.boundCircle.y, this.boundCircle.radius, 0, Math.PI * 2, false);
+                this.game.ctx.stroke();
+                this.game.ctx.closePath();
+                this.game.ctx.closePath();
+                this.game.ctx.restore(); 
+            }
+            //child droid can choose which animation is the current one 
+            // check that animation is not null before drawing.
+            if (this.animation) {
+                this.animation.drawFrame(this.game.clockTick, this.game.ctx, this.x - camera.x, this.y);
+            }
+            super.draw();
         }
-        //child droid can choose which animation is the current one 
-        // check that animation is not null before drawing.
-        if (this.animation) {
-            this.animation.drawFrame(this.game.clockTick, this.game.ctx, this.x, this.y);
-        }
-        super.draw();
     }
     /**
      * this method will remove the droid from the world and add an explosion to the entity list.
@@ -122,7 +121,7 @@ class AbstractDroid extends Entity {
         * update is called causeing mutliple explosions to be called on the same droid.
         */
         this.game.addDroid(new BasicDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"),
-        this.game.surfaceWidth * Math.random(), -75));
+        this.game.camera.x + (this.game.camera.width * Math.random()), -75));
     }
     collideWithDroid(ent) {
         return ent !== null && collideCircleWithCircle(this.boundCircle.x, this.boundCircle.y, this.boundCircle.radius,
@@ -160,7 +159,7 @@ class BasicDroid extends AbstractDroid {
         /* movement fields */
         var targetX = (this.game.surfaceWidth / 2) + BASIC_DROID_ORBITAL_X_OFFSET;
         var targetY = (this.game.surfaceHeight / 2) + BASIC_DROID_ORBITAL_Y_OFFSET;
-        this.targetOrbitalPoint = {x: targetX, y: targetY};
+        this.targetOrbitalPoint = {x: targetX, y: BASIC_DROID_ORBITAL_HEIGHT};
         
     }
     /* 
@@ -172,6 +171,7 @@ class BasicDroid extends AbstractDroid {
         //update coordinates so the droid will orbit the center of the canvas
 
         /* droid movement */
+        this.targetOrbitalPoint.x = this.game.Zerlin.x;
         this.calcMovement(this.targetOrbitalPoint); //un comment after debug
 
         /* bounding circle movement */
@@ -188,8 +188,8 @@ class BasicDroid extends AbstractDroid {
             //this.shoot(this.game.Zerlin.x, this.game.Zerlin.y);
 
             //shoot randomly in target direction
-            this.shootRandom(this.game.Zerlin.x + 50, 
-                this.game.Zerlin.y + 50, 
+            this.shootRandom(this.game.Zerlin.x, 
+                this.game.Zerlin.y, 
                 BASIC_DROID_MAX_RANDOM_TARGET_WIDTH,
                 BASIC_DROID_MAX_RANDOM_TARGET_HEIGHT);
         }
@@ -312,19 +312,6 @@ class DroidLaser extends Entity {
         if (this.isOutsideScreen()) {
             this.removeFromWorld = true;
         }
-        //check zerlin movement and move laser accordingly
-        /* when a or d is pressed then move the lasers left or right
-        * dont move when both a and d are pressed at the same time
-        */
-        if (this.game.keys['KeyD'] && this.game.keys['KeyA']);
-        else if (this.game.keys['KeyD']) {
-            this.x = this.x - LASER_ZERLIN_MOVEMENT;
-            this.tailX = this.tailX - LASER_ZERLIN_MOVEMENT;
-        } 
-        else if (this.game.keys['KeyA']) {
-            this.x = this.x + LASER_ZERLIN_MOVEMENT;
-            this.tailX = this.tailX + LASER_ZERLIN_MOVEMENT;
-        }
 
         //check collision with droid
 
@@ -342,42 +329,46 @@ class DroidLaser extends Entity {
         super.update();
     }
     draw() {
-        var ctx = this.game.ctx;
+        var cameraX = this.game.camera.x;
+        // only draw if in camera's view
+        if (this.game.camera.isInView(this)) {
+            var ctx = this.game.ctx;
 
-        //debug laser
-        // ctx.save();
-        // ctx.lineWidth = 10;
-        // ctx.strokeStyle = this.color;
-        // ctx.lineCap = "round";
-        // ctx.beginPath();
-        // ctx.moveTo(this.x, this.y);
-        // ctx.lineTo(this.tailX, this.tailY);
-        // ctx.stroke();
-        // ctx.closePath();
-        // ctx.restore();
-        //end debug code
+            //debug laser
+            // ctx.save();
+            // ctx.lineWidth = 10;
+            // ctx.strokeStyle = this.color;
+            // ctx.lineCap = "round";
+            // ctx.beginPath();
+            // ctx.moveTo(this.x, this.y);
+            // ctx.lineTo(this.tailX, this.tailY);
+            // ctx.stroke();
+            // ctx.closePath();
+            // ctx.restore();
+            //end debug code
 
-        ctx.save();
-        //Outer Layer of laser
-        ctx.lineWidth = this.width;
-        ctx.strokeStyle = this.isDeflected ? this.deflectedColer : this.color;
-        ctx.lineCap = "round";
-        ctx.beginPath();
-        ctx.moveTo(this.x, this.y);
-        ctx.lineTo(this.tailX, this.tailY);
-        ctx.stroke();
+            ctx.save();
+            //Outer Layer of laser
+            ctx.lineWidth = this.width;
+            ctx.strokeStyle = this.isDeflected ? this.deflectedColer : this.color;
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            ctx.moveTo(this.x - cameraX, this.y);
+            ctx.lineTo(this.tailX - cameraX, this.tailY);
+            ctx.stroke();
 
-        //inner layer of laser.
-        ctx.lineWidth = this.width / 2;
-        ctx.strokeStyle = this.secondaryColor;
-        ctx.lineCap = "round";
-        ctx.beginPath();
-        ctx.moveTo(this.x, this.y);
-        ctx.lineTo(this.tailX, this.tailY);
-        ctx.stroke();
-        ctx.closePath();
-        ctx.restore();
-        super.draw()
+            //inner layer of laser.
+            ctx.lineWidth = this.width / 2;
+            ctx.strokeStyle = this.secondaryColor;
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            ctx.moveTo(this.x - cameraX, this.y);
+            ctx.lineTo(this.tailX - cameraX, this.tailY);
+            ctx.stroke();
+            ctx.closePath();
+            ctx.restore();
+            super.draw();
+        }
     }
     // isCollidedWithSaber() {
     //     var lightsaber = this.game.Zerlin.lightsaber;
@@ -447,10 +438,16 @@ class DroidLaser extends Entity {
     //     this.angle = this.findAngleRadians(this.x, this.y, this.tailX, this.tailY);
     // }
     isOutsideScreen() {
-        return this.tailX < 0 ||
-                this.tailX > this.game.ctx.canvas.width ||
-                this.tailY < 0 ||
-                this.tailY > this.game.ctx.canvas.height;
+        var camera = this.game.camera;
+        var left = camera.x;
+        var right = camera.x + camera.width;
+        var top = camera.y;
+        var bottom = camera.y + camera.height;
+
+        return this.tailX < left ||
+                this.tailX > right ||
+                this.tailY < top ||
+                this.tailY > bottom;
     }
 
     /**
@@ -458,11 +455,11 @@ class DroidLaser extends Entity {
      * the droid.
      * @param {AbstractDroid} otherDroid the droid to check collision with
      */
-    collideWithDroid(otherDroid) {
-        return collideLineWithCircle(this.x, this.y, this.tailX, this.tailY, otherDroid.boundCircle.x,
-            otherDroid.boundCircle.y, otherDroid.boundCircle.radius);
+    // collideWithDroid(otherDroid) {
+    //     return collideLineWithCircle(this.x, this.y, this.tailX, this.tailY, otherDroid.boundCircle.x,
+    //         otherDroid.boundCircle.y, otherDroid.boundCircle.radius);
         
-    }
+    // }
     /**
      * this method will return the angle of a line in radians 
      */
@@ -479,6 +476,7 @@ class DroidLaser extends Entity {
     findAngleRadians(x1, y1, x2, y2) {
         return Math.atan2(y1 - y2, x1 - x2);
     }
+
 
 }
 
@@ -506,8 +504,11 @@ class DroidExplosion extends Entity {
         }
     }
     draw() {
-        this.animation.drawFrame(this.game.clockTick, this.game.ctx, this.x, this.y);
-        super.draw(this.game.ctx);
+        // only draw if in camera's view
+        if (this.game.camera.isInView(this)) {
+            this.animation.drawFrame(this.game.clockTick, this.game.ctx, this.x - this.game.camera.x, this.y);
+            super.draw(this.game.ctx);
+        }
     }
 }
 

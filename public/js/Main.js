@@ -96,23 +96,23 @@ class AssetManager {
 	    var gameEngine = new GameEngine(AM);
 	    gameEngine.init(ctx);
 
-	    const parallaxBackgroundManager = new ParallaxBackgroundManager(gameEngine); 
-	    parallaxBackgroundManager.addBackgroundImage(
-	        new ParallaxBackground(gameEngine, AM.getAsset('../img/backgroundTrees4.png'), 
-	        10, 0, 0));
-	    parallaxBackgroundManager.addBackgroundImage(
-	        new ParallaxBackground(gameEngine, AM.getAsset('../img/backgroundStars.png'), 
-	        20, 0, 0));
-	    parallaxBackgroundManager.addBackgroundImage(
-	        new ParallaxBackground(gameEngine, AM.getAsset('../img/backgroundTrees3.png'), 
-	        30, 0, 0));
-	    parallaxBackgroundManager.addBackgroundImage(
-	        new ParallaxBackground(gameEngine, AM.getAsset('../img/backgroundTrees2.png'), 
-	        40, 0, 0));
-	    parallaxBackgroundManager.addBackgroundImage(
-	        new ParallaxBackground(gameEngine, AM.getAsset('../img/backgroundTrees1.png'), 
-	        60, 0, 0));
-	    gameEngine.parallaxManager = parallaxBackgroundManager;
+	    // const parallaxBackgroundManager = new ParallaxBackgroundManager(gameEngine); 
+	    // parallaxBackgroundManager.addBackgroundImage(
+	    //     new ParallaxBackground(gameEngine, AM.getAsset('../img/backgroundTrees4.png'), 
+	    //     10, 0, 0));
+	    // parallaxBackgroundManager.addBackgroundImage(
+	    //     new ParallaxBackground(gameEngine, AM.getAsset('../img/backgroundStars.png'), 
+	    //     20, 0, 0));
+	    // parallaxBackgroundManager.addBackgroundImage(
+	    //     new ParallaxBackground(gameEngine, AM.getAsset('../img/backgroundTrees3.png'), 
+	    //     30, 0, 0));
+	    // parallaxBackgroundManager.addBackgroundImage(
+	    //     new ParallaxBackground(gameEngine, AM.getAsset('../img/backgroundTrees2.png'), 
+	    //     40, 0, 0));
+	    // parallaxBackgroundManager.addBackgroundImage(
+	    //     new ParallaxBackground(gameEngine, AM.getAsset('../img/backgroundTrees1.png'), 
+	    //     60, 0, 0));
+	    // gameEngine.parallaxManager = parallaxBackgroundManager;
 	    
 	    // gameEngine.addTile(new Tile(gameEngine, AM.getAsset('../img/forestLeftTile.png'),
 	    // 10, 10, [AM.getAsset('../img/forestLeftTile.png'), 
