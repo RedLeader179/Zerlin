@@ -55,7 +55,7 @@ class Zerlin extends Entity {
         this.lightsaber = new Lightsaber(game, this);
 
         this.boundingbox = new BoundingBox(this.x + (12 * Z_SCALE), this.y + (73 * Z_SCALE), (Z_WIDTH - 29) * Z_SCALE, (Z_HEIGHT - 85) * Z_SCALE);
-        this.drawBox = true;
+        this.drawBox = false;
 
         this.temporaryFloorBoundingBox = new BoundingBox(0, 680, 900, 100); // TODO: remove, switch to platforms
 
