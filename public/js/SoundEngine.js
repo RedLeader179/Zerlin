@@ -25,3 +25,53 @@ var sound = new Howl({
 //     sound.play();
 //   }
 // });
+
+
+/*
+ * Allows entities to not manage their own sounds
+ */
+class SoundEngine {
+
+	constructor(game) {
+		this.game = game;
+		this.soundCache = {};
+		this.prepareSounds();
+
+	}
+
+	loopTrack(track) {
+
+	}
+
+	prepareSounds() {
+
+	}
+
+	playLaserShoot() {
+
+	}
+
+	playLaserDeflected() {
+
+	}
+
+	playLightsaberOn() {
+
+	}
+
+	playLightsaberOff() {
+		
+	}
+
+	playDiedSound() {
+
+	}
+
+	playExplosion1() {
+
+	}
+
+	playSaberSwish() {
+
+	}
+}
