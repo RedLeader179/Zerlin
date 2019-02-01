@@ -24,7 +24,6 @@ class GameEngine {
         this.assetManager = assetManager;
         this.showOutlines = true; //debug bit
         this.otherEntities = [];
-        this.parallaxManager = null;
         this.lasers = [];
         this.droids = [];
         this.tiles = [];
@@ -44,6 +43,7 @@ class GameEngine {
         this.surfaceWidth = this.ctx.canvas.width;
         this.surfaceHeight = this.ctx.canvas.height;
         this.timer = new Timer();
+        this.camera = new Camera(this, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height); // TODO: Change to constant camera dimension to pair up with template
         this.Zerlin = new Zerlin(this);
         this.collisionManager = new CollisionManager(this);
         // TODO: instantiate Parallax manager here (and other managers)
@@ -62,12 +62,10 @@ class GameEngine {
         this.clockTick = this.timer.tick();
         this.update();
         this.draw();
-        // this.moveLeft = null;
-        // this.moveRight = null;
     }
     update() {
-        this.parallaxManager.update();
         this.Zerlin.update();
+        this.camera.update();
         
         for (var i = this.droids.length - 1; i >= 0; i--) {
             this.droids[i].update();
@@ -83,9 +81,6 @@ class GameEngine {
         }
         for (var i = this.tiles.length - 1; i >= 0; i--) {
             this.tiles[i].update();
-            // if (this.tiles[i].removeFromWorld) { // TODO: needed removeFromWorld for tiles?
-            //     this.otherEntities.splice(i, 1);
-            // }
         }
         for (var i = this.otherEntities.length - 1; i >= 0; i--) {
             this.otherEntities[i].update();
@@ -100,7 +95,7 @@ class GameEngine {
     draw() {
         this.ctx.clearRect(0, 0, this.surfaceWidth, this.surfaceHeight);
         this.ctx.save();
-        this.parallaxManager.draw();
+        this.camera.draw();
         this.Zerlin.draw();
         for (var i = 0; i < this.droids.length; i++) {
             this.droids[i].draw(this.ctx);
