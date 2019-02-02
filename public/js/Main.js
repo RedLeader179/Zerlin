@@ -96,34 +96,11 @@ class AssetManager {
 	    var gameEngine = new GameEngine(AM);
 	    gameEngine.init(ctx);
 
-	    // const parallaxBackgroundManager = new ParallaxBackgroundManager(gameEngine); 
-	    // parallaxBackgroundManager.addBackgroundImage(
-	    //     new ParallaxBackground(gameEngine, AM.getAsset('../img/backgroundTrees4.png'), 
-	    //     10, 0, 0));
-	    // parallaxBackgroundManager.addBackgroundImage(
-	    //     new ParallaxBackground(gameEngine, AM.getAsset('../img/backgroundStars.png'), 
-	    //     20, 0, 0));
-	    // parallaxBackgroundManager.addBackgroundImage(
-	    //     new ParallaxBackground(gameEngine, AM.getAsset('../img/backgroundTrees3.png'), 
-	    //     30, 0, 0));
-	    // parallaxBackgroundManager.addBackgroundImage(
-	    //     new ParallaxBackground(gameEngine, AM.getAsset('../img/backgroundTrees2.png'), 
-	    //     40, 0, 0));
-	    // parallaxBackgroundManager.addBackgroundImage(
-	    //     new ParallaxBackground(gameEngine, AM.getAsset('../img/backgroundTrees1.png'), 
-	    //     60, 0, 0));
-	    // gameEngine.parallaxManager = parallaxBackgroundManager;
-	    
-	    // gameEngine.addTile(new Tile(gameEngine, AM.getAsset('../img/forestLeftTile.png'),
-	    // 10, 10, [AM.getAsset('../img/forestLeftTile.png'), 
-	    //          AM.getAsset('../img/forestMiddleTile.png'),
-	    //          AM.getAsset('../img/forestRightTile.png'), '']));
-
-	    // gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 100, 100));
-	    // gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 700, 500));
-	    // gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 800, 310));
-	    // gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 492, 368));
-	    gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 1000, 600));
+		
+		gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 1020, 166));
+		gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 111, 255));
+		gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 610, 220));
+		gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 493, 360));
 
 
 		//for prototype !!!
