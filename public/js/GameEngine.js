@@ -6,8 +6,6 @@ Joshua Atherton, Michael Josten, Steven Golob
 
 var PHI = 1.618;
 
-
-
 window.requestAnimFrame = (function () {
     return window.requestAnimationFrame ||
             window.webkitRequestAnimationFrame ||
@@ -22,7 +20,7 @@ window.requestAnimFrame = (function () {
 class GameEngine {
     constructor(assetManager) {
         this.assetManager = assetManager;
-        this.showOutlines = true; //debug bit
+        this.showOutlines = false; //debug bit
         this.otherEntities = [];
         this.lasers = [];
         this.droids = [];

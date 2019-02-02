@@ -48,8 +48,8 @@ var Z_SLASH_INNER_CENTER_Y = 20;
 var Z_SLASH_START_FRAME = 9;
 var Z_SLASH_END_FRAME = 11;
 
-var Z_WALKING_SPEED = 180;
-var Z_SOMERSAULT_SPEED = 550;
+var Z_WALKING_SPEED = 280;
+var Z_SOMERSAULT_SPEED = 650;
 var FORCE_JUMP_DELTA_Y = -950;
 var JUMP_DELTA_Y = -500;
 var GRAVITATIONAL_ACCELERATION = 1000;
@@ -111,18 +111,18 @@ class Zerlin extends Entity {
 
 		// check adding new maneuver
 		if (!this.isInManeuver()) {
-			if (this.game.keys['KeyC'] && this.direction !== 0 && !this.falling) {
+			if (this.game.keys['KeyS'] && this.direction !== 0 && !this.falling) {
 				this.startSomersault();
 			}
-			else if (this.game.keys['Space'] && this.game.keys['KeyV'] && !this.falling) {
+			else if (this.game.keys['KeyE'] && !this.falling) {
 				this.falling = true;
 				this.deltaY = FORCE_JUMP_DELTA_Y;
 			}
-			else if (this.game.keys['Space'] && !this.falling) {
+			else if (this.game.keys['KeyW'] && !this.falling) {
 				this.falling = true;
 				this.deltaY = JUMP_DELTA_Y;
 			}
-			else if (this.game.keys['KeyG'] && !this.falling) { // TODO: allow for attack in air
+			else if (this.game.keys['Space'] && !this.falling) { // TODO: allow for attack in air
 				this.startSlash(); 
 			}
 		}

@@ -6,6 +6,16 @@ canvas {
     width: auto; /* could specify canvas element width here */
 }
 
+/* center the controls */
+#playerControls {
+    text-align: center;
+    color: #fff
+}
+
+body {
+    background-color: rgb(35, 39, 35);
+}
+
 /* Stylize the buttons */
 
 .container {
