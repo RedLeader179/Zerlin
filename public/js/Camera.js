@@ -52,13 +52,13 @@ class ParallaxBackgroundManager {
         this.parralaxBackgroundLayers = [];
 
 	    this.addBackgroundLayer(
-	        new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundTrees4.png'), 1, camera, 10000));
-	    this.addBackgroundLayer(
-	        new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundStars.png'), 1, camera, 5000));
-	    this.addBackgroundLayer(
-	        new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundTrees3.png'), 1, camera, 2500));
-	    this.addBackgroundLayer(
-	        new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundTrees2.png'), 1, camera, 1200));
+	        new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundTrees4.png'), 1, camera, 5200));
+		this.addBackgroundLayer(
+			new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundTrees3.png'), 1, camera, 2500));
+		this.addBackgroundLayer(
+			new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundStars.png'), 1, camera, 1400));
+		this.addBackgroundLayer(
+			new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundTrees2.png'), 1, camera, 1000));
 	    this.addBackgroundLayer(
 	        new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundTrees1.png'), 1, camera, 600));
     }

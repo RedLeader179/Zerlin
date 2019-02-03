@@ -55,7 +55,7 @@ class AssetManager {
 (function () {
 	var AM = new AssetManager();
 
-	//AM.queueDownload("../img/basic_droid.png");
+	AM.queueDownload("../img/basic_droid.png");
 	AM.queueDownload("../img/Explosion.png");
 
 	AM.queueDownload("../img/Zerlin bobbing walking.png");
@@ -85,9 +85,12 @@ class AssetManager {
 	AM.queueDownload("../img/backgroundTrees4.png");
 	AM.queueDownload("../img/droid-j-row.png");
 
-	AM.queueDownload("../img/forestLeftTile.png"); //tiles are 60x60
-	AM.queueDownload("../img/forestMiddleTile.png");
-	AM.queueDownload("../img/forestRightTile.png");
+	AM.queueDownload("../img/forest_left_tile.png"); //tiles are 60x60
+	AM.queueDownload("../img/forest_center_tile.png");
+	AM.queueDownload("../img/forest_right_tile.png");
+
+	AM.queueDownload("../img/leggy_droid.png");
+
 
 	AM.downloadAll(function () {
 	    var canvas = document.getElementById("gameWorld");
@@ -102,6 +105,18 @@ class AssetManager {
 		gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 610, 220));
 		gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 493, 360));
 		gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 968, 9));
+
+		// //alternative basic droid
+		// let basic_droid = new BasicDroid(gameEngine, AM.getAsset("../img/basic_droid.png"), 420, 89);
+		// // constructor(spriteSheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale) {
+		// let basic_droid_anime = new Animation(AM.getAsset("../img/basic_droid.png"), 30.5, 34, 183, 0.1, 6, true, 1.5);
+		// basic_droid.idleAnimation = basic_droid_anime;
+		// basic_droid.animation = basic_droid.idleAnimation;
+		// gameEngine.addDroid(basic_droid);
+
+		gameEngine.addDroid(new LeggyDroid(gameEngine, AM.getAsset("../img/leggy_droid.png"), 500, 20));
+		gameEngine.addDroid(new LeggyDroid(gameEngine, AM.getAsset("../img/leggy_droid.png"), 300, 40));
+		gameEngine.addDroid(new LeggyDroid(gameEngine, AM.getAsset("../img/leggy_droid.png"), 800, 200));
 
 
 		//for prototype !!!
@@ -119,18 +134,18 @@ class AssetManager {
 			}
 			update() { } 
 			draw() { //code this with a loop to draw whatever length platform the user wants
-				this.ctx.drawImage(this.leftCornerTile, 0, 680);
-				for (let i = 60; i < 1060; i += 60) {
-					this.ctx.drawImage(this.centerTile, i, 680); 
+				this.ctx.drawImage(this.leftCornerTile, 0, 660);
+				for (let i = 100; i < 1000; i += 100) {
+					this.ctx.drawImage(this.centerTile, i, 660); 
 				}   
-				this.ctx.drawImage(this.rightTile, 1060, 680); 
+				this.ctx.drawImage(this.rightTile, 1000, 660); 
 			}
 		}
 		//add the ground tiles
 		gameEngine.addEntity(new Tile(gameEngine,
-			10, 10, [AM.getAsset('../img/forestLeftTile.png'), 
-			AM.getAsset('../img/forestMiddleTile.png'),
-			AM.getAsset('../img/forestRightTile.png'), '']));
+			10, 10, [AM.getAsset('../img/forest_left_tile.png'), 
+			AM.getAsset('../img/forest_center_tile.png'),
+			AM.getAsset('../img/forest_right_tile.png'), '']));
 
 	    gameEngine.start();
 	    console.log("All Done!");

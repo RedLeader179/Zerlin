@@ -31,6 +31,12 @@ var LASER_ZERLIN_MOVEMENT = 2.5;
 
 var EXPLOSION_SCALE = 2;
 
+//Leggy Droid
+var LEGGY_DROID_SHOOT_INTERVAL = 2;
+var LEGGY_DROID_LASER_SPEED = 280; 
+var LEGGY_DROID_LASER_LENGTH = 35;
+var LEGGY_DROID_LASER_WIDTH = 12;
+
 /**
  * This class will serve as the parent for all droid entities
  * and will contain methods and fields that all droids are required to have
@@ -121,8 +127,8 @@ class AbstractDroid extends Entity {
         * BUG: sometimes multiple lasers will hit the droid bounding circle before the next 
         * update is called causeing mutliple explosions to be called on the same droid.
         */
-        this.game.addDroid(new BasicDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"),
-        this.game.camera.x + (this.game.camera.width * Math.random()), -75));
+        // this.game.addDroid(new BasicDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"),
+        // this.game.camera.x + (this.game.camera.width * Math.random()), -75));
     }
     collideWithDroid(ent) {
         return ent !== null && collideCircleWithCircle(this.boundCircle.x, this.boundCircle.y, this.boundCircle.radius,
@@ -203,6 +209,15 @@ class BasicDroid extends AbstractDroid {
         
         
     }
+    /**
+     * Todo: remove this after done testing.
+     */
+    explode() {
+        super.explode()
+        this.game.addDroid(new BasicDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"),
+        this.game.camera.x + (this.game.camera.width * Math.random()), -75));
+
+    }
     shoot(targetX, targetY) {
         var droidLaser = new DroidLaser(this.game, this.x + 20, this.y + 20, BASIC_DROID_LASER_SPEED, 
             targetX, targetY, BASIC_DROID_LASER_LENGTH, BASIC_DROID_LASER_WIDTH);
@@ -271,7 +286,7 @@ class DroidLaser extends Entity {
 
         //Droid Laser Fields
         this.color = "green";
-        this.deflectedColer = "blue";
+        this.deflectedColor = "blue";
         this.secondaryColor = "white";
         this.isDeflected = false; //set to false TODO
 
@@ -351,7 +366,7 @@ class DroidLaser extends Entity {
             ctx.save();
             //Outer Layer of laser
             ctx.lineWidth = this.width;
-            ctx.strokeStyle = this.isDeflected ? this.deflectedColer : this.color;
+            ctx.strokeStyle = this.isDeflected ? this.deflectedColor : this.color;
             ctx.lineCap = "round";
             ctx.beginPath();
             ctx.moveTo(this.x - cameraX, this.y);
@@ -510,6 +525,149 @@ class DroidExplosion extends Entity {
             this.animation.drawFrame(this.game.clockTick, this.game.ctx, this.x - this.game.camera.x, this.y);
             super.draw(this.game.ctx);
         }
+    }
+}
+
+
+/*
+* Long legged droid that will shoot 3 scattered burst lasers every interval 
+*/
+class LeggyDroid extends AbstractDroid {
+    constructor(game, spritesheet, startX, startY) {
+        //super(gameEngine, x, y, deltaX, deltaY)
+        //super(game, startX, startY, BASIC_DROID_X_MOVEMENT_SPEED, 0);
+        super(game, startX, startY, 0, 0); //debug
+
+        /* animation fields */
+        //Animation(spritesheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale)
+        this.idleAnimation = new Animation(spritesheet, 315, 620, 1260, 0.2, 4, true, .2);
+        this.animation = this.idleAnimation;
+
+        /* bounding circle fields */
+        this.radius = ((this.animation.frameWidth + this.animation.frameHeight) / 4) * this.animation.scale;
+        this.boundCircle = {radius: this.radius, 
+            x: this.x + (this.animation.frameWidth * this.animation.scale) / 2,
+            y: this.y + (this.animation.frameHeight * this.animation.scale) / 2};
+
+        /* shooting fields */
+        this.fire = false;
+        this.secondsBeforeFire = BASIC_DROID_SHOOT_INTERVAL;
+
+        /* movement fields */
+        var targetX = (this.game.surfaceWidth / 2) + BASIC_DROID_ORBITAL_X_OFFSET;
+        var targetY = (this.game.surfaceHeight / 2) + BASIC_DROID_ORBITAL_Y_OFFSET;
+        this.targetOrbitalPoint = {x: targetX, y: BASIC_DROID_ORBITAL_HEIGHT};
+        
+    }
+    /* 
+    * every update, the droid will move around zerlin entity about 50 to 100 pixels above him.
+    * The droid will shoot every interval at the main character (as of now, at the mouse)
+    * The droid will set removeFromWorld to true when it collides with lightsaber
+    */
+    update() {
+        //update coordinates so the droid will orbit the center of the canvas
+
+        /* droid movement */
+        this.targetOrbitalPoint.x = this.game.Zerlin.x;
+        this.calcMovement(this.targetOrbitalPoint); //un comment after debug
+
+        /* bounding circle movement */
+        this.boundCircle.x = this.x + (this.animation.frameWidth * this.animation.scale) / 2;
+        this.boundCircle.y = this.y + (this.animation.frameHeight * this.animation.scale) / 2;
+
+        /* droid shooting */
+        this.secondsBeforeFire -= this.game.clockTick;
+        //will shoot at every interval
+        if (this.secondsBeforeFire <= 0 && (!this.fire)) {
+            this.secondsBeforeFire = LEGGY_DROID_SHOOT_INTERVAL;
+            this.fire = true;
+            //shoot at specific target
+            //this.shoot(this.game.Zerlin.x, this.game.Zerlin.y);
+
+            //shoot randomly in target direction
+            this.shootRandom(this.game.Zerlin.x, 
+                this.game.Zerlin.y, 
+                BASIC_DROID_MAX_RANDOM_TARGET_WIDTH,
+                BASIC_DROID_MAX_RANDOM_TARGET_HEIGHT);
+            this.shoot(this.game.Zerlin.x + 350, 
+                this.game.Zerlin.y);
+            this.shoot(this.game.Zerlin.x + -350, 
+                this.game.Zerlin.y);
+            
+        }
+         
+        super.update();
+    }
+    /**
+     * Todo: remove this after done testing.
+     */
+    explode() {
+        super.explode()
+        this.game.addDroid(new LeggyDroid(this.game, this.game.assetManager.getAsset("../img/leggy_droid.png"),
+        this.game.camera.x + (this.game.camera.width * Math.random()), -75));
+
+    }
+    draw() {
+        super.draw();
+        
+    }
+    shoot(targetX, targetY) {
+        var droidLaser = new DroidLaser(this.game, this.x + 20, this.y + 50, LEGGY_DROID_LASER_SPEED, 
+            targetX, targetY, LEGGY_DROID_LASER_LENGTH, LEGGY_DROID_LASER_WIDTH);
+        droidLaser.color = "orange";
+        droidLaser.deflectedColor = "orange";
+        droidLaser.secondaryColor = "red";
+        this.game.addLaser(droidLaser);
+        //TODO - play shooting sound
+        //console.log("shot laser at X: " + targetX + " Y: " + targetY);
+        //set after droid is done firing
+        this.fire = false;
+    }
+    /**
+     * Method that will shoot a laser randomly in an area from target point
+     * to target point + max argument
+     */
+    shootRandom(targetX, targetY, maxWidth, maxHeight) {
+        var randTargetX = targetX + (maxWidth * Math.random());
+        var randTargetY = targetY + ((-maxHeight) * Math.random());
+        this.shoot(randTargetX, randTargetY);
+    }
+    /*
+     * calculate movement so that it will try to fly around the location of the 
+     * target.
+     */
+    calcMovement(target) {
+        //if the droid is to the left of target point, then increase the deltaX
+        //by the x velocity
+        if (this.x < target.x) {
+            if (this.deltaX < BASIC_DROID_X_MOVEMENT_SPEED)
+                this.deltaX += BASIC_DROID_X_VELOCITY;
+            
+        }
+        
+        //if the droid is to the right of target point, then decrease the deltaX
+        //by the x velocity
+        else if (this.x > target.x) {
+            if (this.deltaX >= (-BASIC_DROID_X_MOVEMENT_SPEED))
+                this.deltaX -= BASIC_DROID_X_VELOCITY;
+        }
+
+        //if droid is above the target point, then increase deltaY(down)
+        if (this.y < target.y) {
+            if (this.deltaY <= BASIC_DROID_Y_MOVEMENT_SPEED)
+                this.deltaY += BASIC_DROID_Y_VELOCITY;
+        }
+        //if the droid is below the target point, then decrease the deltaY(up)
+        else if (this.y >= target.y) {
+            if (this.deltaY >= (-BASIC_DROID_Y_MOVEMENT_SPEED)) 
+                this.deltaY -= BASIC_DROID_Y_VELOCITY;
+        }      
+
+        //after calculating change in x and y then increment x and y by delta x and delta y
+        // this.x += this.game.clockTick * (Math.random() * this.deltaX);
+        // this.y += this.game.clockTick * (Math.random() * this.deltaY);
+        this.x += this.game.clockTick * this.deltaX;
+        this.y += this.game.clockTick * this.deltaY;    
     }
 }
 
