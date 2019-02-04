@@ -26,8 +26,61 @@ class CollisionManager {
 		this.ZerlinOnPlatform();
 	}
 
+	/* On droids colliding, swap deltaX and deltaY */
 	droidOnDroid() {
+		//check collision with other droids.
+		//can optimize by not checking every single droid with each other twice.
+        
+		// for (var i = this.game.droids.length - 1; i >= 0; i--) {
+		// 	var droid1 = this.game.droids[i];
+		// 	for (var j = this.game.droids.length - 1; j >= 0; j--) {
+		// 		var droid2 = this.game.droids[j];
+		// 		if(droid1 != null && droid2 != null && droid1 != droid2 
+		// 			&& collideCircleWithCircle(droid1.boundCircle.x, droid1.boundCircle.y, droid1.boundCircle.radius,
+		// 				droid2.boundCircle.x, droid2.boundCircle.y, droid2.boundCircle.radius)) {
 
+		// 			//handle collision of droids with droids. 
+		// 			//swap velocities, bounce effect.
+		// 			/*
+		// 			* BUG ALERT:
+		// 			* kinda strange, has the characteristics that we want as in that
+		// 			* it only bounces some times, but it is a bug/feature in this code that 
+		// 			* only makes them bounce some times instead of having the 
+		// 			* chance they can bounce being bound to a constant
+		// 			*/
+		// 			var tempX = droid1.deltaX;
+		// 			var tempY = droid1.deltaY;
+		// 			droid1.deltaX = droid2.deltaX;
+		// 			droid1.deltaY = droid2.deltaY;
+		// 			droid2.deltaX = tempX;
+		// 			droid2.deltaY = tempY;
+
+					//tag code modified for droids, doesn't work
+					// var temp = {deltaX: droid1.deltaX, deltaY: droid1.deltaY};
+					// var dist = distance(droid1, droid2);
+					// var delta = droid1.boundCircle.radius + droid2.boundCircle.radius - dist;
+					// var difX = (droid1.boundCircle.x - droid2.boundCircle.x)/dist;
+					// var difY = (droid1.boundCircle.y - droid2.boundCircle.y)/dist;
+
+					// droid1.x += difX * delta / 2;
+					// droid1.y += difY * delta / 2;
+					// droid2.x -= difX * delta / 2;
+					// droid2.y -= difY * delta / 2;
+
+					// droid1.deltaX = droid2.deltaX;
+					// droid1.deltaY = droid2.deltaY;
+					// droid2.deltaX = temp.deltaX;
+					// droid2.deltaY = temp.deltaY;
+					// droid1.x += droid1.deltaX * this.game.clockTick;
+					// droid1.y += droid1.deltaY * this.game.clockTick;
+					// droid2.x += droid2.deltaX * this.game.clockTick;
+					// droid2.y += droid2.deltaY * this.game.clockTick;
+
+		// 		}
+		// 	}
+			
+		// }
+		
 	}
 
 	droidOnSaber() {
