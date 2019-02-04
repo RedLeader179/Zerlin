@@ -88,6 +88,7 @@ class AssetManager {
 	AM.queueDownload("../img/forest_left_tile.png"); //tiles are 60x60
 	AM.queueDownload("../img/forest_center_tile.png");
 	AM.queueDownload("../img/forest_right_tile.png");
+	AM.queueDownload("../img/forest_both_rounded_tile.png");
 
 	AM.queueDownload("../img/leggy_droid.png");
 

@@ -45,7 +45,8 @@ class GameEngine {
         this.level = new Level(this, levelOne, {
             centerTile: this.assetManager.getAsset('../img/forest_center_tile.png'), 
             leftTile: this.assetManager.getAsset('../img/forest_left_tile.png'), 
-            rightTile: this.assetManager.getAsset('../img/forest_right_tile.png')
+            rightTile: this.assetManager.getAsset('../img/forest_right_tile.png'),
+            leftRightTile: this.assetManager.getAsset('../img/forest_both_rounded_tile.png')
         });
         this.Zerlin = new Zerlin(this);
         this.collisionManager = new CollisionManager(this);

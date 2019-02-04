@@ -42,7 +42,10 @@ class Level {
             for (let j = 0; j < this.levelLayout[i].length; j++) {
                 if (this.levelLayout[i][j] === '-') { // tile
                     var image = this.tileImages.centerTile;
-                    if (this.levelLayout[i][j - 1] !== '-') {
+                    if (this.levelLayout[i][j - 1] !== '-' && this.levelLayout[i][j + 1] !== '-') {
+                        image = this.tileImages.leftRightTile;
+                    }
+                    else if (this.levelLayout[i][j - 1] !== '-') {
                         image = this.tileImages.leftTile;
                     } else if (this.levelLayout[i][j + 1] !== '-') {
                         image = this.tileImages.rightTile;
