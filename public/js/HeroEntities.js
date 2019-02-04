@@ -10,7 +10,7 @@ var PHI = 1.618;
 
 var Z_SCALE = .6;
 
-var DRAW_COLLISION_BOUNDRIES = false;
+var DRAW_COLLISION_BOUNDRIES = true;
 
 var Z_WIDTH = 114;
 var Z_HEIGHT = 306;
@@ -48,8 +48,8 @@ var Z_SLASH_INNER_CENTER_Y = 20;
 var Z_SLASH_START_FRAME = 9;
 var Z_SLASH_END_FRAME = 11;
 
-var Z_WALKING_SPEED = 280;
-var Z_SOMERSAULT_SPEED = 650;
+var Z_WALKING_SPEED = 150;
+var Z_SOMERSAULT_SPEED = 400;
 var FORCE_JUMP_DELTA_Y = -950;
 var JUMP_DELTA_Y = -500;
 var GRAVITATIONAL_ACCELERATION = 1000;
@@ -69,10 +69,6 @@ class Zerlin extends Entity {
 		this.hits = 0;
 		this.faceRight();
 		this.lightsaber = new Lightsaber(game, this);
-		
-
-		this.temporaryFloorBoundingBox = new BoundingBox(0, 660, 10000, 100); // TODO: remove, switch to platforms
-
 		this.createAnimations();
 	}
 
@@ -226,7 +222,6 @@ class Zerlin extends Entity {
 		if (DRAW_COLLISION_BOUNDRIES) {
 			this.ctx.strokeStyle = "black";
 			this.ctx.strokeRect(this.boundingbox.x - this.game.camera.x, this.boundingbox.y, this.boundingbox.width, this.boundingbox.height);
-			this.ctx.strokeRect(this.temporaryFloorBoundingBox.x - this.game.camera.x, this.temporaryFloorBoundingBox.y, this.temporaryFloorBoundingBox.width, this.temporaryFloorBoundingBox.height);
 			if (this.slashing && this.slashZone.active) {
 				this.ctx.beginPath();
 				this.ctx.arc(this.slashZone.outerCircle.x - this.game.camera.x, this.slashZone.outerCircle.y, this.slashZone.outerCircle.radius, 0, Math.PI * 2);
@@ -238,20 +233,23 @@ class Zerlin extends Entity {
 
 	}
 
-	// updateXandY() {
-	//     if (this.somersaulting) {
+	setXY(x, y) {
+		this.x = x;
+		this.y = y;
+		// update boundingBox
+		if (this.facingRight) {
+			this.faceRight(); 
+		} else {
+			this.faceLeft();
+		}
+	}
 
-	//     } 
-	//     else if (this.slashing) {
-
-	//     }
-	//     else if (this.falling) {
-
-	//     }
-	//     else if (this.facingRight) {
-
-	//     }
-	// }
+	isTileBelow(tile) {
+		return (this.boundingbox.left < tile.boundingBox.right)
+				&& (this.boundingbox.right > tile.boundingBox.left)
+				&& (this.boundingbox.bottom + 10 > tile.boundingBox.top) 
+				&& (this.boundingbox.bottom - 10 < tile.boundingBox.top);
+	}
 
 	isInManeuver() {
 		return this.somersaulting || this.slashing;
@@ -281,13 +279,6 @@ class Zerlin extends Entity {
 		this.somersaulting = false;
 		this.lightsaber.hidden = false;
 		
-		// // reposition Zerlin (x & y)
-		// if (this.facingRight) {
-		// 	this.faceRight();
-		// } else {
-		// 	this.faceLeft();
-		// }
-		// this.y = TODO: set according to platform ??
 	}
 
 	startSlash() {
@@ -317,35 +308,8 @@ class Zerlin extends Entity {
 		this.animation.elapsedTime = 0;
 		this.slashing = false;
 		this.lightsaber.hidden = false;
-
-		// if (this.facingRight) {
-		// 	this.faceRight();
-		// } else {
-		// 	this.faceLeft();
-		// }
-		// this.y = TODO: set according to platform ???
 	}
 
-	// handleCollisions() {
-	//     if (this.boundingbox.collide(this.temporaryFloorBoundingBox) && this.lastBottom < this.temporaryFloorBoundingBox.top) {
-	//         console.log("landed");
-	//         this.falling = false;
-	//         this.deltaY = 0;
-	//         this.y = this.temporaryFloorBoundingBox.top - (Z_HEIGHT - Z_FEET_ABOVE_FRAME) * Z_SCALE;
-	//     }
-	//     for (var i = 0; i < this.game.lasers.length; i++) {
-	//         var laser = this.game.lasers[i];
-	//         if ( !laser.isDeflected &&
-	//             laser.x > this.boundingbox.left &&
-	//             laser.x < this.boundingbox.right &&
-	//             laser.y > this.boundingbox.top &&
-	//             laser.y < this.boundingbox.bottom) {
-	//             laser.removeFromWorld = true;
-	//             this.hits++;
-	//             console.log(this.hits);
-	//         }
-	//     }
-	// }
 
 	// functions for updating the animation and sprite being used
 
@@ -513,14 +477,6 @@ class Lightsaber extends Entity {
 		this.setUpSaberImages();
 		this.faceRightUpSaber();
 		this.updateCollisionLine();
-
-
-
-		// this.bladeCollar = { x: 500, y: 200};
-		// this.bladeTip = { x: 200, y: 500};
-
-		// for debugging
-
 	}
 
 	update() {
