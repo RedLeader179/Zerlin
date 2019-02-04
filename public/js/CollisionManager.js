@@ -120,11 +120,17 @@ class CollisionManager {
 
 	ZerlinOnEdgeOfMap() { // TODO: keeps zerlin from falling off edge of map, but do we want to allow that for daring players?
 		var zerlin = this.game.Zerlin;
-		if (zerlin.x < EDGE_OF_MAP_BUFFER) {
+		if (zerlin.y > 2 * this.game.camera.height) {
+			// game over
+			console.log("Game over");
+			this.game.gameOver = true;
+		}
+		else if (zerlin.x < EDGE_OF_MAP_BUFFER) {
 			zerlin.setXY(EDGE_OF_MAP_BUFFER, zerlin.y);
 		} else if (zerlin.x > this.game.level.length - EDGE_OF_MAP_BUFFER) {
 			zerlin.setXY(this.game.level.length - EDGE_OF_MAP_BUFFER, zerlin.y);
 		}
+
 	}
 
 

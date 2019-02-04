@@ -6,12 +6,12 @@ Joshua Atherton, Michael Josten, Steven Golob
 
 
 /*
-/ = left tile
-\ = right tile
-- = center tile
-~ = pit tile
-  = no tile
-* = end of line //or use newline char??
+Assets:
+
+-  =  tile
+d  =  basic droid
+s  =  scatter shot droid
+
 */
 
 var DRAW_BOXES = false;
@@ -121,7 +121,7 @@ const levelOne = [
 '             -     d             -',
 '             --                   ',
 '  -             ---               ',
-'     --         --                ',
+'     --         --          d     ',
 '   --          -          -       ',
 '-------- -- ----   ---        ----'
 ]

@@ -110,6 +110,13 @@ class GameEngine {
             this.otherEntities[i].draw(this.ctx);
         }
 
+        if (this.gameOver) {
+            this.ctx.textAlign = 'center';
+            this.ctx.font = '70px serif';
+            this.ctx.fillText('GAME OVER', this.camera.width / 2, this.camera.height / 2);
+        }
+
+
         this.ctx.restore();
     }
     addEntity(entity) {
