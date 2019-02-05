@@ -37,6 +37,12 @@ var LEGGY_DROID_LASER_SPEED = 280;
 var LEGGY_DROID_LASER_LENGTH = 35;
 var LEGGY_DROID_LASER_WIDTH = 12;
 
+
+//Beam Droid
+var BEAM_DROID_SHOOT_INTERVAL = 6;
+var BEAM_DROID_SHOOT_DURATION = 2;
+var BEAM_DROID_LASER_WIDTH = 12;
+
 /**
  * This class will serve as the parent for all droid entities
  * and will contain methods and fields that all droids are required to have
@@ -671,4 +677,182 @@ class LeggyDroid extends AbstractDroid {
     }
 }
 
+class BeamDroid extends AbstractDroid {
+
+    constructor(game, spritesheet, startX, startY) {
+        //super(gameEngine, x, y, deltaX, deltaY)
+        //super(game, startX, startY, BASIC_DROID_X_MOVEMENT_SPEED, 0);
+        super(game, startX, startY, 0, 0); //debug
+
+        /* animation fields */
+        //Animation(spritesheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale)
+        this.idleAnimation = new Animation(spritesheet, 100, 100, 1400, 0.1, 14, true, .5);
+        this.animation = this.idleAnimation;
+        this.beamAngle = 0;
+
+        /* bounding circle fields */
+        this.radius = (this.animation.frameWidth / 2) * this.animation.scale;
+        this.boundCircle = {radius: this.radius, 
+            x: this.x + (this.animation.frameWidth * this.animation.scale) / 2,
+            y: this.y + (this.animation.frameHeight * this.animation.scale) / 2};
+
+        /* shooting fields */
+        this.shooting = false;
+        this.secondsBeforeFire = BEAM_DROID_SHOOT_INTERVAL;
+
+        /* movement fields */
+        var targetX = (this.game.surfaceWidth / 2) + BASIC_DROID_ORBITAL_X_OFFSET;
+        var targetY = (this.game.surfaceHeight / 2) + BASIC_DROID_ORBITAL_Y_OFFSET;
+        this.targetOrbitalPoint = {x: targetX, y: BASIC_DROID_ORBITAL_HEIGHT};
+        
+    }
+    /* 
+    * every update, the basic droid will move around zerlin entity about 50 to 100 pixels above him.
+    * The droid will shoot every interval at the main character (as of now, at the mouse)
+    * The droid will set removeFromWorld to true when it collides with lightsaber
+    */
+    update() {
+        //update coordinates so the droid will orbit the center of the canvas
+
+        /* droid movement */
+        this.targetOrbitalPoint.x = this.game.Zerlin.x;
+        this.calcMovement(this.targetOrbitalPoint); //un comment after debug
+
+        /* bounding circle movement */
+        this.boundCircle.x = this.x + (this.animation.frameWidth * this.animation.scale) / 2;
+        this.boundCircle.y = this.y + (this.animation.frameHeight * this.animation.scale) / 2;
+
+        /* droid shooting */
+        this.secondsBeforeFire -= this.game.clockTick;
+        //will shoot at every interval
+        if (this.secondsBeforeFire <= 0 && !this.shooting) {
+            this.shoot();
+        }
+
+        if (this.shooting) {
+            this.setBeamAngle();
+            this.shootingTime -= this.game.clockTick;
+            if (this.shootingTime <= 0) {
+                this.shooting = false;
+            }
+        }
+        
+        super.update();
+
+        if (this.beam != null) {
+            this.beam.update();
+        }
+    }
+    draw() {
+        super.draw();   
+        if (this.beam != null) {
+            this.beam.draw();
+        }
+    }
+    setBeamAngle() {
+
+    }
+    /**
+     * Todo: remove this after done testing.
+     */
+    explode() {
+        super.explode()
+        this.game.addDroid(new BasicDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"),
+        this.game.camera.x + (this.game.camera.width * Math.random()), -75));
+
+    }
+    shoot() {
+        this.game.beams.push(new Beam(this));
+        this.secondsBeforeFire = BEAM_DROID_SHOOT_INTERVAL;
+        this.shooting = true;
+        this.shootingTime = BEAM_DROID_SHOOT_DURATION;
+    }
+
+    /*
+     * calculate movement so that it will try to fly around the location of the 
+     * target.
+     */
+    calcMovement(target) {
+        //if the droid is to the left of target point, then increase the deltaX
+        //by the x velocity
+        if (this.x < target.x) {
+            if (this.deltaX < BASIC_DROID_X_MOVEMENT_SPEED)
+                this.deltaX += BASIC_DROID_X_VELOCITY;
+        }
+    
+        //if the droid is to the right of target point, then decrease the deltaX
+        //by the x velocity
+        else if (this.x > target.x) {
+            if (this.deltaX >= (-BASIC_DROID_X_MOVEMENT_SPEED))
+                this.deltaX -= BASIC_DROID_X_VELOCITY;
+        }
+
+        //if droid is above the target point, then increase deltaY(down)
+        if (this.y < target.y) {
+            if (this.deltaY <= BASIC_DROID_Y_MOVEMENT_SPEED)
+                this.deltaY += BASIC_DROID_Y_VELOCITY;
+        }
+        //if the droid is below the target point, then decrease the deltaY(up)
+        else if (this.y >= target.y) {
+            if (this.deltaY >= (-BASIC_DROID_Y_MOVEMENT_SPEED)) 
+                this.deltaY -= BASIC_DROID_Y_VELOCITY;
+        }      
+
+        //after calculating change in x and y then increment x and y by delta x and delta y
+        // this.x += this.game.clockTick * (Math.random() * this.deltaX);
+        // this.y += this.game.clockTick * (Math.random() * this.deltaY);
+        this.x += this.game.clockTick * this.deltaX;
+        this.y += this.game.clockTick * this.deltaY;
+        
+        
+    }
+}
+
+class Beam extends entity {
+    constructor(shootingDroid) {
+        this.game = shootingDroid.game;
+        this.shootingDroid = shootingDroid;
+        this.segments = [];
+        var segment1 = {x: shootingDroid.boundCircle.x, y: shootingDroid.boundCircle.y, angle: 0};
+        this.segments.push(segment1);
+    }
+
+    update() {
+        this.segments[0].start.x = this.shootingDroid.boundCircle.x;
+        this.segments[0].start.y = this.shootingDroid.boundCircle.y;
+        this.angle = this.shootingDroid.beamAngle;
+
+        // collision manager detects end of beam and adds new ones of necessary.
+    }
+
+    draw() {
+        var cameraX = this.game.camera.x;
+        // only draw if in camera's view
+        if (this.game.camera.isInView(this, this.length, this.length)) {
+            var ctx = this.game.ctx;
+
+            ctx.save();
+            //Outer Layer of laser
+            ctx.lineWidth = this.width;
+            ctx.strokeStyle = this.isDeflected ? this.deflectedColor : this.color;
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            ctx.moveTo(this.x - cameraX, this.y);
+            ctx.lineTo(this.tailX - cameraX, this.tailY);
+            ctx.stroke();
+
+            //inner layer of laser.
+            ctx.lineWidth = this.width / 2;
+            ctx.strokeStyle = this.secondaryColor;
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            ctx.moveTo(this.x - cameraX, this.y);
+            ctx.lineTo(this.tailX - cameraX, this.tailY);
+            ctx.stroke();
+            ctx.closePath();
+            ctx.restore();
+            super.draw();
+        } 
+    }
+}
 

@@ -23,6 +23,7 @@ class GameEngine {
         this.showOutlines = false; //debug bit
         this.otherEntities = [];
         this.lasers = [];
+        this.beams = [];
         this.droids = [];
         this.tiles = [];
         this.ctx = null;
@@ -77,6 +78,12 @@ class GameEngine {
                 this.lasers.splice(i, 1);
             }
         }
+        for (var i = this.beams.length - 1; i >= 0; i--) {
+            this.beams[i].update();
+            if (this.beams[i].removeFromWorld) {
+                this.beams.splice(i, 1);
+            }
+        }
         for (var i = this.tiles.length - 1; i >= 0; i--) {
             this.tiles[i].update();
         }
@@ -100,6 +107,9 @@ class GameEngine {
         }
         for (var i = 0; i < this.lasers.length; i++) {
             this.lasers[i].draw(this.ctx);
+        }
+        for (var i = 0; i < this.beams.length; i++) {
+            this.beams[i].draw(this.ctx);
         }
         for (var i = 0; i < this.tiles.length; i++) {
             this.tiles[i].draw(this.ctx);
