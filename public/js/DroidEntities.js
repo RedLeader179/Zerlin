@@ -12,8 +12,8 @@ var DROID_ZERLIN_MOVEMENT = 2.5; //amount a droid will move when left or right k
 var BASIC_DROID_SHOOT_INTERVAL = .5;
 var BASIC_DROID_X_MOVEMENT_SPEED = 150;
 var BASIC_DROID_Y_MOVEMENT_SPEED = 100;
-var BASIC_DROID_X_VELOCITY = 1;
-var BASIC_DROID_Y_VELOCITY = 1;
+var BASIC_DROID_X_ACCELERATION = 60;
+var BASIC_DROID_Y_ACCELERATION = 60;
 var BASIC_DROID_ORBITAL_X_OFFSET = 200;
 var BASIC_DROID_ORBITAL_Y_OFFSET = -200;
 var BASIC_DROID_ORBITAL_HEIGHT = 300; // just to make testing easier
@@ -231,36 +231,36 @@ class BasicDroid extends AbstractDroid {
             //if the droid is moving right, then increase x velocity
             if (this.deltaX >= 0) {
                 if (this.deltaX < BASIC_DROID_X_MOVEMENT_SPEED)
-                    this.deltaX += BASIC_DROID_X_VELOCITY;
+                    this.deltaX += BASIC_DROID_X_ACCELERATION * this.game.clockTick;
             }
             //if the droid is moving left, then decrease x velocity
             if (this.deltaX < 0) {
                 if (this.deltaX >= (-BASIC_DROID_X_MOVEMENT_SPEED))
-                    this.deltaX -= BASIC_DROID_X_VELOCITY;
+                    this.deltaX -= BASIC_DROID_X_ACCELERATION * this.game.clockTick;
             }
         }
             
         //if the droid is to the left of targetLeft, then increase X velocity
         if (this.x < targetLeft.x) {
             if (this.deltaX < BASIC_DROID_X_MOVEMENT_SPEED)
-                this.deltaX += BASIC_DROID_X_VELOCITY;
+                this.deltaX += BASIC_DROID_X_ACCELERATION * this.game.clockTick;
         }
         //if the droid is to the right of targetRight, then decrease X velocity
         if (this.x > targetRight.x) {
             if (this.deltaX >= (-BASIC_DROID_X_MOVEMENT_SPEED))
-                this.deltaX -= BASIC_DROID_X_VELOCITY;
+                this.deltaX -= BASIC_DROID_X_ACCELERATION * this.game.clockTick;
         }
         
 
         //if droid is above the target point, then increase deltaY(down)
         if (this.y < targetRight.y) {
             if (this.deltaY <= BASIC_DROID_Y_MOVEMENT_SPEED)
-                this.deltaY += BASIC_DROID_Y_VELOCITY;
+                this.deltaY += BASIC_DROID_Y_ACCELERATION * this.game.clockTick;
         }
         //if the droid is below the target point, then decrease the deltaY(up)
         else if (this.y >= targetRight.y) {
             if (this.deltaY >= (-BASIC_DROID_Y_MOVEMENT_SPEED)) 
-                this.deltaY -= BASIC_DROID_Y_VELOCITY;
+                this.deltaY -= BASIC_DROID_Y_ACCELERATION * this.game.clockTick;
         }      
 
         //after calculating change in x and y then increment x and y by delta x and delta y
@@ -611,7 +611,7 @@ class LeggyDroid extends AbstractDroid {
         //by the x velocity
         if (this.x < target.x) {
             if (this.deltaX < BASIC_DROID_X_MOVEMENT_SPEED)
-                this.deltaX += BASIC_DROID_X_VELOCITY;
+                this.deltaX += BASIC_DROID_X_ACCELERATION * this.game.clockTick;
             
         }
         
@@ -619,18 +619,18 @@ class LeggyDroid extends AbstractDroid {
         //by the x velocity
         else if (this.x > target.x) {
             if (this.deltaX >= (-BASIC_DROID_X_MOVEMENT_SPEED))
-                this.deltaX -= BASIC_DROID_X_VELOCITY;
+                this.deltaX -= BASIC_DROID_X_ACCELERATION * this.game.clockTick;
         }
 
         //if droid is above the target point, then increase deltaY(down)
         if (this.y < target.y) {
             if (this.deltaY <= BASIC_DROID_Y_MOVEMENT_SPEED)
-                this.deltaY += BASIC_DROID_Y_VELOCITY;
+                this.deltaY += BASIC_DROID_Y_ACCELERATION * this.game.clockTick;
         }
         //if the droid is below the target point, then decrease the deltaY(up)
         else if (this.y >= target.y) {
             if (this.deltaY >= (-BASIC_DROID_Y_MOVEMENT_SPEED)) 
-                this.deltaY -= BASIC_DROID_Y_VELOCITY;
+                this.deltaY -= BASIC_DROID_Y_ACCELERATION * this.game.clockTick;
         }      
 
         //after calculating change in x and y then increment x and y by delta x and delta y
