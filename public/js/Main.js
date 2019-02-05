@@ -88,6 +88,7 @@ class AssetManager {
 	AM.queueDownload("../img/forest_left_tile.png"); //tiles are 60x60
 	AM.queueDownload("../img/forest_center_tile.png");
 	AM.queueDownload("../img/forest_right_tile.png");
+	AM.queueDownload("../img/forest_both_rounded_tile.png");
 
 	AM.queueDownload("../img/leggy_droid.png");
 
@@ -100,11 +101,11 @@ class AssetManager {
 	    gameEngine.init(ctx);
 
 
-		gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 1020, 166));
-		gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 111, 255));
-		gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 610, 220));
-		gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 493, 360));
-		gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 968, 9));
+		// gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 1020, 166));
+		// gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 111, 255));
+		// gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 610, 220));
+		// gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 493, 360));
+		// gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 968, 9));
 
 		// //alternative basic droid
 		// let basic_droid = new BasicDroid(gameEngine, AM.getAsset("../img/basic_droid.png"), 420, 89);
@@ -114,38 +115,10 @@ class AssetManager {
 		// basic_droid.animation = basic_droid.idleAnimation;
 		// gameEngine.addDroid(basic_droid);
 
-		gameEngine.addDroid(new LeggyDroid(gameEngine, AM.getAsset("../img/leggy_droid.png"), 500, 20));
-		gameEngine.addDroid(new LeggyDroid(gameEngine, AM.getAsset("../img/leggy_droid.png"), 300, 40));
-		gameEngine.addDroid(new LeggyDroid(gameEngine, AM.getAsset("../img/leggy_droid.png"), 800, 200));
+		// gameEngine.addDroid(new LeggyDroid(gameEngine, AM.getAsset("../img/leggy_droid.png"), 500, 20));
+		// gameEngine.addDroid(new LeggyDroid(gameEngine, AM.getAsset("../img/leggy_droid.png"), 300, 40));
+		// gameEngine.addDroid(new LeggyDroid(gameEngine, AM.getAsset("../img/leggy_droid.png"), 800, 200));
 
-
-		//for prototype !!!
-		// gameEngine.addZerlin(new Zerlin(gameEngine, AM));
-		//draw a tile on the bottom of the screen
-		//Draw a tile of given size.
-		class Tile extends Entity{
-			constructor(game, startX, startY, tileArray) {
-				super(game, null, startX, startY, 0, 0);
-				this.leftCornerTile = tileArray[0];
-				this.centerTile = tileArray[1];
-				this.rightTile = tileArray[2];
-
-				this.ctx = game.ctx;
-			}
-			update() { } 
-			draw() { //code this with a loop to draw whatever length platform the user wants
-				this.ctx.drawImage(this.leftCornerTile, 0, 660);
-				for (let i = 100; i < 1000; i += 100) {
-					this.ctx.drawImage(this.centerTile, i, 660); 
-				}   
-				this.ctx.drawImage(this.rightTile, 1000, 660); 
-			}
-		}
-		//add the ground tiles
-		gameEngine.addEntity(new Tile(gameEngine,
-			10, 10, [AM.getAsset('../img/forest_left_tile.png'), 
-			AM.getAsset('../img/forest_center_tile.png'),
-			AM.getAsset('../img/forest_right_tile.png'), '']));
 
 	    gameEngine.start();
 	    console.log("All Done!");

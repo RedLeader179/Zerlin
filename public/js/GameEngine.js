@@ -43,6 +43,12 @@ class GameEngine {
         this.surfaceHeight = this.ctx.canvas.height;
         this.timer = new Timer();
         this.camera = new Camera(this, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height); // TODO: Change to constant camera dimension to pair up with template
+        this.level = new Level(this, levelOne, {
+            centerTile: this.assetManager.getAsset('../img/forest_center_tile.png'), 
+            leftTile: this.assetManager.getAsset('../img/forest_left_tile.png'), 
+            rightTile: this.assetManager.getAsset('../img/forest_right_tile.png'),
+            leftRightTile: this.assetManager.getAsset('../img/forest_both_rounded_tile.png')
+        });
         this.Zerlin = new Zerlin(this);
         this.collisionManager = new CollisionManager(this);
         // TODO: instantiate Parallax manager here (and other managers)
@@ -65,6 +71,7 @@ class GameEngine {
     update() {
         this.Zerlin.update();
         this.camera.update();
+        this.level.update();
         
         for (var i = this.droids.length - 1; i >= 0; i--) {
             this.droids[i].update();
@@ -84,9 +91,6 @@ class GameEngine {
                 this.beams.splice(i, 1);
             }
         }
-        for (var i = this.tiles.length - 1; i >= 0; i--) {
-            this.tiles[i].update();
-        }
         for (var i = this.otherEntities.length - 1; i >= 0; i--) {
             this.otherEntities[i].update();
             if (this.otherEntities[i].removeFromWorld) {
@@ -101,6 +105,7 @@ class GameEngine {
         this.ctx.clearRect(0, 0, this.surfaceWidth, this.surfaceHeight);
         this.ctx.save();
         this.camera.draw();
+        this.level.draw();
         this.Zerlin.draw();
         for (var i = 0; i < this.droids.length; i++) {
             this.droids[i].draw(this.ctx);
@@ -111,18 +116,16 @@ class GameEngine {
         for (var i = 0; i < this.beams.length; i++) {
             this.beams[i].draw(this.ctx);
         }
-        for (var i = 0; i < this.tiles.length; i++) {
-            this.tiles[i].draw(this.ctx);
-        }
         for (var i = 0; i < this.otherEntities.length; i++) {
             this.otherEntities[i].draw(this.ctx);
         }
 
-        // // draws axis' for debugging placement of otherEntities
-        // this.ctx.beginPath();
-        // this.ctx.moveTo(this.ctx.canvas.width * (2 - PHI), 0);
-        // this.ctx.lineTo(this.ctx.canvas.width * (2 - PHI), this.ctx.canvas.height);
-        // this.ctx.stroke();
+        if (this.gameOver) {
+            this.ctx.textAlign = 'center';
+            this.ctx.font = '70px serif';
+            this.ctx.fillText('GAME OVER', this.camera.width / 2, this.camera.height / 2);
+        }
+
 
         this.ctx.restore();
     }

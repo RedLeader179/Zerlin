@@ -6,7 +6,7 @@ Joshua Atherton, Michael Josten, Steven Golob
 
 
 
-
+var EDGE_OF_MAP_BUFFER = 50;
 /*
  * Detects and handles collisions for game entities.
  */
@@ -17,13 +17,13 @@ class CollisionManager {
 	}
 
 	handleCollisions() {
-		// called in game engine on every update()
 		this.droidOnDroid();
 		this.droidOnSaber();
 		this.laserOnDroid();
 		this.laserOnSaber();
 		this.laserOnZerlin();
 		this.ZerlinOnPlatform();
+		this.ZerlinOnEdgeOfMap();
 	}
 
 	droidOnDroid() {
@@ -98,14 +98,39 @@ class CollisionManager {
 
 	ZerlinOnPlatform() {
 		var zerlin = this.game.Zerlin;
-		if (zerlin.falling && zerlin.boundingbox.collide(zerlin.temporaryFloorBoundingBox) && zerlin.lastBottom < zerlin.temporaryFloorBoundingBox.top) {
-			console.log("landed");
-			zerlin.falling = false;
-			zerlin.deltaY = 0;
-			zerlin.y = zerlin.temporaryFloorBoundingBox.top + Z_FEET_ABOVE_FRAME * Z_SCALE;
+		if (zerlin.falling) { // check if landed
+			for (let i = 0; i < this.game.level.tiles.length; i++) {
+				let tile = this.game.level.tiles[i];
+				if (zerlin.boundingbox.collide(tile.boundingBox) && zerlin.lastBottom < tile.boundingBox.top) {
+					zerlin.falling = false;
+					zerlin.deltaY = 0;
+					zerlin.setXY(zerlin.x, tile.boundingBox.top + Z_FEET_ABOVE_FRAME * Z_SCALE);
+					return;
+				}
+			}
+		} else { // check if falls off current platform
+			for (let i = 0; i < this.game.level.tiles.length; i++) {
+				if (zerlin.isTileBelow(this.game.level.tiles[i])) {
+					return;
+				}
+			}
+			zerlin.falling = true;
+		}
+	}
+
+	ZerlinOnEdgeOfMap() { // TODO: keeps zerlin from falling off edge of map, but do we want to allow that for daring players?
+		var zerlin = this.game.Zerlin;
+		if (zerlin.y > 2 * this.game.camera.height) {
+			// game over
+			console.log("Game over");
+			this.game.gameOver = true;
+		}
+		else if (zerlin.x < EDGE_OF_MAP_BUFFER) {
+			zerlin.setXY(EDGE_OF_MAP_BUFFER, zerlin.y);
+		} else if (zerlin.x > this.game.level.length - EDGE_OF_MAP_BUFFER) {
+			zerlin.setXY(this.game.level.length - EDGE_OF_MAP_BUFFER, zerlin.y);
 		}
 
-		// TODO: check Zerlin on platform when not falling (walks over edge)
 	}
 
 
