@@ -25,6 +25,7 @@ class GameEngine {
         this.lasers = [];
         this.droids = [];
         this.tiles = [];
+        this.audio = new SoundEngine();
         this.ctx = null;
         this.surfaceWidth = null;
         this.surfaceHeight = null;
@@ -61,6 +62,12 @@ class GameEngine {
             that.loop();
             requestAnimationFrame(gameLoop);
         })();
+    }
+    pauseAudio() {
+        this.audio.pause();
+    }
+    unPauseAudio() {
+        this.audio.unPause();
     }
     loop() {
         this.clockTick = this.timer.tick();

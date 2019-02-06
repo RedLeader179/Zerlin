@@ -1,21 +1,6 @@
 
 console.log('in music');
 
-// var sound = new Howl({
-//  src: ['sound/kashyyyk.mp3']
-// });
-// sound.play();
-
-var sound = new Howl({
-    src: ['sound/kashyyyk.mp3'],
-    autoplay: true,
-    loop: true,
-    volume: 5,
-    onend: function() {
-      console.log('Finished!');
-    }
-});
-
 //todo not linked up yet
 // document.getElementById("playPause").onclick( () => {
 //   console.log('clicked');
@@ -26,52 +11,82 @@ var sound = new Howl({
 //   }
 // });
 
-
-/*
- * Allows entities to not manage their own sounds
- */
 class SoundEngine {
-
-	constructor(game) {
-		this.game = game;
-		this.soundCache = {};
-		this.prepareSounds();
-
+	constructor() {
+		this.backgroundMusic = new Howl({
+			src: ['sound/kashyyyk.mp3'],
+    		loop: true,
+			volume: 2,
+			autoplay: true,
+			preload: true
+		});
+		this.laserShoot = new Howl({
+            src: ['sound/retro-shot-blaster.wav'],
+			loop: false,
+			volume: .2,
+		});
+		this.droidExplode = new Howl({
+            src: ['sound/BoomBoom.mp3'],
+			loop: false,
+			volume: .4,
+		});
 	}
 
-	loopTrack(track) {
-
+	unPause() {
+		this.backgroundMusic.play();
+	}
+	pause() {
+		this.backgroundMusic.pause();
 	}
 
-	prepareSounds() {
-
-	}
-
-	playLaserShoot() {
-
-	}
-
-	playLaserDeflected() {
-
-	}
-
-	playLightsaberOn() {
-
-	}
-
-	playLightsaberOff() {
-		
-	}
-
-	playDiedSound() {
-
-	}
-
-	playExplosion1() {
-
-	}
-
-	playSaberSwish() {
-
-	}
 }
+
+
+// /*
+//  * Allows entities to not manage their own sounds
+//  */
+// class SoundEngine {
+
+// 	constructor(game) {
+// 		this.game = game;
+// 		this.soundCache = {};
+// 		this.prepareSounds();
+
+// 	}
+
+// 	loopTrack(track) {
+
+// 	}
+
+// 	prepareSounds() {
+
+// 	}
+
+// 	playLaserShoot() {
+
+// 	}
+
+// 	playLaserDeflected() {
+
+// 	}
+
+// 	playLightsaberOn() {
+
+// 	}
+
+// 	playLightsaberOff() {
+		
+// 	}
+
+// 	playDiedSound() {
+
+// 	}
+
+// 	playExplosion1() {
+
+// 	}
+
+// 	playSaberSwish() {
+
+// 	}
+// }

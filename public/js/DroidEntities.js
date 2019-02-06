@@ -93,15 +93,9 @@ class AbstractDroid extends Entity {
         this.removeFromWorld = true;
         //TODO: play droid explosion sound
         this.game.addEntity(new DroidExplosion(this.game, this.x + (this.animation.scale * this.animation.frameWidth / 2), this.y + (this.animation.scale * this.animation.frameHeight / 2)));
-        let sound = new Howl({
-            src: ['sound/BoomBoom.mp3'],
-            loop: false,
-            volume: .9,
-            onend: function() {
-              console.log('BOOOMMM!!!');
-            }
-        });
-        sound.play();
+
+        /********** Call sound engine to play explosion sound ************* */
+        this.game.audio.droidExplode.play();
         console.log("droid exploded");
     }
     collideWithDroid(ent) {
@@ -486,6 +480,9 @@ class LeggyDroid extends AbstractDroid {
                 this.game.Zerlin.y);
             this.shoot(this.game.Zerlin.x + -350, 
                 this.game.Zerlin.y);
+            
+            /************  For testing     ************** */
+            this.game.audio.laserShoot.play();
             
         }
          
