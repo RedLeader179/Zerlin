@@ -56,7 +56,7 @@ class ParallaxBackgroundManager {
 		this.addBackgroundLayer(
 			new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundTrees3.png'), 1, camera, 2500));
 		this.addBackgroundLayer(
-			new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundStars.png'), 1, camera, 1400));
+			new ParallaxFloatingBackground(game, game.assetManager.getAsset('../img/backgroundStars.png'), 1, camera, 1400));
 		this.addBackgroundLayer(
 			new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundTrees2.png'), 1, camera, 1000));
 	    this.addBackgroundLayer(
@@ -123,6 +123,44 @@ class ParallaxScrollBackground extends Entity {
 
 class ParallaxRotatingBackground extends Entity { 
 
+
+    constructor(game, backgroundImage, scale, camera) {
+        super(game, 0, 0, 0, 0);
+        this.scale = scale; // TODO: integrate scale of image
+        this.backgroundImage = backgroundImage;
+        this.imageWidth = backgroundImage.width;
+        this.imageHeight = backgroundImage.height;
+        this.camera = camera;
+        this.angle = 0;
+
+        console.assert(this.imageWidth >= this.camera.width, "Image width must be larger than camera width!");
+        console.assert(this.backgroundImage.height >= this.camera.height, "Image height must be larger than camera height!");
+
+        this.ctx = game.ctx;
+        this.imageDistanceFromX = 0;
+    }
+
+    update() { 
+        this.angle += this.game.clockTick * 2 * Math.PI / 200;
+    }
+
+    draw() {
+
+        this.ctx.save();
+        this.ctx.translate(this.camera.width / 2, this.camera.height / 2);
+        this.ctx.rotate(this.angle);
+
+        this.ctx.drawImage(this.backgroundImage, 
+                           0,
+                           0, 
+                           this.imageWidth,
+                           this.imageHeight,
+                           -this.imageWidth / 2, 
+                           -this.imageHeight / 2,
+                           this.imageWidth,
+                           this.imageHeight); 
+        this.ctx.restore();
+    }
 }
 
 
@@ -133,8 +171,22 @@ class ParallaxAnimatedBackground extends Entity {
 
 
 
-class ParallaxFunctionalBackground extends Entity { 
+class ParallaxFloatingBackground extends ParallaxScrollBackground { 
 
+    constructor(game, backgroundImage, scale, camera, distanceFromCamera) {
+        super(game, backgroundImage, scale, camera, distanceFromCamera);
+        this.functionX = 0;
+    }
+
+    update() {
+        super.update();
+        this.functionX += this.game.clockTick;
+        this.y = Math.sin(this.functionX) * 10;
+    }
+
+    draw() {
+        super.draw();
+    }
 }
 
 
