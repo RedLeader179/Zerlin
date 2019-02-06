@@ -39,9 +39,10 @@ var LEGGY_DROID_LASER_WIDTH = 12;
 
 
 //Beam Droid
-var BEAM_DROID_SHOOT_INTERVAL = 6;
+var BEAM_DROID_SHOOT_INTERVAL = 3;
 var BEAM_DROID_SHOOT_DURATION = 2;
 var BEAM_DROID_LASER_WIDTH = 12;
+var BEAM_HP_PER_SECOND = 3;
 
 /**
  * This class will serve as the parent for all droid entities
@@ -616,35 +617,25 @@ class BeamDroid extends AbstractDroid {
             this.shootingTime -= this.game.clockTick;
             if (this.shootingTime <= 0) {
                 this.shooting = false;
+                this.beam.removeFromWorld = true;
+                this.beam = null;
             }
         }
         
         super.update();
-
-        if (this.beam != null) {
-            this.beam.update();
-        }
     }
+
     draw() {
-        super.draw();   
-        if (this.beam != null) {
-            this.beam.draw();
-        }
+        super.draw();
     }
+
     setBeamAngle() {
-
+        this.beamAngle = Math.atan2(this.game.Zerlin.y - 150 - this.y, this.game.Zerlin.x - this.x);
     }
-    /**
-     * Todo: remove this after done testing.
-     */
-    explode() {
-        super.explode()
-        this.game.addDroid(new BasicDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"),
-        this.game.camera.x + (this.game.camera.width * Math.random()), -75));
 
-    }
     shoot() {
-        this.game.beams.push(new Beam(this));
+        this.beam = new Beam(this);
+        this.game.beams.push(this.beam);
         this.secondsBeforeFire = BEAM_DROID_SHOOT_INTERVAL;
         this.shooting = true;
         this.shootingTime = BEAM_DROID_SHOOT_DURATION;
@@ -685,56 +676,58 @@ class BeamDroid extends AbstractDroid {
         // this.y += this.game.clockTick * (Math.random() * this.deltaY);
         this.x += this.game.clockTick * this.deltaX;
         this.y += this.game.clockTick * this.deltaY;
-        
-        
     }
 }
 
-class Beam extends entity {
+class Beam {
     constructor(shootingDroid) {
         this.game = shootingDroid.game;
         this.shootingDroid = shootingDroid;
         this.segments = [];
-        var segment1 = {x: shootingDroid.boundCircle.x, y: shootingDroid.boundCircle.y, angle: 0};
-        this.segments.push(segment1);
+        this.segments.push({x: shootingDroid.boundCircle.x, y: shootingDroid.boundCircle.y, angle: 0});
     }
 
     update() {
-        this.segments[0].start.x = this.shootingDroid.boundCircle.x;
-        this.segments[0].start.y = this.shootingDroid.boundCircle.y;
-        this.angle = this.shootingDroid.beamAngle;
+        this.segments[0].x = this.shootingDroid.boundCircle.x;
+        this.segments[0].y = this.shootingDroid.boundCircle.y;
+        this.segments[0].angle = this.shootingDroid.beamAngle;
 
-        // collision manager detects end of beam and adds new ones of necessary.
+        // collision manager detects end of beam segements and adds new ones if deflected.
     }
 
     draw() {
-        var cameraX = this.game.camera.x;
-        // only draw if in camera's view
-        if (this.game.camera.isInView(this, this.length, this.length)) {
-            var ctx = this.game.ctx;
+        var cameraX = this.game.camera.x; // just draw beams without checking camera?
+        var ctx = this.game.ctx;
+        ctx.save();
+        for (let i = 0; i < this.segments.length; i++) {
+            var segment = this.segments[i];
 
-            ctx.save();
-            //Outer Layer of laser
-            ctx.lineWidth = this.width;
-            ctx.strokeStyle = this.isDeflected ? this.deflectedColor : this.color;
+            //Outer Layer of beam
+            ctx.lineWidth = BEAM_DROID_LASER_WIDTH;
+            ctx.strokeStyle = "purple";
             ctx.lineCap = "round";
             ctx.beginPath();
-            ctx.moveTo(this.x - cameraX, this.y);
-            ctx.lineTo(this.tailX - cameraX, this.tailY);
+            ctx.moveTo(segment.x - cameraX, segment.y);
+            ctx.lineTo(segment.endX - cameraX, segment.endY);
             ctx.stroke();
+        }
 
-            //inner layer of laser.
-            ctx.lineWidth = this.width / 2;
-            ctx.strokeStyle = this.secondaryColor;
+        // two loops so all inner beams are always on top of all outer beams
+        for (let i = 0; i < this.segments.length; i++) {
+            var segment = this.segments[i];
+
+            //inner layer of beam.
+            ctx.lineWidth = BEAM_DROID_LASER_WIDTH / 2;
+            ctx.strokeStyle = "white";
             ctx.lineCap = "round";
             ctx.beginPath();
-            ctx.moveTo(this.x - cameraX, this.y);
-            ctx.lineTo(this.tailX - cameraX, this.tailY);
+            ctx.moveTo(segment.x - cameraX, segment.y);
+            ctx.lineTo(segment.endX - cameraX, segment.endY);
             ctx.stroke();
             ctx.closePath();
-            ctx.restore();
-            super.draw();
         } 
+
+        ctx.restore(); 
     }
 }
 

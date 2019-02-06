@@ -11,6 +11,7 @@ Assets:
 -  =  tile
 d  =  basic droid
 s  =  scatter shot droid
+b  =  beam droid
 
 */
 
@@ -54,10 +55,13 @@ class Level {
                     this.tiles.push(tile);
                 } 
                 else if (this.levelLayout[i][j] === 'd') { // basic droid
-                    this.unspawnedDroids.push(new BasicDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth,i * this.game.camera.height / rows));
+                    this.unspawnedDroids.push(new BasicDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * this.game.camera.height / rows));
                 }
                 else if (this.levelLayout[i][j] === 's') { // scatter shot droid
-                    this.unspawnedDroids.push(new LeggyDroid(this.game, this.game.assetManager.getAsset("../img/leggy_droid.png"), j * this.tileWidth,i * this.game.camera.height / rows));
+                    this.unspawnedDroids.push(new LeggyDroid(this.game, this.game.assetManager.getAsset("../img/leggy_droid.png"), j * this.tileWidth, i * this.game.camera.height / rows));
+                }
+                else if (this.levelLayout[i][j] === 'b') { // scatter shot droid
+                    this.unspawnedDroids.push(new BeamDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * this.game.camera.height / rows));
                 }
             }
         }
@@ -117,7 +121,7 @@ class Tile extends Entity {
 const levelOne = [
 '                                  ',
 '                   --         -s  ',
-'            -      d    --       s',
+'      b     -      d    --       s',
 '             -     d             -',
 '             --                   ',
 '  -             ---               ',
