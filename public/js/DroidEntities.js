@@ -60,7 +60,6 @@ class AbstractDroid extends Entity {
     update() {
         // All droids will move when left or right is pressed but not both at the same time
         if (this.game.keys['KeyD'] && this.game.keys['KeyA']);
-
         super.update();
     }
     draw() {
@@ -192,15 +191,6 @@ class BasicDroid extends AbstractDroid {
         super.draw();
         
         
-    }
-    /**
-     * Todo: remove this after done testing.
-     */
-    explode() {
-        super.explode()
-        this.game.addDroid(new BasicDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"),
-        this.game.camera.x + (this.game.camera.width * Math.random()), -75));
-
     }
     shoot(targetX, targetY) {
         var droidLaser = new DroidLaser(this.game, this.x + 20, this.y + 20, BASIC_DROID_LASER_SPEED, 
@@ -365,73 +355,9 @@ class DroidLaser extends Entity {
             super.draw();
         } 
     }
-    // isCollidedWithSaber() {
-    //     var lightsaber = this.game.Zerlin.lightsaber;
-    //     if (lightsaber.hidden) {
-    //         return false;
-    //     }
-    //     // decrease miss percentage by also checking previous blade
-    //     return this.isCollidedWithLine(lightsaber.bladeCollar, lightsaber.bladeTip) ||
-    //             this.isCollidedWithLine(lightsaber.prevBladeCollar, lightsaber.prevBladeTip);
-    // }
-    // isCollidedWithLine(p1, p2) {
-    //     // TODO: possibly change segment intersection using clockwise check (more elegant)
-
-    //     // laser's point-slope equation
-    //     var m1 = this.slope;
-    //     var b1 = this.y - m1 * this.x;
-
-    //     // other's point-slope equation
-    //     var m2 = this.calcSlope(p1, p2);
-    //     var b2 = p2.y - m2 * p2.x;
-
-    //     var parallel = m1 === m2;
-    //     if (!parallel) {
-    //         var intersection = {};
-
-    //         // set point slope equations of each equal to eachother
-    //         // 1. mx + b = nx + c 
-    //         // 2. (m - n)x = c - b
-    //         // 3. x = (c - b) / (m - n)
-    //         intersection.x = (b2 - b1) / (m1 - m2);
-
-    //         // plug in x to one equation to find y
-    //         intersection.y = m1 * intersection.x + b1;
-    //         return this.isPointOnSegment(intersection, {p1: this, p2: {x: this.prevX, y: this.prevY}}) 
-    //                 && this.isPointOnSegment(intersection, {p1: p1, p2: p2});
-
-    //     } else { // can't collide if parallel.
-    //         return false;
-    //     }
-    // }
     calcSlope(p1, p2) {
         return (p1.y - p2.y) / (p1.x - p2.x);
     }
-    // isPointOnSegment(pt, segment) {
-    //     return (pt.x >= Math.min(segment.p1.x, segment.p2.x))
-    //         && (pt.x <= Math.max(segment.p1.x, segment.p2.x))
-    //         && (pt.y >= Math.min(segment.p1.y, segment.p2.y))
-    //         && (pt.y <= Math.max(segment.p1.y, segment.p2.y));
-    // }
-    // deflect() {
-    //     this.isDeflected = true;
-
-    //     var saberAngle = this.game.Zerlin.lightsaber.getSaberAngle();
-    //     var laserAngle = Math.atan2(this.y - this.prevY, this.x - this.prevX);
-    //     var newLaserAngle = 2 * saberAngle - laserAngle;
-    //     var unitVectorDeltaX = Math.cos(newLaserAngle);
-    //     var unitVectorDeltaY = Math.sin(newLaserAngle);
-    //     this.deltaX = unitVectorDeltaX * this.speed;
-    //     this.deltaY = unitVectorDeltaY * this.speed;
-    //     this.slope = this.deltaY / this.deltaX;
-
-    //     // move laser so tail is touching the deflection point, instead of the head
-    //     this.tailX = this.x; // TODO: change to deflection point
-    //     this.tailY = this.y;
-    //     this.x = this.x + unitVectorDeltaX * this.length;
-    //     this.y = this.y + unitVectorDeltaY * this.length;
-    //     this.angle = this.findAngleRadians(this.x, this.y, this.tailX, this.tailY);
-    // }
     isOutsideScreen() {
         var camera = this.game.camera;
         var left = camera.x;
@@ -444,8 +370,6 @@ class DroidLaser extends Entity {
                 this.tailY < top ||
                 this.tailY > bottom;
     }
-
-    
     /**
      * this method will return the angle of a line in radians 
      */
@@ -527,7 +451,6 @@ class LeggyDroid extends AbstractDroid {
         var targetX = (this.game.surfaceWidth / 2) + BASIC_DROID_ORBITAL_X_OFFSET;
         var targetY = (this.game.surfaceHeight / 2) + BASIC_DROID_ORBITAL_Y_OFFSET;
         this.targetOrbitalPoint = {x: targetX, y: BASIC_DROID_ORBITAL_HEIGHT};
-        
     }
     /* 
     * every update, the droid will move around zerlin entity about 50 to 100 pixels above him.
@@ -568,18 +491,8 @@ class LeggyDroid extends AbstractDroid {
          
         super.update();
     }
-    /**
-     * Todo: remove this after done testing.
-     */
-    explode() {
-        super.explode()
-        this.game.addDroid(new LeggyDroid(this.game, this.game.assetManager.getAsset("../img/leggy_droid.png"),
-        this.game.camera.x + (this.game.camera.width * Math.random()), -75));
-
-    }
     draw() {
         super.draw();
-        
     }
     shoot(targetX, targetY) {
         var droidLaser = new DroidLaser(this.game, this.x + 20, this.y + 50, LEGGY_DROID_LASER_SPEED, 
@@ -612,7 +525,7 @@ class LeggyDroid extends AbstractDroid {
         if (this.x < target.x) {
             if (this.deltaX < BASIC_DROID_X_MOVEMENT_SPEED)
                 this.deltaX += BASIC_DROID_X_ACCELERATION * this.game.clockTick;
-            
+
         }
         
         //if the droid is to the right of target point, then decrease the deltaX
