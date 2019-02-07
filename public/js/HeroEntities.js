@@ -111,6 +111,8 @@ class Zerlin extends Entity {
 				this.startSomersault();
 			}
 			else if (this.game.keys['KeyE'] && !this.falling) {
+				/** for testing sound */
+				this.game.audio.hero.play('forceJump');
 				this.falling = true;
 				this.deltaY = FORCE_JUMP_DELTA_Y;
 			}
@@ -119,6 +121,8 @@ class Zerlin extends Entity {
 				this.deltaY = JUMP_DELTA_Y;
 			}
 			else if (this.game.keys['Space'] && !this.falling) { // TODO: allow for attack in air
+				/** for testing sound */
+				this.game.audio.lightsaber.play('lightsaberSwing');
 				this.startSlash(); 
 			}
 		}
