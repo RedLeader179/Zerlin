@@ -25,7 +25,6 @@ class GameEngine {
         this.lasers = [];
         this.droids = [];
         this.tiles = [];
-        this.audio = new SoundEngine();
         this.ctx = null;
         this.surfaceWidth = null;
         this.surfaceHeight = null;
@@ -52,6 +51,7 @@ class GameEngine {
         this.Zerlin = new Zerlin(this);
         this.collisionManager = new CollisionManager(this);
         // TODO: instantiate Parallax manager here (and other managers)
+        this.audio = new SoundEngine();
         this.startInput();
         console.log('game initialized');
     }

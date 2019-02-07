@@ -1,27 +1,47 @@
 // Constant array to hold the different background music
 const backgroundMusicArray = [];
 backgroundMusicArray['kashyyyk'] = new Howl({
-	src: ['sound/kashyyykTheme.mp3'],
+	src: [
+		"sound/kashyyykTheme.ogg",
+		"sound/kashyyykTheme.m4a",
+		"sound/kashyyykTheme.mp3",
+		"sound/kashyyykTheme.ac3"
+	  ],
 	loop: true,
 	volume: 2,
 	// autoplay: true,
 	// preload: true
 });
 backgroundMusicArray['yodaForceTheme'] = new Howl({
-	src: ['sound/yodaForceTheme.mp3'],
+	src: [
+		"sound/yodaForceTheme.ogg",
+		"sound/yodaForceTheme.m4a",
+		"sound/yodaForceTheme.mp3",
+		"sound/yodaForceTheme.ac3"
+	  ],
 	loop: true,
 	volume: 2,
 	// autoplay: true,
 	// preload: true
 });
 backgroundMusicArray['yodaTheme'] = new Howl({
-	src: ['sound/yodaTheme.mp3'],
+	src: [
+		"sound/yodaTheme.ogg",
+		"sound/yodaTheme.m4a",
+		"sound/yodaTheme.mp3",
+		"sound/yodaTheme.ac3"
+	  ],
 	loop: true,
 	autoplay: true,
 	preload: true
 });
 backgroundMusicArray['clashOfLightsabersTheme'] = new Howl({
-	src: ['sound/ClashOfLightsabersTheme.mp3'],
+	src: [
+		"sound/clashOfLightsabersTheme.ogg",
+		"sound/clashOfLightsabersTheme.m4a",
+		"sound/clashOfLightsabersTheme.mp3",
+		"sound/clashOfLightsabersTheme.ac3"
+	  ],
 	loop: true,
 	volume: 2,
 	// autoplay: true,
@@ -35,7 +55,7 @@ class SoundEngine {
 	constructor() {
 		//set to yodaTheme by default
 		this.backgroundMusic = backgroundMusicArray['yodaTheme'];
-		this.backgroundMusic.volume = .3;
+		this.backgroundMusic.volume = 1;
 
 		this.lightsaber = new Howl({
 			src: [
