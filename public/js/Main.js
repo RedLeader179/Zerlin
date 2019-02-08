@@ -123,11 +123,11 @@ class AssetManager {
 		gameEngine.start();
 
 		document.getElementById("playMusic").addEventListener("click", () => {
-			gameEngine.unPauseAudio();
+			gameEngine.unPauseBackgroundAudio();
 		})
 
 		document.getElementById("pauseMusic").addEventListener("click", () => {
-			gameEngine.pauseAudio();
+			gameEngine.pauseBackgroundAudio();
 		})
 
 	    console.log("All Done!");
