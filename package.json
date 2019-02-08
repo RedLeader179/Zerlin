@@ -14,7 +14,6 @@
   "author": "Josh, Steven, Michael",
   "license": "ISC",
   "dependencies": {
-    "audiosprite": "^0.7.1",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "howler": "^2.1.1"
