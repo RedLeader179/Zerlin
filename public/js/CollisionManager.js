@@ -167,7 +167,7 @@ class CollisionManager {
 					return;
 				}
 			}
-		} else { // check if falls off current platforme
+		} else { // check if falls off current platform
 			for (let i = 0; i < this.game.level.tiles.length; i++) {
 				if (zerlin.isTileBelow(this.game.level.tiles[i])) {
 					return;
@@ -250,9 +250,7 @@ class CollisionManager {
 					this.game.Zerlin.hits += this.game.clockTick * BEAM_HP_PER_SECOND;
 					console.log(this.game.Zerlin.hits);
 
-					// find collision on box, end beam there
-
-					// find intersection with box with shortest beam length
+					// find intersection with box with shortest beam length, end beam there
 					var closestIntersection = findClosestIntersectionOnBox(zerlinCollision, beamSeg);
 					beamSeg.endX = closestIntersection.x;
 					beamSeg.endY = closestIntersection.y;
