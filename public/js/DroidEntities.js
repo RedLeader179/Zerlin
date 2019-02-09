@@ -40,10 +40,10 @@ var SPRAY_LASER_WIDTH_RADIANS = Math.PI / 6;
 
 //Beam Droid
 var BEAM_DROID_SHOOT_INTERVAL = 6;
-var BEAM_DROID_SHOOT_DURATION = 2;
+var BEAM_DROID_SHOOT_DURATION = 5.98;
 var BEAM_DROID_LASER_WIDTH = 16;
 var BEAM_HP_PER_SECOND = 3;
-var BEAM_ANGLE_ACCELERATION_RADIANS = Math.PI / 5;
+var BEAM_ANGLE_ACCELERATION_RADIANS = Math.PI / 3;
 
 /**
  * This class will serve as the parent for all droid entities
@@ -518,7 +518,6 @@ class LeggyDroid extends AbstractDroid {
         if (this.x < target.x) {
             if (this.deltaX < BASIC_DROID_X_MOVEMENT_SPEED)
                 this.deltaX += BASIC_DROID_X_ACCELERATION * this.game.clockTick;
-
         }
         
         //if the droid is to the right of target point, then decrease the deltaX
@@ -668,7 +667,6 @@ class BeamDroid extends AbstractDroid {
         if (this.x < target.x) {
             if (this.deltaX < BASIC_DROID_X_MOVEMENT_SPEED)
                 this.deltaX += BASIC_DROID_X_ACCELERATION * this.game.clockTick;
-
         }
         
         //if the droid is to the right of target point, then decrease the deltaX
@@ -689,9 +687,6 @@ class BeamDroid extends AbstractDroid {
                 this.deltaY -= BASIC_DROID_Y_ACCELERATION * this.game.clockTick;
         }      
 
-        //after calculating change in x and y then increment x and y by delta x and delta y
-        // this.x += this.game.clockTick * (Math.random() * this.deltaX);
-        // this.y += this.game.clockTick * (Math.random() * this.deltaY);
         this.x += this.game.clockTick * this.deltaX;
         this.y += this.game.clockTick * this.deltaY;
     }
@@ -740,7 +735,7 @@ class Beam {
             ctx.stroke();
         }
 
-        // two loops so all inner beams are always on top of all outer beams
+        // two loops so all inner beams are always on top of all outer beam 'glows'
         for (let i = 0; i < this.segments.length; i++) {
             var segment = this.segments[i];
 
