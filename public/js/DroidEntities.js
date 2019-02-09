@@ -40,6 +40,7 @@ var BEAM_DROID_SHOOT_INTERVAL = 3;
 var BEAM_DROID_SHOOT_DURATION = 2;
 var BEAM_DROID_LASER_WIDTH = 12;
 var BEAM_HP_PER_SECOND = 3;
+var BEAM_ANGLE_ACCELERATION_RADIANS = Math.PI / 5;
 
 /**
  * This class will serve as the parent for all droid entities
@@ -558,6 +559,13 @@ class LeggyDroid extends AbstractDroid {
     }
 }
 
+
+
+
+
+
+
+
 class BeamDroid extends AbstractDroid {
 
     constructor(game, spritesheet, startX, startY) {
@@ -567,9 +575,10 @@ class BeamDroid extends AbstractDroid {
 
         /* animation fields */
         //Animation(spritesheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale)
-        this.idleAnimation = new Animation(spritesheet, 100, 100, 1400, 0.1, 14, true, .5);
+        this.idleAnimation = new Animation(spritesheet, 0, 0, 100, 100, 0.1, 14, true, false, .5);
         this.animation = this.idleAnimation;
-        this.beamAngle = 0;
+        this.beamAngle = Math.atan2(550, this.game.camera.width * ZERLIN_POSITION_ON_SCREEN);
+        this.beamAngleDelta = 0;
 
         /* bounding circle fields */
         this.radius = (this.animation.frameWidth / 2) * this.animation.scale;
@@ -582,18 +591,12 @@ class BeamDroid extends AbstractDroid {
         this.secondsBeforeFire = BEAM_DROID_SHOOT_INTERVAL;
 
         /* movement fields */
-        var targetX = (this.game.surfaceWidth / 2) + BASIC_DROID_ORBITAL_X_OFFSET;
-        var targetY = (this.game.surfaceHeight / 2) + BASIC_DROID_ORBITAL_Y_OFFSET;
-        this.targetOrbitalPoint = {x: targetX, y: BASIC_DROID_ORBITAL_HEIGHT};
-        
+        var targetOrbitalX = (this.game.surfaceWidth / 2) + BASIC_DROID_ORBITAL_X_OFFSET;
+        var targetOrbitalY = (this.game.surfaceHeight / 2) + BASIC_DROID_ORBITAL_Y_OFFSET;
+        this.targetOrbitalPoint = {x: targetOrbitalX, y: targetOrbitalY};
     }
-    /* 
-    * every update, the basic droid will move around zerlin entity about 50 to 100 pixels above him.
-    * The droid will shoot every interval at the main character (as of now, at the mouse)
-    * The droid will set removeFromWorld to true when it collides with lightsaber
-    */
-    update() {
-        //update coordinates so the droid will orbit the center of the canvas
+
+    update() { 
 
         /* droid movement */
         this.targetOrbitalPoint.x = this.game.Zerlin.x;
@@ -605,17 +608,17 @@ class BeamDroid extends AbstractDroid {
 
         /* droid shooting */
         this.secondsBeforeFire -= this.game.clockTick;
-        //will shoot at every interval
+        this.setBeamAngle();
         if (this.secondsBeforeFire <= 0 && !this.shooting) {
             this.shoot();
         }
 
         if (this.shooting) {
-            this.setBeamAngle();
             this.shootingTime -= this.game.clockTick;
             if (this.shootingTime <= 0) {
                 this.shooting = false;
                 this.beam.removeFromWorld = true;
+                this.game.audio.beam.stop();
                 this.beam = null;
             }
         }
@@ -628,7 +631,31 @@ class BeamDroid extends AbstractDroid {
     }
 
     setBeamAngle() {
-        this.beamAngle = Math.atan2(this.game.Zerlin.y - 150 - this.y, this.game.Zerlin.x - this.x);
+        var angleToZerlin = Math.atan2(this.game.Zerlin.y - 150 - this.boundCircle.y, this.game.Zerlin.x - this.boundCircle.x);
+        var angleDiff = this.shaveRadians(angleToZerlin - this.beamAngle);
+        if (angleDiff > Math.PI) {
+            // rotate beam clockwise
+            this.beamAngleDelta -= BEAM_ANGLE_ACCELERATION_RADIANS * this.game.clockTick;
+        } else {
+            // rotate beam counterclockwise
+            this.beamAngleDelta += BEAM_ANGLE_ACCELERATION_RADIANS * this.game.clockTick; 
+        }
+        this.beamAngleDelta *= .97; // zero in on target
+        this.beamAngle += this.beamAngleDelta * this.game.clockTick;
+    }
+
+    /*
+     * Converts an angle to inside range [0, Math.PI * 2).
+     */
+    shaveRadians(angle) {
+        var newAngle = angle;
+        while (newAngle >= Math.PI * 2) {
+            newAngle -= Math.PI * 2;
+        }
+        while (newAngle < 0) {
+            newAngle += Math.PI * 2;
+        }
+        return newAngle;
     }
 
     shoot() {
@@ -637,6 +664,7 @@ class BeamDroid extends AbstractDroid {
         this.secondsBeforeFire = BEAM_DROID_SHOOT_INTERVAL;
         this.shooting = true;
         this.shootingTime = BEAM_DROID_SHOOT_DURATION;
+        this.game.audio.beam.play();
     }
 
     /*
@@ -646,27 +674,29 @@ class BeamDroid extends AbstractDroid {
     calcMovement(target) {
         //if the droid is to the left of target point, then increase the deltaX
         //by the x velocity
+        
         if (this.x < target.x) {
             if (this.deltaX < BASIC_DROID_X_MOVEMENT_SPEED)
-                this.deltaX += BASIC_DROID_X_VELOCITY;
+                this.deltaX += BASIC_DROID_X_ACCELERATION * this.game.clockTick;
+
         }
-    
+        
         //if the droid is to the right of target point, then decrease the deltaX
         //by the x velocity
         else if (this.x > target.x) {
             if (this.deltaX >= (-BASIC_DROID_X_MOVEMENT_SPEED))
-                this.deltaX -= BASIC_DROID_X_VELOCITY;
+                this.deltaX -= BASIC_DROID_X_ACCELERATION * this.game.clockTick;
         }
 
         //if droid is above the target point, then increase deltaY(down)
         if (this.y < target.y) {
             if (this.deltaY <= BASIC_DROID_Y_MOVEMENT_SPEED)
-                this.deltaY += BASIC_DROID_Y_VELOCITY;
+                this.deltaY += BASIC_DROID_Y_ACCELERATION * this.game.clockTick;
         }
         //if the droid is below the target point, then decrease the deltaY(up)
         else if (this.y >= target.y) {
             if (this.deltaY >= (-BASIC_DROID_Y_MOVEMENT_SPEED)) 
-                this.deltaY -= BASIC_DROID_Y_VELOCITY;
+                this.deltaY -= BASIC_DROID_Y_ACCELERATION * this.game.clockTick;
         }      
 
         //after calculating change in x and y then increment x and y by delta x and delta y
@@ -674,6 +704,14 @@ class BeamDroid extends AbstractDroid {
         // this.y += this.game.clockTick * (Math.random() * this.deltaY);
         this.x += this.game.clockTick * this.deltaX;
         this.y += this.game.clockTick * this.deltaY;
+    }
+
+    explode() {
+        super.explode();
+        if (this.beam) {
+            this.beam.removeFromWorld = true;
+            this.game.audio.beam.stop();
+        }
     }
 }
 

@@ -10,7 +10,7 @@ var PHI = 1.618;
 
 var Z_SCALE = .6;
 
-var DRAW_COLLISION_BOUNDRIES = true;
+var DRAW_COLLISION_BOUNDRIES = false;
 
 var Z_WIDTH = 114;
 var Z_HEIGHT = 306;

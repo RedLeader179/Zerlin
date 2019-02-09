@@ -32,8 +32,8 @@ backgroundMusicArray['yodaTheme'] = new Howl({
 		"sound/yodaTheme.ac3"
 	  ],
 	loop: true,
-	autoplay: true,
-	preload: true
+	// autoplay: true,
+	// preload: true
 });
 backgroundMusicArray['clashOfLightsabersTheme'] = new Howl({
 	src: [
@@ -173,6 +173,13 @@ class SoundEngine {
 			},
 			loop: false,
 			volume: .1
+		  });
+		  this.beam = new Howl({
+			src: [
+			  "sound/beam2.wav"
+			],
+			loop: true,
+			volume: .7
 		  });
 	}
 

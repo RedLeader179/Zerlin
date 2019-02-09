@@ -24,7 +24,8 @@ class CollisionManager {
 		this.laserOnZerlin();
 		this.ZerlinOnPlatform();
 		this.ZerlinOnEdgeOfMap();
-		this.beamOnSomething();
+		this.beamOnSaber();
+		this.beamOnDroid();
 		this.beamOnZerlin();
 	}
 
@@ -188,11 +189,11 @@ class CollisionManager {
 
 	}
 
-	beamOnSomething() {
+	beamOnSaber() {
 		var zerlin = this.game.Zerlin;
 		var lightsaber = zerlin.lightsaber;
 		var maxLength = Math.sqrt(this.game.camera.width ** 2, this.game.camera.height ** 2); // screen diagonal length
-		for (let i = 0; i < this.game.beams.length; i++) {;
+		for (let i = 0; i < this.game.beams.length; i++) {
 			var beamSegments = this.game.beams[i].segments;
 			beamSegments.splice(1); // recreate all deflected segments;
 			for (let j = 0; j < beamSegments.length; j++) {
@@ -210,10 +211,27 @@ class CollisionManager {
 					beamSegments[j].endY = collisionWithSaber.intersection.y;
 					beamSegments.push({x: collisionWithSaber.intersection.x, 
 									   y: collisionWithSaber.intersection.y, 
-									   angle: 2 * lightsaber.getSaberAngle() - beamSegments[j].angle});
+									   angle: 2 * lightsaber.getSaberAngle() - beamSegments[j].angle,
+									   deflected: true});
 					beamSegments[j+1].endX = Math.cos(beamSegments[j+1].angle) * maxLength + beamSegments[j+1].x;
 					beamSegments[j+1].endY = Math.sin(beamSegments[j+1].angle) * maxLength + beamSegments[j+1].y;
 					break;
+				}
+			}
+		}
+	}
+
+	beamOnDroid() {
+		for (let i = 0; i < this.game.beams.length; i++) {
+			var beamSegments = this.game.beams[i].segments;
+			// only check second segment for collision on droids
+			if (beamSegments.length > 1 && beamSegments[1].deflected) {
+				var beamSeg = beamSegments[1];
+				for (var j = this.game.droids.length - 1; j >= 0; j--) {
+					var droidCircle = this.game.droids[j].boundCircle;
+					if (collideLineWithCircle(beamSeg.x, beamSeg.y, beamSeg.endX, beamSeg.endY, droidCircle.x, droidCircle.y, droidCircle.radius)) {
+						this.game.droids[j].explode();
+					}
 				}
 			}
 		}
@@ -225,15 +243,18 @@ class CollisionManager {
 			var beamSegments = this.game.beams[i].segments;
 			for (let j = 0; j < beamSegments.length; j++) {
 				var beamSeg = beamSegments[j];
-				zerlinCollision = collideLineWithRectangle(beamSeg.x, beamSeg.y, beamSeg.endX, beamSeg.endY,
+				var zerlinCollision = collideLineWithRectangle(beamSeg.x, beamSeg.y, beamSeg.endX, beamSeg.endY,
 											 zerlinBox.x, zerlinBox.y, zerlinBox.width, zerlinBox.height);
 				if (zerlinCollision.collides) {
 					this.game.Zerlin.hits += this.game.clockTick * BEAM_HP_PER_SECOND;
 					console.log(this.game.Zerlin.hits);
 
 					// find collision on box, end beam there
-					beamSeg.endX = this.game.Zerlin.x;
-					beamSeg.endY = (Math.tan(beamSeg.angle) * (beamSeg.endX - beamSeg.x)) + beamSeg.y;
+
+					// find intersection with box with shortest beam length
+					var closestIntersection = findClosestIntersectionOnBox(zerlinCollision, beamSeg);
+					beamSeg.endX = closestIntersection.x;
+					beamSeg.endY = closestIntersection.y;
 					beamSegments.splice(j+1);
 				}
 			}
@@ -310,18 +331,18 @@ class CollisionManager {
 		// laser.angle = this.findAngle(this.x, this.y, this.tailX, this.tailY);
 	}
 
-	modifiedCollideLineWithRectangle(line, boundingbox) {
-		var result = false;
-		//check collision of line segment with each side of the rectangle
-		var left = this.isCollidedLineWithLine(line, {p1: {x: boundingbox.x, y: boundingbox.y}, p2: {x: boundingbox.x, y: boundingbox.y + boundingbox.height}});
-		var right = this.isCollidedLineWithLine(line, {p1: {x: boundingbox.x + boundingbox.width, y: boundingbox.y}, p2: {x: boundingbox.x + boundingbox.width, y: boundingbox.y + boundingbox.height}});
-		var top = this.isCollidedLineWithLine(line, {p1: {x: boundingbox.x, y: boundingbox.y}, p2: {x: boundingbox.x + boundingbox.width, y: boundingbox.y}});
-		var bottom = this.isCollidedLineWithLine(line, {p1: {x: boundingbox.x, y: boundingbox.y + boundingbox.height}, p2: {x: boundingbox.x + boundingbox.width, y: boundingbox.y + boundingbox.height}});
+	// modifiedCollideLineWithRectangle(line, boundingbox) {
+	// 	var result = false;
+	// 	//check collision of line segment with each side of the rectangle
+	// 	var left = this.isCollidedLineWithLine(line, {p1: {x: boundingbox.x, y: boundingbox.y}, p2: {x: boundingbox.x, y: boundingbox.y + boundingbox.height}});
+	// 	var right = this.isCollidedLineWithLine(line, {p1: {x: boundingbox.x + boundingbox.width, y: boundingbox.y}, p2: {x: boundingbox.x + boundingbox.width, y: boundingbox.y + boundingbox.height}});
+	// 	var top = this.isCollidedLineWithLine(line, {p1: {x: boundingbox.x, y: boundingbox.y}, p2: {x: boundingbox.x + boundingbox.width, y: boundingbox.y}});
+	// 	var bottom = this.isCollidedLineWithLine(line, {p1: {x: boundingbox.x, y: boundingbox.y + boundingbox.height}, p2: {x: boundingbox.x + boundingbox.width, y: boundingbox.y + boundingbox.height}});
 
-		return {collided: left.collided || right.collided || top.collided || bottom.collided};
-		//can return the object with intersection point if need to.
-		return result;
-	}
+	// 	return {collided: left.collided || right.collided || top.collided || bottom.collided};
+	// 	//can return the object with intersection point if need to.
+	// 	return result;
+	// }
 
 }
 
@@ -553,11 +574,48 @@ var collideLineWithRectangle = function(x1, y1, x2, y2, rx, ry, rw, rh) {
 	var top = collideLineWithLine(x1, y1, x2, y2, rx, ry, rx + rw, ry);
 	var bottom = collideLineWithLine(x1, y1, x2, y2, rx, ry + rh, rx + rw, ry + rh);
 
-	result {collides: left.collides || right.collides || top.collides || bottom.collides,
-				  left: left.intersection,
-				  right: right.intersection,
-				  top: top.intersection,
-				  bottom: bottom.intersection};
+	result = {collides: left.collides || right.collides || top.collides || bottom.collides,
+				  left: left,
+				  right: right,
+				  top: top,
+				  bottom: bottom};
+	return result;
+}
+
+
+var findClosestIntersectionOnBox = function(intersections, startOfLine) {
+	var minimumLengthBeam = Number.MAX_VALUE;
+	var closestIntersection = {};
+
+	if (intersections.left.collides) {
+		let length1 = distance(startOfLine, intersections.left);
+		if (length1 < minimumLengthBeam) {
+			closestIntersection = intersections.left;
+			minimumLengthBeam = length1;
+		}
+	}
+	if (intersections.right.collides) {
+		let length2 = distance(startOfLine, intersections.right);
+		if (length2 < minimumLengthBeam) {
+			closestIntersection = intersections.right;
+			minimumLengthBeam = length2;
+		}
+	}
+	if (intersections.top.collides) {
+		let length3 = distance(startOfLine, intersections.top);
+		if (length3 < minimumLengthBeam) {
+			closestIntersection = intersections.top;
+			minimumLengthBeam = length3;
+		}
+	}
+	if (intersections.bottom.collides) {
+		let length4 = distance(startOfLine, intersections.bottom);
+		if (length4 < minimumLengthBeam) {
+			closestIntersection = intersections.bottom;
+			minimumLengthBeam = length4;
+		}
+	}
+	return closestIntersection;
 }
 
 /**

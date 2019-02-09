@@ -101,7 +101,8 @@ class Tile extends Entity {
         this.ctx = game.ctx;
         this.drawBox = true;
 
-        this.boundingBox = new BoundingBox(this.x, this.y, this.width, this.height);
+
+        this.boundingBox = new BoundingBox(this.x, this.y + 2, this.width, this.height);
     }
     update() {
 
@@ -120,13 +121,13 @@ class Tile extends Entity {
 
 const levelOne = [
 '                                  ',
-'                   --         -s  ',
-'   s         -      d    --       s',
-'             -     d             -',
-' s    d        --                   ',
+'                   --   d     -s  ',
+'    b       -      b    --       s',
+'         b    -     d            -',
+'             --                   ',
 '  -             ---               ',
 '     --         --          d     ',
-'   --          -          -       ',
+'   --          -  s       -       ',
 '-------- -- ----   ---        ----'
 ]
 
