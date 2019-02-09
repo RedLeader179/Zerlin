@@ -27,6 +27,7 @@ class CollisionManager {
 		this.beamOnSaber();
 		this.beamOnDroid();
 		this.beamOnZerlin();
+		this.beamOnPlatform();
 	}
 
 	/* On droids colliding, swap deltaX and deltaY */
@@ -261,6 +262,27 @@ class CollisionManager {
 		}
 	}
 
+	beamOnPlatform() {
+		// only detects collision with top of platforms
+
+		for (let i = 0; i < this.game.beams.length; i++) {
+			var beamSegments = this.game.beams[i].segments;
+			for (let j = 0; j < beamSegments.length; j++) {
+				var beamSeg = beamSegments[j];
+				if (beamSeg.angle < Math.PI && beamSeg.angle > 0) {
+					for (let k = 0; k < this.game.level.tiles.length; k++) {
+						let tile = this.game.level.tiles[k];
+						let collisionWithPlatform = this.isCollidedLineWithLine(tile.surface, {p1: {x: beamSeg.x, y: beamSeg.y}, p2: {x: beamSeg.endX, y: beamSeg.endY}});
+						if (collisionWithPlatform.collided) {
+							beamSeg.endX = collisionWithPlatform.intersection.x;
+							beamSeg.endY = collisionWithPlatform.intersection.y;
+							beamSegments.splice(j+1);
+						}
+					}	
+				}
+			}
+		}
+	}
 
 	isLaserCollidedWithDroid(laser, droid) {
 		return collideLineWithCircle(laser.x, laser.y, laser.tailX, laser.tailY, droid.boundCircle.x,

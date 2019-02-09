@@ -102,7 +102,9 @@ class Tile extends Entity {
         this.drawBox = true;
 
 
+        // add + 2 to y to increase precision on bounding box to actual platform image
         this.boundingBox = new BoundingBox(this.x, this.y + 2, this.width, this.height);
+        this.surface = {p1: {x: this.x, y: this.y}, p2: {x: this.width + this.x, y: this.y}};
     }
     update() {
 
@@ -128,6 +130,6 @@ const levelOne = [
 '  -             ---               ',
 '     --         --          d     ',
 '   --          -  s       -       ',
-'-------- -- ----   ---        ----'
+'-------- -- ----   ---   -    ----'
 ]
 
