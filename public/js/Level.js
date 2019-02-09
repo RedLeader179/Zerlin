@@ -60,7 +60,7 @@ class Level {
                 else if (this.levelLayout[i][j] === 's') { // scatter shot droid
                     this.unspawnedDroids.push(new LeggyDroid(this.game, this.game.assetManager.getAsset("../img/leggy_droid.png"), j * this.tileWidth, i * this.game.camera.height / rows));
                 }
-                else if (this.levelLayout[i][j] === 'b') { // scatter shot droid
+                else if (this.levelLayout[i][j] === 'b') { // beam shot droid
                     this.unspawnedDroids.push(new BeamDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * this.game.camera.height / rows));
                 }
             }
@@ -125,7 +125,7 @@ const levelOne = [
 '                                  ',
 '                   --   d     -s  ',
 '    b       -      b    --       s',
-'         b    -     d            -',
+'     s        -     d            -',
 '             --                   ',
 '  -             ---               ',
 '     --         --          d     ',

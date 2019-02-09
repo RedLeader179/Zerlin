@@ -28,6 +28,8 @@ class CollisionManager {
 		this.beamOnDroid();
 		this.beamOnZerlin();
 		this.beamOnPlatform();
+
+		// TODO: loop through only visible tiles instead of entire level
 	}
 
 	/* On droids colliding, swap deltaX and deltaY */
@@ -165,7 +167,7 @@ class CollisionManager {
 					return;
 				}
 			}
-		} else { // check if falls off current platform
+		} else { // check if falls off current platforme
 			for (let i = 0; i < this.game.level.tiles.length; i++) {
 				if (zerlin.isTileBelow(this.game.level.tiles[i])) {
 					return;
@@ -193,16 +195,14 @@ class CollisionManager {
 	beamOnSaber() {
 		var zerlin = this.game.Zerlin;
 		var lightsaber = zerlin.lightsaber;
-		var maxLength = Math.sqrt(this.game.camera.width ** 2, this.game.camera.height ** 2); // screen diagonal length
+		var maxLength = Math.sqrt(this.game.camera.width ** 2, this.game.camera.height ** 2) * 3; // screen diagonal length * 3
 		for (let i = 0; i < this.game.beams.length; i++) {
 			var beamSegments = this.game.beams[i].segments;
 			beamSegments.splice(1); // recreate all deflected segments;
 			for (let j = 0; j < beamSegments.length; j++) {
+				// set beam to reasonable length
 				beamSegments[j].endX = Math.cos(beamSegments[j].angle) * maxLength + beamSegments[j].x;
 				beamSegments[j].endY = Math.sin(beamSegments[j].angle) * maxLength + beamSegments[j].y;
-
-				// TODO: check for collision with platform here (if so, cut off beam, maybe add 'sizzling' animation at end point)
-
 
 				var collisionWithSaber = this.isCollidedLineWithLine({p1: {x: beamSegments[j].x, y: beamSegments[j].y}, p2: {x: beamSegments[j].endX, y: beamSegments[j].endY}}, 
 												{p1: lightsaber.bladeCollar, p2: lightsaber.bladeTip});
@@ -352,19 +352,6 @@ class CollisionManager {
 		laser.y = laser.tailY + laser.deltaY / deltaMagnitude * laser.length;
 		// laser.angle = this.findAngle(this.x, this.y, this.tailX, this.tailY);
 	}
-
-	// modifiedCollideLineWithRectangle(line, boundingbox) {
-	// 	var result = false;
-	// 	//check collision of line segment with each side of the rectangle
-	// 	var left = this.isCollidedLineWithLine(line, {p1: {x: boundingbox.x, y: boundingbox.y}, p2: {x: boundingbox.x, y: boundingbox.y + boundingbox.height}});
-	// 	var right = this.isCollidedLineWithLine(line, {p1: {x: boundingbox.x + boundingbox.width, y: boundingbox.y}, p2: {x: boundingbox.x + boundingbox.width, y: boundingbox.y + boundingbox.height}});
-	// 	var top = this.isCollidedLineWithLine(line, {p1: {x: boundingbox.x, y: boundingbox.y}, p2: {x: boundingbox.x + boundingbox.width, y: boundingbox.y}});
-	// 	var bottom = this.isCollidedLineWithLine(line, {p1: {x: boundingbox.x, y: boundingbox.y + boundingbox.height}, p2: {x: boundingbox.x + boundingbox.width, y: boundingbox.y + boundingbox.height}});
-
-	// 	return {collided: left.collided || right.collided || top.collided || bottom.collided};
-	// 	//can return the object with intersection point if need to.
-	// 	return result;
-	// }
 
 }
 
@@ -589,19 +576,17 @@ var collideLineWithLineHelper = function(line1, line2) {
  * @param {number} rh rectangle height
  */
 var collideLineWithRectangle = function(x1, y1, x2, y2, rx, ry, rw, rh) {
-	var result = false;
 	//check collision of line segment with each side of the rectangle
 	var left = collideLineWithLine(x1, y1, x2, y2, rx, ry, rx, ry + rh);
 	var right = collideLineWithLine(x1, y1, x2, y2, rx + rw, ry, rx + rw, ry + rh);
 	var top = collideLineWithLine(x1, y1, x2, y2, rx, ry, rx + rw, ry);
 	var bottom = collideLineWithLine(x1, y1, x2, y2, rx, ry + rh, rx + rw, ry + rh);
 
-	result = {collides: left.collides || right.collides || top.collides || bottom.collides,
+	return {collides: left.collides || right.collides || top.collides || bottom.collides,
 				  left: left,
 				  right: right,
 				  top: top,
 				  bottom: bottom};
-	return result;
 }
 
 
