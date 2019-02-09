@@ -95,8 +95,8 @@ class AssetManager {
 
 	AM.downloadAll(function () {
 	    var canvas = document.getElementById("gameWorld");
-	    var ctx = canvas.getContext("2d");
-
+		var ctx = canvas.getContext("2d");
+		
 	    var gameEngine = new GameEngine(AM);
 	    gameEngine.init(ctx);
 
@@ -120,7 +120,16 @@ class AssetManager {
 		// gameEngine.addDroid(new LeggyDroid(gameEngine, AM.getAsset("../img/leggy_droid.png"), 800, 200));
 
 
-	    gameEngine.start();
+		gameEngine.start();
+
+		document.getElementById("playMusic").addEventListener("click", () => {
+			gameEngine.unPauseBackgroundAudio();
+		})
+
+		document.getElementById("pauseMusic").addEventListener("click", () => {
+			gameEngine.pauseBackgroundAudio();
+		})
+
 	    console.log("All Done!");
 	});	
 })();

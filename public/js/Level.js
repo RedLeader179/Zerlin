@@ -121,9 +121,9 @@ class Tile extends Entity {
 const levelOne = [
 '                                  ',
 '                   --         -s  ',
-'      b     -      d    --       s',
+'   s         -      d    --       s',
 '             -     d             -',
-'             --                   ',
+' s    d        --                   ',
 '  -             ---               ',
 '     --         --          d     ',
 '   --          -          -       ',

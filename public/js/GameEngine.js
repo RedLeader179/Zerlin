@@ -52,6 +52,7 @@ class GameEngine {
         this.Zerlin = new Zerlin(this);
         this.collisionManager = new CollisionManager(this);
         // TODO: instantiate Parallax manager here (and other managers)
+        this.audio = new SoundEngine();
         this.startInput();
         console.log('game initialized');
     }
@@ -63,6 +64,14 @@ class GameEngine {
             requestAnimationFrame(gameLoop);
         })();
     }
+    pauseBackgroundAudio() {
+        this.audio.muteBackgroundMusic();
+    }
+    unPauseBackgroundAudio() {
+        this.audio.unMuteBackgroundMusic();
+    }
+    //todo: add methods to mute/unmute sound FX
+
     loop() {
         this.clockTick = this.timer.tick();
         this.update();
