@@ -11,6 +11,7 @@ Assets:
 -  =  tile
 d  =  basic droid
 s  =  scatter shot droid
+b  =  beam droid
 
 */
 
@@ -54,10 +55,13 @@ class Level {
                     this.tiles.push(tile);
                 } 
                 else if (this.levelLayout[i][j] === 'd') { // basic droid
-                    this.unspawnedDroids.push(new BasicDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth,i * this.game.camera.height / rows));
+                    this.unspawnedDroids.push(new BasicDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * this.game.camera.height / rows));
                 }
                 else if (this.levelLayout[i][j] === 's') { // scatter shot droid
-                    this.unspawnedDroids.push(new LeggyDroid(this.game, this.game.assetManager.getAsset("../img/leggy_droid.png"), j * this.tileWidth,i * this.game.camera.height / rows));
+                    this.unspawnedDroids.push(new LeggyDroid(this.game, this.game.assetManager.getAsset("../img/leggy_droid.png"), j * this.tileWidth, i * this.game.camera.height / rows));
+                }
+                else if (this.levelLayout[i][j] === 'b') { // beam shot droid
+                    this.unspawnedDroids.push(new BeamDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * this.game.camera.height / rows));
                 }
             }
         }
@@ -97,7 +101,10 @@ class Tile extends Entity {
         this.ctx = game.ctx;
         this.drawBox = true;
 
-        this.boundingBox = new BoundingBox(this.x, this.y, this.width, this.height);
+
+        // add + 2 to y to increase precision on bounding box to actual platform image
+        this.boundingBox = new BoundingBox(this.x, this.y + 2, this.width, this.height);
+        this.surface = {p1: {x: this.x, y: this.y}, p2: {x: this.width + this.x, y: this.y}};
     }
     update() {
 
@@ -116,13 +123,13 @@ class Tile extends Entity {
 
 const levelOne = [
 '                                  ',
-'                   --         -s  ',
-'   s         -      d    --       s',
-'             -     d             -',
-' s    d        --                   ',
+'                   --   d     -s  ',
+'    b       -      b    --       s',
+'       s      -     d            -',
+'             --                   ',
 '  -             ---               ',
 '     --         --          d     ',
-'   --          -          -       ',
-'-------- -- ----   ---        ----'
+'   --          -  s       -       ',
+'-------- -- ----   ---   -    ----'
 ]
 

@@ -135,7 +135,8 @@ class SoundEngine {
 				7000,
 				133.33333333333374
 			  ]
-			}
+			},
+			volume: .3
 		  });
 
 		  this.enemy = new Howl({
@@ -173,6 +174,13 @@ class SoundEngine {
 			},
 			loop: false,
 			volume: .1
+		  });
+		  this.beam = new Howl({
+			src: [
+			  "sound/beam2.wav"
+			],
+			loop: true,
+			volume: .7
 		  });
 	}
 

@@ -24,6 +24,12 @@ class CollisionManager {
 		this.laserOnZerlin();
 		this.ZerlinOnPlatform();
 		this.ZerlinOnEdgeOfMap();
+		this.beamOnSaber();
+		this.beamOnDroid();
+		this.beamOnZerlin();
+		this.beamOnPlatform();
+
+		// TODO: loop through only visible tiles instead of entire level
 	}
 
 	/* On droids colliding, swap deltaX and deltaY */
@@ -186,6 +192,95 @@ class CollisionManager {
 
 	}
 
+	beamOnSaber() {
+		var zerlin = this.game.Zerlin;
+		var lightsaber = zerlin.lightsaber;
+		var maxLength = Math.sqrt(this.game.camera.width ** 2, this.game.camera.height ** 2) * 3; // screen diagonal length * 3
+		for (let i = 0; i < this.game.beams.length; i++) {
+			var beamSegments = this.game.beams[i].segments;
+			beamSegments.splice(1); // recreate all deflected segments;
+			for (let j = 0; j < beamSegments.length; j++) {
+				// set beam to reasonable length
+				beamSegments[j].endX = Math.cos(beamSegments[j].angle) * maxLength + beamSegments[j].x;
+				beamSegments[j].endY = Math.sin(beamSegments[j].angle) * maxLength + beamSegments[j].y;
+
+				var collisionWithSaber = this.isCollidedLineWithLine({p1: {x: beamSegments[j].x, y: beamSegments[j].y}, p2: {x: beamSegments[j].endX, y: beamSegments[j].endY}}, 
+												{p1: lightsaber.bladeCollar, p2: lightsaber.bladeTip});
+				// TODO: check for collision with ANY deflective agent (i. e. a mirror or laser shield or something)
+				if (collisionWithSaber.collided) {
+					beamSegments[j].endX = collisionWithSaber.intersection.x;
+					beamSegments[j].endY = collisionWithSaber.intersection.y;
+					beamSegments.push({x: collisionWithSaber.intersection.x, 
+									   y: collisionWithSaber.intersection.y, 
+									   angle: 2 * lightsaber.getSaberAngle() - beamSegments[j].angle,
+									   deflected: true});
+					beamSegments[j+1].endX = Math.cos(beamSegments[j+1].angle) * maxLength + beamSegments[j+1].x;
+					beamSegments[j+1].endY = Math.sin(beamSegments[j+1].angle) * maxLength + beamSegments[j+1].y;
+					break;
+				}
+			}
+		}
+	}
+
+	beamOnDroid() {
+		for (let i = 0; i < this.game.beams.length; i++) {
+			var beamSegments = this.game.beams[i].segments;
+			// only check second segment for collision on droids
+			if (beamSegments.length > 1 && beamSegments[1].deflected) {
+				var beamSeg = beamSegments[1];
+				for (var j = this.game.droids.length - 1; j >= 0; j--) {
+					var droidCircle = this.game.droids[j].boundCircle;
+					if (collideLineWithCircle(beamSeg.x, beamSeg.y, beamSeg.endX, beamSeg.endY, droidCircle.x, droidCircle.y, droidCircle.radius)) {
+						this.game.droids[j].explode();
+					}
+				}
+			}
+		}
+	}
+
+	beamOnZerlin() {
+		var zerlinBox = this.game.Zerlin.boundingbox;
+		for (let i = 0; i < this.game.beams.length; i++) {
+			var beamSegments = this.game.beams[i].segments;
+			for (let j = 0; j < beamSegments.length; j++) {
+				var beamSeg = beamSegments[j];
+				var zerlinCollision = collideLineWithRectangle(beamSeg.x, beamSeg.y, beamSeg.endX, beamSeg.endY,
+											 zerlinBox.x, zerlinBox.y, zerlinBox.width, zerlinBox.height);
+				if (zerlinCollision.collides) {
+					this.game.Zerlin.hits += this.game.clockTick * BEAM_HP_PER_SECOND;
+					console.log(this.game.Zerlin.hits);
+
+					// find intersection with box with shortest beam length, end beam there
+					var closestIntersection = findClosestIntersectionOnBox(zerlinCollision, beamSeg);
+					beamSeg.endX = closestIntersection.x;
+					beamSeg.endY = closestIntersection.y;
+					beamSegments.splice(j+1);
+				}
+			}
+		}
+	}
+
+	beamOnPlatform() {
+		// only detects collision with top of platforms
+
+		for (let i = 0; i < this.game.beams.length; i++) {
+			var beamSegments = this.game.beams[i].segments;
+			for (let j = 0; j < beamSegments.length; j++) {
+				var beamSeg = beamSegments[j];
+				if (beamSeg.angle < Math.PI && beamSeg.angle > 0) {
+					for (let k = 0; k < this.game.level.tiles.length; k++) {
+						let tile = this.game.level.tiles[k];
+						let collisionWithPlatform = this.isCollidedLineWithLine(tile.surface, {p1: {x: beamSeg.x, y: beamSeg.y}, p2: {x: beamSeg.endX, y: beamSeg.endY}});
+						if (collisionWithPlatform.collided) {
+							beamSeg.endX = collisionWithPlatform.intersection.x;
+							beamSeg.endY = collisionWithPlatform.intersection.y;
+							beamSegments.splice(j+1);
+						}
+					}	
+				}
+			}
+		}
+	}
 
 	isLaserCollidedWithDroid(laser, droid) {
 		return collideLineWithCircle(laser.x, laser.y, laser.tailX, laser.tailY, droid.boundCircle.x,
@@ -479,18 +574,53 @@ var collideLineWithLineHelper = function(line1, line2) {
  * @param {number} rh rectangle height
  */
 var collideLineWithRectangle = function(x1, y1, x2, y2, rx, ry, rw, rh) {
-	var result = false;
 	//check collision of line segment with each side of the rectangle
 	var left = collideLineWithLine(x1, y1, x2, y2, rx, ry, rx, ry + rh);
 	var right = collideLineWithLine(x1, y1, x2, y2, rx + rw, ry, rx + rw, ry + rh);
 	var top = collideLineWithLine(x1, y1, x2, y2, rx, ry, rx + rw, ry);
 	var bottom = collideLineWithLine(x1, y1, x2, y2, rx, ry + rh, rx + rw, ry + rh);
 
-	if (left.collides || right.collides || top.collides || bottom.collides) {
-		result = true;
+	return {collides: left.collides || right.collides || top.collides || bottom.collides,
+				  left: left,
+				  right: right,
+				  top: top,
+				  bottom: bottom};
+}
+
+
+var findClosestIntersectionOnBox = function(intersections, startOfLine) {
+	var minimumLengthBeam = Number.MAX_VALUE;
+	var closestIntersection = {};
+
+	if (intersections.left.collides) {
+		let length1 = distance(startOfLine, intersections.left);
+		if (length1 < minimumLengthBeam) {
+			closestIntersection = intersections.left;
+			minimumLengthBeam = length1;
+		}
 	}
-	//can return the object with intersection point if need to.
-	return result;
+	if (intersections.right.collides) {
+		let length2 = distance(startOfLine, intersections.right);
+		if (length2 < minimumLengthBeam) {
+			closestIntersection = intersections.right;
+			minimumLengthBeam = length2;
+		}
+	}
+	if (intersections.top.collides) {
+		let length3 = distance(startOfLine, intersections.top);
+		if (length3 < minimumLengthBeam) {
+			closestIntersection = intersections.top;
+			minimumLengthBeam = length3;
+		}
+	}
+	if (intersections.bottom.collides) {
+		let length4 = distance(startOfLine, intersections.bottom);
+		if (length4 < minimumLengthBeam) {
+			closestIntersection = intersections.bottom;
+			minimumLengthBeam = length4;
+		}
+	}
+	return closestIntersection;
 }
 
 /**
