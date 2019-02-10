@@ -4,7 +4,12 @@ TCSS 491 - Computational Worlds
 Joshua Atherton, Michael Josten, Steven Golob
 */
 
-
+// const LEVEL_ONE_BACKGROUNDS = [
+// 				new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundTrees4.png'), 1, camera, 5200),
+// 				new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundTrees3.png'), 1, camera, 2500),
+// 				new ParallaxFloatingBackground(game, game.assetManager.getAsset('../img/backgroundStars.png'), 1, camera, 1400),
+// 				new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundTrees2.png'), 1, camera, 1000),
+// 				new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundTrees1.png'), 1, camera, 600)];
 
 
 var ZERLIN_POSITION_ON_SCREEN = .382; // = (1 - 1/PHI)
@@ -44,29 +49,37 @@ class Camera {
 /**
  * Manage and animate backgrounds.
  */
-class ParallaxBackgroundManager { 
-    
+class ParallaxBackgroundManager {
+
     constructor(game, camera) {
     	this.game = game;
     	this.camera = camera;
-        this.parralaxBackgroundLayers = [];
+      this.parralaxBackgroundLayers = [];
 
-	    this.addBackgroundLayer(
-	        new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundTrees4.png'), 1, camera, 5200));
-		this.addBackgroundLayer(
-			new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundTrees3.png'), 1, camera, 2500));
-		this.addBackgroundLayer(
-			new ParallaxFloatingBackground(game, game.assetManager.getAsset('../img/backgroundStars.png'), 1, camera, 1400));
-		this.addBackgroundLayer(
-			new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundTrees2.png'), 1, camera, 1000));
-	    this.addBackgroundLayer(
-	        new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundTrees1.png'), 1, camera, 600));
+			//todo delete
+			// this.addBackgroundLayer(
+	    //     new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundTrees4.png'), 1, camera, 5200));
+		  // this.addBackgroundLayer(
+			// 		new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundTrees3.png'), 1, camera, 2500));
+			// this.addBackgroundLayer(
+			// 	  new ParallaxFloatingBackground(game, game.assetManager.getAsset('../img/backgroundStars.png'), 1, camera, 1400));
+		  // this.addBackgroundLayer(
+		  //   	new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundTrees2.png'), 1, camera, 1000));
+	    // this.addBackgroundLayer(
+	    //     new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundTrees1.png'), 1, camera, 600));
     }
 
     addBackgroundLayer(background) {
     	// background.game = this.game;
         this.parralaxBackgroundLayers.push(background);
     }
+
+		setParallaxBackgrounds(backgroundArray) {
+			this.parralaxBackgroundLayers = [];
+			backgroundArray.forEach( item => {
+				this.parralaxBackgroundLayers.push(item);
+			});
+		}
 
     update() {
         this.parralaxBackgroundLayers.forEach(layer => {
@@ -84,7 +97,7 @@ class ParallaxBackgroundManager {
 /*
  * An individual image to be drawn with its follower.
  */
-class ParallaxScrollBackground extends Entity {  
+class ParallaxScrollBackground extends Entity {
 
     constructor(game, backgroundImage, scale, camera, distanceFromCamera) {
         super(game, 0, 0, 0, 0);
@@ -101,27 +114,27 @@ class ParallaxScrollBackground extends Entity {
         this.imageDistanceFromX = 0;
     }
 
-    update() { 
+    update() {
     	// simulates slower movement for further distances
         this.x = this.camera.x - (this.camera.x * 100 / this.distanceFromCamera);
 
     	// x moves slower than camera, so update how far image is drawn from x to "keep up" with camera.
         if (this.imageDistanceFromX + (2 * this.imageWidth) + this.x < this.camera.x + this.camera.width) {
         	this.imageDistanceFromX = this.imageDistanceFromX + this.imageWidth;
-        } 
+        }
         else if (this.imageDistanceFromX + this.x > this.camera.x) {
         	this.imageDistanceFromX = this.imageDistanceFromX - this.imageWidth;
         }
     }
 
     draw() {
-        this.ctx.drawImage(this.backgroundImage, this.imageDistanceFromX + this.x - this.camera.x, this.y); 
+        this.ctx.drawImage(this.backgroundImage, this.imageDistanceFromX + this.x - this.camera.x, this.y);
         this.ctx.drawImage(this.backgroundImage, this.imageDistanceFromX + this.x + this.imageWidth - this.camera.x, this.y);
     }
 }
 
 
-class ParallaxRotatingBackground extends Entity { 
+class ParallaxRotatingBackground extends Entity {
 
 
     constructor(game, backgroundImage, scale, camera) {
@@ -140,7 +153,7 @@ class ParallaxRotatingBackground extends Entity {
         this.imageDistanceFromX = 0;
     }
 
-    update() { 
+    update() {
         this.angle += this.game.clockTick * 2 * Math.PI / 200;
     }
 
@@ -150,28 +163,28 @@ class ParallaxRotatingBackground extends Entity {
         this.ctx.translate(this.camera.width / 2, this.camera.height / 2);
         this.ctx.rotate(this.angle);
 
-        this.ctx.drawImage(this.backgroundImage, 
+        this.ctx.drawImage(this.backgroundImage,
                            0,
-                           0, 
+                           0,
                            this.imageWidth,
                            this.imageHeight,
-                           -this.imageWidth / 2, 
+                           -this.imageWidth / 2,
                            -this.imageHeight / 2,
                            this.imageWidth,
-                           this.imageHeight); 
+                           this.imageHeight);
         this.ctx.restore();
     }
 }
 
 
 
-class ParallaxAnimatedBackground extends Entity { 
+class ParallaxAnimatedBackground extends Entity {
 
 }
 
 
 
-class ParallaxFloatingBackground extends ParallaxScrollBackground { 
+class ParallaxFloatingBackground extends ParallaxScrollBackground {
 
     constructor(game, backgroundImage, scale, camera, distanceFromCamera) {
         super(game, backgroundImage, scale, camera, distanceFromCamera);
@@ -188,6 +201,3 @@ class ParallaxFloatingBackground extends ParallaxScrollBackground {
         super.draw();
     }
 }
-
-
-

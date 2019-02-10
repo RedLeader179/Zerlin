@@ -49,7 +49,7 @@ class AssetManager {
 }
 
 /**
- * Driver function to load all assets for the game and launch 
+ * Driver function to load all assets for the game and launch
  * the game after completion.
  */
 (function () {
@@ -92,11 +92,15 @@ class AssetManager {
 
 	AM.queueDownload("../img/leggy_droid.png");
 
+  AM.queueDownload('../img/city_background.png');
+  AM.queueDownload('../img/city_buildings_back.png');
+  AM.queueDownload('../img/city_clouds_left.png');
+
 
 	AM.downloadAll(function () {
 	    var canvas = document.getElementById("gameWorld");
 		var ctx = canvas.getContext("2d");
-		
+
 	    var gameEngine = new GameEngine(AM);
 	    gameEngine.init(ctx);
 
@@ -131,6 +135,5 @@ class AssetManager {
 		})
 
 	    console.log("All Done!");
-	});	
+	});
 })();
-
