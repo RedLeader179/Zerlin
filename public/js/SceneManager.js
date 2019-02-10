@@ -41,7 +41,7 @@ class SceneManager {
 
 
     //current level parralax bacgrounds
-    this.currentBackground = this.gameEngine.camera.parallaxManager.setParallaxBackgrounds(LEVEL_TWO_BACKGROUNDS);
+    this.currentBackground = this.gameEngine.camera.parallaxManager.setParallaxBackgrounds(LEVEL_ONE_BACKGROUNDS);
 
     // current level layout and its tilesand tile
     this.currentLevel = LEVEL_ONE;
