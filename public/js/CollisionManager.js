@@ -19,13 +19,13 @@ class CollisionManager {
 	handleCollisions() {
 		this.droidOnDroid();
 		this.droidOnSaber();
-		this.laserOnDroid();
+		// this.laserOnDroid();
 		this.laserOnSaber();
 		this.laserOnZerlin();
 		this.ZerlinOnPlatform();
 		this.ZerlinOnEdgeOfMap();
 		this.beamOnSaber();
-		this.beamOnDroid();
+		// this.beamOnDroid();
 		this.beamOnZerlin();
 		this.beamOnPlatform();
 
@@ -119,6 +119,7 @@ class CollisionManager {
 				for (var j = this.game.droids.length - 1; j >= 0; j--) {
 					if (this.isLaserCollidedWithDroid(this.game.lasers[i], this.game.droids[j])) {
 						this.game.droids[j].explode();
+						this.game.lasers[i].removeFromWorld = true;
 					}
 				}
 			}
@@ -132,7 +133,8 @@ class CollisionManager {
 				if (!laser.isDeflected) {
 					var collision = this.isCollidedWithSaber(laser);
 					if (collision.collided) {
-						this.deflectLaser(laser, collision.intersection);    
+						this.deflectLaser(laser, collision.intersection);
+        				this.game.audio.enemy.volume(.07, this.game.audio.enemy.play('retroBlasterShot'));
 					}
 				}
 			}
@@ -141,16 +143,18 @@ class CollisionManager {
 
 	laserOnZerlin() {
 		var zerlin = this.game.Zerlin;
-		for (var i = 0; i < this.game.lasers.length; i++) {
-			var laser = this.game.lasers[i];
-			if ( !laser.isDeflected &&
-				laser.x > zerlin.boundingbox.left &&
-				laser.x < zerlin.boundingbox.right &&
-				laser.y > zerlin.boundingbox.top &&
-				laser.y < zerlin.boundingbox.bottom) {
-				laser.removeFromWorld = true;
-				zerlin.hits++;
-				// console.log(zerlin.hits);
+		if (!zerlin.boundingbox.hidden) {
+			for (var i = 0; i < this.game.lasers.length; i++) {
+				var laser = this.game.lasers[i];
+				if ( !laser.isDeflected &&
+					laser.x > zerlin.boundingbox.left &&
+					laser.x < zerlin.boundingbox.right &&
+					laser.y > zerlin.boundingbox.top &&
+					laser.y < zerlin.boundingbox.bottom) {
+					laser.removeFromWorld = true;
+					zerlin.hits++;
+					// console.log(zerlin.hits);
+				}
 			}
 		}
 	}
@@ -177,7 +181,7 @@ class CollisionManager {
 		}
 	}
 
-	ZerlinOnEdgeOfMap() { // TODO: keeps zerlin from falling off edge of map, but do we want to allow that for daring players?
+	ZerlinOnEdgeOfMap() { // TODO: currently, keeps zerlin from falling off edge of map, but do we want to allow that for daring players?
 		var zerlin = this.game.Zerlin;
 		if (zerlin.y > 2 * this.game.camera.height) {
 			// game over
@@ -195,6 +199,7 @@ class CollisionManager {
 	beamOnSaber() {
 		var zerlin = this.game.Zerlin;
 		var lightsaber = zerlin.lightsaber;
+
 		var maxLength = Math.sqrt(this.game.camera.width ** 2, this.game.camera.height ** 2) * 3; // screen diagonal length * 3
 		for (let i = 0; i < this.game.beams.length; i++) {
 			var beamSegments = this.game.beams[i].segments;
@@ -204,19 +209,21 @@ class CollisionManager {
 				beamSegments[j].endX = Math.cos(beamSegments[j].angle) * maxLength + beamSegments[j].x;
 				beamSegments[j].endY = Math.sin(beamSegments[j].angle) * maxLength + beamSegments[j].y;
 
-				var collisionWithSaber = this.isCollidedLineWithLine({p1: {x: beamSegments[j].x, y: beamSegments[j].y}, p2: {x: beamSegments[j].endX, y: beamSegments[j].endY}}, 
-												{p1: lightsaber.bladeCollar, p2: lightsaber.bladeTip});
-				// TODO: check for collision with ANY deflective agent (i. e. a mirror or laser shield or something)
-				if (collisionWithSaber.collided) {
-					beamSegments[j].endX = collisionWithSaber.intersection.x;
-					beamSegments[j].endY = collisionWithSaber.intersection.y;
-					beamSegments.push({x: collisionWithSaber.intersection.x, 
-									   y: collisionWithSaber.intersection.y, 
-									   angle: 2 * lightsaber.getSaberAngle() - beamSegments[j].angle,
-									   deflected: true});
-					beamSegments[j+1].endX = Math.cos(beamSegments[j+1].angle) * maxLength + beamSegments[j+1].x;
-					beamSegments[j+1].endY = Math.sin(beamSegments[j+1].angle) * maxLength + beamSegments[j+1].y;
-					break;
+				if (!lightsaber.hidden) {
+					var collisionWithSaber = this.isCollidedLineWithLine({p1: {x: beamSegments[j].x, y: beamSegments[j].y}, p2: {x: beamSegments[j].endX, y: beamSegments[j].endY}}, 
+													{p1: lightsaber.bladeCollar, p2: lightsaber.bladeTip});
+					// TODO: check for collision with ANY deflective agent (i. e. a mirror or laser shield or something)
+					if (collisionWithSaber.collided) {
+						beamSegments[j].endX = collisionWithSaber.intersection.x;
+						beamSegments[j].endY = collisionWithSaber.intersection.y;
+						beamSegments.push({x: collisionWithSaber.intersection.x, 
+										   y: collisionWithSaber.intersection.y, 
+										   angle: 2 * lightsaber.getSaberAngle() - beamSegments[j].angle,
+										   deflected: true});
+						beamSegments[j+1].endX = Math.cos(beamSegments[j+1].angle) * maxLength + beamSegments[j+1].x;
+						beamSegments[j+1].endY = Math.sin(beamSegments[j+1].angle) * maxLength + beamSegments[j+1].y;
+						break;
+					}
 				}
 			}
 		}
@@ -240,21 +247,23 @@ class CollisionManager {
 
 	beamOnZerlin() {
 		var zerlinBox = this.game.Zerlin.boundingbox;
-		for (let i = 0; i < this.game.beams.length; i++) {
-			var beamSegments = this.game.beams[i].segments;
-			for (let j = 0; j < beamSegments.length; j++) {
-				var beamSeg = beamSegments[j];
-				var zerlinCollision = collideLineWithRectangle(beamSeg.x, beamSeg.y, beamSeg.endX, beamSeg.endY,
-											 zerlinBox.x, zerlinBox.y, zerlinBox.width, zerlinBox.height);
-				if (zerlinCollision.collides) {
-					this.game.Zerlin.hits += this.game.clockTick * BEAM_HP_PER_SECOND;
-					console.log(this.game.Zerlin.hits);
+		if (!zerlinBox.hidden) {
+			for (let i = 0; i < this.game.beams.length; i++) {
+				var beamSegments = this.game.beams[i].segments;
+				for (let j = 0; j < beamSegments.length; j++) {
+					var beamSeg = beamSegments[j];
+					var zerlinCollision = collideLineWithRectangle(beamSeg.x, beamSeg.y, beamSeg.endX, beamSeg.endY,
+												 zerlinBox.x, zerlinBox.y, zerlinBox.width, zerlinBox.height);
+					if (zerlinCollision.collides) {
+						this.game.Zerlin.hits += this.game.clockTick * BEAM_HP_PER_SECOND;
+						console.log(this.game.Zerlin.hits);
 
-					// find intersection with box with shortest beam length, end beam there
-					var closestIntersection = findClosestIntersectionOnBox(zerlinCollision, beamSeg);
-					beamSeg.endX = closestIntersection.x;
-					beamSeg.endY = closestIntersection.y;
-					beamSegments.splice(j+1);
+						// find intersection with box with shortest beam length, end beam there
+						var closestIntersection = findClosestIntersectionOnBox(zerlinCollision, beamSeg);
+						beamSeg.endX = closestIntersection.x;
+						beamSeg.endY = closestIntersection.y;
+						beamSegments.splice(j+1);
+					}
 				}
 			}
 		}

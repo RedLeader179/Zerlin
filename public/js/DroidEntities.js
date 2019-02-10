@@ -9,7 +9,7 @@ var DROID_ZERLIN_MOVEMENT = 2.5; //amount a droid will move when left or right k
 //can potentially add in another zerlin move constant for rolling
 
 //basic droid constants
-var BASIC_DROID_SHOOT_INTERVAL = .5;
+var BASIC_DROID_SHOOT_INTERVAL = 2;
 var BASIC_DROID_X_MOVEMENT_SPEED = 150;
 var BASIC_DROID_Y_MOVEMENT_SPEED = 100;
 var BASIC_DROID_X_ACCELERATION = 60;
@@ -205,6 +205,7 @@ class BasicDroid extends AbstractDroid {
         //console.log("shot laser at X: " + targetX + " Y: " + targetY);
         //set after droid is done firing
         this.fire = false;
+        this.game.audio.enemy.play('retroBlasterShot');
     }
     /**
      * Method that will shoot a laser randomly in an area from target point

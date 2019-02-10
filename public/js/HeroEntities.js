@@ -10,12 +10,13 @@ var PHI = 1.618;
 
 var Z_SCALE = .6;
 
-var DRAW_COLLISION_BOUNDRIES = false;
+var DRAW_COLLISION_BOUNDRIES = true;
 
 var Z_WIDTH = 114;
 var Z_HEIGHT = 306;
 var Z_ARM_SOCKET_X = 33;
 var Z_ARM_SOCKET_Y = 146;
+var Z_CROUCH_ARM_SOCKET_Y = 186;
 var Z_HORIZANTAL_POSITION = 2 - PHI;
 var Z_FEET_ABOVE_FRAME = 10;
 
@@ -65,8 +66,10 @@ class Zerlin extends Entity {
 		this.ctx = game.ctx;
 		this.direction = 0; // -1 = left, 0 = still, 1 = right
 		this.somersaulting = false;
+		this.crouching = false;
 		this.falling = true;
 		this.hits = 0;
+		this.armSocketY = Z_ARM_SOCKET_Y;
 		this.faceRight();
 		this.lightsaber = new Lightsaber(game, this);
 		this.createAnimations();
@@ -125,6 +128,9 @@ class Zerlin extends Entity {
 				this.game.audio.lightsaber.play('lightsaberSwing');
 				this.startSlash(); 
 			}
+			else if (this.game.keys['KeyX'] && !this.falling) {
+				this.crouch();
+			}
 		}
 
 		if (this.somersaulting) {
@@ -150,6 +156,11 @@ class Zerlin extends Entity {
 				} else {
 					this.slashZone.active = false;
 				}
+			}
+		}
+		else if (this.crouching) {
+			if (!this.game.keys['KeyX']) {
+				this.stopCrouch();
 			}
 		}
 
@@ -197,6 +208,15 @@ class Zerlin extends Entity {
 				this.drawX = this.x - (Z_WIDTH - Z_ARM_SOCKET_X) * Z_SCALE;
 			}
 		}
+		else if (this.crouching) {
+			if (this.facingRight) { 
+				this.animation = this.crouchAnimation;
+				this.drawX = this.x - Z_ARM_SOCKET_X * Z_SCALE;
+			} else { // facing left
+				this.animation = this.crouchLeftAnimation;
+				this.drawX = this.x - (Z_WIDTH - Z_ARM_SOCKET_X) * Z_SCALE;
+			}
+		}
 		else if (this.facingRight) {
 			this.drawX = this.x - Z_ARM_SOCKET_X * Z_SCALE;
 			if (this.direction === -1) {
@@ -225,7 +245,9 @@ class Zerlin extends Entity {
 
 		if (DRAW_COLLISION_BOUNDRIES) {
 			this.ctx.strokeStyle = "black";
-			this.ctx.strokeRect(this.boundingbox.x - this.game.camera.x, this.boundingbox.y, this.boundingbox.width, this.boundingbox.height);
+			if (!this.boundingbox.hidden) {
+				this.ctx.strokeRect(this.boundingbox.x - this.game.camera.x, this.boundingbox.y, this.boundingbox.width, this.boundingbox.height);
+			}
 			if (this.slashing && this.slashZone.active) {
 				this.ctx.beginPath();
 				this.ctx.arc(this.slashZone.outerCircle.x - this.game.camera.x, this.slashZone.outerCircle.y, this.slashZone.outerCircle.radius, 0, Math.PI * 2);
@@ -274,15 +296,36 @@ class Zerlin extends Entity {
 		this.lightsaber.hidden = true;
 
 		// TODO: new bounding box for somersault, left and right
-		this.boundingbox = new BoundingBox(this.boundingbox.x, this.y - (Z_HEIGHT - 73) * Z_SCALE, this.boundingbox.width, this.boundingbox.height);
+		this.boundingbox.hidden = true;
 	}
 
 	finishSomersault() {
 		this.animation.elapsedTime = 0;
 		this.deltaX = 0;
 		this.somersaulting = false;
-		this.lightsaber.hidden = false;
-		
+		this.lightsaber.hidden = false;		
+		this.boundingbox.hidden = false;
+	}
+
+	crouch() {
+		this.crouching = true;
+		this.deltaX = 0;
+		this.armSocketY = Z_CROUCH_ARM_SOCKET_Y;
+		if (this.facingRight) {
+			this.faceRight(); 
+		} else {
+			this.faceLeft();
+		}
+	}
+
+	stopCrouch() {
+		this.crouching = false;
+		this.armSocketY = Z_ARM_SOCKET_Y;
+		if (this.facingRight) {
+			this.faceRight(); 
+		} else {
+			this.faceLeft();
+		}
 	}
 
 	startSlash() {
@@ -305,7 +348,7 @@ class Zerlin extends Entity {
 		}
 
 		// TODO: new bounding box for slash, left and right
-		this.boundingbox = new BoundingBox(this.boundingbox.x, this.y - (Z_HEIGHT - 73) * Z_SCALE, this.boundingbox.width, this.boundingbox.height);
+		this.boundingbox = new BoundingBox(this.boundingbox.x , this.y - (Z_HEIGHT - 73) * Z_SCALE, this.boundingbox.width, this.boundingbox.height);
 	}
 
 	finishSlash() {
@@ -315,17 +358,22 @@ class Zerlin extends Entity {
 	}
 
 
-	// functions for updating the animation and sprite being used
-
 	faceRight() {
 		this.facingRight = true;
-		this.boundingbox = new BoundingBox(this.x - (15 * Z_SCALE), this.y - (Z_HEIGHT - 73) * Z_SCALE, (Z_WIDTH - 39) * Z_SCALE, (Z_HEIGHT - 85) * Z_SCALE);
-		
+		if (this.crouching) {
+			this.boundingbox = new BoundingBox(this.x - (15 * Z_SCALE), this.y - (Z_HEIGHT - 120) * Z_SCALE, (Z_WIDTH - 39) * Z_SCALE, (Z_HEIGHT - 132) * Z_SCALE);
+		} else {
+			this.boundingbox = new BoundingBox(this.x - (15 * Z_SCALE), this.y - (Z_HEIGHT - 73) * Z_SCALE, (Z_WIDTH - 39) * Z_SCALE, (Z_HEIGHT - 85) * Z_SCALE);	
+		}
 	}
 
 	faceLeft() {
 		this.facingRight = false;
-		this.boundingbox = new BoundingBox(this.x - (Z_WIDTH - 55) * Z_SCALE, this.y - (Z_HEIGHT - 73) * Z_SCALE, (Z_WIDTH - 39) * Z_SCALE, (Z_HEIGHT - 85) * Z_SCALE);
+		if (this.crouching) {
+			this.boundingbox = new BoundingBox(this.x - (Z_WIDTH - 55) * Z_SCALE, this.y - (Z_HEIGHT - 120) * Z_SCALE, (Z_WIDTH - 39) * Z_SCALE, (Z_HEIGHT - 132) * Z_SCALE);
+		} else {
+			this.boundingbox = new BoundingBox(this.x - (Z_WIDTH - 55) * Z_SCALE, this.y - (Z_HEIGHT - 73) * Z_SCALE, (Z_WIDTH - 39) * Z_SCALE, (Z_HEIGHT - 85) * Z_SCALE);	
+		}
 	}
 
 
@@ -444,29 +492,45 @@ class Zerlin extends Entity {
 												   Z_SLASH_FRAMES, 
 												   false, false,
 												   Z_SCALE);
+		this.crouchAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin crouch.png"), 
+													0, 0,
+												   Z_WIDTH, 
+												   Z_HEIGHT, 
+												   1, 
+												   1, 
+												   true, false,
+												   Z_SCALE);
+		this.crouchLeftAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin crouch left.png"), 
+													0, 0,
+												   Z_WIDTH, 
+												   Z_HEIGHT, 
+												   1, 
+												   1, 
+												   true, false,
+												   Z_SCALE);
 	}
 }
 
 
 
 var LS_UP_IMAGE_WIDTH = 126;
-var LS_UP_IMAGE_HEIGHT = 204;
+var LS_UP_IMAGE_HEIGHT = 228;
 var LS_DOWN_IMAGE_WIDTH = 126;
-var LS_DOWN_IMAGE_HEIGHT = 198;
+var LS_DOWN_IMAGE_HEIGHT = 222;
 
 var LS_UP_COLLAR_X = 114; // 114 for outer edge of blade, 111 for center of blade
-var LS_UP_COLLAR_Y = 162;
+var LS_UP_COLLAR_Y = 186;
 var LS_DOWN_COLLAR_X = 114;
 var LS_DOWN_COLLAR_Y = 35;
 var LS_UP_TIP_X = 114;
 var LS_UP_TIP_Y = 5;
 var LS_DOWN_TIP_X = 114;
-var LS_DOWN_TIP_Y = 192;
+var LS_DOWN_TIP_Y = 216;
 
 var LS_RIGHT_X_AXIS = 10;
 var LS_LEFT_X_AXIS = 10;
-var LS_UP_Y_AXIS = 147;
-var LS_DOWN_Y_AXIS = 51;
+var LS_UP_Y_AXIS = 159;
+var LS_DOWN_Y_AXIS = 63;
 
 
 class Lightsaber extends Entity {
@@ -480,6 +544,7 @@ class Lightsaber extends Entity {
 		this.angle = 0;
 		this.Zerlin = Zerlin;
 		this.hidden = false;
+		this.inClickPosition = false;
 		this.setUpSaberImages();
 		this.faceRightUpSaber();
 		this.updateCollisionLine();
@@ -487,7 +552,7 @@ class Lightsaber extends Entity {
 
 	update() {
 		this.x = this.Zerlin.x;
-		this.y = this.Zerlin.y - (Z_HEIGHT - Z_ARM_SOCKET_Y) * Z_SCALE;
+		this.y = this.Zerlin.y - (Z_HEIGHT - this.Zerlin.armSocketY) * Z_SCALE;
 		// rotate 
 		if (this.game.mouse) {
 			 // TODO: rotateAndCache if mouse not moved
@@ -496,28 +561,32 @@ class Lightsaber extends Entity {
 			// change sprite on any of these conditions 
 			// TODO: consolidate logic here
 			if (this.game.mouse.x + this.game.camera.x < this.Zerlin.x && this.facingRight) {
-				if (this.saberUp) {
+				this.saberUp = !this.saberUp;
+				if (this.inClickPosition) {
 					this.faceLeftUpSaber();
 				} else {
 					this.faceLeftDownSaber();
 				}        
 			} 
 			else if (this.game.mouse.x + this.game.camera.x > this.Zerlin.x && !this.facingRight) {
-				if (this.saberUp) {
-					this.faceRightUpSaber();
-				} else {
+				this.saberUp = !this.saberUp;
+				if (this.inClickPosition) {
 					this.faceRightDownSaber();
+				} else {
+					this.faceRightUpSaber();
 				}
 			} 
-			else if (this.game.rightClickDown && this.saberUp) {
+			else if (this.game.rightClickDown && !this.inClickPosition) {
+				this.inClickPosition = true;
 				if (this.game.mouse.x + this.game.camera.x < this.Zerlin.x) {
-					this.faceLeftDownSaber();
+					this.faceLeftUpSaber();
 				} else {
 					this.faceRightDownSaber();
 				}        
-			} else if (!this.game.rightClickDown && !this.saberUp) {
+			} else if (!this.game.rightClickDown && this.inClickPosition) {
+				this.inClickPosition = false;
 				if (this.game.mouse.x + this.game.camera.x < this.Zerlin.x) {
-					this.faceLeftUpSaber();
+					this.faceLeftDownSaber();
 				} else {
 					this.faceRightUpSaber();
 				}
@@ -649,10 +718,10 @@ class Lightsaber extends Entity {
 	}
 
 	setUpSaberImages() {
-		this.faceRightUpSaberImage = this.assetManager.getAsset("../img/Lightsaber with point of rotation drawn.png");
-		this.faceLeftUpSaberImage = this.assetManager.getAsset("../img/Lightsaber with point of rotation drawn left.png");
-		this.faceRightDownSaberImage = this.assetManager.getAsset("../img/lightsaber upside down.png");
-		this.faceLeftDownSaberImage = this.assetManager.getAsset("../img/lightsaber upside down left.png");
+		this.faceRightUpSaberImage = this.assetManager.getAsset("../img/saber up.png");
+		this.faceLeftUpSaberImage = this.assetManager.getAsset("../img/saber up left.png");
+		this.faceRightDownSaberImage = this.assetManager.getAsset("../img/saber down.png");
+		this.faceLeftDownSaberImage = this.assetManager.getAsset("../img/saber down left.png");
 	}
 }
 
