@@ -31,7 +31,7 @@ class Level {
         this.ctx = game.ctx;
         this.tiles = [];
         this.unspawnedDroids = []; // when spawned, pass to game engine
-        this.powerUps = []; 
+        this.powerUps = [];
 
         this.length = this.levelLayout[0].length * this.tileWidth;
         this._parseLevel();
@@ -56,7 +56,7 @@ class Level {
                     }
                     var tile = new Tile(this.game, image, j * this.tileWidth, i * this.game.camera.height / rows);
                     this.tiles.push(tile);
-                } 
+                }
                 else if (this.levelLayout[i][j] === 'd') { // basic droid
                     this.unspawnedDroids.push(new BasicDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * this.game.camera.height / rows));
                 }
@@ -125,7 +125,7 @@ class Tile extends Entity {
 
     }
     draw() {
-        this.ctx.drawImage(this.tileImage, this.x - this.game.camera.x, this.y); 
+        this.ctx.drawImage(this.tileImage, this.x - this.game.camera.x, this.y);
 
         if (DRAW_BOXES) {
             this.ctx.strokeStyle = "black";
@@ -133,18 +133,3 @@ class Tile extends Entity {
         }
     }
 }
-
-
-
-const levelOne = [
-'       b                          ',
-' s            b    --   d     -s  ',
-'            -      B    --       s',
-' d     m      -     d            -',
-'       B     --  n                ',
-'  -             ---               ',
-'f    --         --          d     ',
-'   --          -  s       -       ',
-'--------n-- ----   ---   -    ----'
-]
-

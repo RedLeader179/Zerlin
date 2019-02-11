@@ -43,12 +43,14 @@ class GameEngine {
         this.surfaceHeight = this.ctx.canvas.height;
         this.timer = new Timer();
         this.camera = new Camera(this, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height); // TODO: Change to constant camera dimension to pair up with template
-        this.level = new Level(this, levelOne, {
-            centerTile: this.assetManager.getAsset('../img/forest_center_tile.png'), 
-            leftTile: this.assetManager.getAsset('../img/forest_left_tile.png'), 
-            rightTile: this.assetManager.getAsset('../img/forest_right_tile.png'),
-            leftRightTile: this.assetManager.getAsset('../img/forest_both_rounded_tile.png')
-        });
+        this.sceneManager = new SceneManager(this);
+        this.level = this.sceneManager.currentLevel;
+        // this.level = new Level(this, levelOne, {
+        //     centerTile: this.assetManager.getAsset('../img/forest_center_tile.png'),
+        //     leftTile: this.assetManager.getAsset('../img/forest_left_tile.png'),
+        //     rightTile: this.assetManager.getAsset('../img/forest_right_tile.png'),
+        //     leftRightTile: this.assetManager.getAsset('../img/forest_both_rounded_tile.png')
+        // });
         this.Zerlin = new Zerlin(this);
         this.collisionManager = new CollisionManager(this);
         // TODO: instantiate Parallax manager here (and other managers)
@@ -83,7 +85,7 @@ class GameEngine {
         this.Zerlin.update();
         this.camera.update();
         this.level.update();
-        
+
         for (var i = this.droids.length - 1; i >= 0; i--) {
             this.droids[i].update();
             if (this.droids[i].removeFromWorld) {
@@ -175,7 +177,7 @@ class GameEngine {
         this.ctx.canvas.addEventListener("keydown", (e) => {
             if (that.keys[e.code]) { return; } // prevent repeating calls when key is held down
             // console.log("Key Down Event - Char " + e.code + " Code " + e.keyCode);
-            that.keys[e.code] = true;            
+            that.keys[e.code] = true;
             e.preventDefault();
         }, false);
 
@@ -215,7 +217,7 @@ class GameEngine {
                 that.rightClickDown = false;
             }
         }, false);
-    
+
 
 
         console.log('Input started');
@@ -253,7 +255,7 @@ class Entity {
 
     }
     update() {
-        
+
     }
     draw() {
         // if (this.game.showOutlines && this.radius) {
@@ -284,12 +286,11 @@ class Entity {
 
     }
     outsideScreen() {
-        return (this.x < 0 || 
+        return (this.x < 0 ||
             this.x > this.game.surfaceWidth ||
             this.y < 0 ||
             this.y > this.game.surfaceHeight);
 
     }
-    
-}
 
+}
