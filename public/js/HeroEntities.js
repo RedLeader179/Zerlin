@@ -286,7 +286,7 @@ class Zerlin extends Entity {
 
 	startSomersault() {
 		this.game.audio.lightsaber.play('lightsaberOff');
-        this.game.audio.saberHum.stop();
+		this.game.audio.saberHum.stop();
 		this.somersaulting = true;
 		this.deltaX = Z_SOMERSAULT_SPEED * this.direction;
 		this.somersaultingDirection = this.direction;
@@ -298,7 +298,7 @@ class Zerlin extends Entity {
 
 	finishSomersault() {
 		this.game.audio.lightsaber.play('lightsaberOn');
-        this.game.audio.saberHum.play();
+		this.game.audio.saberHum.play();
 		this.animation.elapsedTime = 0;
 		this.deltaX = 0;
 		this.somersaulting = false;

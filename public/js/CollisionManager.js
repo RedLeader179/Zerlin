@@ -36,7 +36,7 @@ class CollisionManager {
 	droidOnDroid() {
 		//check collision with other droids.
 		//can optimize by not checking every single droid with each other twice.
-        
+		
 		// for (var i = this.game.droids.length - 1; i >= 0; i--) {
 		// 	var droid1 = this.game.droids[i];
 		// 	for (var j = this.game.droids.length - 1; j >= 0; j--) {
@@ -133,7 +133,7 @@ class CollisionManager {
 					var collision = this.isCollidedWithSaber(laser);
 					if (collision.collided) {
 						this.deflectLaser(laser, collision.intersection);
-        				this.game.audio.enemy.volume(.07, this.game.audio.enemy.play('retroBlasterShot'));
+						this.game.audio.enemy.volume(.07, this.game.audio.enemy.play('retroBlasterShot'));
 					}
 				}
 			}
@@ -366,56 +366,56 @@ class CollisionManager {
 
 class BoundingBox {
 
-    constructor(x, y, width, height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+	constructor(x, y, width, height) {
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
 
-        this.left = x;
-        this.top = y;
-        this.right = x + width;
-        this.bottom = y + height;
-    }
+		this.left = x;
+		this.top = y;
+		this.right = x + width;
+		this.bottom = y + height;
+	}
 
-    collide(oth) {
-        if ((this.right > oth.left)
-         && (this.left < oth.right) 
-         && (this.top < oth.bottom) 
-         && (this.bottom > oth.top)) {
-            return true;
-        }
-        return false;
-    }
+	collide(oth) {
+		if ((this.right > oth.left)
+		 && (this.left < oth.right) 
+		 && (this.top < oth.bottom) 
+		 && (this.bottom > oth.top)) {
+			return true;
+		}
+		return false;
+	}
 
-    updateCoordinates(x, y) {
-        this.x = x;
-        this.y = y;
+	updateCoordinates(x, y) {
+		this.x = x;
+		this.y = y;
 
-        this.left = x;
-        this.top = y;
-        this.right = x + this.width;
-        this.bottom = y + this.height;
-    }
+		this.left = x;
+		this.top = y;
+		this.right = x + this.width;
+		this.bottom = y + this.height;
+	}
 
-    translateCoordinates(deltaX, deltaY) {
-        this.x += deltaX;
-        this.y += deltaY;
-        this.left += deltaX;
-        this.top += deltaY;
-        this.right += deltaX;
-        this.bottom += deltaY;
-    }
+	translateCoordinates(deltaX, deltaY) {
+		this.x += deltaX;
+		this.y += deltaY;
+		this.left += deltaX;
+		this.top += deltaY;
+		this.right += deltaX;
+		this.bottom += deltaY;
+	}
 
 }
 
 class BoundingCircle {
 
-    constructor(x, y, radius) {
-        this.x = x;
-        this.y = y;
-        this.radius = radius;
-    }
+	constructor(x, y, radius) {
+		this.x = x;
+		this.y = y;
+		this.radius = radius;
+	}
 }
 
 /**
