@@ -630,6 +630,7 @@ class BeamDroid extends BasicDroid {
             if (this.shootingTime <= 0) {
                 this.shooting = false;
                 this.beam.removeFromWorld = true;
+                this.beam.isSizzling = false;
                 if (this.game.beams.length <= 1) {
                     this.game.audio.beam.stop();
                 }
@@ -679,6 +680,7 @@ class BeamDroid extends BasicDroid {
         super.explode();
         if (this.beam) {
             this.beam.removeFromWorld = true;
+            this.beam.isSizzling = false;
             if (this.game.beams.length <= 1) { // don't stop sound if another beam is still shooting
                 this.game.audio.beam.stop();
             }
@@ -692,14 +694,23 @@ class Beam {
         this.shootingDroid = shootingDroid;
         this.segments = [];
         this.segments.push({x: shootingDroid.boundCircle.x, y: shootingDroid.boundCircle.y, angle: 0});
+        this.isSizzling = false;
+        this.sizzlingSoundOn = false;
     }
 
     update() {
         this.segments[0].x = this.shootingDroid.boundCircle.x;
         this.segments[0].y = this.shootingDroid.boundCircle.y;
         this.segments[0].angle = this.shootingDroid.beamAngle;
-
         // collision manager detects end of beam segements and adds new ones if deflected.
+
+        if (this.isSizzling && !this.sizzlingSoundOn) {
+            this.game.audio.sizzle.play();
+            this.sizzlingSoundOn = true;
+        } else if (!this.isSizzling && this.sizzlingSoundOn) {
+            this.game.audio.sizzle.stop();
+            this.sizzlingSoundOn = false;
+        }
     }
 
     draw() {

@@ -189,6 +189,20 @@ class SoundEngine {
 			loop: true,
 			volume: .12
 		  });
+		  this.wound = new Howl({
+			src: [
+			  "sound/tissue-wound.wav"
+			],
+			loop: false,
+			volume: .15
+		  });
+		  this.sizzle = new Howl({
+			src: [
+			  "sound/butter sizzling.wav"
+			],
+			loop: true,
+			volume: .5
+		  });
 	}
 
 	//mute and unmute background music. /* name these better */

@@ -19,13 +19,13 @@ class CollisionManager {
 	handleCollisions() {
 		// this.droidOnDroid();
 		this.droidOnSaber();
-		// this.laserOnDroid();
+		this.laserOnDroid();
 		this.laserOnSaber();
 		this.laserOnZerlin();
 		this.ZerlinOnPlatform();
 		this.ZerlinOnEdgeOfMap();
 		this.beamOnSaber();
-		// this.beamOnDroid();
+		this.beamOnDroid();
 		this.beamOnZerlin();
 		this.beamOnPlatform();
 
@@ -107,7 +107,6 @@ class CollisionManager {
 										   zerlin.slashZone.innerCircle.radius)
 					&& droid.boundCircle.y < zerlin.y) {
 					droid.explode();
-					console.log(zerlin.y + (zerlin.animation.frameHeight * zerlin.animation.scale));
 				}
 			}	
 		}
@@ -151,6 +150,7 @@ class CollisionManager {
 					laser.x < zerlin.boundingbox.right &&
 					laser.y > zerlin.boundingbox.top &&
 					laser.y < zerlin.boundingbox.bottom) {
+					this.game.audio.wound.play();
 					laser.removeFromWorld = true;
 					zerlin.hits++;
 					// console.log(zerlin.hits);
@@ -249,12 +249,14 @@ class CollisionManager {
 		var zerlinBox = this.game.Zerlin.boundingbox;
 		if (!zerlinBox.hidden) {
 			for (let i = 0; i < this.game.beams.length; i++) {
+				this.game.beams[i].isSizzling = false;
 				var beamSegments = this.game.beams[i].segments;
 				for (let j = 0; j < beamSegments.length; j++) {
 					var beamSeg = beamSegments[j];
 					var zerlinCollision = collideLineWithRectangle(beamSeg.x, beamSeg.y, beamSeg.endX, beamSeg.endY,
 												 zerlinBox.x, zerlinBox.y, zerlinBox.width, zerlinBox.height);
 					if (zerlinCollision.collides) {
+						this.game.beams[i].isSizzling = true;
 						this.game.Zerlin.hits += this.game.clockTick * BEAM_HP_PER_SECOND;
 						console.log(this.game.Zerlin.hits);
 

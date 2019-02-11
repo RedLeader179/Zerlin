@@ -8,9 +8,9 @@ Joshua Atherton, Michael Josten, Steven Golob
 
 var PHI = 1.618;
 
-var Z_SCALE = .6;
+var Z_SCALE = PHI - 1;
 
-var DRAW_COLLISION_BOUNDRIES = true;
+var DRAW_COLLISION_BOUNDRIES = false;
 
 var Z_WIDTH = 114;
 var Z_HEIGHT = 306;
@@ -95,7 +95,7 @@ class Zerlin extends Entity {
 				this.deltaX = 0;
 			}
 		}
-		else if (this.game.keys['KeyD'] && !this.game.keys['KeyA']) { // TODO: change to constants
+		else if (this.game.keys['KeyD'] && !this.game.keys['KeyA']) { // TODO: change keys to constants
 			this.direction = 1;
 			if (!this.isInManeuver()) {
 				this.deltaX = Z_WALKING_SPEED;
@@ -123,7 +123,7 @@ class Zerlin extends Entity {
 				this.falling = true;
 				this.deltaY = JUMP_DELTA_Y;
 			}
-			else if (this.game.keys['Space'] && !this.falling) {
+			else if (this.game.keys['Space']) {
 				this.startSlash(); 
 			}
 			else if (this.game.keys['KeyX'] && !this.falling) {
@@ -131,17 +131,18 @@ class Zerlin extends Entity {
 			}
 		}
 
+		if (this.falling) {
+			this.lastBottom = this.boundingbox.bottom;
+			this.deltaY += GRAVITATIONAL_ACCELERATION * this.game.clockTick;
+		}
+
 		if (this.somersaulting) {
 			if (this.isAnimationDone()) {
 				this.finishSomersault();
+			} else if (this.animation.elapsedTime < Z_SOMERSAULT_FRAMES * Z_SOMERSAULT_FRAME_SPEED / 2) {
+				// don't fall for first half of roll
+				this.deltaY = 0;
 			}
-		}
-		else if (this.falling) {
-			// check if jump is done
-				// this.falling = false;
-
-			this.lastBottom = this.boundingbox.bottom;
-			this.deltaY += GRAVITATIONAL_ACCELERATION * this.game.clockTick;
 		}
 		else if (this.slashing) {
 			if (this.isAnimationDone()) {
@@ -150,7 +151,15 @@ class Zerlin extends Entity {
 				var animation = this.slashingDirection === 1 ? this.slashingAnimation : this.slashingLeftAnimation;
 				if (animation.elapsedTime >= Z_SLASH_FRAME_SPEED * Z_SLASH_START_FRAME &&
 					animation.elapsedTime < Z_SLASH_FRAME_SPEED * (Z_SLASH_END_FRAME + 1)) {
-					this.slashZone.active = true;
+					if (this.slashingDirection === 1) {
+						this.slashZone = {active: true, 
+										  outerCircle: new BoundingCircle(this.x + Z_SLASH_CENTER_X * Z_SCALE, this.y - Z_SLASH_CENTER_Y * Z_SCALE, Z_SLASH_RADIUS * Z_SCALE), 
+										  innerCircle: new BoundingCircle(this.x + Z_SLASH_INNER_CENTER_X * Z_SCALE, this.y - Z_SLASH_INNER_CENTER_Y * Z_SCALE, Z_SLASH_INNER_RADIUS * Z_SCALE)}; 
+					} else {
+						this.slashZone = {active: true,  
+										  outerCircle: new BoundingCircle(this.x - Z_SLASH_CENTER_X * Z_SCALE, this.y - Z_SLASH_CENTER_Y * Z_SCALE, Z_SLASH_RADIUS * Z_SCALE), 
+										  innerCircle: new BoundingCircle(this.x - Z_SLASH_INNER_CENTER_X * Z_SCALE, this.y - Z_SLASH_INNER_CENTER_Y * Z_SCALE, Z_SLASH_INNER_RADIUS * Z_SCALE)}; 
+					}
 				} else {
 					this.slashZone.active = false;
 				}
@@ -162,12 +171,9 @@ class Zerlin extends Entity {
 			}
 		}
 
-
 		this.x += this.game.clockTick * this.deltaX;
 		this.y += this.game.clockTick * this.deltaY;
 
-
-		// TODO: new bounding box for somersault, left and right
 		this.boundingbox.translateCoordinates(this.game.clockTick * this.deltaX, this.game.clockTick * this.deltaY);
 		
 		this.lightsaber.update();
@@ -247,7 +253,6 @@ class Zerlin extends Entity {
 				this.ctx.stroke();
 			}
 		}
-
 	}
 
 	setXY(x, y) {
@@ -273,7 +278,7 @@ class Zerlin extends Entity {
 	}
 
 	/*
-	 * check if animation is done (can't call animation.isDone() because it does not have latest clockTick yet)
+	 * check if animation is done (can't call animation.isDone() because it does not have latest clockTick yet in update())
 	 */
 	isAnimationDone() {
 		return (this.animation.elapsedTime + this.game.clockTick) >= this.animation.totalTime;
@@ -285,7 +290,6 @@ class Zerlin extends Entity {
 		this.somersaulting = true;
 		this.deltaX = Z_SOMERSAULT_SPEED * this.direction;
 		this.somersaultingDirection = this.direction;
-		// this.x = this.foundationX - Z_SCALE * (Z_SOMERSAULT_WIDTH / 2);
 		this.lightsaber.hidden = true;
 
 		// TODO: new bounding box for somersault, left and right
@@ -329,20 +333,7 @@ class Zerlin extends Entity {
 		this.deltaX = 0;
 		this.lightsaber.hidden = true;
 		this.slashingDirection = this.facingRight ? 1 : -1;
-
-		// this.y = this.y + (Z_ARM_SOCKET_Y - Z_ARM_SOCKET_Y_SLASH_FRAME) * Z_SCALE;
-		if (this.facingRight) {
-			// this.x = this.foundationX - Z_ARM_SOCKET_X_SLASH_FRAME * Z_SCALE;
-			this.slashZone = {active: false, 
-							  outerCircle: new BoundingCircle(this.x + Z_SLASH_CENTER_X * Z_SCALE, this.y - Z_SLASH_CENTER_Y * Z_SCALE, Z_SLASH_RADIUS * Z_SCALE), 
-							  innerCircle: new BoundingCircle(this.x + Z_SLASH_INNER_CENTER_X * Z_SCALE, this.y - Z_SLASH_INNER_CENTER_Y * Z_SCALE, Z_SLASH_INNER_RADIUS * Z_SCALE)}; 
-		} else {
-			// this.x = this.foundationX - (Z_SLASH_WIDTH - Z_ARM_SOCKET_X_SLASH_FRAME) * Z_SCALE;
-			this.slashZone = {active: false,  
-							  outerCircle: new BoundingCircle(this.x - Z_SLASH_CENTER_X * Z_SCALE, this.y - Z_SLASH_CENTER_Y * Z_SCALE, Z_SLASH_RADIUS * Z_SCALE), 
-							  innerCircle: new BoundingCircle(this.x - Z_SLASH_INNER_CENTER_X * Z_SCALE, this.y - Z_SLASH_INNER_CENTER_Y * Z_SCALE, Z_SLASH_INNER_RADIUS * Z_SCALE)}; 
-		}
-
+		this.slashZone = {};
 		// TODO: new bounding box for slash, left and right
 		this.boundingbox = new BoundingBox(this.boundingbox.x , this.y - (Z_HEIGHT - 73) * Z_SCALE, this.boundingbox.width, this.boundingbox.height);
 	}
