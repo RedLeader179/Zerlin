@@ -41,7 +41,10 @@ class Level {
         var rows = this.levelLayout.length;
         for (let i = 0; i < rows; i++) {
             for (let j = 0; j < this.levelLayout[i].length; j++) {
-                if (this.levelLayout[i][j] === '-') { // tile
+                if (this.levelLayout[i][j] === ' ') {
+                    continue;
+                }
+                else if (this.levelLayout[i][j] === '-') { // tile
                     var image = this.tileImages.centerTile;
                     if (this.levelLayout[i][j - 1] !== '-' && this.levelLayout[i][j + 1] !== '-') {
                         image = this.tileImages.leftRightTile;
@@ -60,8 +63,20 @@ class Level {
                 else if (this.levelLayout[i][j] === 's') { // scatter shot droid
                     this.unspawnedDroids.push(new LeggyDroid(this.game, this.game.assetManager.getAsset("../img/leggy_droid.png"), j * this.tileWidth, i * this.game.camera.height / rows));
                 }
-                else if (this.levelLayout[i][j] === 'b') { // beam shot droid
+                else if (this.levelLayout[i][j] === 'B') { // beam shot droid
                     this.unspawnedDroids.push(new BeamDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * this.game.camera.height / rows));
+                }
+                else if (this.levelLayout[i][j] === 'b') { // slow burst droid
+                    this.unspawnedDroids.push(new SlowBurstDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * this.game.camera.height / rows));
+                }
+                else if (this.levelLayout[i][j] === 'f') { // fast burst droid
+                    this.unspawnedDroids.push(new FastBurstDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * this.game.camera.height / rows));
+                }
+                else if (this.levelLayout[i][j] === 'n') { // sniper droid
+                    this.unspawnedDroids.push(new SniperDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * this.game.camera.height / rows));
+                }
+                else if (this.levelLayout[i][j] === 'm') { // multishot droid
+                    this.unspawnedDroids.push(new MultishotDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * this.game.camera.height / rows));
                 }
             }
         }
@@ -123,10 +138,10 @@ class Tile extends Entity {
 
 const levelOne = [
 '                                  ',
-'                   --   d     -s  ',
-'    b       -      b    --       s',
-'       s      -     d            -',
-'             --                   ',
+'    m         b    --   d     -s  ',
+'            -      B    --       s',
+'       m      -     d            -',
+'             --  n                ',
 '  -             ---               ',
 '     --         --          d     ',
 '   --          -  s       -       ',

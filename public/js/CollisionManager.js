@@ -17,15 +17,15 @@ class CollisionManager {
 	}
 
 	handleCollisions() {
-		this.droidOnDroid();
+		// this.droidOnDroid();
 		this.droidOnSaber();
-		// this.laserOnDroid();
+		this.laserOnDroid();
 		this.laserOnSaber();
 		this.laserOnZerlin();
 		this.ZerlinOnPlatform();
 		this.ZerlinOnEdgeOfMap();
 		this.beamOnSaber();
-		// this.beamOnDroid();
+		this.beamOnDroid();
 		this.beamOnZerlin();
 		this.beamOnPlatform();
 

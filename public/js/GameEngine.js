@@ -20,7 +20,7 @@ window.requestAnimFrame = (function () {
 class GameEngine {
     constructor(assetManager) {
         this.assetManager = assetManager;
-        this.showOutlines = false; //debug bit
+        this.showOutlines = true; //debug bit
         this.otherEntities = [];
         this.lasers = [];
         this.beams = [];
@@ -58,6 +58,8 @@ class GameEngine {
     }
     start() {
         console.log("starting game");
+        this.audio.lightsaber.play('lightsaberOn');
+        this.audio.saberHum.play();
         var that = this;
         (function gameLoop() {
             that.loop();

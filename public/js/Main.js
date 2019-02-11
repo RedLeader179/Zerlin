@@ -102,26 +102,6 @@ class AssetManager {
 	    var gameEngine = new GameEngine(AM);
 	    gameEngine.init(ctx);
 
-
-		// gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 1020, 166));
-		// gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 111, 255));
-		// gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 610, 220));
-		// gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 493, 360));
-		// gameEngine.addDroid(new BasicDroid(gameEngine, AM.getAsset("../img/droid-j-row.png"), 968, 9));
-
-		// //alternative basic droid
-		// let basic_droid = new BasicDroid(gameEngine, AM.getAsset("../img/basic_droid.png"), 420, 89);
-		// // constructor(spriteSheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale) {
-		// let basic_droid_anime = new Animation(AM.getAsset("../img/basic_droid.png"), 30.5, 34, 183, 0.1, 6, true, 1.5);
-		// basic_droid.idleAnimation = basic_droid_anime;
-		// basic_droid.animation = basic_droid.idleAnimation;
-		// gameEngine.addDroid(basic_droid);
-
-		// gameEngine.addDroid(new LeggyDroid(gameEngine, AM.getAsset("../img/leggy_droid.png"), 500, 20));
-		// gameEngine.addDroid(new LeggyDroid(gameEngine, AM.getAsset("../img/leggy_droid.png"), 300, 40));
-		// gameEngine.addDroid(new LeggyDroid(gameEngine, AM.getAsset("../img/leggy_droid.png"), 800, 200));
-
-
 		gameEngine.start();
 
 		document.getElementById("playMusic").addEventListener("click", () => {

@@ -123,9 +123,7 @@ class Zerlin extends Entity {
 				this.falling = true;
 				this.deltaY = JUMP_DELTA_Y;
 			}
-			else if (this.game.keys['Space'] && !this.falling) { // TODO: allow for attack in air
-				/** for testing sound */
-				this.game.audio.lightsaber.play('lightsaberSwing');
+			else if (this.game.keys['Space'] && !this.falling) {
 				this.startSlash(); 
 			}
 			else if (this.game.keys['KeyX'] && !this.falling) {
@@ -172,12 +170,7 @@ class Zerlin extends Entity {
 		// TODO: new bounding box for somersault, left and right
 		this.boundingbox.translateCoordinates(this.game.clockTick * this.deltaX, this.game.clockTick * this.deltaY);
 		
-
-		// this.handleCollisions();
-
 		this.lightsaber.update();
-		// this.lightsaber.handleCollisions();
-		
 		super.update();
 	}
 
@@ -241,8 +234,6 @@ class Zerlin extends Entity {
 		this.animation.drawFrame(this.game.clockTick, this.ctx, this.drawX - this.game.camera.x, this.y - this.animation.frameHeight * Z_SCALE);
 		this.lightsaber.draw();
 
-		// super.draw();
-
 		if (DRAW_COLLISION_BOUNDRIES) {
 			this.ctx.strokeStyle = "black";
 			if (!this.boundingbox.hidden) {
@@ -289,6 +280,8 @@ class Zerlin extends Entity {
 	}
 
 	startSomersault() {
+		this.game.audio.lightsaber.play('lightsaberOff');
+        this.game.audio.saberHum.stop();
 		this.somersaulting = true;
 		this.deltaX = Z_SOMERSAULT_SPEED * this.direction;
 		this.somersaultingDirection = this.direction;
@@ -300,6 +293,8 @@ class Zerlin extends Entity {
 	}
 
 	finishSomersault() {
+		this.game.audio.lightsaber.play('lightsaberOn');
+        this.game.audio.saberHum.play();
 		this.animation.elapsedTime = 0;
 		this.deltaX = 0;
 		this.somersaulting = false;
@@ -329,6 +324,7 @@ class Zerlin extends Entity {
 	}
 
 	startSlash() {
+		this.game.audio.lightsaber.volume(.25, this.game.audio.lightsaber.play('lightsaberSwing'));
 		this.slashing = true;
 		this.deltaX = 0;
 		this.lightsaber.hidden = true;
@@ -378,8 +374,6 @@ class Zerlin extends Entity {
 
 
 	createAnimations() {
-//Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale)
-
 		this.standFaceRightAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin standing.png"),
 													0, 0, 
 												   Z_WIDTH, 
