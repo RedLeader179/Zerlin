@@ -9,14 +9,14 @@ var DROID_ZERLIN_MOVEMENT = 2.5; //amount a droid will move when left or right k
 //can potentially add in another zerlin move constant for rolling
 
 //basic droid constants
-var BASIC_DROID_SHOOT_INTERVAL = .5;
+var BASIC_DROID_SHOOT_INTERVAL = 2;
 var BASIC_DROID_X_MOVEMENT_SPEED = 150;
 var BASIC_DROID_Y_MOVEMENT_SPEED = 100;
 var BASIC_DROID_X_ACCELERATION = 60;
 var BASIC_DROID_Y_ACCELERATION = 60;
 var BASIC_DROID_ORBITAL_X_OFFSET = 200;
 var BASIC_DROID_ORBITAL_Y_OFFSET = -200;
-var BASIC_DROID_ORBITAL_HEIGHT = 300; // just to make testing easier
+var BASIC_DROID_ORBITAL_HEIGHT = 300;
 var BASIC_DROID_ZERLIN_MOVE_RIGHT_SPEED = 1;
 
 //Laser constants
@@ -29,12 +29,12 @@ var LASER_ZERLIN_MOVEMENT = 2.5;
 var EXPLOSION_SCALE = 2;
 
 //Leggy Droid
-var LEGGY_DROID_SHOOT_INTERVAL = 2;
+var LEGGY_DROID_SHOOT_INTERVAL = 4;
 var LEGGY_DROID_LASER_SPEED = 350; 
 var LEGGY_DROID_LASER_LENGTH = 25;
 var LEGGY_DROID_LASER_WIDTH = 12;
 
-var SPRAY_LASER_COUNT = 4;
+var SPRAY_LASER_COUNT = 5;
 var SPRAY_LASER_WIDTH_RADIANS = Math.PI / 6;
 
 
@@ -45,6 +45,26 @@ var BEAM_DROID_LASER_WIDTH = 16;
 var BEAM_HP_PER_SECOND = 3;
 var BEAM_ANGLE_ACCELERATION_RADIANS = Math.PI / 3;
 
+var SLOWBURST_DROID_SHOOT_INTERVAL = .3;
+var SLOWBURST_DROID_LASER_SPEED = 350;
+var SLOWBURST_DROID_BURSTS = 4;
+// (how many shots are SKIPPED) + BURST_DROID_BURSTS in overall interval
+var SLOWBURST_DROID_SHOOTS_PER_CYCLE = 20;
+
+var FASTBURST_DROID_SHOOT_INTERVAL = .1;
+var FASTBURST_DROID_LASER_SPEED = 550;
+var FASTBURST_DROID_BURSTS = 3;
+// (how many shots are SKIPPED) + BURST_DROID_BURSTS in overall interval
+var FASTBURST_DROID_SHOOTS_PER_CYCLE = 80;
+
+
+var SNIPER_DROID_LASER_SPEED = 850;
+var SNIPER_DROID_SHOOT_INTERVAL = 7;
+var SNIPER_DROID_LASER_LENGTH = 50;
+var SNIPER_DROID_LASER_WIDTH = 15;
+
+var MULTISHOT_DROID_SHOOT_INTERVAL = 2;
+var MULTISHOT_WIDTH = 35;
 /**
  * This class will serve as the parent for all droid entities
  * and will contain methods and fields that all droids are required to have
@@ -128,28 +148,29 @@ class BasicDroid extends AbstractDroid {
         super(game, startX, startY, 0, 0); //debug
 
         /* animation fields */
-//Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale)
-    this.idleAnimation = new Animation(spritesheet, 0, 0, 100, 100, 0.1, 14, true, false, .5);
+        //Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale)
+        this.idleAnimation = new Animation(spritesheet, 0, 0, 100, 100, 0.1, 14, true, false, .5);
         this.animation = this.idleAnimation;
 
+        this.shootInterval = BASIC_DROID_SHOOT_INTERVAL;
+
         /* bounding circle fields */
-        this.radius = this.radius;
+        this.radius = (this.animation.frameWidth / 2) * this.animation.scale;
         this.boundCircle = {radius: this.radius, 
             x: this.x + this.radius,
             y: this.y + this.radius};
 
         /* shooting fields */
         this.fire = false;
-        this.secondsBeforeFire = BASIC_DROID_SHOOT_INTERVAL;
+        this.secondsBeforeFire = this.shootInterval;
 
         /* movement fields */
-        var targetX = (this.game.surfaceWidth / 2) - BASIC_DROID_ORBITAL_X_OFFSET;
-        var targetY = (this.game.surfaceHeight / 2) + BASIC_DROID_ORBITAL_Y_OFFSET;
-        this.targetOrbitalPointLeft = {x: targetX, y: targetY};
+        var targetOrbitalX = (this.game.surfaceWidth / 2) + BASIC_DROID_ORBITAL_X_OFFSET;
+        var targetOrbitalY = (this.game.surfaceHeight / 2) + BASIC_DROID_ORBITAL_Y_OFFSET;
+        this.targetOrbitalPointLeft = {x: targetOrbitalX, y: targetOrbitalY};
         
-        targetX = (this.game.surfaceWidth / 2) + BASIC_DROID_ORBITAL_X_OFFSET;
-        this.targetOrbitalPointRight = {x: targetX, y: targetY};
-        
+        targetOrbitalX = (this.game.surfaceWidth / 2) + BASIC_DROID_ORBITAL_X_OFFSET;
+        this.targetOrbitalPointRight = {x: targetOrbitalX, y: targetOrbitalY};
     }
     /* 
     * every update, the basic droid will move around zerlin entity about 50 to 100 pixels above him.
@@ -158,71 +179,55 @@ class BasicDroid extends AbstractDroid {
     */
     update() {
         //update coordinates so the droid will orbit the center of the canvas
-
-        /* droid movement */
-        this.targetOrbitalPointLeft.x = this.game.Zerlin.x - BASIC_DROID_ORBITAL_X_OFFSET;
-        //add 200 so that the droids uses up all the canvas becuase when targeting Zerlin, 
-        //doesn't use all of the canvas
-        this.targetOrbitalPointRight.x = this.game.Zerlin.x + BASIC_DROID_ORBITAL_X_OFFSET + 200;
-        this.calcMovement(this.targetOrbitalPointLeft, this.targetOrbitalPointRight); //un comment after debug
+        this.calcMovement();
 
         /* bounding circle movement */
-        this.boundCircle.x = this.x + (this.animation.frameWidth * this.animation.scale) / 2;
-        this.boundCircle.y = this.y + (this.animation.frameHeight * this.animation.scale) / 2;
+        this.boundCircle.x = this.x + this.radius;
+        this.boundCircle.y = this.y + this.radius;
 
         /* droid shooting */
         this.secondsBeforeFire -= this.game.clockTick;
         //will shoot at every interval
         if (this.secondsBeforeFire <= 0 && (!this.fire)) {
-            this.secondsBeforeFire = BASIC_DROID_SHOOT_INTERVAL;
+            this.secondsBeforeFire = this.shootInterval;
             this.fire = true;
-            //shoot at specific target
-            // this.shoot(this.game.Zerlin.x, 
-            //     this.game.Zerlin.y);
-            // this.shoot(this.game.Zerlin.boundingbox.x + this.game.Zerlin.boundingbox.width/2, 
-            //     this.game.Zerlin.boundingbox.y + this.game.Zerlin.boundingbox.height/2);
-
-            //shoot randomly in target direction
-            this.shootRandom(this.game.Zerlin.boundingbox.x + this.game.Zerlin.boundingbox.width/2, 
-                this.game.Zerlin.boundingbox.y + this.game.Zerlin.boundingbox.height/2,
-                this.game.Zerlin.boundingbox.width,
-                this.game.Zerlin.boundingbox.height);
+            this.shoot();
         }
-        
         
         super.update();
     }
     draw() {
-        super.draw();
-        
-        
+        super.draw();   
     }
-    shoot(targetX, targetY) {
-        var droidLaser = new DroidLaser(this.game, this.x + 20, this.y + 20, BASIC_DROID_LASER_SPEED, 
-            targetX, targetY, BASIC_DROID_LASER_LENGTH, BASIC_DROID_LASER_WIDTH);
-        this.game.addLaser(droidLaser);
-        //TODO - play shooting sound
-        //console.log("shot laser at X: " + targetX + " Y: " + targetY);
-        //set after droid is done firing
-        this.fire = false;
-    }
+
     /**
      * Method that will shoot a laser randomly in an area from target point
      * to target point + max argument
      */
-    shootRandom(targetX, targetY, maxWidth, maxHeight) {
-        var randTargetX = targetX + (maxWidth * (2 * Math.random() - 1));
-        var randTargetY = targetY + (maxHeight * (2 * Math.random() - 1));
-        this.shoot(randTargetX, randTargetY);
+    shoot() {
+        var targetX = this.game.Zerlin.x;
+        var targetY = this.game.Zerlin.boundingbox.y + this.game.Zerlin.boundingbox.height/2;
+        var randTargetX = targetX + (this.game.Zerlin.boundingbox.width * (Math.random() - .5));
+        var randTargetY = targetY + (this.game.Zerlin.boundingbox.height * (Math.random() - .5));
+        var droidLaser = new DroidLaser(this.game, this.x + 20, this.y + 20, BASIC_DROID_LASER_SPEED, 
+            randTargetX, randTargetY, BASIC_DROID_LASER_LENGTH, BASIC_DROID_LASER_WIDTH, "#339933", "#00ff00");
+        this.game.addLaser(droidLaser);
+        this.fire = false;
+        this.game.audio.enemy.play('retroBlasterShot');
     }
+
     /*
      * calculate movement so that it will try to fly around the location of the 
      * target.
      */
-    calcMovement(targetLeft, targetRight) {
+    calcMovement() {
+        this.targetOrbitalPointLeft.x = this.game.Zerlin.x - BASIC_DROID_ORBITAL_X_OFFSET;
+        //add 200 so that the droids uses up all the canvas becuase when targeting Zerlin, 
+        //doesn't use all of the canvas
+        this.targetOrbitalPointRight.x = this.game.Zerlin.x + BASIC_DROID_ORBITAL_X_OFFSET + 200;
 
         //if the droid is to the left of targetRight and right of targetLeft
-        if (this.x <= targetRight.x && this.x >= targetLeft.x) {
+        if (this.x <= this.targetOrbitalPointRight.x && this.x >= this.targetOrbitalPointLeft.x) {
             //if the droid is moving right, then increase x velocity
             if (this.deltaX >= 0) {
                 if (this.deltaX < BASIC_DROID_X_MOVEMENT_SPEED)
@@ -236,24 +241,24 @@ class BasicDroid extends AbstractDroid {
         }
             
         //if the droid is to the left of targetLeft, then increase X velocity
-        if (this.x < targetLeft.x) {
+        if (this.x < this.targetOrbitalPointLeft.x) {
             if (this.deltaX < BASIC_DROID_X_MOVEMENT_SPEED)
                 this.deltaX += BASIC_DROID_X_ACCELERATION * this.game.clockTick;
         }
         //if the droid is to the right of targetRight, then decrease X velocity
-        if (this.x > targetRight.x) {
+        if (this.x > this.targetOrbitalPointRight.x) {
             if (this.deltaX >= (-BASIC_DROID_X_MOVEMENT_SPEED))
                 this.deltaX -= BASIC_DROID_X_ACCELERATION * this.game.clockTick;
         }
         
 
         //if droid is above the target point, then increase deltaY(down)
-        if (this.y < targetRight.y) {
+        if (this.y < this.targetOrbitalPointRight.y) {
             if (this.deltaY <= BASIC_DROID_Y_MOVEMENT_SPEED)
                 this.deltaY += BASIC_DROID_Y_ACCELERATION * this.game.clockTick;
         }
         //if the droid is below the target point, then decrease the deltaY(up)
-        else if (this.y >= targetRight.y) {
+        else if (this.y >= this.targetOrbitalPointRight.y) {
             if (this.deltaY >= (-BASIC_DROID_Y_MOVEMENT_SPEED)) 
                 this.deltaY -= BASIC_DROID_Y_ACCELERATION * this.game.clockTick;
         }      
@@ -263,7 +268,6 @@ class BasicDroid extends AbstractDroid {
         // this.y += this.game.clockTick * (Math.random() * this.deltaY);
         this.x += this.game.clockTick * this.deltaX;
         this.y += this.game.clockTick * this.deltaY;
-        
         
     }
 }
@@ -276,8 +280,8 @@ class DroidLaser extends Entity {
         //console.log("created DroidLaser Entity");
 
         //Droid Laser Fields
-        this.color = color? color : "green";
-        this.deflectedColor = deflectedColor? deflectedColor : "blue";
+        this.color = color;
+        this.deflectedColor = deflectedColor;
         this.secondaryColor = "white";
         this.isDeflected = false;
 
@@ -406,8 +410,8 @@ class DroidExplosion extends Entity {
         super(game, x, y, 0, 0);
         
         var spritesheet = this.game.assetManager.getAsset("../img/Explosion.png");
-//Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale)
-    this.animation = new Animation(spritesheet, 0, 0, 64, 64, 0.2, 15, false, false, EXPLOSION_SCALE); 
+        //Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale)
+        this.animation = new Animation(spritesheet, 0, 0, 64, 64, 0.2, 15, false, false, EXPLOSION_SCALE); 
 
         this.x = x - this.animation.frameWidth * this.animation.scale / 2;
         this.y = y - this.animation.frameHeight * this.animation.scale / 2;
@@ -434,63 +438,19 @@ class DroidExplosion extends Entity {
 /*
 * Long legged droid that will shoot 3 scattered burst lasers every interval 
 */
-class LeggyDroid extends AbstractDroid {
+class LeggyDroid extends BasicDroid {
     constructor(game, spritesheet, startX, startY) {
-        //super(gameEngine, x, y, deltaX, deltaY)
-        //super(game, startX, startY, BASIC_DROID_X_MOVEMENT_SPEED, 0);
-        super(game, startX, startY, 0, 0); //debug
-
-        /* animation fields */
-        //Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale)
+        super(game, spritesheet, startX, startY);
         this.idleAnimation = new Animation(spritesheet, 0, 0, 315, 620, 0.2, 4, true, false, .2);
         this.animation = this.idleAnimation;
-
-        /* bounding circle fields */
         this.radius = (this.animation.frameWidth / 2) * this.animation.scale;
         this.boundCircle = {radius: this.radius, 
             x: this.x + this.radius,
             y: this.y + this.radius};
-
-        /* shooting fields */
-        this.fire = false;
-        this.secondsBeforeFire = BASIC_DROID_SHOOT_INTERVAL;
-
-        /* movement fields */
-        var targetX = (this.game.surfaceWidth / 2) + BASIC_DROID_ORBITAL_X_OFFSET;
-        var targetY = (this.game.surfaceHeight / 2) + BASIC_DROID_ORBITAL_Y_OFFSET;
-        this.targetOrbitalPoint = {x: targetX, y: BASIC_DROID_ORBITAL_HEIGHT};
+        this.shootInterval = LEGGY_DROID_SHOOT_INTERVAL;
     }
-    /* 
-    * every update, the droid will move around zerlin entity about 50 to 100 pixels above him.
-    * The droid will shoot every interval at the main character (as of now, at the mouse)
-    * The droid will set removeFromWorld to true when it collides with lightsaber
-    */
-    update() {
-        //update coordinates so the droid will orbit the center of the canvas
 
-        /* droid movement */
-        this.targetOrbitalPoint.x = this.game.Zerlin.x;
-        this.calcMovement(this.targetOrbitalPoint); //un comment after debug
-
-        /* bounding circle movement */
-        this.boundCircle.x = this.x + this.radius;
-        this.boundCircle.y = this.y + this.radius;
-
-        /* droid shooting */
-        this.secondsBeforeFire -= this.game.clockTick;
-        //will shoot at every interval
-        if (this.secondsBeforeFire <= 0 && (!this.fire)) {
-            this.secondsBeforeFire = LEGGY_DROID_SHOOT_INTERVAL;
-            this.fire = true;
-            this.shootSpray();
-        }
-         
-        super.update();
-    }
-    draw() {
-        super.draw();
-    }
-    shootSpray() {
+    shoot() {
         var targetAngle = Math.atan2(this.game.Zerlin.boundingbox.y + this.game.Zerlin.boundingbox.height/2 - this.boundCircle.y, 
                                     this.game.Zerlin.x - this.boundCircle.x);
         var distanceToTarget = 100; // arbitrary number to set laser's path, value not important
@@ -508,42 +468,6 @@ class LeggyDroid extends AbstractDroid {
         this.game.audio.enemy.play('bowcasterShoot');
         this.fire = false;
     }
-    /*
-     * calculate movement so that it will try to fly around the location of the 
-     * target.
-     */
-    calcMovement(target) {
-        //if the droid is to the left of target point, then increase the deltaX
-        //by the x velocity
-        if (this.x < target.x) {
-            if (this.deltaX < BASIC_DROID_X_MOVEMENT_SPEED)
-                this.deltaX += BASIC_DROID_X_ACCELERATION * this.game.clockTick;
-        }
-        
-        //if the droid is to the right of target point, then decrease the deltaX
-        //by the x velocity
-        else if (this.x > target.x) {
-            if (this.deltaX >= (-BASIC_DROID_X_MOVEMENT_SPEED))
-                this.deltaX -= BASIC_DROID_X_ACCELERATION * this.game.clockTick;
-        }
-
-        //if droid is above the target point, then increase deltaY(down)
-        if (this.y < target.y) {
-            if (this.deltaY <= BASIC_DROID_Y_MOVEMENT_SPEED)
-                this.deltaY += BASIC_DROID_Y_ACCELERATION * this.game.clockTick;
-        }
-        //if the droid is below the target point, then decrease the deltaY(up)
-        else if (this.y >= target.y) {
-            if (this.deltaY >= (-BASIC_DROID_Y_MOVEMENT_SPEED)) 
-                this.deltaY -= BASIC_DROID_Y_ACCELERATION * this.game.clockTick;
-        }      
-
-        //after calculating change in x and y then increment x and y by delta x and delta y
-        // this.x += this.game.clockTick * (Math.random() * this.deltaX);
-        // this.y += this.game.clockTick * (Math.random() * this.deltaY);
-        this.x += this.game.clockTick * this.deltaX;
-        this.y += this.game.clockTick * this.deltaY;    
-    }
 }
 
 
@@ -551,45 +475,146 @@ class LeggyDroid extends AbstractDroid {
 
 
 
+class SlowBurstDroid extends BasicDroid {
+    constructor(game, spritesheet, startX, startY) {
+        super(game, spritesheet, startX, startY);
+        this.shootInterval = SLOWBURST_DROID_SHOOT_INTERVAL;
+        this.totalShootIntervalsPerCycle = SLOWBURST_DROID_SHOOTS_PER_CYCLE;
+        this.shootIntervalCount = 0;
+    }
+
+    shoot() {
+        this.shootIntervalCount++;
+        if (this.shootIntervalCount <= SLOWBURST_DROID_BURSTS) {
+            let laser = new DroidLaser(this.game, this.boundCircle.x, this.boundCircle.y, 
+                                        SLOWBURST_DROID_LASER_SPEED, 
+                                        this.game.Zerlin.x, 
+                                        this.game.Zerlin.boundingbox.y + this.game.Zerlin.boundingbox.height/2, 
+                                        BASIC_DROID_LASER_LENGTH, BASIC_DROID_LASER_WIDTH, "#006699", "#00ccff");   
+            this.game.addLaser(laser);
+            this.game.audio.enemy.play('retroBlasterShot'); 
+        } else if (this.shootIntervalCount > SLOWBURST_DROID_SHOOTS_PER_CYCLE) {
+            this.shootIntervalCount = 0;
+        }
+        this.fire = false;
+    }
+}
 
 
-class BeamDroid extends AbstractDroid {
+
+class FastBurstDroid extends BasicDroid {
+    constructor(game, spritesheet, startX, startY) {
+        super(game, spritesheet, startX, startY);
+        this.shootInterval = FASTBURST_DROID_SHOOT_INTERVAL;
+        this.totalShootIntervalsPerCycle = FASTBURST_DROID_SHOOTS_PER_CYCLE;
+        this.shootIntervalCount = 0;
+    }
+
+    shoot() {
+        this.shootIntervalCount++;
+        if (this.shootIntervalCount <= FASTBURST_DROID_BURSTS) {
+            let laser = new DroidLaser(this.game, this.boundCircle.x, this.boundCircle.y, 
+                                        FASTBURST_DROID_LASER_SPEED, 
+                                        this.game.Zerlin.x, 
+                                        this.game.Zerlin.boundingbox.y + this.game.Zerlin.boundingbox.height/2, 
+                                        LEGGY_DROID_LASER_LENGTH, LEGGY_DROID_LASER_WIDTH, "#339933", "#00ff00");   
+            this.game.addLaser(laser);
+            this.game.audio.enemy.play('retroBlasterShot'); 
+        } else if (this.shootIntervalCount > FASTBURST_DROID_SHOOTS_PER_CYCLE) {
+            this.shootIntervalCount = 0;
+        }
+        this.fire = false;
+    }
+}
+
+
+
+
+class SniperDroid extends BasicDroid {
+    constructor(game, spritesheet, startX, startY) {
+        super(game, spritesheet, startX, startY);
+        this.shootInterval = SNIPER_DROID_SHOOT_INTERVAL;
+    }
+
+    shoot() {
+        let laser = new DroidLaser(this.game, this.boundCircle.x, this.boundCircle.y, 
+                                    SNIPER_DROID_LASER_SPEED, 
+                                    this.game.Zerlin.x, 
+                                    this.game.Zerlin.boundingbox.y + this.game.Zerlin.boundingbox.height/2, 
+                                    SNIPER_DROID_LASER_LENGTH, SNIPER_DROID_LASER_WIDTH, "#000099", "#3399ff");   
+        this.game.addLaser(laser);
+        this.game.audio.enemy.play('bowcasterShoot'); 
+        this.fire = false;
+    }
+}
+
+
+class MultishotDroid extends BasicDroid {
+    constructor(game, spritesheet, startX, startY) {
+        super(game, spritesheet, startX, startY);
+        this.shootInterval = MULTISHOT_DROID_SHOOT_INTERVAL;
+    }
+
+    shoot() {
+        var angleToZerlin = Math.atan2(this.game.Zerlin.y - 150 - this.boundCircle.y, this.game.Zerlin.x - this.boundCircle.x);
+        var xTarget = this.game.Zerlin.x;
+        var yTarget = this.game.Zerlin.boundingbox.y + this.game.Zerlin.boundingbox.height/2;
+        var xOffset = Math.cos(angleToZerlin + Math.PI / 2) * MULTISHOT_WIDTH / 2;
+        var yOffset = Math.sin(angleToZerlin + Math.PI / 2) * MULTISHOT_WIDTH / 2;
+
+        let laser1 = new DroidLaser(this.game, this.boundCircle.x + xOffset, this.boundCircle.y + yOffset, 
+                                    BASIC_DROID_LASER_SPEED, 
+                                    xTarget + xOffset, 
+                                    yTarget + yOffset, 
+                                    BASIC_DROID_LASER_LENGTH, BASIC_DROID_LASER_WIDTH, "#333399", "#4966ff");
+
+        let laser2 = new DroidLaser(this.game, this.boundCircle.x + xOffset * .55, this.boundCircle.y + yOffset * .55, 
+                                    BASIC_DROID_LASER_SPEED, 
+                                    xTarget + xOffset * .55, 
+                                    yTarget + yOffset * .55, 
+                                    BASIC_DROID_LASER_LENGTH, BASIC_DROID_LASER_WIDTH, "#333399", "#4966ff");
+
+        let laser3 = new DroidLaser(this.game, this.boundCircle.x - xOffset * .55, this.boundCircle.y - yOffset * .55, 
+                                    BASIC_DROID_LASER_SPEED, 
+                                    xTarget - xOffset * .55, 
+                                    yTarget - yOffset * .55, 
+                                    BASIC_DROID_LASER_LENGTH, BASIC_DROID_LASER_WIDTH, "#333399", "#4966ff");
+
+        let laser4 = new DroidLaser(this.game, this.boundCircle.x - xOffset, this.boundCircle.y - yOffset, 
+                                    BASIC_DROID_LASER_SPEED, 
+                                    xTarget - xOffset, 
+                                    yTarget - yOffset, 
+                                    BASIC_DROID_LASER_LENGTH, BASIC_DROID_LASER_WIDTH, "#333399", "#4966ff");   
+        
+        this.game.addLaser(laser1);
+        this.game.addLaser(laser2);
+        this.game.addLaser(laser3);
+        this.game.addLaser(laser4);
+        this.game.audio.enemy.play('retroBlasterShot'); 
+        this.fire = false;
+    }
+}
+
+
+
+
+class BeamDroid extends BasicDroid {
 
     constructor(game, spritesheet, startX, startY) {
-        super(game, startX, startY, 0, 0); //debug
-
-        /* animation fields */
-        //Animation(spritesheet, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale)
-        this.idleAnimation = new Animation(spritesheet, 0, 0, 100, 100, 0.1, 14, true, false, .5);
-        this.animation = this.idleAnimation;
-        this.beamAngle = Math.atan2(550 /* approximate Zerlin height */, this.game.camera.width * ZERLIN_POSITION_ON_SCREEN);
+        super(game, spritesheet, startX, startY);
+        this.beamAngle = Math.atan2(550 /* approximate Zerlin's height before he is instantiated */,
+                                    this.game.camera.width * ZERLIN_POSITION_ON_SCREEN);
         this.beamAngleDelta = 0;
-
-        /* bounding circle fields */
-
-        this.radius = (this.animation.frameWidth / 2) * this.animation.scale;
-        this.boundCircle = {radius: this.radius, 
-            x: this.x + this.radius,
-            y: this.y + this.radius};
 
         /* shooting fields */
         this.shooting = false;
         this.secondsBeforeFire = BEAM_DROID_SHOOT_INTERVAL;
-
-        /* movement fields */
-        var targetOrbitalX = (this.game.surfaceWidth / 2) + BASIC_DROID_ORBITAL_X_OFFSET;
-        var targetOrbitalY = (this.game.surfaceHeight / 2) + BASIC_DROID_ORBITAL_Y_OFFSET;
-        this.targetOrbitalPoint = {x: targetOrbitalX, y: targetOrbitalY};
     }
 
     update() { 
-
-        /* droid movement */
-        this.targetOrbitalPoint.x = this.game.Zerlin.x;
-        this.calcMovement(this.targetOrbitalPoint);
+        super.calcMovement();
 
         /* bounding circle movement */
-        var radius = 
         this.boundCircle.x = this.x + this.radius;
         this.boundCircle.y = this.y + this.radius;
 
@@ -605,18 +630,13 @@ class BeamDroid extends AbstractDroid {
             if (this.shootingTime <= 0) {
                 this.shooting = false;
                 this.beam.removeFromWorld = true;
+                this.beam.isSizzling = false;
                 if (this.game.beams.length <= 1) {
                     this.game.audio.beam.stop();
                 }
                 this.beam = null;
             }
         }
-        
-        super.update();
-    }
-
-    draw() {
-        super.draw();
     }
 
     setBeamAngle() {
@@ -656,46 +676,12 @@ class BeamDroid extends AbstractDroid {
         this.game.audio.beam.play();
     }
 
-    /*
-     * calculate movement so that it will try to fly around the location of the 
-     * target.
-     */
-    calcMovement(target) {
-        //if the droid is to the left of target point, then increase the deltaX
-        //by the x velocity
-        
-        if (this.x < target.x) {
-            if (this.deltaX < BASIC_DROID_X_MOVEMENT_SPEED)
-                this.deltaX += BASIC_DROID_X_ACCELERATION * this.game.clockTick;
-        }
-        
-        //if the droid is to the right of target point, then decrease the deltaX
-        //by the x velocity
-        else if (this.x > target.x) {
-            if (this.deltaX >= (-BASIC_DROID_X_MOVEMENT_SPEED))
-                this.deltaX -= BASIC_DROID_X_ACCELERATION * this.game.clockTick;
-        }
-
-        //if droid is above the target point, then increase deltaY(down)
-        if (this.y < target.y) {
-            if (this.deltaY <= BASIC_DROID_Y_MOVEMENT_SPEED)
-                this.deltaY += BASIC_DROID_Y_ACCELERATION * this.game.clockTick;
-        }
-        //if the droid is below the target point, then decrease the deltaY(up)
-        else if (this.y >= target.y) {
-            if (this.deltaY >= (-BASIC_DROID_Y_MOVEMENT_SPEED)) 
-                this.deltaY -= BASIC_DROID_Y_ACCELERATION * this.game.clockTick;
-        }      
-
-        this.x += this.game.clockTick * this.deltaX;
-        this.y += this.game.clockTick * this.deltaY;
-    }
-
     explode() {
         super.explode();
         if (this.beam) {
             this.beam.removeFromWorld = true;
-            if (this.game.beams.length <= 1) {
+            this.beam.isSizzling = false;
+            if (this.game.beams.length <= 1) { // don't stop sound if another beam is still shooting
                 this.game.audio.beam.stop();
             }
         }
@@ -708,14 +694,23 @@ class Beam {
         this.shootingDroid = shootingDroid;
         this.segments = [];
         this.segments.push({x: shootingDroid.boundCircle.x, y: shootingDroid.boundCircle.y, angle: 0});
+        this.isSizzling = false;
+        this.sizzlingSoundOn = false;
     }
 
     update() {
         this.segments[0].x = this.shootingDroid.boundCircle.x;
         this.segments[0].y = this.shootingDroid.boundCircle.y;
         this.segments[0].angle = this.shootingDroid.beamAngle;
-
         // collision manager detects end of beam segements and adds new ones if deflected.
+
+        if (this.isSizzling && !this.sizzlingSoundOn) {
+            this.game.audio.sizzle.play();
+            this.sizzlingSoundOn = true;
+        } else if (!this.isSizzling && this.sizzlingSoundOn) {
+            this.game.audio.sizzle.stop();
+            this.sizzlingSoundOn = false;
+        }
     }
 
     draw() {

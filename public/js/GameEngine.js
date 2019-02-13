@@ -60,6 +60,8 @@ class GameEngine {
     }
     start() {
         console.log("starting game");
+        this.audio.lightsaber.play('lightsaberOn');
+        this.audio.saberHum.play();
         var that = this;
         (function gameLoop() {
             that.loop();

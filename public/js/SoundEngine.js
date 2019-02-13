@@ -83,7 +83,7 @@ class SoundEngine {
 			  ]
 			},
 			loop: false,
-			volume: .2
+			volume: .07
 		  });
 
 		  this.item = new Howl({
@@ -181,6 +181,27 @@ class SoundEngine {
 			],
 			loop: true,
 			volume: .7
+		  });
+		  this.saberHum = new Howl({
+			src: [
+			  "sound/saber humming.wav"
+			],
+			loop: true,
+			volume: .12
+		  });
+		  this.wound = new Howl({
+			src: [
+			  "sound/tissue-wound.wav"
+			],
+			loop: false,
+			volume: .15
+		  });
+		  this.sizzle = new Howl({
+			src: [
+			  "sound/butter sizzling.wav"
+			],
+			loop: true,
+			volume: .5
 		  });
 	}
 
