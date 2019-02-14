@@ -153,6 +153,8 @@ class CollisionManager {
 					this.game.audio.wound.play();
 					laser.removeFromWorld = true;
 					zerlin.hits++;
+					zerlin.currentHealth--; //eventually subtract by laser damage
+					//then maybe make zerlin invincible for a few ticks
 					// console.log(zerlin.hits);
 				}
 			}

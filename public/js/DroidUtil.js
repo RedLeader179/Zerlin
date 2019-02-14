@@ -10,7 +10,8 @@ Joshua Atherton, Michael Josten, Steven Golob
 */
 
 //Explosion Constants
-var EXPLOSION_SCALE = 2;
+const EXPLOSION_SCALE = 2;
+const EXPLOSION_FRAME_SPEED = 0.05;
 
 /**
  * This class will serve as the parent for all droid entities
@@ -220,7 +221,7 @@ class DroidExplosion extends Entity {
         
         var spritesheet = this.game.assetManager.getAsset("../img/Explosion.png");
         //Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale)
-        this.animation = new Animation(spritesheet, 0, 0, 64, 64, 0.2, 15, false, false, EXPLOSION_SCALE); 
+        this.animation = new Animation(spritesheet, 0, 0, 64, 64, EXPLOSION_FRAME_SPEED, 15, false, false, EXPLOSION_SCALE); 
 
         this.x = x - this.animation.frameWidth * this.animation.scale / 2;
         this.y = y - this.animation.frameHeight * this.animation.scale / 2;

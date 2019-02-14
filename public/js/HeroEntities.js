@@ -55,6 +55,10 @@ var FORCE_JUMP_DELTA_Y = -950;
 var JUMP_DELTA_Y = -500;
 var GRAVITATIONAL_ACCELERATION = 1000;
 
+/* Zerlin health and force stats*/
+const Z_MAX_HEALTH = 20;
+const Z_MAX_FORCE = 20;
+
 
 class Zerlin extends Entity {
 
@@ -73,6 +77,12 @@ class Zerlin extends Entity {
 		this.faceRight();
 		this.lightsaber = new Lightsaber(game, this);
 		this.createAnimations();
+
+		/* Fields tracked by the status bar */
+		this.maxHealth = Z_MAX_HEALTH;
+		this.currentHealth = this.maxHealth;
+		this.maxForce = Z_MAX_FORCE;
+		this.currentForce = this.maxForce;
 	}
 
 	update() {

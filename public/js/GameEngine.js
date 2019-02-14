@@ -51,7 +51,10 @@ class GameEngine {
         //     rightTile: this.assetManager.getAsset('../img/forest_right_tile.png'),
         //     leftRightTile: this.assetManager.getAsset('../img/forest_both_rounded_tile.png')
         // });
+        
         this.Zerlin = new Zerlin(this);
+        this.addEntity(new HealthStatusBar(this, 25, 25));
+        this.addEntity(new ForceStatusBar(this, 50, 50));
         this.collisionManager = new CollisionManager(this);
         // TODO: instantiate Parallax manager here (and other managers)
         this.audio = new SoundEngine();
