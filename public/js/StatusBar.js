@@ -9,16 +9,8 @@ Joshua Atherton, Michael Josten, Steven Golob
 * the status bars currently will be health and force
 */
 
-const STATUS_BAR_LENGTH = 0.25 // width of the canvas to use
-const STATUS_BAR_WIDTH = 20;
-const STATUS_BAR_DISPLAY_TEXT = true;
 
-//when the current is less than or equal to the maxSize * CriticalAmount 
-//then start alerting the user by using some graphics.
-const STATUS_BAR_CRITICAL_AMOUNT = 0.2; //when the current is at 1/5 the maxSize
-const STATUS_BAR_CRITICAL_FLASH_INTERVAL = 0.5;
-const HEALTH_BAR_HAS_CRITICAL_STATE = true;
-const FORCE_BAR_HAS_CRITICAL_STATE = false;
+const sbc = Constants.StatusBarConstants;
 
 /*
 * all status bars will extend from this class.
@@ -36,11 +28,11 @@ const FORCE_BAR_HAS_CRITICAL_STATE = false;
 class AbstractStatusBar extends Entity {
     constructor(game, x, y, hasCriticalState) {
         super(game, x, y, 0, 0);
-        this.displayText = STATUS_BAR_DISPLAY_TEXT;
+        this.displayText = sbc.STATUS_BAR_DISPLAY_TEXT;
         this.hasCriticalState = hasCriticalState; //does the bar flash when it gets low.
         this.maxSize = 0; //the numeric size of the status bar.
         //the length of the status bar is a quarter of the canvas.
-        this.maxLength = this.game.surfaceWidth * STATUS_BAR_LENGTH; 
+        this.maxLength = this.game.surfaceWidth * sbc.STATUS_BAR_LENGTH; 
         //current value of the status bar
         this.current = this.maxSize;
         //default to white, alpha is between 1 (opaque) to 0 (transparent)
@@ -51,7 +43,7 @@ class AbstractStatusBar extends Entity {
         this.criticalBackgroundColor = 'rgba(255, 255, 255, 1)';
         this.criticalForegroundColor = 'rgba(126, 126, 126, 1)';
         this.flashCritical = false; //toggle boolean
-        this.secondsBeforeFlash = STATUS_BAR_CRITICAL_FLASH_INTERVAL;
+        this.secondsBeforeFlash = sbc.STATUS_BAR_CRITICAL_FLASH_INTERVAL;
     }
 
     update() {
@@ -63,7 +55,7 @@ class AbstractStatusBar extends Entity {
         this.secondsBeforeFlash -= this.game.clockTick;
         //toggle flash critical state every time interval
         if (this.secondsBeforeFlash <= 0) {
-            this.secondsBeforeFlash = STATUS_BAR_CRITICAL_FLASH_INTERVAL;
+            this.secondsBeforeFlash = sbc.STATUS_BAR_CRITICAL_FLASH_INTERVAL;
             if (this.flashCritical)
                 this.flashCritical = false;
             else 
@@ -77,7 +69,7 @@ class AbstractStatusBar extends Entity {
 
         var colorForeground = this.foregroundColor;
         var colorBackground = this.backgroundColor;
-        if (this.hasCriticalState && this.current <= STATUS_BAR_CRITICAL_AMOUNT * this.maxSize) {
+        if (this.hasCriticalState && this.current <= sbc.STATUS_BAR_CRITICAL_AMOUNT * this.maxSize) {
             //paint the critical state
             if (this.flashCritical) {
                 colorForeground = this.criticalForegroundColor;
@@ -88,7 +80,7 @@ class AbstractStatusBar extends Entity {
 
         //draw the background status bar
         ctx.save();
-        ctx.lineWidth = STATUS_BAR_WIDTH;
+        ctx.lineWidth = sbc.STATUS_BAR_WIDTH;
         ctx.strokeStyle = colorBackground;
         ctx.lineCap = "round";
         ctx.beginPath();
@@ -112,7 +104,7 @@ class AbstractStatusBar extends Entity {
         //draw the text of the status bar current/maxSize
         if (this.displayText) {
             ctx.fillText(`${this.current} / ${this.maxSize}`, this.x + this.maxLength/2, 
-                this.y + STATUS_BAR_WIDTH*0.20);
+                this.y + sbc.STATUS_BAR_WIDTH * 0.20);
         }
         
         ctx.restore();
@@ -143,7 +135,7 @@ class AbstractStatusBar extends Entity {
 */ 
 class HealthStatusBar extends AbstractStatusBar {
     constructor(game, x, y) {
-        super(game, x, y, HEALTH_BAR_HAS_CRITICAL_STATE);
+        super(game, x, y, sbc.HEALTH_BAR_HAS_CRITICAL_STATE);
         this.foregroundColor = "rgba(255, 0, 0, 1)"; //red
         this.backgroundColor = "rgba(255, 126, 126, 1)"; //light red
         //critical colors
@@ -182,7 +174,7 @@ class HealthStatusBar extends AbstractStatusBar {
 */
 class ForceStatusBar extends AbstractStatusBar {
     constructor(game, x, y) {
-        super(game, x, y, FORCE_BAR_HAS_CRITICAL_STATE);
+        super(game, x, y, sbc.FORCE_BAR_HAS_CRITICAL_STATE);
         this.foregroundColor = "rgba(0, 0, 255, 1)"; //blue
         this.backgroundColor = "rgba(126, 126, 255, 1)"; //light blue
         this.maxSize = this.game.Zerlin.maxForce;

@@ -10,60 +10,9 @@ Joshua Atherton, Michael Josten, Steven Golob
 
 //Basic Droid Constants
 
-//basic droid constants
-var BASIC_DROID_SHOOT_INTERVAL = 2;
-var BASIC_DROID_X_MOVEMENT_SPEED = 150;
-var BASIC_DROID_Y_MOVEMENT_SPEED = 100;
-var BASIC_DROID_X_ACCELERATION = 60;
-var BASIC_DROID_Y_ACCELERATION = 60;
-var BASIC_DROID_ORBITAL_X_OFFSET = 200;
-var BASIC_DROID_ORBITAL_Y_OFFSET = -200;
+var camConst = Constants.CameraConstants;
+const dbc = Constants.DroidBasicConstants;
 
-//Laser constants
-var BASIC_DROID_LASER_SPEED = 400; 
-var BASIC_DROID_LASER_LENGTH = 10;
-var BASIC_DROID_LASER_WIDTH = 10;
-
-/* leggy droid constants */
-var LEGGY_DROID_SHOOT_INTERVAL = 4;
-var LEGGY_DROID_LASER_SPEED = 350; 
-var LEGGY_DROID_LASER_LENGTH = 25;
-var LEGGY_DROID_LASER_WIDTH = 12;
-
-var SPRAY_LASER_COUNT = 5;
-var SPRAY_LASER_WIDTH_RADIANS = Math.PI / 6;
-
-
-/* beam droid constants */
-var BEAM_DROID_SHOOT_INTERVAL = 6;
-var BEAM_DROID_SHOOT_DURATION = 2;
-var BEAM_DROID_LASER_WIDTH = 16;
-var BEAM_HP_PER_SECOND = 3;
-var BEAM_ANGLE_ACCELERATION_RADIANS = Math.PI / 3;
-
-/* slowburst laser constants */
-var SLOWBURST_DROID_SHOOT_INTERVAL = .3;
-var SLOWBURST_DROID_LASER_SPEED = 350;
-var SLOWBURST_DROID_BURSTS = 4;
-// (how many shots are SKIPPED) + BURST_DROID_BURSTS in overall interval
-var SLOWBURST_DROID_SHOOTS_PER_CYCLE = 20;
-
-/* fast burst laser constants */
-var FASTBURST_DROID_SHOOT_INTERVAL = .1;
-var FASTBURST_DROID_LASER_SPEED = 550;
-var FASTBURST_DROID_BURSTS = 3;
-// (how many shots are SKIPPED) + BURST_DROID_BURSTS in overall interval
-var FASTBURST_DROID_SHOOTS_PER_CYCLE = 80;
-
-/* Sniper droid laser constants */
-var SNIPER_DROID_LASER_SPEED = 850;
-var SNIPER_DROID_SHOOT_INTERVAL = 7;
-var SNIPER_DROID_LASER_LENGTH = 50;
-var SNIPER_DROID_LASER_WIDTH = 15;
-
-/* multi-shot laser constants */
-var MULTISHOT_DROID_SHOOT_INTERVAL = 2;
-var MULTISHOT_WIDTH = 35;
 
 
 /*
@@ -80,7 +29,7 @@ class BasicDroid extends AbstractDroid {
         this.idleAnimation = new Animation(spritesheet, 0, 0, 100, 100, 0.1, 14, true, false, .5);
         this.animation = this.idleAnimation;
 
-        this.shootInterval = BASIC_DROID_SHOOT_INTERVAL;
+        this.shootInterval = dbc.BASIC_DROID_SHOOT_INTERVAL;
 
         /* bounding circle fields */
         this.radius = (this.animation.frameWidth / 2) * this.animation.scale;
@@ -93,11 +42,11 @@ class BasicDroid extends AbstractDroid {
         this.secondsBeforeFire = this.shootInterval;
 
         /* movement fields */
-        var targetOrbitalX = (this.game.surfaceWidth / 2) + BASIC_DROID_ORBITAL_X_OFFSET;
-        var targetOrbitalY = (this.game.surfaceHeight / 2) + BASIC_DROID_ORBITAL_Y_OFFSET;
+        var targetOrbitalX = (this.game.surfaceWidth / 2) + dbc.BASIC_DROID_ORBITAL_X_OFFSET;
+        var targetOrbitalY = (this.game.surfaceHeight / 2) + dbc.BASIC_DROID_ORBITAL_Y_OFFSET;
         this.targetOrbitalPointLeft = {x: targetOrbitalX, y: targetOrbitalY};
         
-        targetOrbitalX = (this.game.surfaceWidth / 2) + BASIC_DROID_ORBITAL_X_OFFSET;
+        targetOrbitalX = (this.game.surfaceWidth / 2) + dbc.BASIC_DROID_ORBITAL_X_OFFSET;
         this.targetOrbitalPointRight = {x: targetOrbitalX, y: targetOrbitalY};
     }
     /* 
@@ -137,8 +86,8 @@ class BasicDroid extends AbstractDroid {
         var targetY = this.game.Zerlin.boundingbox.y + this.game.Zerlin.boundingbox.height/2;
         var randTargetX = targetX + (this.game.Zerlin.boundingbox.width * (Math.random() - .5));
         var randTargetY = targetY + (this.game.Zerlin.boundingbox.height * (Math.random() - .5));
-        var droidLaser = new DroidLaser(this.game, this.x + 20, this.y + 20, BASIC_DROID_LASER_SPEED, 
-            randTargetX, randTargetY, BASIC_DROID_LASER_LENGTH, BASIC_DROID_LASER_WIDTH, "#339933", "#00ff00");
+        var droidLaser = new DroidLaser(this.game, this.x + 20, this.y + 20, dbc.BASIC_DROID_LASER_SPEED, 
+            randTargetX, randTargetY, dbc.BASIC_DROID_LASER_LENGTH, dbc.BASIC_DROID_LASER_WIDTH, "#339933", "#00ff00");
         this.game.addLaser(droidLaser);
         this.fire = false;
         this.game.audio.enemy.play('retroBlasterShot');
@@ -149,46 +98,46 @@ class BasicDroid extends AbstractDroid {
      * target.
      */
     calcMovement() {
-        this.targetOrbitalPointLeft.x = this.game.Zerlin.x - BASIC_DROID_ORBITAL_X_OFFSET;
+        this.targetOrbitalPointLeft.x = this.game.Zerlin.x - dbc.BASIC_DROID_ORBITAL_X_OFFSET;
         //add 200 so that the droids uses up all the canvas becuase when targeting Zerlin, 
         //doesn't use all of the canvas
-        this.targetOrbitalPointRight.x = this.game.Zerlin.x + BASIC_DROID_ORBITAL_X_OFFSET + 200;
+        this.targetOrbitalPointRight.x = this.game.Zerlin.x + dbc.BASIC_DROID_ORBITAL_X_OFFSET + 200;
 
         //if the droid is to the left of targetRight and right of targetLeft
         if (this.x <= this.targetOrbitalPointRight.x && this.x >= this.targetOrbitalPointLeft.x) {
             //if the droid is moving right, then increase x velocity
             if (this.deltaX >= 0) {
-                if (this.deltaX < BASIC_DROID_X_MOVEMENT_SPEED)
-                    this.deltaX += BASIC_DROID_X_ACCELERATION * this.game.clockTick;
+                if (this.deltaX < dbc.BASIC_DROID_X_MOVEMENT_SPEED)
+                    this.deltaX += dbc.BASIC_DROID_X_ACCELERATION * this.game.clockTick;
             }
             //if the droid is moving left, then decrease x velocity
             if (this.deltaX < 0) {
-                if (this.deltaX >= (-BASIC_DROID_X_MOVEMENT_SPEED))
-                    this.deltaX -= BASIC_DROID_X_ACCELERATION * this.game.clockTick;
+                if (this.deltaX >= (-dbc.BASIC_DROID_X_MOVEMENT_SPEED))
+                    this.deltaX -= dbc.BASIC_DROID_X_ACCELERATION * this.game.clockTick;
             }
         }
             
         //if the droid is to the left of targetLeft, then increase X velocity
         if (this.x < this.targetOrbitalPointLeft.x) {
-            if (this.deltaX < BASIC_DROID_X_MOVEMENT_SPEED)
-                this.deltaX += BASIC_DROID_X_ACCELERATION * this.game.clockTick;
+            if (this.deltaX < dbc.BASIC_DROID_X_MOVEMENT_SPEED)
+                this.deltaX += dbc.BASIC_DROID_X_ACCELERATION * this.game.clockTick;
         }
         //if the droid is to the right of targetRight, then decrease X velocity
         if (this.x > this.targetOrbitalPointRight.x) {
-            if (this.deltaX >= (-BASIC_DROID_X_MOVEMENT_SPEED))
-                this.deltaX -= BASIC_DROID_X_ACCELERATION * this.game.clockTick;
+            if (this.deltaX >= (-dbc.BASIC_DROID_X_MOVEMENT_SPEED))
+                this.deltaX -= dbc.BASIC_DROID_X_ACCELERATION * this.game.clockTick;
         }
         
 
         //if droid is above the target point, then increase deltaY(down)
         if (this.y < this.targetOrbitalPointRight.y) {
-            if (this.deltaY <= BASIC_DROID_Y_MOVEMENT_SPEED)
-                this.deltaY += BASIC_DROID_Y_ACCELERATION * this.game.clockTick;
+            if (this.deltaY <= dbc.BASIC_DROID_Y_MOVEMENT_SPEED)
+                this.deltaY += dbc.BASIC_DROID_Y_ACCELERATION * this.game.clockTick;
         }
         //if the droid is below the target point, then decrease the deltaY(up)
         else if (this.y >= this.targetOrbitalPointRight.y) {
-            if (this.deltaY >= (-BASIC_DROID_Y_MOVEMENT_SPEED)) 
-                this.deltaY -= BASIC_DROID_Y_ACCELERATION * this.game.clockTick;
+            if (this.deltaY >= (-dbc.BASIC_DROID_Y_MOVEMENT_SPEED)) 
+                this.deltaY -= dbc.BASIC_DROID_Y_ACCELERATION * this.game.clockTick;
         }      
 
         //after calculating change in x and y then increment x and y by delta x and delta y
@@ -212,7 +161,7 @@ class LeggyDroid extends BasicDroid {
         this.boundCircle = {radius: this.radius, 
             x: this.x + this.radius,
             y: this.y + this.radius};
-        this.shootInterval = LEGGY_DROID_SHOOT_INTERVAL;
+        this.shootInterval = dbc.LEGGY_DROID_SHOOT_INTERVAL;
     }
 
     shoot() {
@@ -220,15 +169,15 @@ class LeggyDroid extends BasicDroid {
                                     this.game.Zerlin.x - this.boundCircle.x);
         var distanceToTarget = 100; // arbitrary number to set laser's path, value not important
 
-        var laserAngleOffset = SPRAY_LASER_WIDTH_RADIANS / 2;
-        for (let i = 0; i < SPRAY_LASER_COUNT; i++) {
+        var laserAngleOffset = dbc.SPRAY_LASER_WIDTH_RADIANS / 2;
+        for (let i = 0; i < dbc.SPRAY_LASER_COUNT; i++) {
             let laser = new DroidLaser(this.game, this.boundCircle.x, this.boundCircle.y, 
-                                        LEGGY_DROID_LASER_SPEED, 
+                                        dbc.LEGGY_DROID_LASER_SPEED, 
                                         Math.cos(targetAngle + laserAngleOffset) * distanceToTarget + this.boundCircle.x, 
                                         Math.sin(targetAngle + laserAngleOffset) * distanceToTarget + this.boundCircle.y, 
-                                        LEGGY_DROID_LASER_LENGTH, LEGGY_DROID_LASER_WIDTH, "red", "orange");
+                                        dbc.LEGGY_DROID_LASER_LENGTH, dbc.LEGGY_DROID_LASER_WIDTH, "red", "orange");
             this.game.addLaser(laser);
-            laserAngleOffset -= SPRAY_LASER_WIDTH_RADIANS / (SPRAY_LASER_COUNT - 1);
+            laserAngleOffset -= dbc.SPRAY_LASER_WIDTH_RADIANS / (dbc.SPRAY_LASER_COUNT - 1);
         }
         this.game.audio.enemy.play('bowcasterShoot');
         this.fire = false;
@@ -243,22 +192,22 @@ class LeggyDroid extends BasicDroid {
 class SlowBurstDroid extends BasicDroid {
     constructor(game, spritesheet, startX, startY) {
         super(game, spritesheet, startX, startY);
-        this.shootInterval = SLOWBURST_DROID_SHOOT_INTERVAL;
-        this.totalShootIntervalsPerCycle = SLOWBURST_DROID_SHOOTS_PER_CYCLE;
+        this.shootInterval = dbc.SLOWBURST_DROID_SHOOT_INTERVAL;
+        this.totalShootIntervalsPerCycle = dbc.SLOWBURST_DROID_SHOOTS_PER_CYCLE;
         this.shootIntervalCount = 0;
     }
 
     shoot() {
         this.shootIntervalCount++;
-        if (this.shootIntervalCount <= SLOWBURST_DROID_BURSTS) {
+        if (this.shootIntervalCount <= dbc.SLOWBURST_DROID_BURSTS) {
             let laser = new DroidLaser(this.game, this.boundCircle.x, this.boundCircle.y, 
-                                        SLOWBURST_DROID_LASER_SPEED, 
+                                        dbc.SLOWBURST_DROID_LASER_SPEED, 
                                         this.game.Zerlin.x, 
                                         this.game.Zerlin.boundingbox.y + this.game.Zerlin.boundingbox.height/2, 
-                                        BASIC_DROID_LASER_LENGTH, BASIC_DROID_LASER_WIDTH, "#006699", "#00ccff");   
+                                        dbc.BASIC_DROID_LASER_LENGTH, dbc.BASIC_DROID_LASER_WIDTH, "#006699", "#00ccff");   
             this.game.addLaser(laser);
             this.game.audio.enemy.play('retroBlasterShot'); 
-        } else if (this.shootIntervalCount > SLOWBURST_DROID_SHOOTS_PER_CYCLE) {
+        } else if (this.shootIntervalCount > dbc.SLOWBURST_DROID_SHOOTS_PER_CYCLE) {
             this.shootIntervalCount = 0;
         }
         this.fire = false;
@@ -270,22 +219,22 @@ class SlowBurstDroid extends BasicDroid {
 class FastBurstDroid extends BasicDroid {
     constructor(game, spritesheet, startX, startY) {
         super(game, spritesheet, startX, startY);
-        this.shootInterval = FASTBURST_DROID_SHOOT_INTERVAL;
-        this.totalShootIntervalsPerCycle = FASTBURST_DROID_SHOOTS_PER_CYCLE;
+        this.shootInterval = dbc.FASTBURST_DROID_SHOOT_INTERVAL;
+        this.totalShootIntervalsPerCycle = dbc.FASTBURST_DROID_SHOOTS_PER_CYCLE;
         this.shootIntervalCount = 0;
     }
 
     shoot() {
         this.shootIntervalCount++;
-        if (this.shootIntervalCount <= FASTBURST_DROID_BURSTS) {
+        if (this.shootIntervalCount <= dbc.FASTBURST_DROID_BURSTS) {
             let laser = new DroidLaser(this.game, this.boundCircle.x, this.boundCircle.y, 
-                                        FASTBURST_DROID_LASER_SPEED, 
+                                        dbc.FASTBURST_DROID_LASER_SPEED, 
                                         this.game.Zerlin.x, 
                                         this.game.Zerlin.boundingbox.y + this.game.Zerlin.boundingbox.height/2, 
-                                        LEGGY_DROID_LASER_LENGTH, LEGGY_DROID_LASER_WIDTH, "#339933", "#00ff00");   
+                                        dbc.LEGGY_DROID_LASER_LENGTH, dbc.LEGGY_DROID_LASER_WIDTH, "#339933", "#00ff00");   
             this.game.addLaser(laser);
             this.game.audio.enemy.play('retroBlasterShot'); 
-        } else if (this.shootIntervalCount > FASTBURST_DROID_SHOOTS_PER_CYCLE) {
+        } else if (this.shootIntervalCount > dbc.FASTBURST_DROID_SHOOTS_PER_CYCLE) {
             this.shootIntervalCount = 0;
         }
         this.fire = false;
@@ -298,15 +247,15 @@ class FastBurstDroid extends BasicDroid {
 class SniperDroid extends BasicDroid {
     constructor(game, spritesheet, startX, startY) {
         super(game, spritesheet, startX, startY);
-        this.shootInterval = SNIPER_DROID_SHOOT_INTERVAL;
+        this.shootInterval = dbc.SNIPER_DROID_SHOOT_INTERVAL;
     }
 
     shoot() {
         let laser = new DroidLaser(this.game, this.boundCircle.x, this.boundCircle.y, 
-                                    SNIPER_DROID_LASER_SPEED, 
+                                    dbc.SNIPER_DROID_LASER_SPEED, 
                                     this.game.Zerlin.x, 
                                     this.game.Zerlin.boundingbox.y + this.game.Zerlin.boundingbox.height/2, 
-                                    SNIPER_DROID_LASER_LENGTH, SNIPER_DROID_LASER_WIDTH, "#000099", "#3399ff");   
+                                    dbc.SNIPER_DROID_LASER_LENGTH, dbc.SNIPER_DROID_LASER_WIDTH, "#000099", "#3399ff");   
         this.game.addLaser(laser);
         this.game.audio.enemy.play('bowcasterShoot'); 
         this.fire = false;
@@ -317,39 +266,39 @@ class SniperDroid extends BasicDroid {
 class MultishotDroid extends BasicDroid {
     constructor(game, spritesheet, startX, startY) {
         super(game, spritesheet, startX, startY);
-        this.shootInterval = MULTISHOT_DROID_SHOOT_INTERVAL;
+        this.shootInterval = dbc.MULTISHOT_DROID_SHOOT_INTERVAL;
     }
 
     shoot() {
         var angleToZerlin = Math.atan2(this.game.Zerlin.y - 150 - this.boundCircle.y, this.game.Zerlin.x - this.boundCircle.x);
         var xTarget = this.game.Zerlin.x;
         var yTarget = this.game.Zerlin.boundingbox.y + this.game.Zerlin.boundingbox.height/2;
-        var xOffset = Math.cos(angleToZerlin + Math.PI / 2) * MULTISHOT_WIDTH / 2;
-        var yOffset = Math.sin(angleToZerlin + Math.PI / 2) * MULTISHOT_WIDTH / 2;
+        var xOffset = Math.cos(angleToZerlin + Math.PI / 2) * dbc.MULTISHOT_WIDTH / 2;
+        var yOffset = Math.sin(angleToZerlin + Math.PI / 2) * dbc.MULTISHOT_WIDTH / 2;
 
         let laser1 = new DroidLaser(this.game, this.boundCircle.x + xOffset, this.boundCircle.y + yOffset, 
-                                    BASIC_DROID_LASER_SPEED, 
+                                    dbc.BASIC_DROID_LASER_SPEED, 
                                     xTarget + xOffset, 
                                     yTarget + yOffset, 
-                                    BASIC_DROID_LASER_LENGTH, BASIC_DROID_LASER_WIDTH, "#333399", "#4966ff");
+                                    dbc.BASIC_DROID_LASER_LENGTH, dbc.BASIC_DROID_LASER_WIDTH, "#333399", "#4966ff");
 
         let laser2 = new DroidLaser(this.game, this.boundCircle.x + xOffset * .55, this.boundCircle.y + yOffset * .55, 
-                                    BASIC_DROID_LASER_SPEED, 
+                                    dbc.BASIC_DROID_LASER_SPEED, 
                                     xTarget + xOffset * .55, 
                                     yTarget + yOffset * .55, 
-                                    BASIC_DROID_LASER_LENGTH, BASIC_DROID_LASER_WIDTH, "#333399", "#4966ff");
+                                    dbc.BASIC_DROID_LASER_LENGTH, dbc.BASIC_DROID_LASER_WIDTH, "#333399", "#4966ff");
 
         let laser3 = new DroidLaser(this.game, this.boundCircle.x - xOffset * .55, this.boundCircle.y - yOffset * .55, 
-                                    BASIC_DROID_LASER_SPEED, 
+                                    dbc.BASIC_DROID_LASER_SPEED, 
                                     xTarget - xOffset * .55, 
                                     yTarget - yOffset * .55, 
-                                    BASIC_DROID_LASER_LENGTH, BASIC_DROID_LASER_WIDTH, "#333399", "#4966ff");
+                                    dbc.BASIC_DROID_LASER_LENGTH, dbc.BASIC_DROID_LASER_WIDTH, "#333399", "#4966ff");
 
         let laser4 = new DroidLaser(this.game, this.boundCircle.x - xOffset, this.boundCircle.y - yOffset, 
-                                    BASIC_DROID_LASER_SPEED, 
+                                    dbc.BASIC_DROID_LASER_SPEED, 
                                     xTarget - xOffset, 
                                     yTarget - yOffset, 
-                                    BASIC_DROID_LASER_LENGTH, BASIC_DROID_LASER_WIDTH, "#333399", "#4966ff");   
+                                    dbc.BASIC_DROID_LASER_LENGTH, dbc.BASIC_DROID_LASER_WIDTH, "#333399", "#4966ff");   
         
         this.game.addLaser(laser1);
         this.game.addLaser(laser2);
@@ -368,12 +317,12 @@ class BeamDroid extends BasicDroid {
     constructor(game, spritesheet, startX, startY) {
         super(game, spritesheet, startX, startY);
         this.beamAngle = Math.atan2(550 /* approximate Zerlin's height before he is instantiated */,
-                                    this.game.camera.width * ZERLIN_POSITION_ON_SCREEN);
+                                    this.game.camera.width * camConst.ZERLIN_POSITION_ON_SCREEN);
         this.beamAngleDelta = 0;
 
         /* shooting fields */
         this.shooting = false;
-        this.secondsBeforeFire = BEAM_DROID_SHOOT_INTERVAL;
+        this.secondsBeforeFire = dbc.BEAM_DROID_SHOOT_INTERVAL;
     }
 
     update() { 
@@ -409,10 +358,10 @@ class BeamDroid extends BasicDroid {
         var angleDiff = this.shaveRadians(angleToZerlin - this.beamAngle);
         if (angleDiff > Math.PI) {
             // rotate beam clockwise
-            this.beamAngleDelta -= BEAM_ANGLE_ACCELERATION_RADIANS * this.game.clockTick;
+            this.beamAngleDelta -= dbc.BEAM_ANGLE_ACCELERATION_RADIANS * this.game.clockTick;
         } else {
             // rotate beam counterclockwise
-            this.beamAngleDelta += BEAM_ANGLE_ACCELERATION_RADIANS * this.game.clockTick; 
+            this.beamAngleDelta += dbc.BEAM_ANGLE_ACCELERATION_RADIANS * this.game.clockTick; 
         }
         this.beamAngleDelta *= .97; // zero in on target by reducing speed of beam rotation
         this.beamAngle += this.beamAngleDelta * this.game.clockTick;
@@ -435,9 +384,9 @@ class BeamDroid extends BasicDroid {
     shoot() {
         this.beam = new Beam(this);
         this.game.beams.push(this.beam);
-        this.secondsBeforeFire = BEAM_DROID_SHOOT_INTERVAL;
+        this.secondsBeforeFire = dbc.BEAM_DROID_SHOOT_INTERVAL;
         this.shooting = true;
-        this.shootingTime = BEAM_DROID_SHOOT_DURATION;
+        this.shootingTime = dbc.BEAM_DROID_SHOOT_DURATION;
         this.game.audio.beam.play();
     }
 
@@ -486,7 +435,7 @@ class Beam {
             var segment = this.segments[i];
 
             //Outer Layer of beam
-            ctx.lineWidth = BEAM_DROID_LASER_WIDTH;
+            ctx.lineWidth = dbc.BEAM_DROID_LASER_WIDTH;
             ctx.strokeStyle = "purple";
             ctx.lineCap = "round";
             ctx.beginPath();
@@ -500,7 +449,7 @@ class Beam {
             var segment = this.segments[i];
 
             //inner layer of beam.
-            ctx.lineWidth = BEAM_DROID_LASER_WIDTH / 2;
+            ctx.lineWidth = dbc.BEAM_DROID_LASER_WIDTH / 2;
             ctx.strokeStyle = "white";
             ctx.lineCap = "round";
             ctx.beginPath();
