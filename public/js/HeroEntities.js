@@ -74,7 +74,7 @@ class Zerlin extends Entity {
 				/** for testing sound */
 				this.game.audio.hero.play('forceJump');
 				this.falling = true;
-				this.deltaY = zc.FORCE_zc.JUMP_DELTA_Y;
+				this.deltaY = zc.FORCE_JUMP_DELTA_Y;
 			}
 			else if (this.game.keys['KeyW'] && !this.falling) {
 				this.falling = true;
