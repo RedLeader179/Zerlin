@@ -4,10 +4,32 @@ const LEVEL_ONE_TILE_LAYOUT = [
 '            -      B    --       s',
 ' d     m      -     d            -',
 '       B     --  n                ',
-'  -             ---               ',
+'  =             ===               ',
 'f    --         --          d     ',
 '   --          -  s       -       ',
-'--------n-- ----   ---   -    ----'
+'--------n-- ----   ---  ====  ----'
+]
+
+const LEVEL_THREE_TILE_LAYOUT = [
+'                 ',
+'                 ',
+'      X          ',
+'          --     ',
+'    ==  -      - ',
+'---              ',
+'   --            ',
+'-----------------'
+]
+
+const MOVING_TILE_TESTER_LAYOUT = [
+'                 ',
+'                 ',
+'                 ',
+'          --     ',
+'    ==  -      - ',
+'---              ',
+'  ===========    ',
+'-----------------'
 ]
 
 
@@ -22,6 +44,7 @@ class SceneManager {
     const LEVEL_ONE_BACKGROUNDS = [
     				new ParallaxScrollBackground(this.gameEngine, this.gameEngine.assetManager.getAsset('../img/backgroundTrees4.png'), 1, this.gameEngine.camera, 5200),
     				new ParallaxScrollBackground(this.gameEngine, this.gameEngine.assetManager.getAsset('../img/backgroundTrees3.png'), 1, this.gameEngine.camera, 2500),
+                    // new ParallaxScrollBackground(this.gameEngine, this.gameEngine.assetManager.getAsset('../img/god light (2).png'), 1, this.gameEngine.camera, 2000),
     				new ParallaxFloatingBackground(this.gameEngine, this.gameEngine.assetManager.getAsset('../img/backgroundStars.png'), 1, this.gameEngine.camera, 1400),
     				new ParallaxScrollBackground(this.gameEngine, this.gameEngine.assetManager.getAsset('../img/backgroundTrees2.png'), 1, this.gameEngine.camera, 1000),
     				new ParallaxScrollBackground(this.gameEngine, this.gameEngine.assetManager.getAsset('../img/backgroundTrees1.png'), 1, this.gameEngine.camera, 600)];

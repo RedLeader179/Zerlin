@@ -85,18 +85,32 @@ class AssetManager {
 	AM.queueDownload("../img/backgroundTrees2.png");
 	AM.queueDownload("../img/backgroundTrees3.png");
 	AM.queueDownload("../img/backgroundTrees4.png");
-	AM.queueDownload("../img/droid-j-row.png");
+	AM.queueDownload("../img/god light.png");
+	AM.queueDownload("../img/god light (1).png");
+	AM.queueDownload("../img/god light (2).png");
 
 	AM.queueDownload("../img/forest_left_tile.png"); //tiles are 60x60
 	AM.queueDownload("../img/forest_center_tile.png");
 	AM.queueDownload("../img/forest_right_tile.png");
 	AM.queueDownload("../img/forest_both_rounded_tile.png");
 
+	AM.queueDownload("../img/droid-j-row.png");
 	AM.queueDownload("../img/leggy_droid.png");
+	AM.queueDownload("../img/Droid 1.png");
+	AM.queueDownload("../img/Droid 2.png");
+	AM.queueDownload("../img/Droid 3.png");
+	AM.queueDownload("../img/Droid 4.png");
+	AM.queueDownload("../img/Droid 5.png");
+	AM.queueDownload('../img/city_background.png');
+	AM.queueDownload('../img/city_buildings_back.png');
+	AM.queueDownload('../img/city_clouds_left.png');
 
-  AM.queueDownload('../img/city_background.png');
-  AM.queueDownload('../img/city_buildings_back.png');
-  AM.queueDownload('../img/city_clouds_left.png');
+	AM.queueDownload("../img/boss flying.png");
+	AM.queueDownload("../img/boss flying left.png");
+	AM.queueDownload("../img/boss falling.png");
+	AM.queueDownload("../img/boss falling left.png");
+	AM.queueDownload("../img/beam cannon.png");
+	AM.queueDownload("../img/beam cannon left.png");
 
 
 	AM.downloadAll(function () {

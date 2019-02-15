@@ -32,7 +32,7 @@ backgroundMusicArray['yodaTheme'] = new Howl({
 		"sound/yodaTheme.ac3"
 	  ],
 	loop: true,
-	autoplay: true,
+	// autoplay: true,
 	preload: true
 });
 backgroundMusicArray['clashOfLightsabersTheme'] = new Howl({
@@ -202,6 +202,27 @@ class SoundEngine {
 			],
 			loop: true,
 			volume: .5
+		  });
+		  this.sizzle2 = new Howl({
+			src: [
+			  "sound/meat sizzling.wav"
+			],
+			loop: true,
+			volume: .5
+		  });
+		  this.jetPack = new Howl({
+			src: [
+			  "sound/jet pack.wav"
+			],
+			loop: true,
+			volume: .3
+		  });
+		  this.deflectBeam = new Howl({
+			src: [
+			  "sound/laserLoop1.wav"
+			],
+			loop: true,
+			volume: .8
 		  });
 	}
 

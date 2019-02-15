@@ -20,12 +20,13 @@ window.requestAnimFrame = (function () {
 class GameEngine {
     constructor(assetManager) {
         this.assetManager = assetManager;
-        this.showOutlines = false; //debug bit
+        this.showOutlines = true; //debug bit
         this.otherEntities = [];
         this.lasers = [];
         this.beams = [];
         this.droids = [];
         this.tiles = [];
+        this.boss = null;
         this.ctx = null;
         this.surfaceWidth = null;
         this.surfaceHeight = null;
@@ -98,17 +99,14 @@ class GameEngine {
                 this.lasers.splice(i, 1);
             }
         }
-        for (var i = this.beams.length - 1; i >= 0; i--) {
-            this.beams[i].update();
-            if (this.beams[i].removeFromWorld) {
-                this.beams.splice(i, 1);
-            }
-        }
         for (var i = this.otherEntities.length - 1; i >= 0; i--) {
             this.otherEntities[i].update();
             if (this.otherEntities[i].removeFromWorld) {
                 this.otherEntities.splice(i, 1);
             }
+        }
+        if (this.boss) {
+            this.boss.update();
         }
 
         this.collisionManager.handleCollisions();
@@ -126,8 +124,8 @@ class GameEngine {
         for (var i = 0; i < this.lasers.length; i++) {
             this.lasers[i].draw(this.ctx);
         }
-        for (var i = 0; i < this.beams.length; i++) {
-            this.beams[i].draw(this.ctx);
+        if (this.boss) {
+            this.boss.draw();
         }
         for (var i = 0; i < this.otherEntities.length; i++) {
             this.otherEntities[i].draw(this.ctx);

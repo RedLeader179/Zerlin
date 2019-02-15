@@ -115,11 +115,13 @@ class Zerlin extends Entity {
 			}
 			else if (this.game.keys['KeyE'] && !this.falling) {
 				/** for testing sound */
+				this.tile = null;
 				this.game.audio.hero.play('forceJump');
 				this.falling = true;
 				this.deltaY = FORCE_JUMP_DELTA_Y;
 			}
 			else if (this.game.keys['KeyW'] && !this.falling) {
+				this.tile = null;
 				this.falling = true;
 				this.deltaY = JUMP_DELTA_Y;
 			}
@@ -137,6 +139,7 @@ class Zerlin extends Entity {
 		}
 
 		if (this.somersaulting) {
+			this.deltaX = Z_SOMERSAULT_SPEED * this.somersaultingDirection;
 			if (this.isAnimationDone()) {
 				this.finishSomersault();
 			} else if (this.animation.elapsedTime < Z_SOMERSAULT_FRAMES * Z_SOMERSAULT_FRAME_SPEED / 2) {
@@ -145,6 +148,7 @@ class Zerlin extends Entity {
 			}
 		}
 		else if (this.slashing) {
+			this.deltaX = 0;
 			if (this.isAnimationDone()) {
 				this.finishSlash();
 			} else { // still in slash
@@ -170,7 +174,9 @@ class Zerlin extends Entity {
 				this.stopCrouch();
 			}
 		}
-
+		if (this.tile) {
+			this.deltaX += this.tile.deltaX;
+		}
 		this.x += this.game.clockTick * this.deltaX;
 		this.y += this.game.clockTick * this.deltaY;
 
@@ -530,6 +536,8 @@ class Lightsaber extends Entity {
 		this.Zerlin = Zerlin;
 		this.hidden = false;
 		this.inClickPosition = false;
+		this.deflectingBeam = false;
+		this.deflectingBeamSoundOn = false;
 		this.setUpSaberImages();
 		this.faceRightUpSaber();
 		this.updateCollisionLine();
@@ -576,7 +584,15 @@ class Lightsaber extends Entity {
 					this.faceRightUpSaber();
 				}
 			}
+		}
 
+
+		if (this.deflectingBeam && !this.deflectingBeamSoundOn) {
+			this.game.audio.deflectBeam.play();
+			this.deflectingBeamSoundOn = true;
+		} else if (!this.deflectingBeam && this.deflectingBeamSoundOn) {
+			this.game.audio.deflectBeam.stop();
+			this.deflectingBeamSoundOn = false;
 		}
 
 		this.updateCollisionLine();
