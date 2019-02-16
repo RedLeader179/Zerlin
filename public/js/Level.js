@@ -15,8 +15,7 @@ b  =  beam droid
 
 */
 
-var DRAW_BOXES = false;
-
+const lc = Constants.LevelConstants;
 
 class Level {
     constructor(game, levelLayout, tileImages) {
@@ -127,7 +126,7 @@ class Tile extends Entity {
     draw() {
         this.ctx.drawImage(this.tileImage, this.x - this.game.camera.x, this.y);
 
-        if (DRAW_BOXES) {
+        if (lc.DRAW_BOXES) {
             this.ctx.strokeStyle = "black";
             this.ctx.strokeRect(this.boundingBox.x - this.game.camera.x, this.boundingBox.y, this.boundingBox.width, this.boundingBox.height);
         }
