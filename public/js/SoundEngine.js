@@ -49,10 +49,11 @@ backgroundMusicArray['clashOfLightsabersTheme'] = new Howl({
 });
 
 /**
- * 
+ *
  */
 class SoundEngine {
-	constructor() {
+	constructor(game) {
+		this.gameEngine = game;
 		//set to yodaTheme by default
 		this.backgroundMusic = backgroundMusicArray['yodaTheme'];
 		this.backgroundMusic.volume = 1;
@@ -180,7 +181,7 @@ class SoundEngine {
 			  "sound/beam2.wav"
 			],
 			loop: true,
-			volume: .7
+			volume: .1
 		  });
 		  this.saberHum = new Howl({
 			src: [
@@ -203,20 +204,24 @@ class SoundEngine {
 			loop: true,
 			volume: .5
 		  });
+
 	}
 
-	//mute and unmute background music. /* name these better */
-	//muteBackgroundMusic, unMuteBackgroundMusic
-	unMuteBackgroundMusic() {
+	//pauseBackgroundMusic, unpauseBackgroundMusic
+	unpauseBackgroundMusic() {
 		this.backgroundMusic.play();
 	}
-	muteBackgroundMusic() {
+	pauseBackgroundMusic() {
 		this.backgroundMusic.pause();
 	}
 
 	//add methods to mute and unmute sound effects
 	muteSoundFX() {
-
+		//mute these not pause them
+		// this.lightsaber.pause();
+		// this.item.pause();
+		// this.hero.pause();
+		// this.enemy.pause();
 	}
 	unMuteSoundFX() {
 

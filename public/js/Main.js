@@ -98,6 +98,10 @@ class AssetManager {
   AM.queueDownload('../img/city_buildings_back.png');
   AM.queueDownload('../img/city_clouds_left.png');
 
+  AM.queueDownload('../img/music_menu.png');
+  AM.queueDownload('../img/music_menu_xfx.png');
+  AM.queueDownload('../img/music_menu_xmusic.png');
+
 
 	AM.downloadAll(function () {
 	    var canvas = document.getElementById("gameWorld");
