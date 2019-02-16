@@ -260,7 +260,7 @@ class CollisionManager {
 												 zerlinBox.x, zerlinBox.y, zerlinBox.width, zerlinBox.height);
 					if (zerlinCollision.collides) {
 						this.game.beams[i].isSizzling = true;
-						this.game.Zerlin.hits += this.game.clockTick * dbConst.BEAM_HP_PER_SECOND;
+						this.game.Zerlin.currentHealth -= this.game.clockTick * dbConst.BEAM_HP_PER_SECOND;
 						console.log(this.game.Zerlin.hits);
 
 						// find intersection with box with shortest beam length, end beam there
