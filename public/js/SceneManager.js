@@ -1,3 +1,9 @@
+/*
+Zerlin
+TCSS 491 - Computational Worlds
+Joshua Atherton, Michael Josten, Steven Golob
+*/
+
 const LEVEL_ONE_TILE_LAYOUT = [
 '       b                          ',
 ' s            b    --   d     -s  ',

@@ -11,9 +11,7 @@ Joshua Atherton, Michael Josten, Steven Golob
 // 				new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundTrees2.png'), 1, camera, 1000),
 // 				new ParallaxScrollBackground(game, game.assetManager.getAsset('../img/backgroundTrees1.png'), 1, camera, 600)];
 
-
-var ZERLIN_POSITION_ON_SCREEN = .382; // = (1 - 1/PHI)
-var BUFFER = 20;
+const cc = Constants.CameraConstants;
 
 class Camera {
 
@@ -27,7 +25,7 @@ class Camera {
 	}
 
 	update() {
-		this.x = this.game.Zerlin.x - ZERLIN_POSITION_ON_SCREEN * this.width;
+		this.x = this.game.Zerlin.x - cc.ZERLIN_POSITION_ON_SCREEN * this.width;
 		this.parallaxManager.update();
 	}
 
@@ -36,10 +34,10 @@ class Camera {
 	}
 
 	isInView(entity, width, height) { // TODO: verify sure things are not drawn when not in view
-		return entity.x + width + BUFFER > this.x &&
-			   entity.x - BUFFER < this.x + this.width &&
-			   entity.y + height + BUFFER > this.y &&
-			   entity.y - BUFFER < this.y + this.height;
+		return entity.x + width + cc.BUFFER > this.x &&
+			   entity.x - cc.BUFFER < this.x + this.width &&
+			   entity.y + height + cc.BUFFER > this.y &&
+			   entity.y - cc.BUFFER < this.y + this.height;
 	}
 
 }
