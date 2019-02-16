@@ -52,8 +52,9 @@ class GameEngine {
         this.startInput();
         console.log('game initialized');
     }
-    start() {
+    start() { //todo: don't start the game until user clicks on canvas
         console.log("starting game");
+        this.audio.backgroundMusic.play();
         this.audio.lightsaber.play('lightsaberOn');
         this.audio.saberHum.play();
         var that = this;

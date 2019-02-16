@@ -32,7 +32,6 @@ backgroundMusicArray['yodaTheme'] = new Howl({
 		"sound/yodaTheme.ac3"
 	  ],
 	loop: true,
-	autoplay: true,
 	preload: true
 });
 backgroundMusicArray['clashOfLightsabersTheme'] = new Howl({
@@ -176,6 +175,7 @@ class SoundEngine {
 			loop: false,
 			volume: .1
 		  });
+
 		  this.beam = new Howl({
 			src: [
 			  "sound/beam2.wav"
@@ -183,6 +183,7 @@ class SoundEngine {
 			loop: true,
 			volume: .1
 		  });
+
 		  this.saberHum = new Howl({
 			src: [
 			  "sound/saber humming.wav"
@@ -190,6 +191,7 @@ class SoundEngine {
 			loop: true,
 			volume: .12
 		  });
+
 		  this.wound = new Howl({
 			src: [
 			  "sound/tissue-wound.wav"
@@ -197,6 +199,7 @@ class SoundEngine {
 			loop: false,
 			volume: .15
 		  });
+
 		  this.sizzle = new Howl({
 			src: [
 			  "sound/butter sizzling.wav"
@@ -205,10 +208,13 @@ class SoundEngine {
 			volume: .5
 		  });
 
+			//array holding all of the howler soundFX objects
+			this.soundFXArray = [this.lightsaber, this.item, this.hero,
+				this.enemy, this.beam, this.saberHum, this.wound, this.sizzle ];
 	}
 
 	//pauseBackgroundMusic, unpauseBackgroundMusic
-	unpauseBackgroundMusic() {
+	unPauseBackgroundMusic() {
 		this.backgroundMusic.play();
 	}
 	pauseBackgroundMusic() {
@@ -217,14 +223,15 @@ class SoundEngine {
 
 	//add methods to mute and unmute sound effects
 	muteSoundFX() {
-		//mute these not pause them
-		this.lightsaber.volume = 0;
-		this.item.volume = 0;
-		this.hero.volume = 0;
-		this.enemy.volume = 0;
+		// works but need to restore the volumes as they were.....
+		this.soundFXArray.forEach( function(item) {
+			// item.volume(0);
+		});
 	}
 	unMuteSoundFX() {
-
+		this.soundFXArray.forEach( function(item) {
+			// item.volume(3);
+		});
 	}
 
 	//method to changeout background music

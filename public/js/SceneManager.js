@@ -65,6 +65,10 @@ class SceneManager {
   }
 }
 
+/**
+* Class that holds a music menu to control the play and pause music backgrounds
+* and the sound fx. Also can pause and play music using the sound engine. 
+*/
 class MusicMenu {
   constructor(game, xPosition, yPosition, images) {
     this.gameEngine = game;
@@ -82,6 +86,7 @@ class MusicMenu {
 
   update() {
     let clickXandY = this.gameEngine.click;
+    let changeInState = false;
     if (clickXandY != null) {
       // console.log(clickXandY);
       //music x
@@ -91,6 +96,7 @@ class MusicMenu {
         clickXandY.y >= this.y + 10 &&
         clickXandY.y <= this.y + 20
       ) {
+        changeInState = true;
         this.xMusicChecked = this.xMusicChecked ? false : true;
         // console.log("music checked", this.xMusicChecked);
       }
@@ -101,19 +107,26 @@ class MusicMenu {
         clickXandY.y >= this.y + 30 &&
         clickXandY.y <= this.y + 50
       ) {
+        changeInState = true;
         this.xFxChecked = this.xFxChecked ? false : true;
         // console.log("fx checked", this.xFxChecked);
       }
     }
 
-    //play and pause pause audio
-    if (this.xMusicChecked) {
-      this.gameEngine.audio.
+    //play and pause pause audio if previous state has changed
+    if (changeInState) {
+      if (this.xMusicChecked) {
+        this.gameEngine.audio.pauseBackgroundMusic();
+      } else {
+        this.gameEngine.audio.unPauseBackgroundMusic();
+      }
+      //play or pause sound fx
+      if (this.xFxChecked) {
+        this.gameEngine.audio.muteSoundFX();
+      } else {
+        this.gameEngine.audio.unMuteSoundFX();
+      }
     }
-    if (this.xFxChecked) {
-
-    }
-
   }
 
   draw() {
