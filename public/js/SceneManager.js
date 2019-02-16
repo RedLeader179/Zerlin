@@ -105,6 +105,15 @@ class MusicMenu {
         // console.log("fx checked", this.xFxChecked);
       }
     }
+
+    //play and pause pause audio
+    if (this.xMusicChecked) {
+      this.gameEngine.audio.
+    }
+    if (this.xFxChecked) {
+
+    }
+
   }
 
   draw() {

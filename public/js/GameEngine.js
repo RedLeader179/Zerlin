@@ -62,13 +62,6 @@ class GameEngine {
             requestAnimationFrame(gameLoop);
         })();
     }
-    pauseBackgroundAudio() {
-        this.audio.pauseBackgroundMusic();
-    }
-    unPauseBackgroundAudio() {
-        this.audio.unpauseBackgroundMusic();
-    }
-    //todo: add methods to mute/unmute sound FX
 
     loop() {
         this.clockTick = this.timer.tick();

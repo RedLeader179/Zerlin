@@ -218,10 +218,10 @@ class SoundEngine {
 	//add methods to mute and unmute sound effects
 	muteSoundFX() {
 		//mute these not pause them
-		// this.lightsaber.pause();
-		// this.item.pause();
-		// this.hero.pause();
-		// this.enemy.pause();
+		this.lightsaber.volume = 0;
+		this.item.volume = 0;
+		this.hero.volume = 0;
+		this.enemy.volume = 0;
 	}
 	unMuteSoundFX() {
 

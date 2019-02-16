@@ -112,13 +112,14 @@ class AssetManager {
 
 		gameEngine.start();
 
-		document.getElementById("playMusic").addEventListener("click", () => {
-			gameEngine.unPauseBackgroundAudio();
-		})
-
-		document.getElementById("pauseMusic").addEventListener("click", () => {
-			gameEngine.pauseBackgroundAudio();
-		})
+    //for old html play pause buttons
+		// document.getElementById("playMusic").addEventListener("click", () => {
+		// 	gameEngine.unPauseBackgroundAudio();
+		// })
+    //
+		// document.getElementById("pauseMusic").addEventListener("click", () => {
+		// 	gameEngine.pauseBackgroundAudio();
+		// })
 
 	    console.log("All Done!");
 	});
