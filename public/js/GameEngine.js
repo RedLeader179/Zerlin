@@ -27,6 +27,7 @@ class GameEngine {
         this.beams = [];
         this.droids = [];
         this.tiles = [];
+        this.powerups = [];
         this.ctx = null;
         this.surfaceWidth = null;
         this.surfaceHeight = null;
@@ -97,12 +98,19 @@ class GameEngine {
                 this.beams.splice(i, 1);
             }
         }
+        for (var i = this.powerups.length -1; i >= 0; i--) {
+            this.powerups[i].update();
+            if(this.powerups[i].removeFromWorld) {
+                this.powerups.splice(i, 1);
+            }
+        }
         for (var i = this.otherEntities.length - 1; i >= 0; i--) {
             this.otherEntities[i].update();
             if (this.otherEntities[i].removeFromWorld) {
                 this.otherEntities.splice(i, 1);
             }
         }
+
 
         this.collisionManager.handleCollisions();
         this.click = null;
@@ -123,9 +131,13 @@ class GameEngine {
         for (var i = 0; i < this.beams.length; i++) {
             this.beams[i].draw(this.ctx);
         }
+        for (var i = 0; i < this.powerups.length; i++) {
+            this.powerups[i].draw(this.ctx);
+        }
         for (var i = 0; i < this.otherEntities.length; i++) {
             this.otherEntities[i].draw(this.ctx);
         }
+        
 
         if (this.gameOver) {
             this.ctx.textAlign = 'center';
@@ -154,6 +166,9 @@ class GameEngine {
         console.log('added laser');
         this.tiles.push(tile);
         // this.otherEntities.push(tile);
+    }
+    addPowerup(powerup) {
+        this.powerups.push(powerup);
     }
     startInput () {
         console.log('Starting input');

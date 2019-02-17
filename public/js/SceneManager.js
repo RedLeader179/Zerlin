@@ -5,15 +5,15 @@ Joshua Atherton, Michael Josten, Steven Golob
 */
 
 const LEVEL_ONE_TILE_LAYOUT = [
-  '                                  ',
-  '   d           b    --   d     -s  ',
-  '            -      B    --       s',
-  '        m      -     d            -',
-  '              --  n                ',
-  '  -             ---               ',
-  '     --         --          d     ',
-  '   --          -  s       -       ',
-  '--------n-- ----   ---   -    ----'
+'       b                          ',
+' s            b    --   d     -s  ',
+'            -      B    --       s',
+' d     m      -     d            -',
+'       B     --  n                ',
+'  -      H    F ---               ',
+'f    --         --          d     ',
+'   --          -  s       -       ',
+'--------n-- ----   ---   -    ----'
 ];
 
 

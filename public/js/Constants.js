@@ -166,7 +166,10 @@ Constants = {
     },
 
     PowerUpConstants: {
-
+        HEALTH_SCALE: 3,
+        RECOVER_HEALTH_AMOUNT: 20,
+        RECOVER_FORCE_AMOUNT: 20,
+        FORCE_SCALE: 3
     }
 
 };
