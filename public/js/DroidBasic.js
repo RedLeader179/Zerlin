@@ -15,27 +15,24 @@ const dbc = Constants.DroidBasicConstants;
 
 
 
+
 /*
 * Basic droid that will shoot 1 laser every interval
 */
 class BasicDroid extends AbstractDroid {
-    constructor(game, spritesheet, startX, startY) {
-        //super(gameEngine, x, y, deltaX, deltaY)
-        //super(game, startX, startY, BASIC_DROID_X_MOVEMENT_SPEED, 0);
+    constructor(game, spritesheet, startX, startY, frames, frameSpeed, frameWidth, frameHeight, scale, radius) {
         super(game, startX, startY, 0, 0); //debug
 
         /* animation fields */
         //Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale)
-        this.idleAnimation = new Animation(spritesheet, 0, 0, 100, 100, 0.1, 14, true, false, .5);
+        this.idleAnimation = new Animation(spritesheet, 0, 0, frameWidth, frameHeight, frameSpeed, frames, true, false, scale);
         this.animation = this.idleAnimation;
 
         this.shootInterval = dbc.BASIC_DROID_SHOOT_INTERVAL;
 
-        /* bounding circle fields */
-        this.radius = (this.animation.frameWidth / 2) * this.animation.scale;
-        this.boundCircle = {radius: this.radius,
-            x: this.x + this.radius,
-            y: this.y + this.radius};
+        this.radius = radius * scale;
+        this.boundCircle = new BoundingCircle(this.x + this.animation.frameWidth / 2 * scale, this.y + this.animation.frameHeight / 2 * scale, this.radius);
+
 
         /* shooting fields */
         this.fire = false;
@@ -57,10 +54,6 @@ class BasicDroid extends AbstractDroid {
     update() {
         //update coordinates so the droid will orbit the center of the canvas
         this.calcMovement();
-
-        /* bounding circle movement */
-        this.boundCircle.x = this.x + this.radius;
-        this.boundCircle.y = this.y + this.radius;
 
         /* droid shooting */
         this.secondsBeforeFire -= this.game.clockTick;
@@ -146,21 +139,18 @@ class BasicDroid extends AbstractDroid {
         this.x += this.game.clockTick * this.deltaX;
         this.y += this.game.clockTick * this.deltaY;
 
+        this.boundCircle.translateCoordinates(this.game.clockTick * this.deltaX, this.game.clockTick * this.deltaY);
     }
 }
 
+
 /*
-* Long legged droid that will shoot 3 scattered burst lasers every interval
+* Long legged droid that will shoot a set of scattered burst lasers every interval 
 */
 class LeggyDroid extends BasicDroid {
-    constructor(game, spritesheet, startX, startY) {
-        super(game, spritesheet, startX, startY);
-        this.idleAnimation = new Animation(spritesheet, 0, 0, 315, 620, 0.2, 4, true, false, .2);
-        this.animation = this.idleAnimation;
-        this.radius = (this.animation.frameWidth / 2) * this.animation.scale;
-        this.boundCircle = {radius: this.radius,
-            x: this.x + this.radius,
-            y: this.y + this.radius};
+    // constructor(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale) {
+    constructor(game, spritesheet, startX, startY, frames, frameSpeed) {
+        super(game, spritesheet, startX, startY, frames, frameSpeed, 160, 160, .5, 65);
         this.shootInterval = dbc.LEGGY_DROID_SHOOT_INTERVAL;
     }
 
@@ -190,8 +180,8 @@ class LeggyDroid extends BasicDroid {
 
 
 class SlowBurstDroid extends BasicDroid {
-    constructor(game, spritesheet, startX, startY) {
-        super(game, spritesheet, startX, startY);
+    constructor(game, spritesheet, startX, startY, frames, frameSpeed) {
+        super(game, spritesheet, startX, startY, frames, frameSpeed, 160, 160, .5, 65);
         this.shootInterval = dbc.SLOWBURST_DROID_SHOOT_INTERVAL;
         this.totalShootIntervalsPerCycle = dbc.SLOWBURST_DROID_SHOOTS_PER_CYCLE;
         this.shootIntervalCount = 0;
@@ -200,11 +190,11 @@ class SlowBurstDroid extends BasicDroid {
     shoot() {
         this.shootIntervalCount++;
         if (this.shootIntervalCount <= dbc.SLOWBURST_DROID_BURSTS) {
-            let laser = new DroidLaser(this.game, this.boundCircle.x, this.boundCircle.y,
-                                        dbc.SLOWBURST_DROID_LASER_SPEED,
-                                        this.game.Zerlin.x,
-                                        this.game.Zerlin.boundingbox.y + this.game.Zerlin.boundingbox.height/2,
-                                        dbc.BASIC_DROID_LASER_LENGTH, dbc.BASIC_DROID_LASER_WIDTH, "#006699", "#00ccff");
+            let laser = new DroidLaser(this.game, this.boundCircle.x, this.boundCircle.y, 
+                                        dbc.SLOWBURST_DROID_LASER_SPEED, 
+                                        this.game.Zerlin.x, 
+                                        this.game.Zerlin.boundingbox.y + this.game.Zerlin.boundingbox.height/2, 
+                                        dbc.BASIC_DROID_LASER_LENGTH, dbc.BASIC_DROID_LASER_WIDTH, "#339933", "#00ff00");   
             this.game.addLaser(laser);
             this.game.audio.playSoundFx(this.game.audio.enemy, 'retroBlasterShot');
         } else if (this.shootIntervalCount > dbc.SLOWBURST_DROID_SHOOTS_PER_CYCLE) {
@@ -217,8 +207,8 @@ class SlowBurstDroid extends BasicDroid {
 
 
 class FastBurstDroid extends BasicDroid {
-    constructor(game, spritesheet, startX, startY) {
-        super(game, spritesheet, startX, startY);
+    constructor(game, spritesheet, startX, startY, frames, frameSpeed) {
+        super(game, spritesheet, startX, startY, frames, frameSpeed, 160, 160, .5, 65);
         this.shootInterval = dbc.FASTBURST_DROID_SHOOT_INTERVAL;
         this.totalShootIntervalsPerCycle = dbc.FASTBURST_DROID_SHOOTS_PER_CYCLE;
         this.shootIntervalCount = 0;
@@ -227,11 +217,11 @@ class FastBurstDroid extends BasicDroid {
     shoot() {
         this.shootIntervalCount++;
         if (this.shootIntervalCount <= dbc.FASTBURST_DROID_BURSTS) {
-            let laser = new DroidLaser(this.game, this.boundCircle.x, this.boundCircle.y,
-                                        dbc.FASTBURST_DROID_LASER_SPEED,
-                                        this.game.Zerlin.x,
-                                        this.game.Zerlin.boundingbox.y + this.game.Zerlin.boundingbox.height/2,
-                                        dbc.LEGGY_DROID_LASER_LENGTH, dbc.LEGGY_DROID_LASER_WIDTH, "#339933", "#00ff00");
+            let laser = new DroidLaser(this.game, this.boundCircle.x, this.boundCircle.y, 
+                                        dbc.FASTBURST_DROID_LASER_SPEED, 
+                                        this.game.Zerlin.x, 
+                                        this.game.Zerlin.boundingbox.y + this.game.Zerlin.boundingbox.height/2, 
+                                        dbc.LEGGY_DROID_LASER_LENGTH, dbc.LEGGY_DROID_LASER_WIDTH, "#006699", "#00ccff");
             this.game.addLaser(laser);
             this.game.audio.playSoundFx(this.game.audio.enemy, 'retroBlasterShot');
         } else if (this.shootIntervalCount > dbc.FASTBURST_DROID_SHOOTS_PER_CYCLE) {
@@ -245,17 +235,17 @@ class FastBurstDroid extends BasicDroid {
 
 
 class SniperDroid extends BasicDroid {
-    constructor(game, spritesheet, startX, startY) {
-        super(game, spritesheet, startX, startY);
+    constructor(game, spritesheet, startX, startY, frames, frameSpeed) {
+        super(game, spritesheet, startX, startY, frames, frameSpeed, 160, 160, .5, 65);
         this.shootInterval = dbc.SNIPER_DROID_SHOOT_INTERVAL;
     }
 
     shoot() {
-        let laser = new DroidLaser(this.game, this.boundCircle.x, this.boundCircle.y,
-                                    dbc.SNIPER_DROID_LASER_SPEED,
-                                    this.game.Zerlin.x,
-                                    this.game.Zerlin.boundingbox.y + this.game.Zerlin.boundingbox.height/2,
-                                    dbc.SNIPER_DROID_LASER_LENGTH, dbc.SNIPER_DROID_LASER_WIDTH, "#000099", "#3399ff");
+        let laser = new DroidLaser(this.game, this.boundCircle.x, this.boundCircle.y, 
+                                    dbc.SNIPER_DROID_LASER_SPEED, 
+                                    this.game.Zerlin.x, 
+                                    this.game.Zerlin.boundingbox.y + this.game.Zerlin.boundingbox.height/2, 
+                                    dbc.SNIPER_DROID_LASER_LENGTH, dbc.SNIPER_DROID_LASER_WIDTH, "#cccc00", "#ffff00");   
         this.game.addLaser(laser);
         this.game.audio.playSoundFx(this.game.audio.enemy, 'bowcasterShoot');
         this.fire = false;
@@ -264,8 +254,8 @@ class SniperDroid extends BasicDroid {
 
 
 class MultishotDroid extends BasicDroid {
-    constructor(game, spritesheet, startX, startY) {
-        super(game, spritesheet, startX, startY);
+    constructor(game, spritesheet, startX, startY, frames, frameSpeed) {
+        super(game, spritesheet, startX, startY, frames, frameSpeed, 160, 160, .5, 65);
         this.shootInterval = dbc.MULTISHOT_DROID_SHOOT_INTERVAL;
     }
 
@@ -312,153 +302,153 @@ class MultishotDroid extends BasicDroid {
 
 
 
-class BeamDroid extends BasicDroid {
+// class BeamDroid extends BasicDroid {
 
-    constructor(game, spritesheet, startX, startY) {
-        super(game, spritesheet, startX, startY);
-        this.beamAngle = Math.atan2(550 /* approximate Zerlin's height before he is instantiated */,
-                                    this.game.camera.width * camConst.ZERLIN_POSITION_ON_SCREEN);
-        this.beamAngleDelta = 0;
+//     constructor(game, spritesheet, startX, startY) {
+//         super(game, spritesheet, startX, startY);
+//         this.beamAngle = Math.atan2(550 /* approximate Zerlin's height before he is instantiated */,
+//                                     this.game.camera.width * camConst.ZERLIN_POSITION_ON_SCREEN);
+//         this.beamAngleDelta = 0;
 
-        /* shooting fields */
-        this.shooting = false;
-        this.secondsBeforeFire = dbc.BEAM_DROID_SHOOT_INTERVAL;
-    }
+//         /* shooting fields */
+//         this.shooting = false;
+//         this.secondsBeforeFire = dbc.BEAM_DROID_SHOOT_INTERVAL;
+//     }
 
-    update() {
-        super.calcMovement();
+//     update() { 
+//         super.calcMovement();
 
-        /* bounding circle movement */
-        this.boundCircle.x = this.x + this.radius;
-        this.boundCircle.y = this.y + this.radius;
+//         /* bounding circle movement */
+//         this.boundCircle.x = this.x + this.radius;
+//         this.boundCircle.y = this.y + this.radius;
 
-        /* droid shooting */
-        this.secondsBeforeFire -= this.game.clockTick;
-        this.setBeamAngle();
-        if (this.secondsBeforeFire <= 0 && !this.shooting) {
-            this.shoot();
-        }
+//         /* droid shooting */
+//         this.secondsBeforeFire -= this.game.clockTick;
+//         this.setBeamAngle();
+//         if (this.secondsBeforeFire <= 0 && !this.shooting) {
+//             this.shoot();
+//         }
 
-        if (this.shooting) {
-            this.shootingTime -= this.game.clockTick;
-            if (this.shootingTime <= 0) {
-                this.shooting = false;
-                this.beam.removeFromWorld = true;
-                this.beam.isSizzling = false;
-                if (this.game.beams.length <= 1) {
-                    this.game.audio.beam.stop();
-                }
-                this.beam = null;
-            }
-        }
-    }
+//         if (this.shooting) {
+//             this.shootingTime -= this.game.clockTick;
+//             if (this.shootingTime <= 0) {
+//                 this.shooting = false;
+//                 this.beam.removeFromWorld = true;
+//                 this.beam.isSizzling = false;
+//                 if (this.game.beams.length <= 1) {
+//                     this.game.audio.beam.stop();
+//                 }
+//                 this.beam = null;
+//             }
+//         }
+//     }
 
-    setBeamAngle() {
-        var angleToZerlin = Math.atan2(this.game.Zerlin.y - 150 - this.boundCircle.y, this.game.Zerlin.x - this.boundCircle.x);
-        var angleDiff = this.shaveRadians(angleToZerlin - this.beamAngle);
-        if (angleDiff > Math.PI) {
-            // rotate beam clockwise
-            this.beamAngleDelta -= dbc.BEAM_ANGLE_ACCELERATION_RADIANS * this.game.clockTick;
-        } else {
-            // rotate beam counterclockwise
-            this.beamAngleDelta += dbc.BEAM_ANGLE_ACCELERATION_RADIANS * this.game.clockTick;
-        }
-        this.beamAngleDelta *= .97; // zero in on target by reducing speed of beam rotation
-        this.beamAngle += this.beamAngleDelta * this.game.clockTick;
-    }
+//     setBeamAngle() {
+//         var angleToZerlin = Math.atan2(this.game.Zerlin.y - 150 - this.boundCircle.y, this.game.Zerlin.x - this.boundCircle.x);
+//         var angleDiff = this.shaveRadians(angleToZerlin - this.beamAngle);
+//         if (angleDiff > Math.PI) {
+//             // rotate beam clockwise
+//             this.beamAngleDelta -= dbc.BEAM_ANGLE_ACCELERATION_RADIANS * this.game.clockTick;
+//         } else {
+//             // rotate beam counterclockwise
+//             this.beamAngleDelta += dbc.BEAM_ANGLE_ACCELERATION_RADIANS * this.game.clockTick; 
+//         }
+//         this.beamAngleDelta *= .97; // zero in on target by reducing speed of beam rotation
+//         this.beamAngle += this.beamAngleDelta * this.game.clockTick;
+//     }
 
-    /*
-     * Converts an angle to inside range [0, Math.PI * 2).
-     */
-    shaveRadians(angle) {
-        var newAngle = angle;
-        while (newAngle >= Math.PI * 2) {
-            newAngle -= Math.PI * 2;
-        }
-        while (newAngle < 0) {
-            newAngle += Math.PI * 2;
-        }
-        return newAngle;
-    }
+//     /*
+//      * Converts an angle to inside range [0, Math.PI * 2).
+//      */
+//     shaveRadians(angle) {
+//         var newAngle = angle;
+//         while (newAngle >= Math.PI * 2) {
+//             newAngle -= Math.PI * 2;
+//         }
+//         while (newAngle < 0) {
+//             newAngle += Math.PI * 2;
+//         }
+//         return newAngle;
+//     }
 
-    shoot() {
-        this.beam = new Beam(this);
-        this.game.beams.push(this.beam);
-        this.secondsBeforeFire = dbc.BEAM_DROID_SHOOT_INTERVAL;
-        this.shooting = true;
-        this.shootingTime = dbc.BEAM_DROID_SHOOT_DURATION;
-        this.game.audio.playSoundFx(this.game.audio.beam);
-    }
+//     shoot() {
+//         this.beam = new Beam(this);
+//         this.game.beams.push(this.beam);
+//         this.secondsBeforeFire = dbc.BEAM_DROID_SHOOT_INTERVAL;
+//         this.shooting = true;
+//         this.shootingTime = dbc.BEAM_DROID_SHOOT_DURATION;
+//         this.game.audio.beam.play();
+//     }
 
-    explode() {
-        super.explode();
-        if (this.beam) {
-            this.beam.removeFromWorld = true;
-            this.beam.isSizzling = false;
-            if (this.game.beams.length <= 1) { // don't stop sound if another beam is still shooting
-                this.game.audio.beam.stop();
-            }
-        }
-    }
-}
+//     explode() {
+//         super.explode();
+//         if (this.beam) {
+//             this.beam.removeFromWorld = true;
+//             this.beam.isSizzling = false;
+//             if (this.game.beams.length <= 1) { // don't stop sound if another beam is still shooting
+//                 this.game.audio.beam.stop();
+//             }
+//         }
+//     }
+// }
 
-class Beam {
-    constructor(shootingDroid) {
-        this.game = shootingDroid.game;
-        this.shootingDroid = shootingDroid;
-        this.segments = [];
-        this.segments.push({x: shootingDroid.boundCircle.x, y: shootingDroid.boundCircle.y, angle: 0});
-        this.isSizzling = false;
-        this.sizzlingSoundOn = false;
-    }
+// class Beam {
+//     constructor(shootingDroid) {
+//         this.game = shootingDroid.game;
+//         this.shootingDroid = shootingDroid;
+//         this.segments = [];
+//         this.segments.push({x: shootingDroid.boundCircle.x, y: shootingDroid.boundCircle.y, angle: 0});
+//         this.isSizzling = false;
+//         this.sizzlingSoundOn = false;
+//     }
 
-    update() {
-        this.segments[0].x = this.shootingDroid.boundCircle.x;
-        this.segments[0].y = this.shootingDroid.boundCircle.y;
-        this.segments[0].angle = this.shootingDroid.beamAngle;
-        // collision manager detects end of beam segements and adds new ones if deflected.
+//     update() {
+//         this.segments[0].x = this.shootingDroid.boundCircle.x;
+//         this.segments[0].y = this.shootingDroid.boundCircle.y;
+//         this.segments[0].angle = this.shootingDroid.beamAngle;
+//         // collision manager detects end of beam segements and adds new ones if deflected.
 
-        if (this.isSizzling && !this.sizzlingSoundOn) {
-            this.game.audio.playSoundFx(this.game.audio.sizzle);
-            this.sizzlingSoundOn = true;
-        } else if (!this.isSizzling && this.sizzlingSoundOn) {
-            this.game.audio.sizzle.stop();
-            this.sizzlingSoundOn = false;
-        }
-    }
+//         if (this.isSizzling && !this.sizzlingSoundOn) {
+//             this.game.audio.sizzle.play();
+//             this.sizzlingSoundOn = true;
+//         } else if (!this.isSizzling && this.sizzlingSoundOn) {
+//             this.game.audio.sizzle.stop();
+//             this.sizzlingSoundOn = false;
+//         }
+//     }
 
-    draw() {
-        var cameraX = this.game.camera.x; // just draw beams without checking camera?
-        var ctx = this.game.ctx;
-        ctx.save();
-        for (let i = 0; i < this.segments.length; i++) {
-            var segment = this.segments[i];
+//     draw() {
+//         var cameraX = this.game.camera.x; // just draw beams without checking camera?
+//         var ctx = this.game.ctx;
+//         ctx.save();
+//         for (let i = 0; i < this.segments.length; i++) {
+//             var segment = this.segments[i];
 
-            //Outer Layer of beam
-            ctx.lineWidth = dbc.BEAM_DROID_LASER_WIDTH;
-            ctx.strokeStyle = "purple";
-            ctx.lineCap = "round";
-            ctx.beginPath();
-            ctx.moveTo(segment.x - cameraX, segment.y);
-            ctx.lineTo(segment.endX - cameraX, segment.endY);
-            ctx.stroke();
-        }
+//             //Outer Layer of beam
+//             ctx.lineWidth = dbc.BEAM_DROID_LASER_WIDTH;
+//             ctx.strokeStyle = "purple";
+//             ctx.lineCap = "round";
+//             ctx.beginPath();
+//             ctx.moveTo(segment.x - cameraX, segment.y);
+//             ctx.lineTo(segment.endX - cameraX, segment.endY);
+//             ctx.stroke();
+//         }
 
-        // two loops so all inner beams are always on top of all outer beam 'glows'
-        for (let i = 0; i < this.segments.length; i++) {
-            var segment = this.segments[i];
+//         // two loops so all inner beams are always on top of all outer beam 'glows'
+//         for (let i = 0; i < this.segments.length; i++) {
+//             var segment = this.segments[i];
 
-            //inner layer of beam.
-            ctx.lineWidth = dbc.BEAM_DROID_LASER_WIDTH / 2;
-            ctx.strokeStyle = "white";
-            ctx.lineCap = "round";
-            ctx.beginPath();
-            ctx.moveTo(segment.x - cameraX, segment.y);
-            ctx.lineTo(segment.endX - cameraX, segment.endY);
-            ctx.stroke();
-            ctx.closePath();
-        }
+//             //inner layer of beam.
+//             ctx.lineWidth = dbc.BEAM_DROID_LASER_WIDTH / 2;
+//             ctx.strokeStyle = "white";
+//             ctx.lineCap = "round";
+//             ctx.beginPath();
+//             ctx.moveTo(segment.x - cameraX, segment.y);
+//             ctx.lineTo(segment.endX - cameraX, segment.endY);
+//             ctx.stroke();
+//             ctx.closePath();
+//         } 
 
-        ctx.restore();
-    }
-}
+//         ctx.restore(); 
+//     }
+// }

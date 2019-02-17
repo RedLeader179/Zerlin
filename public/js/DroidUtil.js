@@ -28,7 +28,6 @@ class AbstractDroid extends Entity {
 
         //collision radius can be changed after instantiation
         this.radius = 35;
-        this.boundCircle = new BoundingCircle(this.x, this.y, this.radius);
 
     }
     /**
@@ -71,10 +70,6 @@ class AbstractDroid extends Entity {
         this.removeFromWorld = true;
         //TODO: play droid explosion sound
         this.game.addEntity(new DroidExplosion(this.game, this.x + (this.animation.scale * this.animation.frameWidth / 2), this.y + (this.animation.scale * this.animation.frameHeight / 2)));
-
-        /********** Call sound engine to play explosion sound ************* */
-        this.game.audio.playSoundFx(this.game.audio.enemy, 'largeExplosion');
-        console.log("droid exploded");
     }
     collideWithDroid(ent) {
         return ent !== null && collideCircleWithCircle(this.boundCircle.x, this.boundCircle.y, this.boundCircle.radius,
@@ -82,6 +77,12 @@ class AbstractDroid extends Entity {
     }
 
 }
+
+
+
+
+
+
 
 class DroidLaser extends Entity {
     constructor(game, startX, startY, speed, targetX, targetY, length, width, color, deflectedColor) {
@@ -208,6 +209,11 @@ class DroidLaser extends Entity {
 
 }
 
+
+
+
+
+
 /**
  * this class will just play the droid explosion animation
  * and when the animation is done, this entity will be removed from world
@@ -215,16 +221,19 @@ class DroidLaser extends Entity {
  * although if sprite sheet is null then use the static animation.
  */
 class DroidExplosion extends Entity {
-    constructor(game, x, y) {
+    constructor(game, x, y, scale, explosionVolume) {
         super(game, x, y, 0, 0);
 
+        this.scale = scale? scale * duc.EXPLOSION_SCALE : duc.EXPLOSION_SCALE;
+        this.volume = explosionVolume? explosionVolume : .15; 
         var spritesheet = this.game.assetManager.getAsset("../img/Explosion.png");
         //Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale)
         this.animation = new Animation(spritesheet, 0, 0, 64, 64,
-            duc.EXPLOSION_FRAME_SPEED, 15, false, false, duc.EXPLOSION_SCALE);
+            duc.EXPLOSION_FRAME_SPEED, 15, false, false, this.scale);
 
-        this.x = x - this.animation.frameWidth * this.animation.scale / 2;
-        this.y = y - this.animation.frameHeight * this.animation.scale / 2;
+        this.x = x - this.animation.frameWidth * this.scale / 2;
+        this.y = y - this.animation.frameHeight * this.scale / 2;
+        this.game.audio.playSoundFx(this.game.audio.enemy, 'largeExplosion');
     }
     update() {
         super.update();
@@ -234,7 +243,7 @@ class DroidExplosion extends Entity {
     }
     draw() {
         // only draw if in camera's view
-        if (this.game.camera.isInView(this, this.animation.frameWidth * this.animation.scale, this.animation.frameHeight * this.animation.scale)) {
+        if (this.game.camera.isInView(this, this.animation.frameWidth * this.scale, this.animation.frameHeight * this.scale)) {
             this.animation.drawFrame(this.game.clockTick, this.game.ctx, this.x - this.game.camera.x, this.y);
             super.draw(this.game.ctx);
         }

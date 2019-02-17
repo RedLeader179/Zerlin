@@ -59,27 +59,40 @@ class Level {
                     var tile = new Tile(this.game, image, j * this.tileWidth, i * this.game.camera.height / rows);
                     this.tiles.push(tile);
                 }
+                else if (this.levelLayout[i][j] === '=') { // moving tile
+                    var image2 = this.tileImages.centerTile;
+                    if (this.levelLayout[i][j - 1] !== '=' && this.levelLayout[i][j + 1] !== '=') {
+                        image2 = this.tileImages.leftRightTile;
+                    }
+                    else if (this.levelLayout[i][j - 1] !== '=') {
+                        image2 = this.tileImages.leftTile;
+                    } else if (this.levelLayout[i][j + 1] !== '=') {
+                        image2 = this.tileImages.rightTile;
+                    }
+                    var movingTile = new MovingTile(this.game, image2, j * this.tileWidth, i * this.game.camera.height / rows, lc.TILE_INITIAL_VELOCITY, 0, lc.TILE_ACCELERATION);
+                    this.tiles.push(movingTile);
+                }
                 else if (this.levelLayout[i][j] === 'd') { // basic droid
-                    this.unspawnedDroids.push(new BasicDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * this.game.camera.height / rows));
+                    this.unspawnedDroids.push(new BasicDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * this.game.camera.height / rows, 14, .2, 100, 100, .5, 45));
                 }
                 else if (this.levelLayout[i][j] === 's') { // scatter shot droid
-                    this.unspawnedDroids.push(new LeggyDroid(this.game, this.game.assetManager.getAsset("../img/leggy_droid.png"), j * this.tileWidth, i * this.game.camera.height / rows));
-                }
-                else if (this.levelLayout[i][j] === 'B') { // beam shot droid
-                    this.unspawnedDroids.push(new BeamDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * this.game.camera.height / rows));
+                    this.unspawnedDroids.push(new LeggyDroid(this.game, this.game.assetManager.getAsset("../img/Droid 3.png"), j * this.tileWidth, i * this.game.camera.height / rows, 10, .2));
                 }
                 else if (this.levelLayout[i][j] === 'b') { // slow burst droid
-                    this.unspawnedDroids.push(new SlowBurstDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * this.game.camera.height / rows));
+                    this.unspawnedDroids.push(new SlowBurstDroid(this.game, this.game.assetManager.getAsset("../img/Droid 1.png"), j * this.tileWidth, i * this.game.camera.height / rows, 2, .8));
                 }
                 else if (this.levelLayout[i][j] === 'f') { // fast burst droid
-                    this.unspawnedDroids.push(new FastBurstDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * this.game.camera.height / rows));
+                    this.unspawnedDroids.push(new FastBurstDroid(this.game, this.game.assetManager.getAsset("../img/Droid 2.png"), j * this.tileWidth, i * this.game.camera.height / rows, 10, .12));
                 }
                 else if (this.levelLayout[i][j] === 'n') { // sniper droid
-                    this.unspawnedDroids.push(new SniperDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * this.game.camera.height / rows));
+                    this.unspawnedDroids.push(new SniperDroid(this.game, this.game.assetManager.getAsset("../img/Droid 4.png"), j * this.tileWidth, i * this.game.camera.height / rows, 6, .2));
                 }
                 else if (this.levelLayout[i][j] === 'm') { // multishot droid
-                    this.unspawnedDroids.push(new MultishotDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * this.game.camera.height / rows));
-                } 
+                    this.unspawnedDroids.push(new MultishotDroid(this.game, this.game.assetManager.getAsset("../img/Droid 5.png"), j * this.tileWidth, i * this.game.camera.height / rows, 21, .12));
+                }
+                else if (this.levelLayout[i][j] === 'X') { // Boss
+                    this.game.boss = new Boss(this.game, j * this.tileWidth, i * this.game.camera.height / rows);
+                }
                 else if (this.levelLayout[i][j] === 'H') { //health powerup
                     this.unspawnedPowerups.push(new HealthPowerUp(this.game, this.game.assetManager.getAsset("../img/powerup_health.png"), j * this.tileWidth, i * this.game.camera.height / rows));
                 }
@@ -109,6 +122,11 @@ class Level {
                 this.unspawnedPowerups.splice(i, 1);
             }
         }
+        this.tiles.forEach(function(tile) {
+            if (tile instanceof MovingTile) {
+                tile.update();
+            }
+        });
     }
 
     draw() {
@@ -149,4 +167,33 @@ class Tile extends Entity {
             this.ctx.strokeRect(this.boundingBox.x - this.game.camera.x, this.boundingBox.y, this.boundingBox.width, this.boundingBox.height);
         }
     }
+}
+
+class MovingTile extends Tile {
+    constructor(game, image, startX, startY, initialDeltaX, initialDeltaY, acceleration) {
+        super(game, image, startX, startY);
+        this.deltaX = initialDeltaX;
+        this.deltaY = initialDeltaY;
+        this.startX = startX;
+        this.startY = startY;
+        this.acceleration = acceleration;
+    }
+
+    update() {
+        if (this.x < this.startX) {
+            this.deltaX += this.acceleration * this.game.clockTick;
+        } else {
+            this.deltaX -= this.acceleration * this.game.clockTick;
+        }
+
+        // if (this.y < this.startY) {
+        //     this.deltaY += this.acceleration * this.game.clockTick;
+        // } else {
+        //     this.deltaY -= this.acceleration * this.game.clockTick;
+        // }
+        this.x += this.deltaX * this.game.clockTick;
+        // this.y += this.deltaY * this.game.clockTick;
+        this.boundingBox.translateCoordinates(this.deltaX * this.game.clockTick, this.deltaY * this.game.clockTick);
+    }
+
 }
