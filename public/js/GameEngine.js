@@ -59,8 +59,8 @@ class GameEngine {
     start() { //todo: don't start the game until user clicks on canvas
         console.log("starting game");
         this.audio.backgroundMusic.play();
-        this.audio.lightsaber.play('lightsaberOn');
-        this.audio.saberHum.play();
+        this.audio.playSoundFx(this.audio.lightsaber, 'lightsaberOn');
+        this.audio.playSoundFx(this.audio.saberHum);
         var that = this;
         (function gameLoop() {
             that.loop();

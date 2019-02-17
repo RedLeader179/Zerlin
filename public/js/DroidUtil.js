@@ -32,7 +32,7 @@ class AbstractDroid extends Entity {
 
     }
     /**
-     * this method will change the state of each droid such as firing 
+     * this method will change the state of each droid such as firing
      * and moving and will be implemented more in each childDroid
      */
     update() {
@@ -49,20 +49,20 @@ class AbstractDroid extends Entity {
             if (this.game.showOutlines) {
                 this.game.ctx.beginPath();
                 this.game.ctx.strokeStyle = "green";
-                this.game.ctx.arc(this.boundCircle.x - camera.x, 
+                this.game.ctx.arc(this.boundCircle.x - camera.x,
                     this.boundCircle.y, this.boundCircle.radius, 0, Math.PI * 2, false);
                 this.game.ctx.stroke();
                 this.game.ctx.closePath();
                 this.game.ctx.closePath();
-                this.game.ctx.restore(); 
+                this.game.ctx.restore();
             }
-            //child droid can choose which animation is the current one 
+            //child droid can choose which animation is the current one
             // check that animation is not null before drawing.
             if (this.animation) {
                 this.animation.drawFrame(this.game.clockTick, this.game.ctx, this.x - camera.x, this.y);
             }
             super.draw();
-        } 
+        }
     }
     /**
      * this method will remove the droid from the world and add an explosion to the entity list.
@@ -73,14 +73,14 @@ class AbstractDroid extends Entity {
         this.game.addEntity(new DroidExplosion(this.game, this.x + (this.animation.scale * this.animation.frameWidth / 2), this.y + (this.animation.scale * this.animation.frameHeight / 2)));
 
         /********** Call sound engine to play explosion sound ************* */
-        this.game.audio.enemy.play('largeExplosion');
+        this.game.audio.playSoundFx(this.game.audio.enemy, 'largeExplosion');
         console.log("droid exploded");
     }
     collideWithDroid(ent) {
         return ent !== null && collideCircleWithCircle(this.boundCircle.x, this.boundCircle.y, this.boundCircle.radius,
             ent.boundCircle.x, ent.boundCircle.y, ent.boundCircle.radius);
     }
-    
+
 }
 
 class DroidLaser extends Entity {
@@ -128,7 +128,7 @@ class DroidLaser extends Entity {
         if (this.isOutsideScreen()) {
             this.removeFromWorld = true;
         }
-    
+
         super.update();
     }
     draw() {
@@ -171,7 +171,7 @@ class DroidLaser extends Entity {
             ctx.closePath();
             ctx.restore();
             super.draw();
-        } 
+        }
     }
     calcSlope(p1, p2) {
         return (p1.y - p2.y) / (p1.x - p2.x);
@@ -189,14 +189,14 @@ class DroidLaser extends Entity {
                 this.tailY > bottom;
     }
     /**
-     * this method will return the angle of a line in radians 
+     * this method will return the angle of a line in radians
      */
     findAngleDegrees(x1, y1, x2, y2) {
         var dy = y2 - y1;
         var dx = x2 - x1;
         var theta = Math.atan2(dy, dx); //range (-PI to PI)
         theta *= 180 / Math.PI; //rads to degress, range(-180 to 180)
-        if (theta < 0) 
+        if (theta < 0)
             theta = 360 + theta; //range(0 to 360)
         return theta;
     }
@@ -217,11 +217,11 @@ class DroidLaser extends Entity {
 class DroidExplosion extends Entity {
     constructor(game, x, y) {
         super(game, x, y, 0, 0);
-        
+
         var spritesheet = this.game.assetManager.getAsset("../img/Explosion.png");
         //Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale)
-        this.animation = new Animation(spritesheet, 0, 0, 64, 64, 
-            duc.EXPLOSION_FRAME_SPEED, 15, false, false, duc.EXPLOSION_SCALE); 
+        this.animation = new Animation(spritesheet, 0, 0, 64, 64,
+            duc.EXPLOSION_FRAME_SPEED, 15, false, false, duc.EXPLOSION_SCALE);
 
         this.x = x - this.animation.frameWidth * this.animation.scale / 2;
         this.y = y - this.animation.frameHeight * this.animation.scale / 2;
@@ -240,6 +240,3 @@ class DroidExplosion extends Entity {
         }
     }
 }
-
-
-

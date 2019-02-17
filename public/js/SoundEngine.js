@@ -136,7 +136,7 @@ class SoundEngine {
 				133.33333333333374
 			  ]
 			},
-			volume: .3
+			volume: .03
 		  });
 
 		  this.enemy = new Howl({
@@ -189,7 +189,7 @@ class SoundEngine {
 			  "sound/saber humming.wav"
 			],
 			loop: true,
-			volume: .12
+			volume: .19
 		  });
 
 		  this.wound = new Howl({
@@ -208,9 +208,17 @@ class SoundEngine {
 			volume: .5
 		  });
 
+			/***** set the default sound volumes *****/ //make into constants ?
+			this.enemy.volume(.7, 'retroBlasterShot');
+			//for this.game.audio.enemy.volume(.07, this.game.audio.enemy.play('retroBlasterShot'));
+			this.hero.volume(.01, 'heroHurt');
+			// this.game.audio.lightsaber.volume(.25, this.game.audio.lightsaber.play('lightsaberSwing'));
+			this.lightsaber.volume(.25, 'lightsaberSwing');
+
 			//array holding all of the howler soundFX objects
 			this.soundFXArray = [this.lightsaber, this.item, this.hero,
 				this.enemy, this.beam, this.saberHum, this.wound, this.sizzle ];
+			this.soundFxMuted = false;
 	}
 
 	//pauseBackgroundMusic, unpauseBackgroundMusic
@@ -223,12 +231,14 @@ class SoundEngine {
 
 	//add methods to mute and unmute sound effects
 	muteSoundFX() {
+		this.soundFxMuted = true;
 		// works but need to restore the volumes as they were.....
 		this.soundFXArray.forEach( function(item) {
-			// item.volume(0);
+			item.stop();
 		});
 	}
 	unMuteSoundFX() {
+		this.soundFxMuted = false;
 		this.soundFXArray.forEach( function(item) {
 			// item.volume(3);
 		});
@@ -237,5 +247,12 @@ class SoundEngine {
 	//method to changeout background music
 	switchBackgroundMusic(keyOfBackgroundMusicArray) {
 		this.backgroundMusic = backgroundMusicArray[keyOfBackgroundMusicArray];
+	}
+
+	//play a sound fx if not currently muted
+	playSoundFx(howlerSound, id = '') {
+		if (!this.soundFxMuted) {
+			howlerSound.play(id);
+		}
 	}
 }

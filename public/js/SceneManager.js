@@ -6,10 +6,10 @@ Joshua Atherton, Michael Josten, Steven Golob
 
 const LEVEL_ONE_TILE_LAYOUT = [
   '                                  ',
-  '              b    --   d     -s  ',
+  '   d           b    --   d     -s  ',
   '            -      B    --       s',
-  '       m      -     d            -',
-  '             --  n                ',
+  's       m      -     d            -',
+  '   b          --  n                ',
   '  -             ---               ',
   '     --         --          d     ',
   '   --          -  s       -       ',
@@ -73,7 +73,7 @@ class SceneManager {
 
 /**
 * Class that holds a music menu to control the play and pause music backgrounds
-* and the sound fx. Also can pause and play music using the sound engine. 
+* and the sound fx. Also can pause and play music using the sound engine.
 */
 class MusicMenu {
   constructor(game, xPosition, yPosition, images) {

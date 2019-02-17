@@ -36,7 +36,7 @@ class Zerlin extends Entity {
 		// check basic movement
 		if (this.game.mouse.x + this.game.camera.x < this.x && this.facingRight) {
 			this.faceLeft();
-		} 
+		}
 		else if (this.game.mouse.x + this.game.camera.x > this.x && !this.facingRight) {
 			this.faceRight();
 		}
@@ -72,7 +72,7 @@ class Zerlin extends Entity {
 			}
 			else if (this.game.keys['KeyE'] && !this.falling) {
 				/** for testing sound */
-				this.game.audio.hero.play('forceJump');
+				this.game.audio.playSoundFx(this.game.audio.hero, 'forceJump');
 				this.falling = true;
 				this.deltaY = zc.FORCE_JUMP_DELTA_Y;
 			}
@@ -81,7 +81,7 @@ class Zerlin extends Entity {
 				this.deltaY = zc.JUMP_DELTA_Y;
 			}
 			else if (this.game.keys['Space']) {
-				this.startSlash(); 
+				this.startSlash();
 			}
 			else if (this.game.keys['KeyX'] && !this.falling) {
 				this.crouch();
@@ -109,13 +109,13 @@ class Zerlin extends Entity {
 				if (animation.elapsedTime >= zc.Z_SLASH_FRAME_SPEED * zc.Z_SLASH_START_FRAME &&
 					animation.elapsedTime < zc.Z_SLASH_FRAME_SPEED * (zc.Z_SLASH_END_FRAME + 1)) {
 					if (this.slashingDirection === 1) {
-						this.slashZone = {active: true, 
-										  outerCircle: new BoundingCircle(this.x + zc.Z_SLASH_CENTER_X * zc.Z_SCALE, this.y - zc.Z_SLASH_CENTER_Y * zc.Z_SCALE, zc.Z_SLASH_RADIUS * zc.Z_SCALE), 
-										  innerCircle: new BoundingCircle(this.x + zc.Z_SLASH_INNER_CENTER_X * zc.Z_SCALE, this.y - zc.Z_SLASH_INNER_CENTER_Y * zc.Z_SCALE, zc.Z_SLASH_INNER_RADIUS * zc.Z_SCALE)}; 
+						this.slashZone = {active: true,
+										  outerCircle: new BoundingCircle(this.x + zc.Z_SLASH_CENTER_X * zc.Z_SCALE, this.y - zc.Z_SLASH_CENTER_Y * zc.Z_SCALE, zc.Z_SLASH_RADIUS * zc.Z_SCALE),
+										  innerCircle: new BoundingCircle(this.x + zc.Z_SLASH_INNER_CENTER_X * zc.Z_SCALE, this.y - zc.Z_SLASH_INNER_CENTER_Y * zc.Z_SCALE, zc.Z_SLASH_INNER_RADIUS * zc.Z_SCALE)};
 					} else {
-						this.slashZone = {active: true,  
-										  outerCircle: new BoundingCircle(this.x - zc.Z_SLASH_CENTER_X * zc.Z_SCALE, this.y - zc.Z_SLASH_CENTER_Y * zc.Z_SCALE, zc.Z_SLASH_RADIUS * zc.Z_SCALE), 
-										  innerCircle: new BoundingCircle(this.x - zc.Z_SLASH_INNER_CENTER_X * zc.Z_SCALE, this.y - zc.Z_SLASH_INNER_CENTER_Y * zc.Z_SCALE, zc.Z_SLASH_INNER_RADIUS * zc.Z_SCALE)}; 
+						this.slashZone = {active: true,
+										  outerCircle: new BoundingCircle(this.x - zc.Z_SLASH_CENTER_X * zc.Z_SCALE, this.y - zc.Z_SLASH_CENTER_Y * zc.Z_SCALE, zc.Z_SLASH_RADIUS * zc.Z_SCALE),
+										  innerCircle: new BoundingCircle(this.x - zc.Z_SLASH_INNER_CENTER_X * zc.Z_SCALE, this.y - zc.Z_SLASH_INNER_CENTER_Y * zc.Z_SCALE, zc.Z_SLASH_INNER_RADIUS * zc.Z_SCALE)};
 					}
 				} else {
 					this.slashZone.active = false;
@@ -132,7 +132,7 @@ class Zerlin extends Entity {
 		this.y += this.game.clockTick * this.deltaY;
 
 		this.boundingbox.translateCoordinates(this.game.clockTick * this.deltaX, this.game.clockTick * this.deltaY);
-		
+
 		this.lightsaber.update();
 		super.update();
 	}
@@ -156,7 +156,7 @@ class Zerlin extends Entity {
 			}
 		}
 		else if (this.falling) {
-			if (this.facingRight) { 
+			if (this.facingRight) {
 				this.animation = this.deltaY < 0 ? this.fallingUpAnimation : this.fallingDownAnimation;
 				this.drawX = this.x - zc.Z_ARM_SOCKET_X * zc.Z_SCALE;
 			} else { // facing left
@@ -165,7 +165,7 @@ class Zerlin extends Entity {
 			}
 		}
 		else if (this.crouching) {
-			if (this.facingRight) { 
+			if (this.facingRight) {
 				this.animation = this.crouchAnimation;
 				this.drawX = this.x - zc.Z_ARM_SOCKET_X * zc.Z_SCALE;
 			} else { // facing left
@@ -182,7 +182,7 @@ class Zerlin extends Entity {
 			} else if (this.direction === 1) {
 				this.animation = this.moveRightFaceRightAnimation;
 			}
-		} 
+		}
 		else { // facing left
 			this.drawX = this.x - (zc.Z_WIDTH - zc.Z_ARM_SOCKET_X) * zc.Z_SCALE;
 			if (this.direction === -1) {
@@ -217,7 +217,7 @@ class Zerlin extends Entity {
 		this.y = y;
 		// update boundingBox
 		if (this.facingRight) {
-			this.faceRight(); 
+			this.faceRight();
 		} else {
 			this.faceLeft();
 		}
@@ -226,7 +226,7 @@ class Zerlin extends Entity {
 	isTileBelow(tile) {
 		return (this.boundingbox.left < tile.boundingBox.right)
 				&& (this.boundingbox.right > tile.boundingBox.left)
-				&& (this.boundingbox.bottom + 10 > tile.boundingBox.top) 
+				&& (this.boundingbox.bottom + 10 > tile.boundingBox.top)
 				&& (this.boundingbox.bottom - 10 < tile.boundingBox.top);
 	}
 
@@ -242,7 +242,7 @@ class Zerlin extends Entity {
 	}
 
 	startSomersault() {
-		this.game.audio.lightsaber.play('lightsaberOff');
+		this.game.audio.playSoundFx(this.game.audio.lightsaber, 'lightsaberOff');
 		this.game.audio.saberHum.stop();
 		this.somersaulting = true;
 		this.deltaX = zc.Z_SOMERSAULT_SPEED * this.direction;
@@ -254,12 +254,12 @@ class Zerlin extends Entity {
 	}
 
 	finishSomersault() {
-		this.game.audio.lightsaber.play('lightsaberOn');
-		this.game.audio.saberHum.play();
+		this.game.audio.playSoundFx(this.game.audio.lightsaber, 'lightsaberOn');
+		this.game.audio.playSoundFx(this.game.audio.saberHum);
 		this.animation.elapsedTime = 0;
 		this.deltaX = 0;
 		this.somersaulting = false;
-		this.lightsaber.hidden = false;		
+		this.lightsaber.hidden = false;
 		this.boundingbox.hidden = false;
 	}
 
@@ -268,7 +268,7 @@ class Zerlin extends Entity {
 		this.deltaX = 0;
 		this.armSocketY = zc.Z_CROUCH_ARM_SOCKET_Y;
 		if (this.facingRight) {
-			this.faceRight(); 
+			this.faceRight();
 		} else {
 			this.faceLeft();
 		}
@@ -278,14 +278,14 @@ class Zerlin extends Entity {
 		this.crouching = false;
 		this.armSocketY = zc.Z_ARM_SOCKET_Y;
 		if (this.facingRight) {
-			this.faceRight(); 
+			this.faceRight();
 		} else {
 			this.faceLeft();
 		}
 	}
 
 	startSlash() {
-		this.game.audio.lightsaber.volume(.25, this.game.audio.lightsaber.play('lightsaberSwing'));
+		this.game.audio.playSoundFx(this.game.audio.lightsaber, 'lightsaberSwing');
 		this.slashing = true;
 		this.deltaX = 0;
 		this.lightsaber.hidden = true;
@@ -307,7 +307,7 @@ class Zerlin extends Entity {
 		if (this.crouching) {
 			this.boundingbox = new BoundingBox(this.x - (15 * zc.Z_SCALE), this.y - (zc.Z_HEIGHT - 120) * zc.Z_SCALE, (zc.Z_WIDTH - 39) * zc.Z_SCALE, (zc.Z_HEIGHT - 132) * zc.Z_SCALE);
 		} else {
-			this.boundingbox = new BoundingBox(this.x - (15 * zc.Z_SCALE), this.y - (zc.Z_HEIGHT - 73) * zc.Z_SCALE, (zc.Z_WIDTH - 39) * zc.Z_SCALE, (zc.Z_HEIGHT - 85) * zc.Z_SCALE);	
+			this.boundingbox = new BoundingBox(this.x - (15 * zc.Z_SCALE), this.y - (zc.Z_HEIGHT - 73) * zc.Z_SCALE, (zc.Z_WIDTH - 39) * zc.Z_SCALE, (zc.Z_HEIGHT - 85) * zc.Z_SCALE);
 		}
 	}
 
@@ -316,138 +316,138 @@ class Zerlin extends Entity {
 		if (this.crouching) {
 			this.boundingbox = new BoundingBox(this.x - (zc.Z_WIDTH - 55) * zc.Z_SCALE, this.y - (zc.Z_HEIGHT - 120) * zc.Z_SCALE, (zc.Z_WIDTH - 39) * zc.Z_SCALE, (zc.Z_HEIGHT - 132) * zc.Z_SCALE);
 		} else {
-			this.boundingbox = new BoundingBox(this.x - (zc.Z_WIDTH - 55) * zc.Z_SCALE, this.y - (zc.Z_HEIGHT - 73) * zc.Z_SCALE, (zc.Z_WIDTH - 39) * zc.Z_SCALE, (zc.Z_HEIGHT - 85) * zc.Z_SCALE);	
+			this.boundingbox = new BoundingBox(this.x - (zc.Z_WIDTH - 55) * zc.Z_SCALE, this.y - (zc.Z_HEIGHT - 73) * zc.Z_SCALE, (zc.Z_WIDTH - 39) * zc.Z_SCALE, (zc.Z_HEIGHT - 85) * zc.Z_SCALE);
 		}
 	}
 
 
 	createAnimations() {
 		this.standFaceRightAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin standing.png"),
-													0, 0, 
-												   zc.Z_WIDTH, 
-												   zc.Z_HEIGHT, 
-												   zc.Z_STANDING_FRAME_SPEED, 
-												   zc.Z_STANDING_FRAMES, 
+													0, 0,
+												   zc.Z_WIDTH,
+												   zc.Z_HEIGHT,
+												   zc.Z_STANDING_FRAME_SPEED,
+												   zc.Z_STANDING_FRAMES,
 												   true, false,
 												   zc.Z_SCALE);
 		this.standFaceLeftAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin standing left.png"),
-													0, 0, 
-												   zc.Z_WIDTH, 
-												   zc.Z_HEIGHT, 
-												   zc.Z_STANDING_FRAME_SPEED, 
-												   zc.Z_STANDING_FRAMES, 
+													0, 0,
+												   zc.Z_WIDTH,
+												   zc.Z_HEIGHT,
+												   zc.Z_STANDING_FRAME_SPEED,
+												   zc.Z_STANDING_FRAMES,
 												   true, false,
 												   zc.Z_SCALE);
-		this.moveRightFaceRightAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin bobbing walking.png"), 
+		this.moveRightFaceRightAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin bobbing walking.png"),
 													0, 0,
-												   zc.Z_WIDTH, 
-												   zc.Z_HEIGHT, 
-												   zc.Z_WALKING_FRAME_SPEED, 
-												   zc.Z_WALKING_FRAMES, 
+												   zc.Z_WIDTH,
+												   zc.Z_HEIGHT,
+												   zc.Z_WALKING_FRAME_SPEED,
+												   zc.Z_WALKING_FRAMES,
 												   true, false,
 												   zc.Z_SCALE);
 		this.moveRightFaceLeftAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin left backwards bobbing walking.png"),
 													0, 0,
-												   zc.Z_WIDTH, 
-												   zc.Z_HEIGHT, 
-												   zc.Z_WALKING_FRAME_SPEED, 
-												   zc.Z_WALKING_FRAMES, 
+												   zc.Z_WIDTH,
+												   zc.Z_HEIGHT,
+												   zc.Z_WALKING_FRAME_SPEED,
+												   zc.Z_WALKING_FRAMES,
 												   true, false,
 												   zc.Z_SCALE);
 		this.moveLeftFaceRightAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin backwards bobbing walking.png"),
 													0, 0,
-												   zc.Z_WIDTH, 
-												   zc.Z_HEIGHT, 
-												   zc.Z_WALKING_FRAME_SPEED, 
-												   zc.Z_WALKING_FRAMES, 
+												   zc.Z_WIDTH,
+												   zc.Z_HEIGHT,
+												   zc.Z_WALKING_FRAME_SPEED,
+												   zc.Z_WALKING_FRAMES,
 												   true, false,
 												   zc.Z_SCALE);
-		this.moveLeftFaceLeftAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin left bobbing walking.png"), 
+		this.moveLeftFaceLeftAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin left bobbing walking.png"),
 													0, 0,
-												   zc.Z_WIDTH, 
-												   zc.Z_HEIGHT, 
-												   zc.Z_WALKING_FRAME_SPEED, 
-												   zc.Z_WALKING_FRAMES, 
+												   zc.Z_WIDTH,
+												   zc.Z_HEIGHT,
+												   zc.Z_WALKING_FRAME_SPEED,
+												   zc.Z_WALKING_FRAMES,
 												   true, false,
 												   zc.Z_SCALE);
-		this.fallingUpAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin falling up.png"), 
+		this.fallingUpAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin falling up.png"),
 													0, 0,
-												   zc.Z_WIDTH, 
-												   zc.Z_HEIGHT, 
-												   zc.Z_FALLING_FRAME_SPEED, 
-												   zc.Z_FALLING_UP_FRAMES, 
+												   zc.Z_WIDTH,
+												   zc.Z_HEIGHT,
+												   zc.Z_FALLING_FRAME_SPEED,
+												   zc.Z_FALLING_UP_FRAMES,
 												   true, false,
 												   zc.Z_SCALE);
-		this.fallingDownAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin falling down.png"), 
+		this.fallingDownAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin falling down.png"),
 													0, 0,
-												   zc.Z_WIDTH, 
-												   zc.Z_HEIGHT, 
-												   zc.Z_FALLING_FRAME_SPEED, 
-												   zc.Z_FALLING_DOWN_FRAMES, 
+												   zc.Z_WIDTH,
+												   zc.Z_HEIGHT,
+												   zc.Z_FALLING_FRAME_SPEED,
+												   zc.Z_FALLING_DOWN_FRAMES,
 												   true, false,
 												   zc.Z_SCALE);
-		this.fallingUpLeftAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin falling up left.png"), 
+		this.fallingUpLeftAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin falling up left.png"),
 													0, 0,
-												   zc.Z_WIDTH, 
-												   zc.Z_HEIGHT, 
-												   zc.Z_FALLING_FRAME_SPEED, 
-												   zc.Z_FALLING_UP_FRAMES, 
+												   zc.Z_WIDTH,
+												   zc.Z_HEIGHT,
+												   zc.Z_FALLING_FRAME_SPEED,
+												   zc.Z_FALLING_UP_FRAMES,
 												   true, false,
 												   zc.Z_SCALE);
-		this.fallingDownLeftAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin falling down left.png"), 
+		this.fallingDownLeftAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin falling down left.png"),
 													0, 0,
-												   zc.Z_WIDTH, 
-												   zc.Z_HEIGHT, 
-												   zc.Z_FALLING_FRAME_SPEED, 
-												   zc.Z_FALLING_DOWN_FRAMES, 
+												   zc.Z_WIDTH,
+												   zc.Z_HEIGHT,
+												   zc.Z_FALLING_FRAME_SPEED,
+												   zc.Z_FALLING_DOWN_FRAMES,
 												   true, false,
 												   zc.Z_SCALE);
-		this.somersaultingAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin somersault.png"), 
+		this.somersaultingAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin somersault.png"),
 													0, 0,
-												   zc.Z_SOMERSAULT_WIDTH, 
-												   zc.Z_SOMERSAULT_HEIGHT, 
-												   zc.Z_SOMERSAULT_FRAME_SPEED, 
-												   zc.Z_SOMERSAULT_FRAMES, 
+												   zc.Z_SOMERSAULT_WIDTH,
+												   zc.Z_SOMERSAULT_HEIGHT,
+												   zc.Z_SOMERSAULT_FRAME_SPEED,
+												   zc.Z_SOMERSAULT_FRAMES,
 												   false, false,
 												   zc.Z_SCALE);
-		this.somersaultingLeftAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin left somersault.png"), 
+		this.somersaultingLeftAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin left somersault.png"),
 													0, 0,
-												   zc.Z_SOMERSAULT_WIDTH, 
-												   zc.Z_SOMERSAULT_HEIGHT, 
-												   zc.Z_SOMERSAULT_FRAME_SPEED, 
-												   zc.Z_SOMERSAULT_FRAMES, 
+												   zc.Z_SOMERSAULT_WIDTH,
+												   zc.Z_SOMERSAULT_HEIGHT,
+												   zc.Z_SOMERSAULT_FRAME_SPEED,
+												   zc.Z_SOMERSAULT_FRAMES,
 												   false, false,
 												   zc.Z_SCALE);
-		this.slashingAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin slash.png"), 
+		this.slashingAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin slash.png"),
 													0, 0,
-												   zc.Z_SLASH_WIDTH, 
-												   zc.Z_SLASH_HEIGHT, 
-												   zc.Z_SLASH_FRAME_SPEED, 
-												   zc.Z_SLASH_FRAMES, 
+												   zc.Z_SLASH_WIDTH,
+												   zc.Z_SLASH_HEIGHT,
+												   zc.Z_SLASH_FRAME_SPEED,
+												   zc.Z_SLASH_FRAMES,
 												   false, false,
 												   zc.Z_SCALE);
-		this.slashingLeftAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin slash left.png"), 
+		this.slashingLeftAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin slash left.png"),
 													0, 0,
-												   zc.Z_SLASH_WIDTH, 
-												   zc.Z_SLASH_HEIGHT, 
-												   zc.Z_SLASH_FRAME_SPEED, 
-												   zc.Z_SLASH_FRAMES, 
+												   zc.Z_SLASH_WIDTH,
+												   zc.Z_SLASH_HEIGHT,
+												   zc.Z_SLASH_FRAME_SPEED,
+												   zc.Z_SLASH_FRAMES,
 												   false, false,
 												   zc.Z_SCALE);
-		this.crouchAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin crouch.png"), 
+		this.crouchAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin crouch.png"),
 													0, 0,
-												   zc.Z_WIDTH, 
-												   zc.Z_HEIGHT, 
-												   1, 
-												   1, 
+												   zc.Z_WIDTH,
+												   zc.Z_HEIGHT,
+												   1,
+												   1,
 												   true, false,
 												   zc.Z_SCALE);
-		this.crouchLeftAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin crouch left.png"), 
+		this.crouchLeftAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin crouch left.png"),
 													0, 0,
-												   zc.Z_WIDTH, 
-												   zc.Z_HEIGHT, 
-												   1, 
-												   1, 
+												   zc.Z_WIDTH,
+												   zc.Z_HEIGHT,
+												   1,
+												   1,
 												   true, false,
 												   zc.Z_SCALE);
 	}
@@ -478,7 +478,7 @@ var LS_DOWN_Y_AXIS = 63;
 class Lightsaber extends Entity {
 
 	constructor(game, Zerlin) {
-		super(game, 
+		super(game,
 				0, 0, // will be set in faceRightUpSaber()
 				0, 0);
 		this.assetManager = game.assetManager;
@@ -495,12 +495,12 @@ class Lightsaber extends Entity {
 	update() {
 		this.x = this.Zerlin.x;
 		this.y = this.Zerlin.y - (zc.Z_HEIGHT - this.Zerlin.armSocketY) * zc.Z_SCALE;
-		// rotate 
+		// rotate
 		if (this.game.mouse) {
 			 // TODO: rotateAndCache if mouse not moved
 			this.angle = Math.atan2(this.game.mouse.y - this.y, this.game.mouse.x + this.game.camera.x - this.x);
 
-			// change sprite on any of these conditions 
+			// change sprite on any of these conditions
 			// TODO: consolidate logic here
 			if (this.game.mouse.x + this.game.camera.x < this.Zerlin.x && this.facingRight) {
 				this.saberUp = !this.saberUp;
@@ -508,8 +508,8 @@ class Lightsaber extends Entity {
 					this.faceLeftUpSaber();
 				} else {
 					this.faceLeftDownSaber();
-				}        
-			} 
+				}
+			}
 			else if (this.game.mouse.x + this.game.camera.x > this.Zerlin.x && !this.facingRight) {
 				this.saberUp = !this.saberUp;
 				if (this.inClickPosition) {
@@ -517,14 +517,14 @@ class Lightsaber extends Entity {
 				} else {
 					this.faceRightUpSaber();
 				}
-			} 
+			}
 			else if (this.game.rightClickDown && !this.inClickPosition) {
 				this.inClickPosition = true;
 				if (this.game.mouse.x + this.game.camera.x < this.Zerlin.x) {
 					this.faceLeftUpSaber();
 				} else {
 					this.faceRightDownSaber();
-				}        
+				}
 			} else if (!this.game.rightClickDown && this.inClickPosition) {
 				this.inClickPosition = false;
 				if (this.game.mouse.x + this.game.camera.x < this.Zerlin.x) {
@@ -666,5 +666,3 @@ class Lightsaber extends Entity {
 		this.faceLeftDownSaberImage = this.assetManager.getAsset("../img/saber down left.png");
 	}
 }
-
-
