@@ -101,6 +101,7 @@ class AssetManager {
 	AM.queueDownload("../img/Droid 3.png");
 	AM.queueDownload("../img/Droid 4.png");
 	AM.queueDownload("../img/Droid 5.png");
+
 	AM.queueDownload('../img/city_background.png');
 	AM.queueDownload('../img/city_buildings_back.png');
 	AM.queueDownload('../img/city_clouds_left.png');
@@ -111,6 +112,14 @@ class AssetManager {
 	AM.queueDownload("../img/boss falling left.png");
 	AM.queueDownload("../img/beam cannon.png");
 	AM.queueDownload("../img/beam cannon left.png");
+	//powerups animations
+	AM.queueDownload('../img/powerup_health.png');
+	AM.queueDownload('../img/powerup_force.png');
+
+
+	AM.queueDownload('../img/music_menu.png');
+	AM.queueDownload('../img/music_menu_xfx.png');
+	AM.queueDownload('../img/music_menu_xmusic.png');
 
 
 	AM.downloadAll(function () {
@@ -122,14 +131,6 @@ class AssetManager {
 
 		gameEngine.start();
 
-		document.getElementById("playMusic").addEventListener("click", () => {
-			gameEngine.unPauseBackgroundAudio();
-		})
-
-		document.getElementById("pauseMusic").addEventListener("click", () => {
-			gameEngine.pauseBackgroundAudio();
-		})
-
-	    console.log("All Done!");
+	  console.log("All Done!");
 	});
 })();

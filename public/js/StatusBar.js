@@ -42,8 +42,15 @@ class AbstractStatusBar extends Entity {
         //the color when the bar is in critical condition
         this.criticalBackgroundColor = 'rgba(255, 255, 255, 1)';
         this.criticalForegroundColor = 'rgba(126, 126, 126, 1)';
+        this.borderColor = 'rgba(0, 0, 0, 1)';
         this.flashCritical = false; //toggle boolean
         this.secondsBeforeFlash = sbc.STATUS_BAR_CRITICAL_FLASH_INTERVAL;
+    
+        this.foregroundGrad = this.game.ctx.createLinearGradient(
+            this.x, this.y, this.x + this.maxLength, this.y);
+        this.foregroundGrad.addColorStop(0, 'rgb(255, 255, 255)');
+        this.foregroundGrad.addColorStop(0.5, 'rgb(126, 126, 126)');
+        this.foregroundGrad.addColorStop(1, 'rgb(0, 0, 0)');
     }
 
     update() {
@@ -67,19 +74,34 @@ class AbstractStatusBar extends Entity {
         super.draw();
         var ctx = this.game.ctx;
 
-        var colorForeground = this.foregroundColor;
+        var colorForeground = this.foregroundGrad;
         var colorBackground = this.backgroundColor;
         if (this.hasCriticalState && this.current <= sbc.STATUS_BAR_CRITICAL_AMOUNT * this.maxSize) {
             //paint the critical state
             if (this.flashCritical) {
-                colorForeground = this.criticalForegroundColor;
+                colorForeground = this.foregroundGrad;
                 colorBackground = this.criticalBackgroundColor;
             }
 
         }
+        ctx.save();
+        ctx.shadowBlur = 5;
+        ctx.shadowColor = 'black';
+
+        
+        //draw the border of the status bars
+        ctx.lineWidth = sbc.STATUS_BAR_WIDTH + 5;
+        ctx.strokeStyle = this.borderColor;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(this.x + this.maxLength, this.y);
+        ctx.stroke();
+        ctx.closePath();
+
 
         //draw the background status bar
-        ctx.save();
+        
         ctx.lineWidth = sbc.STATUS_BAR_WIDTH;
         ctx.strokeStyle = colorBackground;
         ctx.lineCap = "round";
@@ -91,6 +113,7 @@ class AbstractStatusBar extends Entity {
         
         if (this.current > 0) {
             //draw the foreground status bar over the background status bar
+            //ctx.strokeStyle = colorForeground;
             ctx.strokeStyle = colorForeground;
             //ctx.lineCap = butt;
             ctx.beginPath();
@@ -144,21 +167,17 @@ class HealthStatusBar extends AbstractStatusBar {
 
         this.maxSize = this.game.Zerlin.maxHealth;
         this.current = this.game.Zerlin.currentHealth;
+
+        this.foregroundGrad = this.game.ctx.createLinearGradient(
+            this.x, this.y, this.x + this.maxLength, this.y);
+        this.foregroundGrad.addColorStop(0, 'rgb(165, 0, 0)');
+        this.foregroundGrad.addColorStop(0.5, 'rgb(221, 0, 0)');
+        this.foregroundGrad.addColorStop(1, 'rgb(255, 55, 55)');
     }
     /* method that will check the current health of zerlin then draw the status bar
     * with the new current health */
     setCurrent() {
         this.current = this.game.Zerlin.currentHealth;
-        //this.current = 3;
-        /* DELETE AFTER DEBUG */
-        // this.int -= this.game.clockTick;
-        // if (this.int <= 0) {
-        //     this.current--;
-        //     this.int = STATUS_BAR_CRITICAL_FLASH_INTERVAL;
-        // }
-        // if (this.current < 0) {
-        //     this.current = 10;
-        // }
 
     }
     setMaxSize() {
@@ -179,6 +198,12 @@ class ForceStatusBar extends AbstractStatusBar {
         this.backgroundColor = "rgba(126, 126, 255, 1)"; //light blue
         this.maxSize = this.game.Zerlin.maxForce;
         this.current = this.game.Zerlin.currentForce;
+
+        this.foregroundGrad = this.game.ctx.createLinearGradient(
+            this.x, this.y, this.x + this.maxLength, this.y);
+        this.foregroundGrad.addColorStop(0, 'rgb(0, 0, 165)');
+        this.foregroundGrad.addColorStop(0.5, 'rgb(0, 0, 255)');
+        this.foregroundGrad.addColorStop(1, 'rgb(55, 55, 255)');
     }
 
     /*

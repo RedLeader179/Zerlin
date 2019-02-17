@@ -294,6 +294,9 @@ class BeamCannon extends Entity {
 		this.muzzleY = (bc.BC_MUZZLE_RIGHT_Y - bc.BC_RIGHT_Y_AXIS) * bc.B_SCALE;
 		this.angleSocketToMuzzle = Math.atan2(this.muzzleY, this.muzzleX);
 		this.facingRight = true;
+		console.log("right");
+		console.log(this.muzzleX);
+		console.log(this.muzzleY);
 	}
 
 	faceLeft() {
@@ -304,6 +307,9 @@ class BeamCannon extends Entity {
 		this.muzzleY = (bc.BC_MUZZLE_LEFT_Y - bc.BC_LEFT_Y_AXIS) * bc.B_SCALE;
 		this.angleSocketToMuzzle = Math.atan2(this.muzzleY, this.muzzleX);
 		this.facingRight = false;
+		console.log("left");
+		console.log(this.muzzleX);
+		console.log(this.muzzleY);
 	}
 
 	setBeamAngle() {
@@ -368,6 +374,7 @@ class Beam {
 	update() {
 		var xOffset = this.cannon.lengthSocketToMuzzle * Math.cos(this.cannon.beamAngle + this.cannon.angleSocketToMuzzle); 
 		var yOffset = this.cannon.lengthSocketToMuzzle * Math.sin(this.cannon.beamAngle + this.cannon.angleSocketToMuzzle); 
+		// console.log(this.cannon.lengthSocketToMuzzle);
 		this.segments[0].x = this.cannon.x + xOffset;
 		this.segments[0].y = this.cannon.y + yOffset;
 		this.segments[0].angle = this.cannon.beamAngle;
