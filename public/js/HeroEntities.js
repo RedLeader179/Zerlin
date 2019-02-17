@@ -29,7 +29,7 @@ class Zerlin extends Entity {
 		this.maxHealth = zc.Z_MAX_HEALTH;
 		this.currentHealth = this.maxHealth;
 		this.maxForce = zc.Z_MAX_FORCE;
-		this.currentForce = this.maxForce;
+		this.currentForce = this.maxForce/2;
 	}
 
 	update() {

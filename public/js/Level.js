@@ -7,11 +7,14 @@ Joshua Atherton, Michael Josten, Steven Golob
 
 /*
 Assets:
+//powerups are capital
 
 -  =  tile
 d  =  basic droid
 s  =  scatter shot droid
 b  =  beam droid
+H  =  health powerup
+F =   force powerup
 
 */
 
@@ -30,7 +33,7 @@ class Level {
         this.ctx = game.ctx;
         this.tiles = [];
         this.unspawnedDroids = []; // when spawned, pass to game engine
-        this.powerUps = [];
+        this.unspawnedPowerups = [];
 
         this.length = this.levelLayout[0].length * this.tileWidth;
         this._parseLevel();
@@ -76,7 +79,14 @@ class Level {
                 }
                 else if (this.levelLayout[i][j] === 'm') { // multishot droid
                     this.unspawnedDroids.push(new MultishotDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * this.game.camera.height / rows));
+                } 
+                else if (this.levelLayout[i][j] === 'H') { //health powerup
+                    this.unspawnedPowerups.push(new HealthPowerUp(this.game, this.game.assetManager.getAsset("../img/powerup_health.png"), j * this.tileWidth, i * this.game.camera.height / rows));
                 }
+                else if (this.levelLayout[i][j] === 'F') {//force powerup
+                    this.unspawnedPowerups.push(new ForcePowerUp(this.game, this.game.assetManager.getAsset("../img/powerup_force.png"), j * this.tileWidth, i * this.game.camera.height / rows));
+                }
+                
             }
         }
     }
@@ -89,6 +99,14 @@ class Level {
             if (this.game.camera.isInView(droid, dimension, dimension)) {
                 this.game.addDroid(droid);
                 this.unspawnedDroids.splice(i, 1);
+            }
+        }
+        for (let i = this.unspawnedPowerups.length -1; i >= 0; i--) {
+            let powerup = this.unspawnedPowerups[i];
+            let dimension = powerup.boundCircle.radius * 2;
+            if (this.game.camera.isInView(powerup, dimension, dimension)) {
+                this.game.addPowerup(powerup);
+                this.unspawnedPowerups.splice(i, 1);
             }
         }
     }
