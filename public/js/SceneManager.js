@@ -103,7 +103,7 @@ class MusicMenu {
         clickXandY.y <= this.y + 20
       ) {
         changeInState = true;
-        this.xMusicChecked = this.xMusicChecked ? false : true;
+        this.xMusicChecked = !this.xMusicChecked;
         // console.log("music checked", this.xMusicChecked);
       }
       //fx x
@@ -114,7 +114,7 @@ class MusicMenu {
         clickXandY.y <= this.y + 33
       ) {
         changeInState = true;
-        this.xFxChecked = this.xFxChecked ? false : true;
+        this.xFxChecked = !this.xFxChecked;
         // console.log("fx checked", this.xFxChecked);
       }
     }
