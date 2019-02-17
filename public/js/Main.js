@@ -103,6 +103,10 @@ class AssetManager {
 	AM.queueDownload('../img/powerup_force.png');
 	  
 
+  AM.queueDownload('../img/music_menu.png');
+  AM.queueDownload('../img/music_menu_xfx.png');
+  AM.queueDownload('../img/music_menu_xmusic.png');
+
 
 	AM.downloadAll(function () {
 	    var canvas = document.getElementById("gameWorld");
@@ -113,14 +117,6 @@ class AssetManager {
 
 		gameEngine.start();
 
-		document.getElementById("playMusic").addEventListener("click", () => {
-			gameEngine.unPauseBackgroundAudio();
-		})
-
-		document.getElementById("pauseMusic").addEventListener("click", () => {
-			gameEngine.pauseBackgroundAudio();
-		})
-
-	    console.log("All Done!");
+	  console.log("All Done!");
 	});
 })();

@@ -38,22 +38,22 @@ class CollisionManager {
 	droidOnDroid() {
 		//check collision with other droids.
 		//can optimize by not checking every single droid with each other twice.
-		
+
 		// for (var i = this.game.droids.length - 1; i >= 0; i--) {
 		// 	var droid1 = this.game.droids[i];
 		// 	for (var j = this.game.droids.length - 1; j >= 0; j--) {
 		// 		var droid2 = this.game.droids[j];
-		// 		if(droid1 != null && droid2 != null && droid1 != droid2 
+		// 		if(droid1 != null && droid2 != null && droid1 != droid2
 		// 			&& collideCircleWithCircle(droid1.boundCircle.x, droid1.boundCircle.y, droid1.boundCircle.radius,
 		// 				droid2.boundCircle.x, droid2.boundCircle.y, droid2.boundCircle.radius)) {
 
-		// 			//handle collision of droids with droids. 
+		// 			//handle collision of droids with droids.
 		// 			//swap velocities, bounce effect.
 		// 			/*
 		// 			* BUG ALERT:
 		// 			* kinda strange, has the characteristics that we want as in that
-		// 			* it only bounces some times, but it is a bug/feature in this code that 
-		// 			* only makes them bounce some times instead of having the 
+		// 			* it only bounces some times, but it is a bug/feature in this code that
+		// 			* only makes them bounce some times instead of having the
 		// 			* chance they can bounce being bound to a constant
 		// 			*/
 		// 			var tempX = droid1.deltaX;
@@ -86,9 +86,9 @@ class CollisionManager {
 
 		// 		}
 		// 	}
-			
+
 		// }
-		
+
 	}
 
 	droidOnSaber() {
@@ -97,20 +97,20 @@ class CollisionManager {
 			for (var i = this.game.droids.length - 1; i >= 0; i--) {
 				var droid = this.game.droids[i];
 				// check if droid in circular path of saber and not below zerlin
-				if (collidePointWithCircle(droid.boundCircle.x, 
-										   droid.boundCircle.y, 
-										   zerlin.slashZone.outerCircle.x, 
-										   zerlin.slashZone.outerCircle.y, 
+				if (collidePointWithCircle(droid.boundCircle.x,
+										   droid.boundCircle.y,
+										   zerlin.slashZone.outerCircle.x,
+										   zerlin.slashZone.outerCircle.y,
 										   zerlin.slashZone.outerCircle.radius)
-					&& !collidePointWithCircle(droid.boundCircle.x, 
-										   droid.boundCircle.y, 
-										   zerlin.slashZone.innerCircle.x, 
-										   zerlin.slashZone.innerCircle.y, 
+					&& !collidePointWithCircle(droid.boundCircle.x,
+										   droid.boundCircle.y,
+										   zerlin.slashZone.innerCircle.x,
+										   zerlin.slashZone.innerCircle.y,
 										   zerlin.slashZone.innerCircle.radius)
 					&& droid.boundCircle.y < zerlin.y) {
 					droid.explode();
 				}
-			}	
+			}
 		}
 	}
 
@@ -135,7 +135,7 @@ class CollisionManager {
 					var collision = this.isCollidedWithSaber(laser);
 					if (collision.collided) {
 						this.deflectLaser(laser, collision.intersection);
-						this.game.audio.enemy.volume(.07, this.game.audio.enemy.play('retroBlasterShot'));
+						this.game.audio.playSoundFx(this.game.audio.enemy, 'retroBlasterShot');
 					}
 				}
 			}
@@ -152,7 +152,8 @@ class CollisionManager {
 					laser.x < zerlin.boundingbox.right &&
 					laser.y > zerlin.boundingbox.top &&
 					laser.y < zerlin.boundingbox.bottom) {
-					this.game.audio.wound.play();
+					// this.game.audio.wound.play();
+					this.game.audio.playSoundFx(this.game.audio.hero, 'heroHurt');
 					laser.removeFromWorld = true;
 					zerlin.hits++;
 					zerlin.currentHealth--; //eventually subtract by laser damage
@@ -232,14 +233,14 @@ class CollisionManager {
 				beamSegments[j].endY = Math.sin(beamSegments[j].angle) * maxLength + beamSegments[j].y;
 
 				if (!lightsaber.hidden) {
-					var collisionWithSaber = this.isCollidedLineWithLine({p1: {x: beamSegments[j].x, y: beamSegments[j].y}, p2: {x: beamSegments[j].endX, y: beamSegments[j].endY}}, 
+					var collisionWithSaber = this.isCollidedLineWithLine({p1: {x: beamSegments[j].x, y: beamSegments[j].y}, p2: {x: beamSegments[j].endX, y: beamSegments[j].endY}},
 													{p1: lightsaber.bladeCollar, p2: lightsaber.bladeTip});
 					// TODO: check for collision with ANY deflective agent (i. e. a mirror or laser shield or something)
 					if (collisionWithSaber.collided) {
 						beamSegments[j].endX = collisionWithSaber.intersection.x;
 						beamSegments[j].endY = collisionWithSaber.intersection.y;
-						beamSegments.push({x: collisionWithSaber.intersection.x, 
-										   y: collisionWithSaber.intersection.y, 
+						beamSegments.push({x: collisionWithSaber.intersection.x,
+										   y: collisionWithSaber.intersection.y,
 										   angle: 2 * lightsaber.getSaberAngle() - beamSegments[j].angle,
 										   deflected: true});
 						beamSegments[j+1].endX = Math.cos(beamSegments[j+1].angle) * maxLength + beamSegments[j+1].x;
@@ -309,7 +310,7 @@ class CollisionManager {
 							beamSeg.endY = collisionWithPlatform.intersection.y;
 							beamSegments.splice(j+1);
 						}
-					}	
+					}
 				}
 			}
 		}
@@ -328,12 +329,12 @@ class CollisionManager {
 		var laserP2 = {x: laser.prevX, y: laser.prevY};
 
 		// decrease miss percentage by also checking previous blade
-		var collidedWithCurrentBlade = this.isCollidedLineWithLine({p1: laserP1, p2: laserP2}, 
+		var collidedWithCurrentBlade = this.isCollidedLineWithLine({p1: laserP1, p2: laserP2},
 																	{p1: lightsaber.bladeCollar, p2: lightsaber.bladeTip});
-		var collidedWithPreviousBlade = this.isCollidedLineWithLine({p1: laserP1, p2: laserP2}, 
+		var collidedWithPreviousBlade = this.isCollidedLineWithLine({p1: laserP1, p2: laserP2},
 																	{p1: lightsaber.prevBladeCollar, p2: lightsaber.prevBladeTip});
 
-		return {collided: collidedWithCurrentBlade.collided || collidedWithPreviousBlade.collided, 
+		return {collided: collidedWithCurrentBlade.collided || collidedWithPreviousBlade.collided,
 				intersection: collidedWithCurrentBlade.intersection};
 	}
 
@@ -349,7 +350,7 @@ class CollisionManager {
 			var intersection = {};
 			intersection.x = (b2 - b1) / (m1 - m2);
 			intersection.y = m1 * intersection.x + b1;
-			var isCollided = this.isPointOnSegment(intersection, line1) 
+			var isCollided = this.isPointOnSegment(intersection, line1)
 							&& this.isPointOnSegment(intersection, line2);
 			return {collided: isCollided, intersection: intersection};
 		} else { // can't collide if parallel.
@@ -402,8 +403,8 @@ class BoundingBox {
 
 	collide(oth) {
 		if ((this.right > oth.left)
-		 && (this.left < oth.right) 
-		 && (this.top < oth.bottom) 
+		 && (this.left < oth.right)
+		 && (this.top < oth.bottom)
 		 && (this.bottom > oth.top)) {
 			return true;
 		}
@@ -595,7 +596,7 @@ var collideLineWithLineHelper = function(line1, line2) {
 }
 
 /**
- * This function will return a boolean if the line segment collides with 
+ * This function will return a boolean if the line segment collides with
  * the rectangle
  * @param {number} x1 is an endpoint 1x cord
  * @param {number} y1 ''
@@ -657,7 +658,7 @@ var findClosestIntersectionOnBox = function(intersections, startOfLine) {
 }
 
 /**
- * 
+ *
  * @param {number} cx is the center of circle x cord
  * @param {number} cy ''
  * @param {number} cr is the circle radius

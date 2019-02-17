@@ -32,7 +32,6 @@ backgroundMusicArray['yodaTheme'] = new Howl({
 		"sound/yodaTheme.ac3"
 	  ],
 	loop: true,
-	autoplay: true,
 	preload: true
 });
 backgroundMusicArray['clashOfLightsabersTheme'] = new Howl({
@@ -49,13 +48,17 @@ backgroundMusicArray['clashOfLightsabersTheme'] = new Howl({
 });
 
 /**
- * 
+ *
  */
 class SoundEngine {
-	constructor() {
+	constructor(game) {
+		this.gameEngine = game;
 		//set to yodaTheme by default
 		this.backgroundMusic = backgroundMusicArray['yodaTheme'];
 		this.backgroundMusic.volume = 1;
+		this.backgroundMusic.onload = function() {
+			this.backgroundMusic.fade(0, 1, 5000);
+		}
 
 		this.lightsaber = new Howl({
 			src: [
@@ -136,7 +139,7 @@ class SoundEngine {
 				133.33333333333374
 			  ]
 			},
-			volume: .3
+			volume: .03
 		  });
 
 		  this.enemy = new Howl({
@@ -175,20 +178,23 @@ class SoundEngine {
 			loop: false,
 			volume: .1
 		  });
+
 		  this.beam = new Howl({
 			src: [
 			  "sound/beam2.wav"
 			],
 			loop: true,
-			volume: .7
+			volume: .1
 		  });
+
 		  this.saberHum = new Howl({
 			src: [
 			  "sound/saber humming.wav"
 			],
 			loop: true,
-			volume: .12
+			volume: .19
 		  });
+
 		  this.wound = new Howl({
 			src: [
 			  "sound/tissue-wound.wav"
@@ -196,6 +202,7 @@ class SoundEngine {
 			loop: false,
 			volume: .15
 		  });
+
 		  this.sizzle = new Howl({
 			src: [
 			  "sound/butter sizzling.wav"
@@ -203,27 +210,52 @@ class SoundEngine {
 			loop: true,
 			volume: .5
 		  });
+
+			/***** set the default sound volumes *****/ //make into constants ?
+			this.enemy.volume(.7, 'retroBlasterShot');
+			//for this.game.audio.enemy.volume(.07, this.game.audio.enemy.play('retroBlasterShot'));
+			this.hero.volume(.01, 'heroHurt');
+			// this.game.audio.lightsaber.volume(.25, this.game.audio.lightsaber.play('lightsaberSwing'));
+			this.lightsaber.volume(.25, 'lightsaberSwing');
+
+			//array holding all of the howler soundFX objects
+			this.soundFXArray = [this.lightsaber, this.item, this.hero,
+				this.enemy, this.beam, this.saberHum, this.wound, this.sizzle ];
+			this.soundFxMuted = false;
 	}
 
-	//mute and unmute background music. /* name these better */
-	//muteBackgroundMusic, unMuteBackgroundMusic
-	unMuteBackgroundMusic() {
+	//pauseBackgroundMusic, unpauseBackgroundMusic
+	unPauseBackgroundMusic() {
 		this.backgroundMusic.play();
 	}
-	muteBackgroundMusic() {
+	pauseBackgroundMusic() {
 		this.backgroundMusic.pause();
 	}
 
 	//add methods to mute and unmute sound effects
 	muteSoundFX() {
-
+		this.soundFxMuted = true;
+		// works but need to restore the volumes as they were.....
+		this.soundFXArray.forEach( function(item) {
+			item.stop();
+		});
 	}
 	unMuteSoundFX() {
-
+		this.soundFxMuted = false;
+		this.soundFXArray.forEach( function(item) {
+			// item.volume(3);
+		});
 	}
 
 	//method to changeout background music
 	switchBackgroundMusic(keyOfBackgroundMusicArray) {
 		this.backgroundMusic = backgroundMusicArray[keyOfBackgroundMusicArray];
+	}
+
+	//play a sound fx if not currently muted
+	playSoundFx(howlerSound, id = '') {
+		if (!this.soundFxMuted) {
+			howlerSound.play(id);
+		}
 	}
 }

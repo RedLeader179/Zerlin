@@ -17,13 +17,13 @@ Constants = {
         BASIC_DROID_ORBITAL_Y_OFFSET : -200,
 
         //Laser constants
-        BASIC_DROID_LASER_SPEED : 400, 
+        BASIC_DROID_LASER_SPEED : 400,
         BASIC_DROID_LASER_LENGTH : 10,
         BASIC_DROID_LASER_WIDTH : 10,
 
         /* leggy droid constants */
         LEGGY_DROID_SHOOT_INTERVAL : 4,
-        LEGGY_DROID_LASER_SPEED : 350, 
+        LEGGY_DROID_LASER_SPEED : 350,
         LEGGY_DROID_LASER_LENGTH : 25,
         LEGGY_DROID_LASER_WIDTH : 12,
 
@@ -146,9 +146,9 @@ Constants = {
     StatusBarConstants: {
         STATUS_BAR_LENGTH : 0.25, // width of the canvas to use when drawing
         STATUS_BAR_WIDTH : 20,
-        STATUS_BAR_DISPLAY_TEXT : true,
+        STATUS_BAR_DISPLAY_TEXT : false,
 
-        //when the current is less than or equal to the maxSize * CriticalAmount 
+        //when the current is less than or equal to the maxSize * CriticalAmount
         //then start alerting the user by using some graphics.
         STATUS_BAR_CRITICAL_AMOUNT : 0.2, //when the current is at 1/5 the maxSize
         STATUS_BAR_CRITICAL_FLASH_INTERVAL : 0.5,

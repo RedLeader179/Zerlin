@@ -47,40 +47,27 @@ class GameEngine {
         this.camera = new Camera(this, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height); // TODO: Change to constant camera dimension to pair up with template
         this.sceneManager = new SceneManager(this);
         this.level = this.sceneManager.currentLevel;
-        // this.level = new Level(this, levelOne, {
-        //     centerTile: this.assetManager.getAsset('../img/forest_center_tile.png'),
-        //     leftTile: this.assetManager.getAsset('../img/forest_left_tile.png'),
-        //     rightTile: this.assetManager.getAsset('../img/forest_right_tile.png'),
-        //     leftRightTile: this.assetManager.getAsset('../img/forest_both_rounded_tile.png')
-        // });
-        
         this.Zerlin = new Zerlin(this);
         this.addEntity(new HealthStatusBar(this, 25, 25)); //put these in scene manager??
         this.addEntity(new ForceStatusBar(this, 50, 50));
 
         this.collisionManager = new CollisionManager(this);
         // TODO: instantiate Parallax manager here (and other managers)
-        this.audio = new SoundEngine();
+        this.audio = new SoundEngine(this);
         this.startInput();
         console.log('game initialized');
     }
-    start() {
+    start() { //todo: don't start the game until user clicks on canvas
         console.log("starting game");
-        this.audio.lightsaber.play('lightsaberOn');
-        this.audio.saberHum.play();
+        this.audio.backgroundMusic.play();
+        this.audio.playSoundFx(this.audio.lightsaber, 'lightsaberOn');
+        this.audio.playSoundFx(this.audio.saberHum);
         var that = this;
         (function gameLoop() {
             that.loop();
             requestAnimationFrame(gameLoop);
         })();
     }
-    pauseBackgroundAudio() {
-        this.audio.muteBackgroundMusic();
-    }
-    unPauseBackgroundAudio() {
-        this.audio.unMuteBackgroundMusic();
-    }
-    //todo: add methods to mute/unmute sound FX
 
     loop() {
         this.clockTick = this.timer.tick();
@@ -91,6 +78,7 @@ class GameEngine {
         this.Zerlin.update();
         this.camera.update();
         this.level.update();
+        this.sceneManager.update();
 
         for (var i = this.droids.length - 1; i >= 0; i--) {
             this.droids[i].update();
@@ -133,6 +121,7 @@ class GameEngine {
         this.camera.draw();
         this.level.draw();
         this.Zerlin.draw();
+        this.sceneManager.draw();
         for (var i = 0; i < this.droids.length; i++) {
             this.droids[i].draw(this.ctx);
         }
