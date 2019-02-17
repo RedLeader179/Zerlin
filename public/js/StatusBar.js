@@ -85,7 +85,7 @@ class AbstractStatusBar extends Entity {
 
         }
         ctx.save();
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = 5;
         ctx.shadowColor = 'black';
 
         
