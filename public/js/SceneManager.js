@@ -110,8 +110,8 @@ class MusicMenu {
       if (
         clickXandY.x >= this.x + 10 &&
         clickXandY.x <= this.x + 70 &&
-        clickXandY.y >= this.y + 30 &&
-        clickXandY.y <= this.y + 50
+        clickXandY.y >= this.y + 22 &&
+        clickXandY.y <= this.y + 33
       ) {
         changeInState = true;
         this.xFxChecked = this.xFxChecked ? false : true;
