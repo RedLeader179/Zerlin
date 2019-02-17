@@ -4,9 +4,12 @@ TCSS 491 - Computational Worlds
 Joshua Atherton, Michael Josten, Steven Golob
 */
 
+var zConst = Constants.ZerlinConstants;
+var dbConst = Constants.DroidBasicConstants;
+var bc = Constants.BossConstants;
+const cm = Constants.CollisionManagerConstants;
 
 
-var EDGE_OF_MAP_BUFFER = 50;
 /*
  * Detects and handles collisions for game entities.
  */
@@ -155,6 +158,8 @@ class CollisionManager {
 					this.game.audio.wound.play();
 					laser.removeFromWorld = true;
 					zerlin.hits++;
+					zerlin.currentHealth--; //eventually subtract by laser damage
+					//then maybe make zerlin invincible for a few ticks
 					// console.log(zerlin.hits);
 				}
 			}
@@ -170,7 +175,7 @@ class CollisionManager {
 					zerlin.falling = false;
 					zerlin.tile = tile;
 					zerlin.deltaY = 0;
-					zerlin.setXY(zerlin.x, tile.boundingBox.top + Z_FEET_ABOVE_FRAME * Z_SCALE);
+					zerlin.setXY(zerlin.x, tile.boundingBox.top + zConst.Z_FEET_ABOVE_FRAME * zConst.Z_SCALE);
 					return;
 				}
 			}
@@ -193,10 +198,10 @@ class CollisionManager {
 			console.log("Game over");
 			this.game.gameOver = true;
 		}
-		else if (zerlin.x < EDGE_OF_MAP_BUFFER) {
-			zerlin.setXY(EDGE_OF_MAP_BUFFER, zerlin.y);
-		} else if (zerlin.x > this.game.level.length - EDGE_OF_MAP_BUFFER) {
-			zerlin.setXY(this.game.level.length - EDGE_OF_MAP_BUFFER, zerlin.y);
+		else if (zerlin.x < cm.EDGE_OF_MAP_BUFFER) {
+			zerlin.setXY(cm.EDGE_OF_MAP_BUFFER, zerlin.y);
+		} else if (zerlin.x > this.game.level.length - cm.EDGE_OF_MAP_BUFFER) {
+			zerlin.setXY(this.game.level.length - cm.EDGE_OF_MAP_BUFFER, zerlin.y);
 		}
 
 	}
@@ -265,7 +270,7 @@ class CollisionManager {
 												 zerlinBox.x, zerlinBox.y, zerlinBox.width, zerlinBox.height);
 					if (zerlinCollision.collides) {
 						beam.isSizzling = true;
-						this.game.Zerlin.hits += this.game.clockTick * BEAM_HP_PER_SECOND;
+						this.game.Zerlin.currentHealth -= this.game.clockTick * dbConst.BEAM_HP_PER_SECOND;
 						// console.log(this.game.Zerlin.hits);
 
 						// find intersection with box with shortest beam length, end beam there
@@ -299,7 +304,7 @@ class CollisionManager {
 						beamSeg.endX = closestIntersection.x;
 						beamSeg.endY = closestIntersection.y;
 						beamSegments.splice(j + 1);
-						if (this.game.boss.beamDamageTimer > B_BEAM_EXPLOSION_THRESHHOLD) {
+						if (this.game.boss.beamDamageTimer > bc.B_BEAM_EXPLOSION_THRESHHOLD) {
 							this.game.addEntity(new DroidExplosion(this.game, closestIntersection.x, closestIntersection.y, 1, .2));
 							
 							this.game.boss.beamCannon.turnOff();

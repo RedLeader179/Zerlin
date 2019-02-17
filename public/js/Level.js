@@ -15,11 +15,7 @@ b  =  beam droid
 
 */
 
-var DRAW_BOXES = false;
-
-var TILE_ACCELERATION = 200;
-var TILE_INITIAL_VELOCITY = 200;
-
+const lc = Constants.LevelConstants;
 
 class Level {
     constructor(game, levelLayout, tileImages) {
@@ -70,7 +66,7 @@ class Level {
                     } else if (this.levelLayout[i][j + 1] !== '=') {
                         image2 = this.tileImages.rightTile;
                     }
-                    var movingTile = new MovingTile(this.game, image2, j * this.tileWidth, i * this.game.camera.height / rows, TILE_INITIAL_VELOCITY, 0, TILE_ACCELERATION);
+                    var movingTile = new MovingTile(this.game, image2, j * this.tileWidth, i * this.game.camera.height / rows, lc.TILE_INITIAL_VELOCITY, 0, lc.TILE_ACCELERATION);
                     this.tiles.push(movingTile);
                 }
                 else if (this.levelLayout[i][j] === 'd') { // basic droid
@@ -148,7 +144,7 @@ class Tile extends Entity {
     draw() {
         this.ctx.drawImage(this.tileImage, this.x - this.game.camera.x, this.y);
 
-        if (DRAW_BOXES) {
+        if (lc.DRAW_BOXES) {
             this.ctx.strokeStyle = "black";
             this.ctx.strokeRect(this.boundingBox.x - this.game.camera.x, this.boundingBox.y, this.boundingBox.width, this.boundingBox.height);
         }

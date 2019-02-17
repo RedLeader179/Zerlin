@@ -1,3 +1,9 @@
+/*
+Zerlin
+TCSS 491 - Computational Worlds
+Joshua Atherton, Michael Josten, Steven Golob
+*/
+
 const LEVEL_ONE_TILE_LAYOUT = [
 '       b                          ',
 ' s            b    --   d     -s  ',
@@ -48,7 +54,7 @@ class SceneManager {
     				new ParallaxFloatingBackground(this.gameEngine, this.gameEngine.assetManager.getAsset('../img/backgroundStars.png'), 1, this.gameEngine.camera, 1400),
     				new ParallaxScrollBackground(this.gameEngine, this.gameEngine.assetManager.getAsset('../img/backgroundTrees2.png'), 1, this.gameEngine.camera, 1000),
     				new ParallaxScrollBackground(this.gameEngine, this.gameEngine.assetManager.getAsset('../img/backgroundTrees1.png'), 1, this.gameEngine.camera, 600)];
-    const LEVEL_ONE = new Level(this.gameEngine, LEVEL_ONE_TILE_LAYOUT, {
+    const LEVEL_ONE = new Level(this.gameEngine, LEVEL_THREE_TILE_LAYOUT, {
         centerTile: this.gameEngine.assetManager.getAsset('../img/forest_center_tile.png'),
         leftTile: this.gameEngine.assetManager.getAsset('../img/forest_left_tile.png'),
         rightTile: this.gameEngine.assetManager.getAsset('../img/forest_right_tile.png'),

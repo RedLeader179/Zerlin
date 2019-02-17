@@ -4,7 +4,8 @@ TCSS 491 - Computational Worlds
 Joshua Atherton, Michael Josten, Steven Golob
 */
 
-var PHI = 1.618;
+//PHI is now a global constant so dont need to call c.PHI, can just call PHI
+const gec = Constants.GameEngineConstants;
 
 window.requestAnimFrame = (function () {
     return window.requestAnimationFrame ||
@@ -52,7 +53,11 @@ class GameEngine {
         //     rightTile: this.assetManager.getAsset('../img/forest_right_tile.png'),
         //     leftRightTile: this.assetManager.getAsset('../img/forest_both_rounded_tile.png')
         // });
+        
         this.Zerlin = new Zerlin(this);
+        this.addEntity(new HealthStatusBar(this, 25, 25)); //put these in scene manager??
+        this.addEntity(new ForceStatusBar(this, 50, 50));
+
         this.collisionManager = new CollisionManager(this);
         // TODO: instantiate Parallax manager here (and other managers)
         this.audio = new SoundEngine();
