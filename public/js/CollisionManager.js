@@ -23,6 +23,7 @@ class CollisionManager {
 		this.laserOnDroid();
 		this.laserOnSaber();
 		this.laserOnZerlin();
+		this.ZerlinOnPowerup();
 		this.ZerlinOnPlatform();
 		this.ZerlinOnEdgeOfMap();
 		this.beamOnSaber();
@@ -162,6 +163,24 @@ class CollisionManager {
 		}
 	}
 
+	ZerlinOnPowerup() {
+		var zerlin = this.game.Zerlin;
+		for (var i = 0; i < this.game.powerups.length; i++) {
+			var powerup = this.game.powerups[i];
+			if (collideCircleWithRectangle(powerup.boundCircle.x, powerup.boundCircle.y, powerup.boundCircle.radius,
+				zerlin.boundingbox.x, zerlin.boundingbox.y, zerlin.boundingbox.width, zerlin.boundingbox.height)) {
+
+				//play power up pickup sound
+
+				// call the powerup effect.
+				powerup.effect();
+				powerup.removeFromWorld = true;
+			}
+			
+		}
+	
+	}
+
 	ZerlinOnPlatform() {
 		var zerlin = this.game.Zerlin;
 		if (zerlin.falling) { // check if landed
@@ -260,7 +279,7 @@ class CollisionManager {
 												 zerlinBox.x, zerlinBox.y, zerlinBox.width, zerlinBox.height);
 					if (zerlinCollision.collides) {
 						this.game.beams[i].isSizzling = true;
-						this.game.Zerlin.hits += this.game.clockTick * dbConst.BEAM_HP_PER_SECOND;
+						this.game.Zerlin.currentHealth -= this.game.clockTick * dbConst.BEAM_HP_PER_SECOND;
 						console.log(this.game.Zerlin.hits);
 
 						// find intersection with box with shortest beam length, end beam there
