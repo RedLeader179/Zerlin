@@ -21,7 +21,7 @@ window.requestAnimFrame = (function () {
 class GameEngine {
     constructor(assetManager) {
         this.assetManager = assetManager;
-        this.showOutlines = true; //debug bit
+        this.showOutlines = false; //debug bit
         this.otherEntities = [];
         this.lasers = [];
         this.beams = [];
