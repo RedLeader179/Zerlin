@@ -192,7 +192,7 @@ class SoundEngine {
 			  "sound/saber humming.wav"
 			],
 			loop: true,
-			volume: .19
+			volume: .05
 		  });
 
 		  this.wound = new Howl({
@@ -214,7 +214,7 @@ class SoundEngine {
 			/***** set the default sound volumes *****/ //make into constants ?
 			this.enemy.volume(.7, 'retroBlasterShot');
 			//for this.game.audio.enemy.volume(.07, this.game.audio.enemy.play('retroBlasterShot'));
-			this.hero.volume(.01, 'heroHurt');
+			this.hero.volume(.1, 'heroHurt');
 			// this.game.audio.lightsaber.volume(.25, this.game.audio.lightsaber.play('lightsaberSwing'));
 			this.lightsaber.volume(.25, 'lightsaberSwing');
 

@@ -36,10 +36,10 @@ class Level {
         this.unspawnedPowerups = [];
 
         this.length = this.levelLayout[0].length * this.tileWidth;
-        this._parseLevel();
+        this._parseTiles();
     }
 
-    _parseLevel() {
+    _parseTiles() {
         var rows = this.levelLayout.length;
         for (let i = 0; i < rows; i++) {
             for (let j = 0; j < this.levelLayout[i].length; j++) {

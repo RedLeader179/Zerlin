@@ -19,6 +19,7 @@ window.requestAnimFrame = (function () {
 })();
 
 class GameEngine {
+
     constructor(assetManager) {
         this.assetManager = assetManager;
         this.showOutlines = false; //debug bit
@@ -36,17 +37,20 @@ class GameEngine {
         this.mouse = {x: 100, y: 100};
         this.click = null;
         this.Zerlin = null;
+        this.paused = false;
+        this.pauseScreen = new PauseScreen(this);
         this.keys = {};
 
     }
+
     init(ctx) {
         this.ctx = ctx;
         this.surfaceWidth = this.ctx.canvas.width;
         this.surfaceHeight = this.ctx.canvas.height;
-        this.timer = new Timer();
+        this.timer = new Timer(this);
         this.camera = new Camera(this, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height); // TODO: Change to constant camera dimension to pair up with template
-        this.sceneManager = new SceneManager(this);
-        this.level = this.sceneManager.currentLevel;
+        this.sceneManager = new SceneManager2(this);
+        // this.level = this.sceneManager.currentLevel;
         this.Zerlin = new Zerlin(this);
         this.addEntity(new HealthStatusBar(this, 25, 25)); //put these in scene manager??
         this.addEntity(new ForceStatusBar(this, 50, 50));
@@ -57,6 +61,7 @@ class GameEngine {
         this.startInput();
         console.log('game initialized');
     }
+
     start() { //todo: don't start the game until user clicks on canvas
         console.log("starting game");
         this.audio.backgroundMusic.play();
@@ -74,47 +79,51 @@ class GameEngine {
         this.update();
         this.draw();
     }
+
     update() {
-        this.Zerlin.update();
-        this.camera.update();
-        this.level.update();
-        this.sceneManager.update();
+        if (!this.paused) {
+            this.Zerlin.update();
+            this.camera.update();
+            this.level.update();
+            this.sceneManager.update();
 
-        for (var i = this.droids.length - 1; i >= 0; i--) {
-            this.droids[i].update();
-            if (this.droids[i].removeFromWorld) {
-                this.droids.splice(i, 1);
+            for (var i = this.droids.length - 1; i >= 0; i--) {
+                this.droids[i].update();
+                if (this.droids[i].removeFromWorld) {
+                    this.droids.splice(i, 1);
+                }
             }
-        }
-        for (var i = this.lasers.length - 1; i >= 0; i--) {
-            this.lasers[i].update();
-            if (this.lasers[i].removeFromWorld) {
-                this.lasers.splice(i, 1);
+            for (var i = this.lasers.length - 1; i >= 0; i--) {
+                this.lasers[i].update();
+                if (this.lasers[i].removeFromWorld) {
+                    this.lasers.splice(i, 1);
+                }
             }
-        }
-        for (var i = this.beams.length - 1; i >= 0; i--) {
-            this.beams[i].update();
-            if (this.beams[i].removeFromWorld) {
-                this.beams.splice(i, 1);
+            for (var i = this.beams.length - 1; i >= 0; i--) {
+                this.beams[i].update();
+                if (this.beams[i].removeFromWorld) {
+                    this.beams.splice(i, 1);
+                }
             }
-        }
-        for (var i = this.powerups.length -1; i >= 0; i--) {
-            this.powerups[i].update();
-            if(this.powerups[i].removeFromWorld) {
-                this.powerups.splice(i, 1);
+            for (var i = this.powerups.length -1; i >= 0; i--) {
+                this.powerups[i].update();
+                if(this.powerups[i].removeFromWorld) {
+                    this.powerups.splice(i, 1);
+                }
             }
-        }
-        for (var i = this.otherEntities.length - 1; i >= 0; i--) {
-            this.otherEntities[i].update();
-            if (this.otherEntities[i].removeFromWorld) {
-                this.otherEntities.splice(i, 1);
+            for (var i = this.otherEntities.length - 1; i >= 0; i--) {
+                this.otherEntities[i].update();
+                if (this.otherEntities[i].removeFromWorld) {
+                    this.otherEntities.splice(i, 1);
+                }
             }
-        }
 
 
-        this.collisionManager.handleCollisions();
+            this.collisionManager.handleCollisions();
+        }
         this.click = null;
     }
+
     draw() {
         this.ctx.clearRect(0, 0, this.surfaceWidth, this.surfaceHeight);
         this.ctx.save();
@@ -139,10 +148,14 @@ class GameEngine {
         }
         
 
-        if (this.gameOver) {
-            this.ctx.textAlign = 'center';
-            this.ctx.font = '70px serif';
-            this.ctx.fillText('GAME OVER', this.camera.width / 2, this.camera.height / 2);
+        // if (this.gameOver) {
+        //     this.ctx.textAlign = 'center';
+        //     this.ctx.font = '70px serif';
+        //     this.ctx.fillText('GAME OVER', this.camera.width / 2, this.camera.height / 2);
+        // }
+
+        if (this.paused) {
+            this.pauseScreen.draw();
         }
 
 
@@ -170,7 +183,19 @@ class GameEngine {
     addPowerup(powerup) {
         this.powerups.push(powerup);
     }
-    startInput () {
+
+    pause() {
+        this.paused = true;
+        this.timer.disable();
+    }
+
+    unpause() {
+        this.paused = false;
+        this.timer.enable();
+    }
+
+
+    startInput() {
         console.log('Starting input');
         var that = this;
 
@@ -180,18 +205,20 @@ class GameEngine {
             return { x: x, y: y };
         }
 
-
-        // Keyboard
-
         this.ctx.canvas.addEventListener("keydown", (e) => {
             if (that.keys[e.code]) { return; } // prevent repeating calls when key is held down
-            // console.log("Key Down Event - Char " + e.code + " Code " + e.keyCode);
+            if (e.code === 'Enter') {
+                if (that.paused) {
+                    that.unpause();
+                } else {
+                    that.pause();
+                }
+            }
             that.keys[e.code] = true;
             e.preventDefault();
         }, false);
 
         this.ctx.canvas.addEventListener("keyup", function (e) {
-            // console.log("Key Up Event - Char " + e.code + " Code " + e.keyCode);
             that.keys[e.code] = false;
             e.preventDefault();
         }, false);
@@ -200,10 +227,6 @@ class GameEngine {
         // Mouse
         this.ctx.canvas.addEventListener("click", function(e) {
             that.click = getXandY(e);
-            //debug
-            //that.addEntity(new DroidLaser(that, 300, 300, 20, that.click.x, that.click.y, 20, 10));
-            //console.log("click X: %d, Y: %d", that.click.x, that.click.y);
-            //console.log(e);
         }, false);
 
         this.ctx.canvas.addEventListener("contextmenu", function (e) {
@@ -227,11 +250,30 @@ class GameEngine {
             }
         }, false);
 
-
-
         console.log('Input started');
     }
 
+}
+
+class PauseScreen {
+
+    constructor(game) {
+        this.game = game;
+        this.overlay = new Overlay(game);
+        this.overlay.opacity = .5;
+    }
+
+    update() {
+
+    }
+
+    draw() {
+        this.overlay.draw();
+        this.game.ctx.fillStyle = "white";
+        this.game.ctx.textAlign = "center";
+        this.game.ctx.font = "70px Times New Roman MS";
+        this.game.ctx.fillText("Paused", this.game.surfaceWidth/2, 200);
+    }
 }
 
 class Timer {
@@ -239,14 +281,24 @@ class Timer {
         this.gameTime = 0;
         this.maxStep = 0.05;
         this.wallLastTimestamp = 0;
+        this.disabled = false;
     }
     tick() {
+        if (this.disabled) {
+            return 0;
+        }
         var wallCurrent = Date.now();
         var wallDelta = (wallCurrent - this.wallLastTimestamp) / 1000;
         this.wallLastTimestamp = wallCurrent;
         var gameDelta = Math.min(wallDelta, this.maxStep); // TODO: are these 3  lines okay?
         this.gameTime += gameDelta;
         return gameDelta;
+    }
+    disable() {
+        this.disabled = true;
+    }
+    enable() {
+        this.disabled = false;
     }
 }
 
