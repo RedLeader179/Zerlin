@@ -4,7 +4,10 @@ canvas {
     margin: auto;
     display: block;
     width: auto; /* could specify canvas element width here */
+    cursor: crosshair;
 }
+}
+
 
 /* center the controls */
 #playerControls {
@@ -16,9 +19,7 @@ body {
     background-color: rgb(35, 39, 35);
 }
 
-/* Stylize the buttons */
-
-
+/* Stylize the buttons */ 
  .container {
     width:100%;
     height:100%;
