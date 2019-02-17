@@ -56,6 +56,9 @@ class SoundEngine {
 		//set to yodaTheme by default
 		this.backgroundMusic = backgroundMusicArray['yodaTheme'];
 		this.backgroundMusic.volume = 1;
+		this.backgroundMusic.onload = function() {
+			this.backgroundMusic.fade(0, 1, 5000);
+		}
 
 		this.lightsaber = new Howl({
 			src: [
