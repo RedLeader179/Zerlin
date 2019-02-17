@@ -210,6 +210,27 @@ class SoundEngine {
 			loop: true,
 			volume: .5
 		  });
+		  this.sizzle2 = new Howl({
+			src: [
+			  "sound/meat sizzling.wav"
+			],
+			loop: true,
+			volume: .5
+		  });
+		  this.jetPack = new Howl({
+			src: [
+			  "sound/jet pack.wav"
+			],
+			loop: true,
+			volume: .3
+		  });
+		  this.deflectBeam = new Howl({
+			src: [
+			  "sound/laserLoop1.wav"
+			],
+			loop: true,
+			volume: .8
+		  });
 
 			/***** set the default sound volumes *****/ //make into constants ?
 			this.enemy.volume(.7, 'retroBlasterShot');
@@ -220,7 +241,8 @@ class SoundEngine {
 
 			//array holding all of the howler soundFX objects
 			this.soundFXArray = [this.lightsaber, this.item, this.hero,
-				this.enemy, this.beam, this.saberHum, this.wound, this.sizzle ];
+				this.enemy, this.beam, this.saberHum, this.wound, this.sizzle,
+				this.sizzle2,this.sizzle2, this.jetPack, this.deflectBeam];
 			this.soundFxMuted = false;
 	}
 

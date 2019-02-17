@@ -7,6 +7,17 @@ Joshua Atherton, Michael Josten, Steven Golob
 var PHI = 1.618;
 
 Constants = {
+
+    KeyConstants: {
+        MOVE_RIGHT: 'KeyD',
+        MOVE_LEFT: 'KeyA',
+        CROUCH: 'KeyX',
+        JUMP: 'KeyW',
+        JUMP_FORCE: 'KeyE',
+        SLASH: 'Space',
+        ROLL: 'KeyS'
+    },
+
     DroidBasicConstants : {
         BASIC_DROID_SHOOT_INTERVAL : 2,
         BASIC_DROID_X_MOVEMENT_SPEED : 150,
@@ -116,6 +127,25 @@ Constants = {
         /* Zerlin health and force stats*/
         Z_MAX_HEALTH : 20,
         Z_MAX_FORCE : 20,
+
+        LS_UP_IMAGE_WIDTH : 126,
+        LS_UP_IMAGE_HEIGHT : 228,
+        LS_DOWN_IMAGE_WIDTH : 126,
+        LS_DOWN_IMAGE_HEIGHT : 222,
+
+        LS_UP_COLLAR_X : 114, // 114 for outer edge of blade, 111 for center of blade,
+        LS_UP_COLLAR_Y : 186,
+        LS_DOWN_COLLAR_X : 114,
+        LS_DOWN_COLLAR_Y : 35,
+        LS_UP_TIP_X : 114,
+        LS_UP_TIP_Y : 5,
+        LS_DOWN_TIP_X : 114,
+        LS_DOWN_TIP_Y : 216,
+
+        LS_RIGHT_X_AXIS : 10,
+        LS_LEFT_X_AXIS : 10,
+        LS_UP_Y_AXIS : 159,
+        LS_DOWN_Y_AXIS : 63
     },
 
     DroidUtilConstants: {
@@ -143,6 +173,37 @@ Constants = {
 
     },
 
+    BossConstants: {
+        B_SCALE : .6,
+        B_DRAW_COLLISION_BOUNDRIES : false,
+        B_WIDTH : 120,
+        B_HEIGHT : 240,
+        B_ARM_SOCKET_X : 51,
+        B_ARM_SOCKET_Y : 111,
+        B_FLYING_FRAME_SPEED : .07,
+        B_FLYING_FRAMES : 4,
+        B_FALLING_FRAMES : 1,
+        B_FALLING_FRAME_SPEED : 1,
+        B_SHOOT_INTERVAL : 3,
+        B_SHOOT_DURATION : 2,
+        B_HOVERING_HEIGHT : 500,
+        B_ACCELERATION : 300,
+        B_FALLING_REACTION_TIME : .85,
+        B_RECOVERY_PERIOD : 2,
+        B_BEAM_EXPLOSION_THRESHHOLD : .1,
+        BC_WIDTH : 198,
+        BC_HEIGHT : 108,
+        BC_X_AXIS : 38,
+        BC_RIGHT_Y_AXIS : 17,
+        BC_LEFT_Y_AXIS : 91,
+        BC_MUZZLE_X : 189,
+        BC_MUZZLE_RIGHT_Y : 81,
+        BC_MUZZLE_LEFT_Y : 27,
+        BEAM_DROID_LASER_WIDTH : 26,
+        BEAM_HP_PER_SECOND : 3,
+        BEAM_ANGLE_ACCELERATION_RADIANS : Math.PI
+    },
+
     StatusBarConstants: {
         STATUS_BAR_LENGTH : 0.25, // width of the canvas to use when drawing
         STATUS_BAR_WIDTH : 20,
@@ -162,7 +223,9 @@ Constants = {
     },
 
     LevelConstants: {
-        DRAW_BOXES : false
+        DRAW_BOXES : false,
+        TILE_ACCELERATION : 200,
+        TILE_INITIAL_VELOCITY : 200
     },
 
     PowerUpConstants: {

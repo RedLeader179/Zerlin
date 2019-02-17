@@ -6,7 +6,9 @@ Joshua Atherton, Michael Josten, Steven Golob
 
 var zConst = Constants.ZerlinConstants;
 var dbConst = Constants.DroidBasicConstants;
+var bc = Constants.BossConstants;
 const cm = Constants.CollisionManagerConstants;
+
 
 /*
  * Detects and handles collisions for game entities.
@@ -28,8 +30,10 @@ class CollisionManager {
 		this.ZerlinOnEdgeOfMap();
 		this.beamOnSaber();
 		this.beamOnDroid();
-		this.beamOnZerlin();
 		this.beamOnPlatform();
+		this.beamOnZerlin();
+		this.beamOnBoss();
+		this.saberOnBoss();
 
 		// TODO: loop through only visible tiles instead of entire level
 	}
@@ -189,6 +193,7 @@ class CollisionManager {
 				let tile = this.game.level.tiles[i];
 				if (zerlin.boundingbox.collide(tile.boundingBox) && zerlin.lastBottom < tile.boundingBox.top) {
 					zerlin.falling = false;
+					zerlin.tile = tile;
 					zerlin.deltaY = 0;
 					zerlin.setXY(zerlin.x, tile.boundingBox.top + zConst.Z_FEET_ABOVE_FRAME * zConst.Z_SCALE);
 					return;
@@ -197,10 +202,12 @@ class CollisionManager {
 		} else { // check if falls off current platform
 			for (let i = 0; i < this.game.level.tiles.length; i++) {
 				if (zerlin.isTileBelow(this.game.level.tiles[i])) {
+					zerlin.tile = this.game.level.tiles[i];
 					return;
 				}
 			}
 			zerlin.falling = true;
+			zerlin.tile = null;
 		}
 	}
 
@@ -220,12 +227,13 @@ class CollisionManager {
 	}
 
 	beamOnSaber() {
-		var zerlin = this.game.Zerlin;
-		var lightsaber = zerlin.lightsaber;
+		this.game.Zerlin.lightsaber.deflectingBeam = false;
+		if (this.game.boss && this.game.boss.beamCannon.beam) {
+			var zerlin = this.game.Zerlin;
+			var lightsaber = zerlin.lightsaber;
+			var maxLength = Math.sqrt(this.game.camera.width ** 2, this.game.camera.height ** 2) * 3; // screen diagonal length * 3
 
-		var maxLength = Math.sqrt(this.game.camera.width ** 2, this.game.camera.height ** 2) * 3; // screen diagonal length * 3
-		for (let i = 0; i < this.game.beams.length; i++) {
-			var beamSegments = this.game.beams[i].segments;
+			var beamSegments = this.game.boss.beamCannon.beam.segments;
 			beamSegments.splice(1); // recreate all deflected segments;
 			for (let j = 0; j < beamSegments.length; j++) {
 				// set beam to reasonable length
@@ -237,6 +245,7 @@ class CollisionManager {
 													{p1: lightsaber.bladeCollar, p2: lightsaber.bladeTip});
 					// TODO: check for collision with ANY deflective agent (i. e. a mirror or laser shield or something)
 					if (collisionWithSaber.collided) {
+						lightsaber.deflectingBeam = true;
 						beamSegments[j].endX = collisionWithSaber.intersection.x;
 						beamSegments[j].endY = collisionWithSaber.intersection.y;
 						beamSegments.push({x: collisionWithSaber.intersection.x,
@@ -253,8 +262,8 @@ class CollisionManager {
 	}
 
 	beamOnDroid() {
-		for (let i = 0; i < this.game.beams.length; i++) {
-			var beamSegments = this.game.beams[i].segments;
+		if (this.game.boss && this.game.boss.beamCannon.beam) {
+			var beamSegments = this.game.boss.beamCannon.beam.segments;
 			// only check second segment for collision on droids
 			if (beamSegments.length > 1 && beamSegments[1].deflected) {
 				var beamSeg = beamSegments[1];
@@ -269,19 +278,20 @@ class CollisionManager {
 	}
 
 	beamOnZerlin() {
-		var zerlinBox = this.game.Zerlin.boundingbox;
-		if (!zerlinBox.hidden) {
-			for (let i = 0; i < this.game.beams.length; i++) {
-				this.game.beams[i].isSizzling = false;
-				var beamSegments = this.game.beams[i].segments;
+		if (this.game.boss && this.game.boss.beamCannon.beam) {
+			var beam = this.game.boss.beamCannon.beam;
+			var zerlinBox = this.game.Zerlin.boundingbox;
+			beam.isSizzling = false;
+			if (!zerlinBox.hidden) {
+				var beamSegments = beam.segments;
 				for (let j = 0; j < beamSegments.length; j++) {
 					var beamSeg = beamSegments[j];
 					var zerlinCollision = collideLineWithRectangle(beamSeg.x, beamSeg.y, beamSeg.endX, beamSeg.endY,
 												 zerlinBox.x, zerlinBox.y, zerlinBox.width, zerlinBox.height);
 					if (zerlinCollision.collides) {
-						this.game.beams[i].isSizzling = true;
+						beam.isSizzling = true;
 						this.game.Zerlin.currentHealth -= this.game.clockTick * dbConst.BEAM_HP_PER_SECOND;
-						console.log(this.game.Zerlin.hits);
+						// console.log(this.game.Zerlin.hits);
 
 						// find intersection with box with shortest beam length, end beam there
 						var closestIntersection = findClosestIntersectionOnBox(zerlinCollision, beamSeg);
@@ -294,23 +304,84 @@ class CollisionManager {
 		}
 	}
 
+	beamOnBoss() {
+		if (this.game.boss && this.game.boss.beamCannon.beam) {
+			var beam = this.game.boss.beamCannon.beam;
+			var bossBox = this.game.boss.boundingbox;
+			// beam.isSizzling = false;
+			var beamSegments = beam.segments;
+			if (beamSegments.length > 1 && beamSegments[1].deflected) {
+				for (let j = 1; j < beamSegments.length; j++) {
+					var beamSeg = beamSegments[j];
+					var bossCollision = collideLineWithRectangle(beamSeg.x, beamSeg.y, beamSeg.endX, beamSeg.endY,
+												 bossBox.x, bossBox.y, bossBox.width, bossBox.height);
+					if (bossCollision.collides) {
+
+						this.game.boss.hits += this.game.clockTick;
+						this.game.boss.beamDamageTimer += this.game.clockTick;
+						// find intersection with box with shortest beam length, end beam there
+						var closestIntersection = findClosestIntersectionOnBox(bossCollision, beamSeg);
+						beamSeg.endX = closestIntersection.x;
+						beamSeg.endY = closestIntersection.y;
+						beamSegments.splice(j + 1);
+						if (this.game.boss.beamDamageTimer > bc.B_BEAM_EXPLOSION_THRESHHOLD) {
+							this.game.addEntity(new DroidExplosion(this.game, closestIntersection.x, closestIntersection.y, 1, .2));
+							
+							this.game.boss.beamCannon.turnOff();
+							this.game.boss.fall();
+							this.game.boss.beamDamageTimer = 0;
+						}
+					}
+				}
+			}
+		}
+	}
+
 	beamOnPlatform() {
 		// only detects collision with top of platforms
 
-		for (let i = 0; i < this.game.beams.length; i++) {
-			var beamSegments = this.game.beams[i].segments;
+		if (this.game.boss && this.game.boss.beamCannon.beam) {
+			var beamSegments = this.game.boss.beamCannon.beam.segments;
 			for (let j = 0; j < beamSegments.length; j++) {
 				var beamSeg = beamSegments[j];
-				if (beamSeg.angle < Math.PI && beamSeg.angle > 0) {
+				if (beamSeg.angle < Math.PI && beamSeg.angle > 0) { // going down only , not up
 					for (let k = 0; k < this.game.level.tiles.length; k++) {
 						let tile = this.game.level.tiles[k];
 						let collisionWithPlatform = this.isCollidedLineWithLine(tile.surface, {p1: {x: beamSeg.x, y: beamSeg.y}, p2: {x: beamSeg.endX, y: beamSeg.endY}});
 						if (collisionWithPlatform.collided) {
 							beamSeg.endX = collisionWithPlatform.intersection.x;
 							beamSeg.endY = collisionWithPlatform.intersection.y;
-							beamSegments.splice(j+1);
+							beamSegments.splice(j + 1);
 						}
 					}
+				}
+			}
+		}
+	}
+
+	saberOnBoss() {
+		if (this.game.boss && !this.game.boss.boundingbox.hidden) {
+			var zerlin = this.game.Zerlin;
+			if (zerlin.slashing && zerlin.slashZone.active) {
+				var bossBox = this.game.boss.boundingbox;
+				var bossCenterX = bossBox.x + bossBox.width / 2;
+				var bossCenterY = bossBox.y + bossBox.height / 2;
+
+				// check if droid in circular path of saber and not below zerlin
+				if (collidePointWithCircle(bossCenterX, 
+										   bossCenterY, 
+										   zerlin.slashZone.outerCircle.x, 
+										   zerlin.slashZone.outerCircle.y, 
+										   zerlin.slashZone.outerCircle.radius)
+					&& !collidePointWithCircle(bossCenterX, 
+										   bossCenterY, 
+										   zerlin.slashZone.innerCircle.x, 
+										   zerlin.slashZone.innerCircle.y, 
+										   zerlin.slashZone.innerCircle.radius)
+					&& bossCenterY < zerlin.y) {
+					this.game.addEntity(new DroidExplosion(this.game, bossCenterX, bossBox.y + bossBox.height / 2, 2.3, .5));
+					this.game.boss.hideBox();
+					this.game.boss.hits += 3;
 				}
 			}
 		}
@@ -438,6 +509,11 @@ class BoundingCircle {
 		this.x = x;
 		this.y = y;
 		this.radius = radius;
+	}
+
+	translateCoordinates(deltaX, deltaY) {
+		this.x += deltaX;
+		this.y += deltaY;
 	}
 }
 

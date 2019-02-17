@@ -6,6 +6,7 @@ Joshua Atherton, Michael Josten, Steven Golob
 
 const zc = Constants.ZerlinConstants;
 var camConst = Constants.CameraConstants;
+var kc = Constants.KeyConstants;
 
 class Zerlin extends Entity {
 
@@ -40,25 +41,25 @@ class Zerlin extends Entity {
 		else if (this.game.mouse.x + this.game.camera.x > this.x && !this.facingRight) {
 			this.faceRight();
 		}
-		else if (!this.game.keys['KeyD'] && !this.game.keys['KeyA']) {
+		else if (!this.game.keys[kc.MOVE_RIGHT] && !this.game.keys[kc.MOVE_LEFT]) {
 			this.direction = 0;
 			if (!this.isInManeuver()) {
 				this.deltaX = 0;
 			}
 		}
-		else if (this.game.keys['KeyD'] && this.game.keys['KeyA']) {
+		else if (this.game.keys[kc.MOVE_RIGHT] && this.game.keys[kc.MOVE_LEFT]) {
 			this.direction = 0;
 			if (!this.isInManeuver()) {
 				this.deltaX = 0;
 			}
 		}
-		else if (this.game.keys['KeyD'] && !this.game.keys['KeyA']) { // TODO: change keys to constants
+		else if (this.game.keys[kc.MOVE_RIGHT] && !this.game.keys[kc.MOVE_LEFT]) { // TODO: change keys to constants
 			this.direction = 1;
 			if (!this.isInManeuver()) {
 				this.deltaX = zc.Z_WALKING_SPEED;
 			}
 		}
-		else if (!this.game.keys['KeyD'] && this.game.keys['KeyA']) {
+		else if (!this.game.keys[kc.MOVE_RIGHT] && this.game.keys[kc.MOVE_LEFT]) {
 			this.direction = -1;
 			if (!this.isInManeuver()) {
 				this.deltaX = -zc.Z_WALKING_SPEED;
@@ -67,23 +68,25 @@ class Zerlin extends Entity {
 
 		// check adding new maneuver
 		if (!this.isInManeuver()) {
-			if (this.game.keys['KeyS'] && this.direction !== 0 && !this.falling) {
+			if (this.game.keys[kc.ROLL] && this.direction !== 0 && !this.falling) {
 				this.startSomersault();
 			}
-			else if (this.game.keys['KeyE'] && !this.falling) {
+			else if (this.game.keys[kc.JUMP_FORCE] && !this.falling) {
 				/** for testing sound */
+				this.tile = null;
 				this.game.audio.playSoundFx(this.game.audio.hero, 'forceJump');
 				this.falling = true;
 				this.deltaY = zc.FORCE_JUMP_DELTA_Y;
 			}
-			else if (this.game.keys['KeyW'] && !this.falling) {
+			else if (this.game.keys[kc.JUMP] && !this.falling) {
+				this.tile = null;
 				this.falling = true;
 				this.deltaY = zc.JUMP_DELTA_Y;
 			}
-			else if (this.game.keys['Space']) {
-				this.startSlash();
+			else if (this.game.keys[kc.SLASH]) {
+				this.startSlash(); 
 			}
-			else if (this.game.keys['KeyX'] && !this.falling) {
+			else if (this.game.keys[kc.CROUCH] && !this.falling) {
 				this.crouch();
 			}
 		}
@@ -94,6 +97,7 @@ class Zerlin extends Entity {
 		}
 
 		if (this.somersaulting) {
+			this.deltaX = zc.Z_SOMERSAULT_SPEED * this.somersaultingDirection;
 			if (this.isAnimationDone()) {
 				this.finishSomersault();
 			} else if (this.animation.elapsedTime < zc.Z_SOMERSAULT_FRAMES * zc.Z_SOMERSAULT_FRAME_SPEED / 2) {
@@ -102,6 +106,7 @@ class Zerlin extends Entity {
 			}
 		}
 		else if (this.slashing) {
+			this.deltaX = 0;
 			if (this.isAnimationDone()) {
 				this.finishSlash();
 			} else { // still in slash
@@ -123,11 +128,13 @@ class Zerlin extends Entity {
 			}
 		}
 		else if (this.crouching) {
-			if (!this.game.keys['KeyX']) {
+			if (!this.game.keys[kc.CROUCH]) {
 				this.stopCrouch();
 			}
 		}
-
+		if (this.tile) {
+			this.deltaX += this.tile.deltaX;
+		}
 		this.x += this.game.clockTick * this.deltaX;
 		this.y += this.game.clockTick * this.deltaY;
 
@@ -455,25 +462,6 @@ class Zerlin extends Entity {
 
 
 
-var LS_UP_IMAGE_WIDTH = 126;
-var LS_UP_IMAGE_HEIGHT = 228;
-var LS_DOWN_IMAGE_WIDTH = 126;
-var LS_DOWN_IMAGE_HEIGHT = 222;
-
-var LS_UP_COLLAR_X = 114; // 114 for outer edge of blade, 111 for center of blade
-var LS_UP_COLLAR_Y = 186;
-var LS_DOWN_COLLAR_X = 114;
-var LS_DOWN_COLLAR_Y = 35;
-var LS_UP_TIP_X = 114;
-var LS_UP_TIP_Y = 5;
-var LS_DOWN_TIP_X = 114;
-var LS_DOWN_TIP_Y = 216;
-
-var LS_RIGHT_X_AXIS = 10;
-var LS_LEFT_X_AXIS = 10;
-var LS_UP_Y_AXIS = 159;
-var LS_DOWN_Y_AXIS = 63;
-
 
 class Lightsaber extends Entity {
 
@@ -487,6 +475,8 @@ class Lightsaber extends Entity {
 		this.Zerlin = Zerlin;
 		this.hidden = false;
 		this.inClickPosition = false;
+		this.deflectingBeam = false;
+		this.deflectingBeamSoundOn = false;
 		this.setUpSaberImages();
 		this.faceRightUpSaber();
 		this.updateCollisionLine();
@@ -533,7 +523,15 @@ class Lightsaber extends Entity {
 					this.faceRightUpSaber();
 				}
 			}
+		}
 
+
+		if (this.deflectingBeam && !this.deflectingBeamSoundOn) {
+			this.game.audio.deflectBeam.play();
+			this.deflectingBeamSoundOn = true;
+		} else if (!this.deflectingBeam && this.deflectingBeamSoundOn) {
+			this.game.audio.deflectBeam.stop();
+			this.deflectingBeamSoundOn = false;
 		}
 
 		this.updateCollisionLine();
@@ -597,15 +595,15 @@ class Lightsaber extends Entity {
 
 	faceRightUpSaber() {
 		this.image = this.faceRightUpSaberImage;
-		this.width = LS_UP_IMAGE_WIDTH;
-		this.height = LS_UP_IMAGE_HEIGHT;
-		this.armSocketX = LS_RIGHT_X_AXIS;
-		this.armSocketY = LS_UP_Y_AXIS;
+		this.width = zc.LS_UP_IMAGE_WIDTH;
+		this.height = zc.LS_UP_IMAGE_HEIGHT;
+		this.armSocketX = zc.LS_RIGHT_X_AXIS;
+		this.armSocketY = zc.LS_UP_Y_AXIS;
 
-		this.collarXfromSocket = LS_UP_COLLAR_X - LS_RIGHT_X_AXIS;
-		this.collarYfromSocket = LS_UP_COLLAR_Y - LS_UP_Y_AXIS;
-		this.tipXfromSocket = LS_UP_TIP_X - LS_RIGHT_X_AXIS;
-		this.tipYfromSocket = LS_UP_TIP_Y - LS_UP_Y_AXIS;
+		this.collarXfromSocket = zc.LS_UP_COLLAR_X - zc.LS_RIGHT_X_AXIS;
+		this.collarYfromSocket = zc.LS_UP_COLLAR_Y - zc.LS_UP_Y_AXIS;
+		this.tipXfromSocket = zc.LS_UP_TIP_X - zc.LS_RIGHT_X_AXIS;
+		this.tipYfromSocket = zc.LS_UP_TIP_Y - zc.LS_UP_Y_AXIS;
 
 		this.facingRight = true;
 		this.saberUp = true;
@@ -613,15 +611,15 @@ class Lightsaber extends Entity {
 
 	faceLeftUpSaber() {
 		this.image = this.faceLeftUpSaberImage;
-		this.width = LS_UP_IMAGE_WIDTH;
-		this.height = LS_UP_IMAGE_HEIGHT;
-		this.armSocketX = LS_LEFT_X_AXIS;
-		this.armSocketY = this.height - LS_UP_Y_AXIS;
+		this.width = zc.LS_UP_IMAGE_WIDTH;
+		this.height = zc.LS_UP_IMAGE_HEIGHT;
+		this.armSocketX = zc.LS_LEFT_X_AXIS;
+		this.armSocketY = this.height - zc.LS_UP_Y_AXIS;
 
-		this.collarXfromSocket = LS_UP_COLLAR_X - LS_LEFT_X_AXIS;
-		this.collarYfromSocket = LS_UP_Y_AXIS - LS_UP_COLLAR_Y;
-		this.tipXfromSocket = LS_UP_TIP_X - LS_RIGHT_X_AXIS;
-		this.tipYfromSocket = LS_UP_Y_AXIS - LS_UP_TIP_Y;
+		this.collarXfromSocket = zc.LS_UP_COLLAR_X - zc.LS_LEFT_X_AXIS;
+		this.collarYfromSocket = zc.LS_UP_Y_AXIS - zc.LS_UP_COLLAR_Y;
+		this.tipXfromSocket = zc.LS_UP_TIP_X - zc.LS_RIGHT_X_AXIS;
+		this.tipYfromSocket = zc.LS_UP_Y_AXIS - zc.LS_UP_TIP_Y;
 
 		this.facingRight = false;
 		this.saberUp = true;
@@ -629,15 +627,15 @@ class Lightsaber extends Entity {
 
 	faceRightDownSaber() {
 		this.image = this.faceRightDownSaberImage;
-		this.width = LS_DOWN_IMAGE_WIDTH;
-		this.height = LS_DOWN_IMAGE_HEIGHT;
-		this.armSocketX = LS_RIGHT_X_AXIS;
-		this.armSocketY = LS_DOWN_Y_AXIS;
+		this.width = zc.LS_DOWN_IMAGE_WIDTH;
+		this.height = zc.LS_DOWN_IMAGE_HEIGHT;
+		this.armSocketX = zc.LS_RIGHT_X_AXIS;
+		this.armSocketY = zc.LS_DOWN_Y_AXIS;
 
-		this.collarXfromSocket = LS_DOWN_COLLAR_X - LS_RIGHT_X_AXIS;
-		this.collarYfromSocket = LS_DOWN_COLLAR_Y - LS_DOWN_Y_AXIS;
-		this.tipXfromSocket = LS_DOWN_TIP_X - LS_RIGHT_X_AXIS;
-		this.tipYfromSocket = LS_DOWN_TIP_Y - LS_DOWN_Y_AXIS;
+		this.collarXfromSocket = zc.LS_DOWN_COLLAR_X - zc.LS_RIGHT_X_AXIS;
+		this.collarYfromSocket = zc.LS_DOWN_COLLAR_Y - zc.LS_DOWN_Y_AXIS;
+		this.tipXfromSocket = zc.LS_DOWN_TIP_X - zc.LS_RIGHT_X_AXIS;
+		this.tipYfromSocket = zc.LS_DOWN_TIP_Y - zc.LS_DOWN_Y_AXIS;
 
 		this.facingRight = true;
 		this.saberUp = false;
@@ -645,15 +643,15 @@ class Lightsaber extends Entity {
 
 	faceLeftDownSaber() {
 		this.image = this.faceLeftDownSaberImage;
-		this.width = LS_DOWN_IMAGE_WIDTH;
-		this.height = LS_DOWN_IMAGE_HEIGHT;
-		this.armSocketX = LS_LEFT_X_AXIS;
-		this.armSocketY = this.height - LS_DOWN_Y_AXIS;
+		this.width = zc.LS_DOWN_IMAGE_WIDTH;
+		this.height = zc.LS_DOWN_IMAGE_HEIGHT;
+		this.armSocketX = zc.LS_LEFT_X_AXIS;
+		this.armSocketY = this.height - zc.LS_DOWN_Y_AXIS;
 
-		this.collarXfromSocket = LS_DOWN_COLLAR_X - LS_LEFT_X_AXIS;
-		this.collarYfromSocket = LS_DOWN_Y_AXIS - LS_DOWN_COLLAR_Y;
-		this.tipXfromSocket = LS_DOWN_TIP_X - LS_LEFT_X_AXIS;
-		this.tipYfromSocket = LS_DOWN_Y_AXIS - LS_DOWN_TIP_Y;
+		this.collarXfromSocket = zc.LS_DOWN_COLLAR_X - zc.LS_LEFT_X_AXIS;
+		this.collarYfromSocket = zc.LS_DOWN_Y_AXIS - zc.LS_DOWN_COLLAR_Y;
+		this.tipXfromSocket = zc.LS_DOWN_TIP_X - zc.LS_LEFT_X_AXIS;
+		this.tipYfromSocket = zc.LS_DOWN_Y_AXIS - zc.LS_DOWN_TIP_Y;
 
 		this.facingRight = false;
 		this.saberUp = false;

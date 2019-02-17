@@ -27,6 +27,7 @@ class GameEngine {
         this.beams = [];
         this.droids = [];
         this.tiles = [];
+        this.boss = null;
         this.powerups = [];
         this.ctx = null;
         this.surfaceWidth = null;
@@ -92,12 +93,6 @@ class GameEngine {
                 this.lasers.splice(i, 1);
             }
         }
-        for (var i = this.beams.length - 1; i >= 0; i--) {
-            this.beams[i].update();
-            if (this.beams[i].removeFromWorld) {
-                this.beams.splice(i, 1);
-            }
-        }
         for (var i = this.powerups.length -1; i >= 0; i--) {
             this.powerups[i].update();
             if(this.powerups[i].removeFromWorld) {
@@ -109,6 +104,9 @@ class GameEngine {
             if (this.otherEntities[i].removeFromWorld) {
                 this.otherEntities.splice(i, 1);
             }
+        }
+        if (this.boss) {
+            this.boss.update();
         }
 
 
@@ -128,8 +126,8 @@ class GameEngine {
         for (var i = 0; i < this.lasers.length; i++) {
             this.lasers[i].draw(this.ctx);
         }
-        for (var i = 0; i < this.beams.length; i++) {
-            this.beams[i].draw(this.ctx);
+        if (this.boss) {
+            this.boss.draw();
         }
         for (var i = 0; i < this.powerups.length; i++) {
             this.powerups[i].draw(this.ctx);
