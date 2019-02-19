@@ -115,6 +115,7 @@ class AssetManager {
 	//powerups animations
 	AM.queueDownload('../img/powerup_health.png');
 	AM.queueDownload('../img/powerup_force.png');
+	AM.queueDownload('../img/powerup_invincibility.png');
 
 
 	AM.queueDownload('../img/music_menu.png');

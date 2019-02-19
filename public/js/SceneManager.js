@@ -4,15 +4,33 @@ TCSS 491 - Computational Worlds
 Joshua Atherton, Michael Josten, Steven Golob
 */
 
+/*
+Assets:
+//powerups are capital
+
+-  =  tile
+=  =  moving tile
+d  =  basic droid
+s  =  scatter shot droid
+b  =  slow burst droid
+f  =  fast burst droid
+m  =  multi-shot droid
+n  =  sniper droid
+H  =  health powerup
+F  =  force powerup
+I  =  invincibility powerup
+
+*/
+
 const LEVEL_ONE_TILE_LAYOUT = [
 '       b                          ',
 ' s            b    --   d     -s  ',
 '            -      B    --       s',
 ' d     m      -     d            -',
 '       B     --  n                ',
-'  =             ===               ',
+'  =            ===               ',
 'f    --         --          d     ',
-'   --          -  s       -       ',
+'   -- I        -  s       -       ',
 '--------n-- ----   ---  ====  ----'
 ]
 
