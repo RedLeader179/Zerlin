@@ -29,7 +29,7 @@ class Boss extends Entity {
 
 	update() {
 		if (!this.falling) {
-			if (this.y > (this.game.camera.height - bc.B_HOVERING_HEIGHT)) {
+			if (this.y > (this.sceneManager.camera.height - bc.B_HOVERING_HEIGHT)) {
 				this.deltaY -= bc.B_ACCELERATION * this.game.clockTick;
 			} else {
 				this.deltaY += bc.B_ACCELERATION * this.game.clockTick;	
@@ -55,9 +55,9 @@ class Boss extends Entity {
 			}
 		}
 
-		if (this.game.Zerlin.x < this.x && this.facingRight) {
+		if (this.sceneManager.Zerlin.x < this.x && this.facingRight) {
 			this.faceLeft();
-		} else if (this.game.Zerlin.x > this.x && !this.facingRight) {
+		} else if (this.sceneManager.Zerlin.x > this.x && !this.facingRight) {
 			this.faceRight();
 		}
 
@@ -112,13 +112,13 @@ class Boss extends Entity {
 			}
 		}
 
-		this.animation.drawFrame(this.game.clockTick, this.ctx, this.drawX - this.game.camera.x, this.drawY);
+		this.animation.drawFrame(this.game.clockTick, this.ctx, this.drawX - this.sceneManager.camera.x, this.drawY);
 		this.beamCannon.draw();
 
 		if (bc.B_DRAW_COLLISION_BOUNDRIES) {
 			this.ctx.strokeStyle = "black";
 			if (!this.boundingbox.hidden) {
-				this.ctx.strokeRect(this.boundingbox.x - this.game.camera.x, this.boundingbox.y, this.boundingbox.width, this.boundingbox.height);
+				this.ctx.strokeRect(this.boundingbox.x - this.sceneManager.camera.x, this.boundingbox.y, this.boundingbox.width, this.boundingbox.height);
 			}
 		}
 	}
@@ -236,6 +236,7 @@ class BeamCannon extends Entity {
 		this.setUpCannonImages();
 		this.faceRight();
 		this.lengthSocketToMuzzle = Math.sqrt(Math.pow(this.muzzleY, 2) + Math.pow(this.muzzleX, 2));
+		this.muzzleWidth = bc.MUZZLE_WIDTH * bc.B_SCALE;
 	}
 
 	update() {
@@ -251,11 +252,11 @@ class BeamCannon extends Entity {
 
 	draw() {
 		if (!this.hidden) {
+			this.ctx.save();
 			if (this.beam) {
 				this.beam.draw();
 			}
-			this.ctx.save();
-			this.ctx.translate(this.x - this.game.camera.x, this.y);
+			this.ctx.translate(this.x - this.sceneManager.camera.x, this.y);
 			this.ctx.rotate(this.beamAngle);
 			this.ctx.drawImage(this.image,
 							   0,
@@ -266,6 +267,12 @@ class BeamCannon extends Entity {
 							   -(this.armSocketY),
 							   this.width,
 							   this.height);
+
+            // this.ctx.beginPath();
+            // this.ctx.strokeStyle = "green";
+            // this.ctx.arc(this.muzzleX, this.muzzleY, 5, 0, Math.PI * 2, false);
+            // this.ctx.stroke();
+            // this.ctx.closePath();
 			this.ctx.restore();
 		}
 		super.draw();
@@ -274,7 +281,7 @@ class BeamCannon extends Entity {
 	turnOn() {
 		this.on = true;
 		this.beam = new Beam(this);
-		this.game.beams.push(this.beam);
+		// this.sceneManager.beams.push(this.beam);
 		this.game.audio.beam.play();
 	}
 
@@ -319,14 +326,14 @@ class BeamCannon extends Entity {
 						|  \
 			   elbow  B |___\ C   Target
 		*/
-		var zerlinBox = this.game.Zerlin.boundingbox;
+		var zerlinBox = this.sceneManager.Zerlin.boundingbox;
 		var angleAxisToTarget = Math.atan2(zerlinBox.y + zerlinBox.height / 2 - this.y, zerlinBox.x + zerlinBox.width / 2 - this.x);
-		var distanceAxisToTarget = distance(this, this.game.Zerlin.boundingbox);
+		var distanceAxisToTarget = distance(this, this.sceneManager.Zerlin.boundingbox);
 		var distanceAxisToElbow = this.muzzleY;
 		var angleBCA = Math.asin(distanceAxisToElbow / distanceAxisToTarget);
 		var angleToZerlin = angleAxisToTarget - angleBCA;
 
-		var angleDiff = this.shaveRadians(angleToZerlin - this.beamAngle);
+		var angleDiff = shaveRadians(angleToZerlin - this.beamAngle);
 		if (angleDiff > Math.PI) {
 			// rotate beam clockwise
 			this.beamAngleDelta -= bc.BEAM_ANGLE_ACCELERATION_RADIANS * this.game.clockTick;
@@ -343,42 +350,58 @@ class BeamCannon extends Entity {
 		this.faceLeftCannonImage = this.assetManager.getAsset("../img/beam cannon left.png");
 	}
 
-	/*
-	 * Converts an angle to inside range [0, Math.PI * 2).
-	 */
-	shaveRadians(angle) {
-		var newAngle = angle;
-		while (newAngle >= Math.PI * 2) {
-			newAngle -= Math.PI * 2;
-		}
-		while (newAngle < 0) {
-			newAngle += Math.PI * 2;
-		}
-		return newAngle;
-	}
 }
 
+/*
+ * Converts an angle to inside range [0, Math.PI * 2).
+ */
+var shaveRadians = function(angle) {
+	var newAngle = angle;
+	while (newAngle >= Math.PI * 2) {
+		newAngle -= Math.PI * 2;
+	}
+	while (newAngle < 0) {
+		newAngle += Math.PI * 2;
+	}
+	return newAngle;
+}
 
 
 
 class Beam {
 	constructor(cannon) {
 		this.game = cannon.game;
+		this.sceneManager = cannon.sceneManager;
 		this.cannon = cannon;
 		this.segments = [];
-		this.segments.push({x: cannon.x, y: cannon.y, angle: cannon.beamAngle});
+		for (let i = 0; i < bc.MICRO_BEAM_COUNT; i++) {
+			this.segments.push({x: cannon.x, y: cannon.y, angle: cannon.beamAngle});
+		}
 		this.isSizzling = false;
 		this.sizzlingSoundOn = false;
+		this.width = this.cannon.muzzleWidth / bc.MICRO_BEAM_COUNT * 2;
 	}
 
 	update() {
-		var xOffset = this.cannon.lengthSocketToMuzzle * Math.cos(this.cannon.beamAngle + this.cannon.angleSocketToMuzzle); 
-		var yOffset = this.cannon.lengthSocketToMuzzle * Math.sin(this.cannon.beamAngle + this.cannon.angleSocketToMuzzle); 
+		this.segments.splice(bc.MICRO_BEAM_COUNT); // recreate all deflected segments;
+		var xOffsetArmSocketToCenterOfMuzzle = this.cannon.lengthSocketToMuzzle * Math.cos(this.cannon.beamAngle + this.cannon.angleSocketToMuzzle); 
+		var yOffsetArmSocketToCenterOfMuzzle = this.cannon.lengthSocketToMuzzle * Math.sin(this.cannon.beamAngle + this.cannon.angleSocketToMuzzle); 
+
+		var xOffsetCenterOfMuzzleToCorner = -this.cannon.muzzleWidth / 2 * Math.sin(this.cannon.beamAngle);
+		var yOffsetCenterOfMuzzleToCorner = this.cannon.muzzleWidth / 2 * Math.cos(this.cannon.beamAngle);
 		// console.log(this.cannon.lengthSocketToMuzzle);
-		this.segments[0].x = this.cannon.x + xOffset;
-		this.segments[0].y = this.cannon.y + yOffset;
-		this.segments[0].angle = this.cannon.beamAngle;
-		// collision manager detects end of beam segements and adds new ones if deflected.
+
+		for (let i = 0; i < bc.MICRO_BEAM_COUNT; i++) {
+			let microBeamPlacementMultiplier = (2 / (bc.MICRO_BEAM_COUNT - 1) * i - 1);
+			this.segments[i].x = this.cannon.x + xOffsetArmSocketToCenterOfMuzzle + xOffsetCenterOfMuzzleToCorner * microBeamPlacementMultiplier;
+			this.segments[i].y = this.cannon.y + yOffsetArmSocketToCenterOfMuzzle + yOffsetCenterOfMuzzleToCorner * microBeamPlacementMultiplier;
+			this.segments[i].angle = this.cannon.beamAngle;
+			// set beam to reasonable length
+			this.segments[i].endX = Math.cos(this.segments[i].angle) * bc.MAX_BEAM_LENGTH + this.segments[i].x;
+			this.segments[i].endY = Math.sin(this.segments[i].angle) * bc.MAX_BEAM_LENGTH + this.segments[i].y;
+		}
+
+		// collision manager adds new segments if deflected.
 
 		if (this.isSizzling && !this.sizzlingSoundOn) {
 			this.game.audio.sizzle.play();
@@ -390,14 +413,14 @@ class Beam {
 	}
 
 	draw() {
-		var cameraX = this.game.camera.x; // just draw beams without checking if in view of camera?
+		var cameraX = this.sceneManager.camera.x; // just draw beams without checking if in view of camera?
 		var ctx = this.game.ctx;
 		ctx.save();
 		for (let i = 0; i < this.segments.length; i++) {
 			var segment = this.segments[i];
 
 			//Outer Layer of beam
-			ctx.lineWidth = bc.BEAM_DROID_LASER_WIDTH * bc.B_SCALE;
+			ctx.lineWidth = this.width * 5;
 			ctx.strokeStyle = "red";
 			ctx.lineCap = "round";
 			ctx.beginPath();
@@ -410,7 +433,7 @@ class Beam {
 			var segment = this.segments[i];
 
 			//Outer Layer of beam
-			ctx.lineWidth = bc.BEAM_DROID_LASER_WIDTH * bc.B_SCALE * .75;
+			ctx.lineWidth = this.width * 3;
 			ctx.strokeStyle = "orange";
 			ctx.lineCap = "round";
 			ctx.beginPath();
@@ -424,7 +447,7 @@ class Beam {
 			var segment = this.segments[i];
 
 			//inner layer of beam.
-			ctx.lineWidth = bc.BEAM_DROID_LASER_WIDTH * bc.B_SCALE * .5;
+			ctx.lineWidth = this.width;
 			ctx.strokeStyle = "white";
 			ctx.lineCap = "round";
 			ctx.beginPath();

@@ -13,21 +13,25 @@ const puc = Constants.PowerUpConstants;
 class AbstractPowerUp extends Entity {
     constructor(game, x, y) {
         super(game, x, y, 0, 0);
+        this.startY = y;
         this.animation = null;
-        this.boundCircle = {radius: 0, x: 0, y: 0};
-        
+        this.randomYIntercept = Math.random() * Math.PI * 2;
+        this.aliveTime = 0;
     }
     update() {
         super.update();
+        this.aliveTime += this.game.clockTick;
+        this.y = this.startY + puc.FLOATING_MAGNITUDE * Math.sin(3 * (this.aliveTime + this.randomYIntercept));
+        this.boundCircle.y = this.y + this.radius;
     }
 
     draw() {
-        var camera = this.game.camera;
+        var camera = this.sceneManager.camera;
         var dimension = this.boundCircle.radius * 2;
         // only draw if in camera's view
         if (camera.isInView(this, dimension, dimension)) {
         //debug: draw the bounding circle around the droid
-            if (this.game.showOutlines ) {
+            if (puc.DRAW_OUTLINES) {
                 this.game.ctx.beginPath();
                 this.game.ctx.strokeStyle = "green";
                 this.game.ctx.arc(this.boundCircle.x - camera.x, 
@@ -62,15 +66,13 @@ class HealthPowerUp extends AbstractPowerUp {
 
         /* bounding circle fields */
         this.radius = (this.animation.frameWidth / 2) * this.animation.scale;
-        this.boundCircle = {radius: this.radius, 
-            x: this.x + this.radius,
-            y: this.y + this.radius};
+        this.boundCircle = new BoundingCircle(this.x + this.radius, this.y + this.radius, this.radius);
 
         
     }
     //heal zerlin to max hp or a certain amount.
     effect() {
-        var zerlin = this.game.Zerlin;
+        var zerlin = this.sceneManager.Zerlin;
         zerlin.currentHealth += puc.RECOVER_HEALTH_AMOUNT;
         //can't heal past max health
         if (zerlin.currentHealth > zerlin.maxHealth) {
@@ -89,14 +91,12 @@ class ForcePowerUp extends AbstractPowerUp {
 
         /* bounding circle */
         this.radius = (this.animation.frameWidth / 2) * this.animation.scale;
-        this.boundCircle = {radius: this.radius, 
-            x: this.x + this.radius,
-            y: this.y + this.radius};
+        this.boundCircle = new BoundingCircle(this.x + this.radius, this.y + this.radius, this.radius);
     }
 
     //recover zerlin's force power to max or a certain amount
     effect() {
-        var zerlin = this.game.Zerlin;
+        var zerlin = this.sceneManager.Zerlin;
         zerlin.currentForce += puc.RECOVER_FORCE_AMOUNT;
         if (zerlin.currentForce > zerlin.maxForce) {
             zerlin.currentForce = zerlin.maxForce;

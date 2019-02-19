@@ -27,7 +27,7 @@ class AbstractDroid extends Entity {
         this.animation = null;
 
         //collision radius can be changed after instantiation
-        this.radius = 35;
+        // this.radius = 35;
 
     }
     /**
@@ -35,24 +35,22 @@ class AbstractDroid extends Entity {
      * and moving and will be implemented more in each childDroid
      */
     update() {
-        // All droids will move when left or right is pressed but not both at the same time
-        if (this.game.keys['KeyD'] && this.game.keys['KeyA']);
         super.update();
     }
     draw() {
-        var camera = this.game.camera;
+        var camera = this.sceneManager.camera;
         var dimension = this.boundCircle.radius * 2;
         // only draw if in camera's view
         if (camera.isInView(this, dimension, dimension)) {
         //debug: draw the bounding circle around the droid
-            if (this.game.showOutlines) {
+            if (duc.DRAW_OUTLINES) {
                 this.game.ctx.beginPath();
                 this.game.ctx.strokeStyle = "green";
                 this.game.ctx.arc(this.boundCircle.x - camera.x,
                     this.boundCircle.y, this.boundCircle.radius, 0, Math.PI * 2, false);
                 this.game.ctx.stroke();
                 this.game.ctx.closePath();
-                this.game.ctx.closePath();
+                this.game.ctx.closePath(); // ??
                 this.game.ctx.restore();
             }
             //child droid can choose which animation is the current one
@@ -69,7 +67,7 @@ class AbstractDroid extends Entity {
     explode() {
         this.removeFromWorld = true;
         //TODO: play droid explosion sound
-        this.game.addEntity(new DroidExplosion(this.game, this.x + (this.animation.scale * this.animation.frameWidth / 2), this.y + (this.animation.scale * this.animation.frameHeight / 2)));
+        this.sceneManager.addEntity(new DroidExplosion(this.game, this.x + (this.animation.scale * this.animation.frameWidth / 2), this.y + (this.animation.scale * this.animation.frameHeight / 2)));
     }
     collideWithDroid(ent) {
         return ent !== null && collideCircleWithCircle(this.boundCircle.x, this.boundCircle.y, this.boundCircle.radius,
@@ -133,9 +131,9 @@ class DroidLaser extends Entity {
         super.update();
     }
     draw() {
-        var cameraX = this.game.camera.x;
+        var cameraX = this.sceneManager.camera.x;
         // only draw if in camera's view
-        if (this.game.camera.isInView(this, this.length, this.length)) {
+        if (this.sceneManager.camera.isInView(this, this.length, this.length)) {
             var ctx = this.game.ctx;
 
             //debug laser
@@ -178,7 +176,7 @@ class DroidLaser extends Entity {
         return (p1.y - p2.y) / (p1.x - p2.x);
     }
     isOutsideScreen() {
-        var camera = this.game.camera;
+        var camera = this.sceneManager.camera;
         var left = camera.x;
         var right = camera.x + camera.width;
         var top = camera.y;
@@ -243,8 +241,8 @@ class DroidExplosion extends Entity {
     }
     draw() {
         // only draw if in camera's view
-        if (this.game.camera.isInView(this, this.animation.frameWidth * this.scale, this.animation.frameHeight * this.scale)) {
-            this.animation.drawFrame(this.game.clockTick, this.game.ctx, this.x - this.game.camera.x, this.y);
+        if (this.sceneManager.camera.isInView(this, this.animation.frameWidth * this.scale, this.animation.frameHeight * this.scale)) {
+            this.animation.drawFrame(this.game.clockTick, this.game.ctx, this.x - this.sceneManager.camera.x, this.y);
             super.draw(this.game.ctx);
         }
     }

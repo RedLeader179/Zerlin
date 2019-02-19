@@ -47,6 +47,92 @@ backgroundMusicArray['clashOfLightsabersTheme'] = new Howl({
 	// preload: true
 });
 
+
+
+
+/**
+* Class that holds a music menu to control the play and pause music backgrounds
+* and the sound fx. Also can pause and play music using the sound engine.
+*/
+class MusicMenu {
+	constructor(game, xPosition, yPosition, images) {
+	this.gameEngine = game;
+	this.x = xPosition;
+	this.y = yPosition;
+	this.menu = images[0];
+	this.xMusic = images[1];
+	this.xFx = images[2];
+
+	this.ctx = this.gameEngine.ctx //not needed
+	this.xMusicChecked = false;
+	this.xFxChecked = false;
+
+	}
+
+	update() {
+		let clickXandY = this.gameEngine.click;
+		let changeInState = false;
+		if (clickXandY != null) {
+			// console.log(clickXandY);
+			//music x
+			if (
+			clickXandY.x >= this.x + 3 &&
+			clickXandY.x <= this.x + 70 &&
+			clickXandY.y >= this.y + 5 &&
+			clickXandY.y <= this.y + 18
+			) {
+				changeInState = true;
+				this.xMusicChecked = !this.xMusicChecked;
+				// console.log("music checked", this.xMusicChecked);
+			}
+			//fx x
+			if (
+			clickXandY.x >= this.x + 3 &&
+			clickXandY.x <= this.x + 70 &&
+			clickXandY.y >= this.y + 21 &&
+			clickXandY.y <= this.y + 34
+			) {
+				changeInState = true;
+				this.xFxChecked = !this.xFxChecked;
+				// console.log("fx checked", this.xFxChecked);
+			}
+		}
+
+		//play and pause pause audio if previous state has changed
+		if (changeInState) {
+			if (this.xMusicChecked) {
+				this.gameEngine.audio.pauseBackgroundMusic();
+			} else {
+				this.gameEngine.audio.unPauseBackgroundMusic();
+			}
+			//play or pause sound fx
+			if (this.xFxChecked) {
+				this.gameEngine.audio.muteSoundFX();
+			} else {
+				this.gameEngine.audio.unMuteSoundFX();
+			}
+		}
+	}
+
+	draw() {
+		//draw music music menu background
+		this.ctx.drawImage(this.menu, this.x, this.y);
+		if (this.xMusicChecked) {
+			this.ctx.drawImage(this.xMusic, this.x, this.y);
+		}
+		if (this.xFxChecked) {
+			this.ctx.drawImage(this.xFx, this.x, this.y);
+		}
+		// this.strokeStyle = "white"; // draw click zones
+		// this.ctx.strokeRect(this.x + 3, this.y + 5, 60, 13);
+		// this.ctx.strokeRect(this.x + 3, this.y + 21, 60, 13);
+	}
+}
+
+
+
+
+
 /**
  *
  */
@@ -139,7 +225,7 @@ class SoundEngine {
 				133.33333333333374
 			  ]
 			},
-			volume: .03
+			volume: .07
 		  });
 
 		  this.enemy = new Howl({
@@ -266,6 +352,12 @@ class SoundEngine {
 		this.soundFxMuted = false;
 		this.soundFXArray.forEach( function(item) {
 			// item.volume(3);
+		});
+	}
+
+	endAllSoundFX() {
+		this.soundFXArray.forEach( function(item) {
+			item.stop();
 		});
 	}
 

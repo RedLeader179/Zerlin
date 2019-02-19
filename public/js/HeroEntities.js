@@ -10,142 +10,173 @@ var kc = Constants.KeyConstants;
 
 class Zerlin extends Entity {
 
-	constructor(game) {
+	constructor(game, camera) {
 		// NOTE: this.x is CENTER of Zerlin, not left side of image. this.y is feet.
-		super(game, game.camera.width * camConst.ZERLIN_POSITION_ON_SCREEN, 0, 0, 0);
+		super(game, game.surfaceWidth * camConst.ZERLIN_POSITION_ON_SCREEN, 0, 0, 0);
 
 		this.assetManager = game.assetManager;
+		this.camera = camera;
 		this.ctx = game.ctx;
+		this.createAnimations();
+		this.reset();
+
+		/* Fields tracked by the status bar */
+	}
+
+	reset() {
+		this.x = this.game.surfaceWidth * camConst.ZERLIN_POSITION_ON_SCREEN;
+		this.y = 0;
+		this.deltaX = 0;
+		this.deltaY = 0;
+		this.alive = true;
 		this.direction = 0; // -1 = left, 0 = still, 1 = right
 		this.somersaulting = false;
 		this.crouching = false;
 		this.falling = true;
-		this.hits = 0;
 		this.armSocketY = zc.Z_ARM_SOCKET_Y;
 		this.faceRight();
-		this.lightsaber = new Lightsaber(game, this);
-		this.createAnimations();
-
-		/* Fields tracked by the status bar */
 		this.maxHealth = zc.Z_MAX_HEALTH;
 		this.currentHealth = this.maxHealth;
 		this.maxForce = zc.Z_MAX_FORCE;
 		this.currentForce = this.maxForce/2;
+		this.lightsaber = new Lightsaber(this.game, this);
+		this.deathAnimation.elapsedTime = 0;
 	}
 
 	update() {
 		// check basic movement
-		if (this.game.mouse.x + this.game.camera.x < this.x && this.facingRight) {
-			this.faceLeft();
-		}
-		else if (this.game.mouse.x + this.game.camera.x > this.x && !this.facingRight) {
-			this.faceRight();
-		}
-		else if (!this.game.keys[kc.MOVE_RIGHT] && !this.game.keys[kc.MOVE_LEFT]) {
-			this.direction = 0;
-			if (!this.isInManeuver()) {
-				this.deltaX = 0;
+		if (this.alive) {
+			if (this.game.mouse.x + this.camera.x < this.x && this.facingRight) {
+				this.faceLeft();
 			}
-		}
-		else if (this.game.keys[kc.MOVE_RIGHT] && this.game.keys[kc.MOVE_LEFT]) {
-			this.direction = 0;
-			if (!this.isInManeuver()) {
-				this.deltaX = 0;
+			else if (this.game.mouse.x + this.camera.x > this.x && !this.facingRight) {
+				this.faceRight();
 			}
-		}
-		else if (this.game.keys[kc.MOVE_RIGHT] && !this.game.keys[kc.MOVE_LEFT]) { // TODO: change keys to constants
-			this.direction = 1;
-			if (!this.isInManeuver()) {
-				this.deltaX = zc.Z_WALKING_SPEED;
-			}
-		}
-		else if (!this.game.keys[kc.MOVE_RIGHT] && this.game.keys[kc.MOVE_LEFT]) {
-			this.direction = -1;
-			if (!this.isInManeuver()) {
-				this.deltaX = -zc.Z_WALKING_SPEED;
-			}
-		}
-
-		// check adding new maneuver
-		if (!this.isInManeuver()) {
-			if (this.game.keys[kc.ROLL] && this.direction !== 0 && !this.falling) {
-				this.startSomersault();
-			}
-			else if (this.game.keys[kc.JUMP_FORCE] && !this.falling) {
-				/** for testing sound */
-				this.tile = null;
-				this.game.audio.playSoundFx(this.game.audio.hero, 'forceJump');
-				this.falling = true;
-				this.deltaY = zc.FORCE_JUMP_DELTA_Y;
-			}
-			else if (this.game.keys[kc.JUMP] && !this.falling) {
-				this.tile = null;
-				this.falling = true;
-				this.deltaY = zc.JUMP_DELTA_Y;
-			}
-			else if (this.game.keys[kc.SLASH]) {
-				this.startSlash(); 
-			}
-			else if (this.game.keys[kc.CROUCH] && !this.falling) {
-				this.crouch();
-			}
-		}
-
-		if (this.falling) {
-			this.lastBottom = this.boundingbox.bottom;
-			this.deltaY += zc.GRAVITATIONAL_ACCELERATION * this.game.clockTick;
-		}
-
-		if (this.somersaulting) {
-			this.deltaX = zc.Z_SOMERSAULT_SPEED * this.somersaultingDirection;
-			if (this.isAnimationDone()) {
-				this.finishSomersault();
-			} else if (this.animation.elapsedTime < zc.Z_SOMERSAULT_FRAMES * zc.Z_SOMERSAULT_FRAME_SPEED / 2) {
-				// don't fall for first half of roll
-				this.deltaY = 0;
-			}
-		}
-		else if (this.slashing) {
-			this.deltaX = 0;
-			if (this.isAnimationDone()) {
-				this.finishSlash();
-			} else { // still in slash
-				var animation = this.slashingDirection === 1 ? this.slashingAnimation : this.slashingLeftAnimation;
-				if (animation.elapsedTime >= zc.Z_SLASH_FRAME_SPEED * zc.Z_SLASH_START_FRAME &&
-					animation.elapsedTime < zc.Z_SLASH_FRAME_SPEED * (zc.Z_SLASH_END_FRAME + 1)) {
-					if (this.slashingDirection === 1) {
-						this.slashZone = {active: true,
-										  outerCircle: new BoundingCircle(this.x + zc.Z_SLASH_CENTER_X * zc.Z_SCALE, this.y - zc.Z_SLASH_CENTER_Y * zc.Z_SCALE, zc.Z_SLASH_RADIUS * zc.Z_SCALE),
-										  innerCircle: new BoundingCircle(this.x + zc.Z_SLASH_INNER_CENTER_X * zc.Z_SCALE, this.y - zc.Z_SLASH_INNER_CENTER_Y * zc.Z_SCALE, zc.Z_SLASH_INNER_RADIUS * zc.Z_SCALE)};
-					} else {
-						this.slashZone = {active: true,
-										  outerCircle: new BoundingCircle(this.x - zc.Z_SLASH_CENTER_X * zc.Z_SCALE, this.y - zc.Z_SLASH_CENTER_Y * zc.Z_SCALE, zc.Z_SLASH_RADIUS * zc.Z_SCALE),
-										  innerCircle: new BoundingCircle(this.x - zc.Z_SLASH_INNER_CENTER_X * zc.Z_SCALE, this.y - zc.Z_SLASH_INNER_CENTER_Y * zc.Z_SCALE, zc.Z_SLASH_INNER_RADIUS * zc.Z_SCALE)};
-					}
-				} else {
-					this.slashZone.active = false;
+			else if (!this.game.keys[kc.MOVE_RIGHT] && !this.game.keys[kc.MOVE_LEFT]) {
+				this.direction = 0;
+				if (!this.isInManeuver()) {
+					this.deltaX = 0;
 				}
 			}
-		}
-		else if (this.crouching) {
-			if (!this.game.keys[kc.CROUCH]) {
-				this.stopCrouch();
+			else if (this.game.keys[kc.MOVE_RIGHT] && this.game.keys[kc.MOVE_LEFT]) {
+				this.direction = 0;
+				if (!this.isInManeuver()) {
+					this.deltaX = 0;
+				}
+			}
+			else if (this.game.keys[kc.MOVE_RIGHT] && !this.game.keys[kc.MOVE_LEFT]) { // TODO: change keys to constants
+				this.direction = 1;
+				if (!this.isInManeuver()) {
+					this.deltaX = zc.Z_WALKING_SPEED;
+				}
+			}
+			else if (!this.game.keys[kc.MOVE_RIGHT] && this.game.keys[kc.MOVE_LEFT]) {
+				this.direction = -1;
+				if (!this.isInManeuver()) {
+					this.deltaX = -zc.Z_WALKING_SPEED;
+				}
+			}
+
+			// check adding new maneuver
+			if (!this.isInManeuver()) {
+				if (this.game.keys[kc.ROLL] && this.direction !== 0 && !this.falling) {
+					this.startSomersault();
+				}
+				else if (this.game.keys[kc.JUMP_FORCE] && !this.falling) {
+					/** for testing sound */
+					this.tile = null;
+					this.game.audio.playSoundFx(this.game.audio.hero, 'forceJump');
+					this.falling = true;
+					this.deltaY = zc.FORCE_JUMP_DELTA_Y;
+				}
+				else if (this.game.keys[kc.JUMP] && !this.falling) {
+					this.tile = null;
+					this.falling = true;
+					this.deltaY = zc.JUMP_DELTA_Y;
+				}
+				else if (this.game.keys[kc.SLASH]) {
+					this.startSlash(); 
+				}
+				else if (this.game.keys[kc.CROUCH] && !this.falling) {
+					this.crouch();
+				}
+			}
+
+			if (this.falling) {
+				this.lastBottom = this.boundingbox.bottom;
+				this.deltaY += zc.GRAVITATIONAL_ACCELERATION * this.game.clockTick;
+			}
+
+			if (this.somersaulting) {
+				this.deltaX = zc.Z_SOMERSAULT_SPEED * this.somersaultingDirection;
+				if (this.isAnimationDone()) {
+					this.finishSomersault();
+				} else if (this.animation.elapsedTime < zc.Z_SOMERSAULT_FRAMES * zc.Z_SOMERSAULT_FRAME_SPEED / 2) {
+					// don't fall for first half of roll
+					this.deltaY = 0;
+				}
+			}
+			else if (this.slashing) {
+				this.deltaX = 0;
+				if (this.isAnimationDone()) {
+					this.finishSlash();
+				} else { // still in slash
+					var animation = this.slashingDirection === 1 ? this.slashingAnimation : this.slashingLeftAnimation;
+					if (animation.elapsedTime >= zc.Z_SLASH_FRAME_SPEED * zc.Z_SLASH_START_FRAME &&
+						animation.elapsedTime < zc.Z_SLASH_FRAME_SPEED * (zc.Z_SLASH_END_FRAME + 1)) {
+						if (this.slashingDirection === 1) {
+							this.slashZone = {active: true,
+											  outerCircle: new BoundingCircle(this.x + zc.Z_SLASH_CENTER_X * zc.Z_SCALE, this.y - zc.Z_SLASH_CENTER_Y * zc.Z_SCALE, zc.Z_SLASH_RADIUS * zc.Z_SCALE),
+											  innerCircle: new BoundingCircle(this.x + zc.Z_SLASH_INNER_CENTER_X * zc.Z_SCALE, this.y - zc.Z_SLASH_INNER_CENTER_Y * zc.Z_SCALE, zc.Z_SLASH_INNER_RADIUS * zc.Z_SCALE)};
+						} else {
+							this.slashZone = {active: true,
+											  outerCircle: new BoundingCircle(this.x - zc.Z_SLASH_CENTER_X * zc.Z_SCALE, this.y - zc.Z_SLASH_CENTER_Y * zc.Z_SCALE, zc.Z_SLASH_RADIUS * zc.Z_SCALE),
+											  innerCircle: new BoundingCircle(this.x - zc.Z_SLASH_INNER_CENTER_X * zc.Z_SCALE, this.y - zc.Z_SLASH_INNER_CENTER_Y * zc.Z_SCALE, zc.Z_SLASH_INNER_RADIUS * zc.Z_SCALE)};
+						}
+					} else {
+						this.slashZone.active = false;
+					}
+				}
+			}
+			else if (this.crouching) {
+				if (!this.game.keys[kc.CROUCH]) {
+					this.stopCrouch();
+				}
+			}
+			if (this.tile) {
+				this.deltaX += this.tile.deltaX;
+			}
+			this.x += this.game.clockTick * this.deltaX;
+			this.y += this.game.clockTick * this.deltaY;
+
+			this.boundingbox.translateCoordinates(this.game.clockTick * this.deltaX, this.game.clockTick * this.deltaY);
+
+			this.lightsaber.update();
+			if (this.currentHealth <= 0) {
+				this.die();
 			}
 		}
-		if (this.tile) {
-			this.deltaX += this.tile.deltaX;
+		else { // dead
+			if (this.falling) {
+				this.lastBottom = this.boundingbox.bottom;
+				this.deltaY += zc.GRAVITATIONAL_ACCELERATION * this.game.clockTick;
+			}
+			if (this.tile) {
+				this.deltaX = this.tile.deltaX;
+			}
+			this.x += this.game.clockTick * this.deltaX;
+			this.y += this.game.clockTick * this.deltaY;
+			this.boundingbox.translateCoordinates(this.game.clockTick * this.deltaX, this.game.clockTick * this.deltaY);
 		}
-		this.x += this.game.clockTick * this.deltaX;
-		this.y += this.game.clockTick * this.deltaY;
-
-		this.boundingbox.translateCoordinates(this.game.clockTick * this.deltaX, this.game.clockTick * this.deltaY);
-
-		this.lightsaber.update();
 		super.update();
 	}
 
 	draw() {
-		if (this.somersaulting) {
+		if (!this.alive) {
+			this.drawX = this.x - zc.Z_ARM_SOCKET_X * zc.Z_SCALE;
+			this.animation = this.deathAnimation;
+		}
+		else if (this.somersaulting) {
 			this.drawX = this.x - zc.Z_SCALE * (zc.Z_SOMERSAULT_WIDTH / 2);
 			if (this.somersaultingDirection === -1) {
 				this.animation = this.somersaultingLeftAnimation;
@@ -201,32 +232,42 @@ class Zerlin extends Entity {
 			}
 		}
 
-		this.animation.drawFrame(this.game.clockTick, this.ctx, this.drawX - this.game.camera.x, this.y - this.animation.frameHeight * zc.Z_SCALE);
+		this.animation.drawFrame(this.game.clockTick, this.ctx, this.drawX - this.camera.x, this.y - this.animation.frameHeight * zc.Z_SCALE);
 		this.lightsaber.draw();
 
 		if (zc.DRAW_COLLISION_BOUNDRIES) {
 			this.ctx.strokeStyle = "black";
-			if (!this.boundingbox.hidden) {
-				this.ctx.strokeRect(this.boundingbox.x - this.game.camera.x, this.boundingbox.y, this.boundingbox.width, this.boundingbox.height);
-			}
+			// if (!this.boundingbox.hidden) {
+				this.ctx.strokeRect(this.boundingbox.x - this.camera.x, this.boundingbox.y, this.boundingbox.width, this.boundingbox.height);
+			// }
 			if (this.slashing && this.slashZone.active) {
 				this.ctx.beginPath();
-				this.ctx.arc(this.slashZone.outerCircle.x - this.game.camera.x, this.slashZone.outerCircle.y, this.slashZone.outerCircle.radius, 0, Math.PI * 2);
+				this.ctx.arc(this.slashZone.outerCircle.x - this.camera.x, this.slashZone.outerCircle.y, this.slashZone.outerCircle.radius, 0, Math.PI * 2);
 				this.ctx.stroke();
-				this.ctx.arc(this.slashZone.innerCircle.x - this.game.camera.x, this.slashZone.innerCircle.y, this.slashZone.innerCircle.radius, 0, Math.PI * 2);
+				this.ctx.arc(this.slashZone.innerCircle.x - this.camera.x, this.slashZone.innerCircle.y, this.slashZone.innerCircle.radius, 0, Math.PI * 2);
 				this.ctx.stroke();
 			}
 		}
+	}
+
+	die() {
+		this.alive = false;
+		this.timeOfDeath = this.game.sceneManager.levelSceneTimer;
+		this.lightsaber.hidden = true;
+		this.boundingbox = new BoundingBox(this.x + 90 * zc.Z_SCALE, this.y - 120 * zc.Z_SCALE, 50 * zc.Z_SCALE, 108 * zc.Z_SCALE);
+		this.boundingbox.hidden = true;
 	}
 
 	setXY(x, y) {
 		this.x = x;
 		this.y = y;
 		// update boundingBox
-		if (this.facingRight) {
-			this.faceRight();
-		} else {
-			this.faceLeft();
+		if (this.alive) {
+	 		if (this.facingRight) {
+				this.faceRight();
+			} else {
+				this.faceLeft();
+			}
 		}
 	}
 
@@ -457,6 +498,15 @@ class Zerlin extends Entity {
 												   1,
 												   true, false,
 												   zc.Z_SCALE);
+	// constructor(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale) {
+		this.deathAnimation = new Animation(this.assetManager.getAsset("../img/Zerlin death.png"),
+													0, 0,
+												   zc.Z_DEATH_WIDTH,
+												   zc.Z_HEIGHT,
+												   .14,
+												   zc.Z_DEATH_FRAMES,
+												   false, false,
+												   zc.Z_SCALE);
 	}
 }
 
@@ -473,6 +523,7 @@ class Lightsaber extends Entity {
 		this.ctx = game.ctx;
 		this.angle = 0;
 		this.Zerlin = Zerlin;
+		this.camera = Zerlin.camera;
 		this.hidden = false;
 		this.inClickPosition = false;
 		this.deflectingBeam = false;
@@ -488,11 +539,11 @@ class Lightsaber extends Entity {
 		// rotate
 		if (this.game.mouse) {
 			 // TODO: rotateAndCache if mouse not moved
-			this.angle = Math.atan2(this.game.mouse.y - this.y, this.game.mouse.x + this.game.camera.x - this.x);
+			this.angle = Math.atan2(this.game.mouse.y - this.y, this.game.mouse.x + this.camera.x - this.x);
 
 			// change sprite on any of these conditions
 			// TODO: consolidate logic here
-			if (this.game.mouse.x + this.game.camera.x < this.Zerlin.x && this.facingRight) {
+			if (this.game.mouse.x + this.camera.x < this.Zerlin.x && this.facingRight) {
 				this.saberUp = !this.saberUp;
 				if (this.inClickPosition) {
 					this.faceLeftUpSaber();
@@ -500,7 +551,7 @@ class Lightsaber extends Entity {
 					this.faceLeftDownSaber();
 				}
 			}
-			else if (this.game.mouse.x + this.game.camera.x > this.Zerlin.x && !this.facingRight) {
+			else if (this.game.mouse.x + this.camera.x > this.Zerlin.x && !this.facingRight) {
 				this.saberUp = !this.saberUp;
 				if (this.inClickPosition) {
 					this.faceRightDownSaber();
@@ -510,14 +561,14 @@ class Lightsaber extends Entity {
 			}
 			else if (this.game.rightClickDown && !this.inClickPosition) {
 				this.inClickPosition = true;
-				if (this.game.mouse.x + this.game.camera.x < this.Zerlin.x) {
+				if (this.game.mouse.x + this.camera.x < this.Zerlin.x) {
 					this.faceLeftUpSaber();
 				} else {
 					this.faceRightDownSaber();
 				}
 			} else if (!this.game.rightClickDown && this.inClickPosition) {
 				this.inClickPosition = false;
-				if (this.game.mouse.x + this.game.camera.x < this.Zerlin.x) {
+				if (this.game.mouse.x + this.camera.x < this.Zerlin.x) {
 					this.faceLeftDownSaber();
 				} else {
 					this.faceRightUpSaber();
@@ -542,7 +593,7 @@ class Lightsaber extends Entity {
 	draw() {
 		if (!this.hidden) {
 			this.ctx.save();
-			this.ctx.translate(this.x - this.game.camera.x, this.y);
+			this.ctx.translate(this.x - this.camera.x, this.y);
 			this.ctx.rotate(this.angle);
 			this.ctx.drawImage(this.image,
 							   0,
@@ -559,8 +610,8 @@ class Lightsaber extends Entity {
 			this.ctx.save();
 			this.ctx.strokeStyle = "black";
 			this.ctx.beginPath();
-			this.ctx.moveTo(this.bladeCollar.x - this.game.camera.x, this.bladeCollar.y);
-			this.ctx.lineTo(this.bladeTip.x - this.game.camera.x, this.bladeTip.y);
+			this.ctx.moveTo(this.bladeCollar.x - this.camera.x, this.bladeCollar.y);
+			this.ctx.lineTo(this.bladeTip.x - this.camera.x, this.bladeTip.y);
 			this.ctx.stroke();
 			this.ctx.closePath();
 			this.ctx.restore();

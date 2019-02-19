@@ -26,8 +26,9 @@ const sbc = Constants.StatusBarConstants;
 * equal to (maxLength / maxSize) / currentSize
 */
 class AbstractStatusBar extends Entity {
-    constructor(game, x, y, hasCriticalState) {
+    constructor(game, sceneManager, x, y, hasCriticalState) {
         super(game, x, y, 0, 0);
+        this.sceneManager = sceneManager;
         this.displayText = sbc.STATUS_BAR_DISPLAY_TEXT;
         this.hasCriticalState = hasCriticalState; //does the bar flash when it gets low.
         this.maxSize = 0; //the numeric size of the status bar.
@@ -157,16 +158,16 @@ class AbstractStatusBar extends Entity {
 * player to see the a visual representation of the current health.
 */ 
 class HealthStatusBar extends AbstractStatusBar {
-    constructor(game, x, y) {
-        super(game, x, y, sbc.HEALTH_BAR_HAS_CRITICAL_STATE);
+    constructor(game, sceneManager, x, y) {
+        super(game, sceneManager, x, y, sbc.HEALTH_BAR_HAS_CRITICAL_STATE);
         this.foregroundColor = "rgba(255, 0, 0, 1)"; //red
         this.backgroundColor = "rgba(255, 126, 126, 1)"; //light red
         //critical colors
         this.criticalForegroundColor = 'rgba(255, 128, 0, 1)'; //orange
         this.criticalBackgroundColor = 'rgba(255, 165, 70, 1)'; //light orange
 
-        this.maxSize = this.game.Zerlin.maxHealth;
-        this.current = this.game.Zerlin.currentHealth;
+        this.maxSize = this.sceneManager.Zerlin.maxHealth;
+        this.current = this.sceneManager.Zerlin.currentHealth;
 
         this.foregroundGrad = this.game.ctx.createLinearGradient(
             this.x, this.y, this.x + this.maxLength, this.y);
@@ -177,11 +178,10 @@ class HealthStatusBar extends AbstractStatusBar {
     /* method that will check the current health of zerlin then draw the status bar
     * with the new current health */
     setCurrent() {
-        this.current = this.game.Zerlin.currentHealth;
-
+        this.current = this.sceneManager.Zerlin.currentHealth;
     }
     setMaxSize() {
-        this.maxSize = this.game.Zerlin.maxHealth;
+        this.maxSize = this.sceneManager.Zerlin.maxHealth;
     }
 }
 
@@ -192,12 +192,12 @@ class HealthStatusBar extends AbstractStatusBar {
 * for the player to see.
 */
 class ForceStatusBar extends AbstractStatusBar {
-    constructor(game, x, y) {
-        super(game, x, y, sbc.FORCE_BAR_HAS_CRITICAL_STATE);
+    constructor(game, sceneManager, x, y) {
+        super(game, sceneManager, x, y, sbc.FORCE_BAR_HAS_CRITICAL_STATE);
         this.foregroundColor = "rgba(0, 0, 255, 1)"; //blue
         this.backgroundColor = "rgba(126, 126, 255, 1)"; //light blue
-        this.maxSize = this.game.Zerlin.maxForce;
-        this.current = this.game.Zerlin.currentForce;
+        this.maxSize = this.sceneManager.Zerlin.maxForce;
+        this.current = this.sceneManager.Zerlin.currentForce;
 
         this.foregroundGrad = this.game.ctx.createLinearGradient(
             this.x, this.y, this.x + this.maxLength, this.y);
@@ -211,9 +211,9 @@ class ForceStatusBar extends AbstractStatusBar {
     * 
     */
     setCurrent() {
-        this.current = this.game.Zerlin.currentForce;
+        this.current = this.sceneManager.Zerlin.currentForce;
     }
     setMaxSize() {
-        this.maxSize = this.game.Zerlin.maxForce;
+        this.maxSize = this.sceneManager.Zerlin.maxForce;
     }
 }

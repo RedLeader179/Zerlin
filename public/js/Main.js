@@ -74,11 +74,21 @@ class AssetManager {
 	AM.queueDownload("../img/Zerlin slash left.png");
 	AM.queueDownload("../img/Zerlin crouch.png");
 	AM.queueDownload("../img/Zerlin crouch left.png");
+	AM.queueDownload("../img/Zerlin death.png");
+	AM.queueDownload("../img/zerlin at fire.png");
 
 	AM.queueDownload("../img/saber up.png");
 	AM.queueDownload("../img/saber up left.png");
 	AM.queueDownload("../img/saber down.png");
 	AM.queueDownload("../img/saber down left.png");
+
+	AM.queueDownload('../img/opening stars.png');
+	AM.queueDownload('../img/opening oasis 6.png');
+	AM.queueDownload('../img/opening oasis 5.png');
+	AM.queueDownload('../img/opening oasis 4.png');
+	AM.queueDownload('../img/opening oasis 3.png');
+	AM.queueDownload('../img/opening oasis 2.png');
+	AM.queueDownload('../img/opening oasis 1.png');
 
 	AM.queueDownload("../img/backgroundStars.png");
 	AM.queueDownload("../img/backgroundTrees1.png");

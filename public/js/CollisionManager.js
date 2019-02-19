@@ -15,8 +15,9 @@ const cm = Constants.CollisionManagerConstants;
  */
 class CollisionManager {
 
-	constructor(game) {
+	constructor(game, sceneManager) {
 		this.game = game;
+		this.sceneManager = sceneManager;
 	}
 
 	handleCollisions() {
@@ -28,9 +29,9 @@ class CollisionManager {
 		this.ZerlinOnPowerup();
 		this.ZerlinOnPlatform();
 		this.ZerlinOnEdgeOfMap();
+		this.beamOnPlatform();
 		this.beamOnSaber();
 		this.beamOnDroid();
-		this.beamOnPlatform();
 		this.beamOnZerlin();
 		this.beamOnBoss();
 		this.saberOnBoss();
@@ -43,10 +44,10 @@ class CollisionManager {
 		//check collision with other droids.
 		//can optimize by not checking every single droid with each other twice.
 
-		// for (var i = this.game.droids.length - 1; i >= 0; i--) {
-		// 	var droid1 = this.game.droids[i];
-		// 	for (var j = this.game.droids.length - 1; j >= 0; j--) {
-		// 		var droid2 = this.game.droids[j];
+		// for (var i = this.sceneManager.droids.length - 1; i >= 0; i--) {
+		// 	var droid1 = this.sceneManager.droids[i];
+		// 	for (var j = this.sceneManager.droids.length - 1; j >= 0; j--) {
+		// 		var droid2 = this.sceneManager.droids[j];
 		// 		if(droid1 != null && droid2 != null && droid1 != droid2
 		// 			&& collideCircleWithCircle(droid1.boundCircle.x, droid1.boundCircle.y, droid1.boundCircle.radius,
 		// 				droid2.boundCircle.x, droid2.boundCircle.y, droid2.boundCircle.radius)) {
@@ -83,10 +84,10 @@ class CollisionManager {
 					// droid1.deltaY = droid2.deltaY;
 					// droid2.deltaX = temp.deltaX;
 					// droid2.deltaY = temp.deltaY;
-					// droid1.x += droid1.deltaX * this.game.clockTick;
-					// droid1.y += droid1.deltaY * this.game.clockTick;
-					// droid2.x += droid2.deltaX * this.game.clockTick;
-					// droid2.y += droid2.deltaY * this.game.clockTick;
+					// droid1.x += droid1.deltaX * this.sceneManager.clockTick;
+					// droid1.y += droid1.deltaY * this.sceneManager.clockTick;
+					// droid2.x += droid2.deltaX * this.sceneManager.clockTick;
+					// droid2.y += droid2.deltaY * this.sceneManager.clockTick;
 
 		// 		}
 		// 	}
@@ -96,10 +97,10 @@ class CollisionManager {
 	}
 
 	droidOnSaber() {
-		var zerlin = this.game.Zerlin;
+		var zerlin = this.sceneManager.Zerlin;
 		if (zerlin.slashing && zerlin.slashZone.active) {
-			for (var i = this.game.droids.length - 1; i >= 0; i--) {
-				var droid = this.game.droids[i];
+			for (var i = this.sceneManager.droids.length - 1; i >= 0; i--) {
+				var droid = this.sceneManager.droids[i];
 				// check if droid in circular path of saber and not below zerlin
 				if (collidePointWithCircle(droid.boundCircle.x,
 										   droid.boundCircle.y,
@@ -119,12 +120,12 @@ class CollisionManager {
 	}
 
 	laserOnDroid() {
-		for (var i = this.game.lasers.length - 1; i >= 0; i--) {
-			if (this.game.lasers[i].isDeflected) {
-				for (var j = this.game.droids.length - 1; j >= 0; j--) {
-					if (this.isLaserCollidedWithDroid(this.game.lasers[i], this.game.droids[j])) {
-						this.game.droids[j].explode();
-						this.game.lasers[i].removeFromWorld = true;
+		for (var i = this.sceneManager.lasers.length - 1; i >= 0; i--) {
+			if (this.sceneManager.lasers[i].isDeflected) {
+				for (var j = this.sceneManager.droids.length - 1; j >= 0; j--) {
+					if (this.isLaserCollidedWithDroid(this.sceneManager.lasers[i], this.sceneManager.droids[j])) {
+						this.sceneManager.droids[j].explode();
+						this.sceneManager.lasers[i].removeFromWorld = true;
 					}
 				}
 			}
@@ -132,9 +133,9 @@ class CollisionManager {
 	}
 
 	laserOnSaber() {
-		if (!this.game.Zerlin.lightsaber.hidden) {
-			for (var i = this.game.lasers.length - 1; i >= 0; i--) {
-				var laser = this.game.lasers[i];
+		if (!this.sceneManager.Zerlin.lightsaber.hidden) {
+			for (var i = this.sceneManager.lasers.length - 1; i >= 0; i--) {
+				var laser = this.sceneManager.lasers[i];
 				if (!laser.isDeflected) {
 					var collision = this.isCollidedWithSaber(laser);
 					if (collision.collided) {
@@ -147,16 +148,16 @@ class CollisionManager {
 	}
 
 	laserOnZerlin() {
-		var zerlin = this.game.Zerlin;
+		var zerlin = this.sceneManager.Zerlin;
 		if (!zerlin.boundingbox.hidden) {
-			for (var i = 0; i < this.game.lasers.length; i++) {
-				var laser = this.game.lasers[i];
+			for (var i = 0; i < this.sceneManager.lasers.length; i++) {
+				var laser = this.sceneManager.lasers[i];
 				if ( !laser.isDeflected &&
 					laser.x > zerlin.boundingbox.left &&
 					laser.x < zerlin.boundingbox.right &&
 					laser.y > zerlin.boundingbox.top &&
 					laser.y < zerlin.boundingbox.bottom) {
-					// this.game.audio.wound.play();
+					// this.sceneManager.audio.wound.play();
 					this.game.audio.playSoundFx(this.game.audio.hero, 'heroHurt');
 					laser.removeFromWorld = true;
 					zerlin.hits++;
@@ -169,9 +170,9 @@ class CollisionManager {
 	}
 
 	ZerlinOnPowerup() {
-		var zerlin = this.game.Zerlin;
-		for (var i = 0; i < this.game.powerups.length; i++) {
-			var powerup = this.game.powerups[i];
+		var zerlin = this.sceneManager.Zerlin;
+		for (var i = 0; i < this.sceneManager.powerups.length; i++) {
+			var powerup = this.sceneManager.powerups[i];
 			if (collideCircleWithRectangle(powerup.boundCircle.x, powerup.boundCircle.y, powerup.boundCircle.radius,
 				zerlin.boundingbox.x, zerlin.boundingbox.y, zerlin.boundingbox.width, zerlin.boundingbox.height)) {
 
@@ -187,10 +188,10 @@ class CollisionManager {
 	}
 
 	ZerlinOnPlatform() {
-		var zerlin = this.game.Zerlin;
+		var zerlin = this.sceneManager.Zerlin;
 		if (zerlin.falling) { // check if landed
-			for (let i = 0; i < this.game.level.tiles.length; i++) {
-				let tile = this.game.level.tiles[i];
+			for (let i = 0; i < this.sceneManager.level.tiles.length; i++) {
+				let tile = this.sceneManager.level.tiles[i];
 				if (zerlin.boundingbox.collide(tile.boundingBox) && zerlin.lastBottom < tile.boundingBox.top) {
 					zerlin.falling = false;
 					zerlin.tile = tile;
@@ -200,9 +201,9 @@ class CollisionManager {
 				}
 			}
 		} else { // check if falls off current platform
-			for (let i = 0; i < this.game.level.tiles.length; i++) {
-				if (zerlin.isTileBelow(this.game.level.tiles[i])) {
-					zerlin.tile = this.game.level.tiles[i];
+			for (let i = 0; i < this.sceneManager.level.tiles.length; i++) {
+				if (zerlin.isTileBelow(this.sceneManager.level.tiles[i])) {
+					zerlin.tile = this.sceneManager.level.tiles[i];
 					return;
 				}
 			}
@@ -212,35 +213,32 @@ class CollisionManager {
 	}
 
 	ZerlinOnEdgeOfMap() { // TODO: currently, keeps zerlin from falling off edge of map, but do we want to allow that for daring players?
-		var zerlin = this.game.Zerlin;
-		if (zerlin.y > 2 * this.game.camera.height) {
+		var zerlin = this.sceneManager.Zerlin;
+		if (zerlin.y > 2 * this.sceneManager.camera.height) {
 			// game over
-			console.log("Game over");
-			this.game.gameOver = true;
+			if (zerlin.alive) {
+				console.log("Game over");
+				zerlin.die();
+			}
 		}
 		else if (zerlin.x < cm.EDGE_OF_MAP_BUFFER) {
 			zerlin.setXY(cm.EDGE_OF_MAP_BUFFER, zerlin.y);
-		} else if (zerlin.x > this.game.level.length - cm.EDGE_OF_MAP_BUFFER) {
-			zerlin.setXY(this.game.level.length - cm.EDGE_OF_MAP_BUFFER, zerlin.y);
+		} else if (zerlin.x > this.sceneManager.level.length - cm.EDGE_OF_MAP_BUFFER) {
+			zerlin.setXY(this.sceneManager.level.length - cm.EDGE_OF_MAP_BUFFER, zerlin.y);
 		}
 
 	}
 
 	beamOnSaber() {
-		this.game.Zerlin.lightsaber.deflectingBeam = false;
-		if (this.game.boss && this.game.boss.beamCannon.beam) {
-			var zerlin = this.game.Zerlin;
+		this.sceneManager.Zerlin.lightsaber.deflectingBeam = false;
+		if (this.sceneManager.boss && this.sceneManager.boss.beamCannon.beam && !this.sceneManager.Zerlin.lightsaber.hidden) {
+			var zerlin = this.sceneManager.Zerlin;
 			var lightsaber = zerlin.lightsaber;
-			var maxLength = Math.sqrt(this.game.camera.width ** 2, this.game.camera.height ** 2) * 3; // screen diagonal length * 3
-
-			var beamSegments = this.game.boss.beamCannon.beam.segments;
-			beamSegments.splice(1); // recreate all deflected segments;
-			for (let j = 0; j < beamSegments.length; j++) {
-				// set beam to reasonable length
-				beamSegments[j].endX = Math.cos(beamSegments[j].angle) * maxLength + beamSegments[j].x;
-				beamSegments[j].endY = Math.sin(beamSegments[j].angle) * maxLength + beamSegments[j].y;
-
-				if (!lightsaber.hidden) {
+			var beamSegments = this.sceneManager.boss.beamCannon.beam.segments;
+			let j = 0;
+			while (j < beamSegments.length) {
+				console.log(beamSegments.length);
+				if (!beamSegments[j].deflected) {
 					var collisionWithSaber = this.isCollidedLineWithLine({p1: {x: beamSegments[j].x, y: beamSegments[j].y}, p2: {x: beamSegments[j].endX, y: beamSegments[j].endY}},
 													{p1: lightsaber.bladeCollar, p2: lightsaber.bladeTip});
 					// TODO: check for collision with ANY deflective agent (i. e. a mirror or laser shield or something)
@@ -248,29 +246,32 @@ class CollisionManager {
 						lightsaber.deflectingBeam = true;
 						beamSegments[j].endX = collisionWithSaber.intersection.x;
 						beamSegments[j].endY = collisionWithSaber.intersection.y;
+						var newAngle = 2 * lightsaber.getSaberAngle() - beamSegments[j].angle;
 						beamSegments.push({x: collisionWithSaber.intersection.x,
 										   y: collisionWithSaber.intersection.y,
-										   angle: 2 * lightsaber.getSaberAngle() - beamSegments[j].angle,
+										   angle: newAngle,
+										   endX: Math.cos(newAngle) * bc.MAX_BEAM_LENGTH + collisionWithSaber.intersection.x,
+										   endY: Math.sin(newAngle) * bc.MAX_BEAM_LENGTH + collisionWithSaber.intersection.y,
 										   deflected: true});
-						beamSegments[j+1].endX = Math.cos(beamSegments[j+1].angle) * maxLength + beamSegments[j+1].x;
-						beamSegments[j+1].endY = Math.sin(beamSegments[j+1].angle) * maxLength + beamSegments[j+1].y;
-						break;
 					}
 				}
+				j++;
 			}
 		}
 	}
 
 	beamOnDroid() {
-		if (this.game.boss && this.game.boss.beamCannon.beam) {
-			var beamSegments = this.game.boss.beamCannon.beam.segments;
+		if (this.sceneManager.boss && this.sceneManager.boss.beamCannon.beam) {
+			var beamSegments = this.sceneManager.boss.beamCannon.beam.segments;
 			// only check second segment for collision on droids
-			if (beamSegments.length > 1 && beamSegments[1].deflected) {
-				var beamSeg = beamSegments[1];
-				for (var j = this.game.droids.length - 1; j >= 0; j--) {
-					var droidCircle = this.game.droids[j].boundCircle;
-					if (collideLineWithCircle(beamSeg.x, beamSeg.y, beamSeg.endX, beamSeg.endY, droidCircle.x, droidCircle.y, droidCircle.radius)) {
-						this.game.droids[j].explode();
+			if (beamSegments.length > bc.MICRO_BEAM_COUNT) {
+				for (var j = this.sceneManager.droids.length - 1; j >= 0; j--) {
+					for (let k = bc.MICRO_BEAM_COUNT; k < beamSegments.length; k++) {
+						let beamSeg = beamSegments[k];
+						let droidCircle = this.sceneManager.droids[j].boundCircle;
+						if (collideLineWithCircle(beamSeg.x, beamSeg.y, beamSeg.endX, beamSeg.endY, droidCircle.x, droidCircle.y, droidCircle.radius)) {
+							this.sceneManager.droids[j].explode();
+						}
 					}
 				}
 			}
@@ -278,26 +279,26 @@ class CollisionManager {
 	}
 
 	beamOnZerlin() {
-		if (this.game.boss && this.game.boss.beamCannon.beam) {
-			var beam = this.game.boss.beamCannon.beam;
-			var zerlinBox = this.game.Zerlin.boundingbox;
+		if (this.sceneManager.boss && this.sceneManager.boss.beamCannon.beam) {
+			var beam = this.sceneManager.boss.beamCannon.beam;
+			var zerlinBox = this.sceneManager.Zerlin.boundingbox;
 			beam.isSizzling = false;
 			if (!zerlinBox.hidden) {
 				var beamSegments = beam.segments;
-				for (let j = 0; j < beamSegments.length; j++) {
-					var beamSeg = beamSegments[j];
-					var zerlinCollision = collideLineWithRectangle(beamSeg.x, beamSeg.y, beamSeg.endX, beamSeg.endY,
+				for (let j = 0; j < bc.MICRO_BEAM_COUNT; j++) {
+					let beamSeg = beamSegments[j];
+					let zerlinCollision = collideLineWithRectangle(beamSeg.x, beamSeg.y, beamSeg.endX, beamSeg.endY,
 												 zerlinBox.x, zerlinBox.y, zerlinBox.width, zerlinBox.height);
 					if (zerlinCollision.collides) {
 						beam.isSizzling = true;
-						this.game.Zerlin.currentHealth -= this.game.clockTick * dbConst.BEAM_HP_PER_SECOND;
-						// console.log(this.game.Zerlin.hits);
+						this.sceneManager.Zerlin.currentHealth -= this.game.clockTick * dbConst.BEAM_HP_PER_SECOND;
+						// console.log(this.sceneManager.Zerlin.hits);
 
 						// find intersection with box with shortest beam length, end beam there
 						var closestIntersection = findClosestIntersectionOnBox(zerlinCollision, beamSeg);
 						beamSeg.endX = closestIntersection.x;
 						beamSeg.endY = closestIntersection.y;
-						beamSegments.splice(j+1);
+						// beamSegments.splice(j+1);
 					}
 				}
 			}
@@ -305,31 +306,31 @@ class CollisionManager {
 	}
 
 	beamOnBoss() {
-		if (this.game.boss && this.game.boss.beamCannon.beam) {
-			var beam = this.game.boss.beamCannon.beam;
-			var bossBox = this.game.boss.boundingbox;
+		if (this.sceneManager.boss && this.sceneManager.boss.beamCannon.beam) {
+			var beam = this.sceneManager.boss.beamCannon.beam;
+			var bossBox = this.sceneManager.boss.boundingbox;
 			// beam.isSizzling = false;
 			var beamSegments = beam.segments;
-			if (beamSegments.length > 1 && beamSegments[1].deflected) {
-				for (let j = 1; j < beamSegments.length; j++) {
+			if (beamSegments.length > bc.MICRO_BEAM_COUNT) {
+				for (let j = bc.MICRO_BEAM_COUNT; j < beamSegments.length; j++) {
 					var beamSeg = beamSegments[j];
 					var bossCollision = collideLineWithRectangle(beamSeg.x, beamSeg.y, beamSeg.endX, beamSeg.endY,
 												 bossBox.x, bossBox.y, bossBox.width, bossBox.height);
 					if (bossCollision.collides) {
 
-						this.game.boss.hits += this.game.clockTick;
-						this.game.boss.beamDamageTimer += this.game.clockTick;
+						this.sceneManager.boss.hits += this.game.clockTick;
+						this.sceneManager.boss.beamDamageTimer += this.game.clockTick;
 						// find intersection with box with shortest beam length, end beam there
 						var closestIntersection = findClosestIntersectionOnBox(bossCollision, beamSeg);
 						beamSeg.endX = closestIntersection.x;
 						beamSeg.endY = closestIntersection.y;
-						beamSegments.splice(j + 1);
-						if (this.game.boss.beamDamageTimer > bc.B_BEAM_EXPLOSION_THRESHHOLD) {
-							this.game.addEntity(new DroidExplosion(this.game, closestIntersection.x, closestIntersection.y, 1, .2));
+						if (this.sceneManager.boss.beamDamageTimer > bc.B_BEAM_EXPLOSION_THRESHHOLD) {
+							this.sceneManager.addEntity(new DroidExplosion(this.game, closestIntersection.x, closestIntersection.y, .3, .2));
 							
-							this.game.boss.beamCannon.turnOff();
-							this.game.boss.fall();
-							this.game.boss.beamDamageTimer = 0;
+							this.sceneManager.boss.beamCannon.turnOff();
+							this.sceneManager.boss.fall();
+							this.sceneManager.boss.beamDamageTimer = 0;
+							break;
 						}
 					}
 				}
@@ -340,18 +341,18 @@ class CollisionManager {
 	beamOnPlatform() {
 		// only detects collision with top of platforms
 
-		if (this.game.boss && this.game.boss.beamCannon.beam) {
-			var beamSegments = this.game.boss.beamCannon.beam.segments;
+		if (this.sceneManager.boss && this.sceneManager.boss.beamCannon.beam) {
+			var beamSegments = this.sceneManager.boss.beamCannon.beam.segments;
 			for (let j = 0; j < beamSegments.length; j++) {
 				var beamSeg = beamSegments[j];
-				if (beamSeg.angle < Math.PI && beamSeg.angle > 0) { // going down only , not up
-					for (let k = 0; k < this.game.level.tiles.length; k++) {
-						let tile = this.game.level.tiles[k];
+				var beamAngle = shaveRadians(beamSeg.angle);
+				if (beamAngle < Math.PI && beamAngle > 0) { // going down only, not up
+					for (let k = 0; k < this.sceneManager.level.tiles.length; k++) {
+						let tile = this.sceneManager.level.tiles[k];
 						let collisionWithPlatform = this.isCollidedLineWithLine(tile.surface, {p1: {x: beamSeg.x, y: beamSeg.y}, p2: {x: beamSeg.endX, y: beamSeg.endY}});
 						if (collisionWithPlatform.collided) {
 							beamSeg.endX = collisionWithPlatform.intersection.x;
 							beamSeg.endY = collisionWithPlatform.intersection.y;
-							beamSegments.splice(j + 1);
 						}
 					}
 				}
@@ -360,10 +361,10 @@ class CollisionManager {
 	}
 
 	saberOnBoss() {
-		if (this.game.boss && !this.game.boss.boundingbox.hidden) {
-			var zerlin = this.game.Zerlin;
+		if (this.sceneManager.boss && !this.sceneManager.boss.boundingbox.hidden) {
+			var zerlin = this.sceneManager.Zerlin;
 			if (zerlin.slashing && zerlin.slashZone.active) {
-				var bossBox = this.game.boss.boundingbox;
+				var bossBox = this.sceneManager.boss.boundingbox;
 				var bossCenterX = bossBox.x + bossBox.width / 2;
 				var bossCenterY = bossBox.y + bossBox.height / 2;
 
@@ -379,9 +380,9 @@ class CollisionManager {
 										   zerlin.slashZone.innerCircle.y, 
 										   zerlin.slashZone.innerCircle.radius)
 					&& bossCenterY < zerlin.y) {
-					this.game.addEntity(new DroidExplosion(this.game, bossCenterX, bossBox.y + bossBox.height / 2, 2.3, .5));
-					this.game.boss.hideBox();
-					this.game.boss.hits += 3;
+					this.sceneManager.addEntity(new DroidExplosion(this.game, bossCenterX, bossBox.y + bossBox.height / 2, 2.3, .7));
+					this.sceneManager.boss.hideBox();
+					this.sceneManager.boss.hits += 3;
 				}
 			}
 		}
@@ -395,7 +396,7 @@ class CollisionManager {
 	// helper functions
 
 	isCollidedWithSaber(laser) {
-		var lightsaber = this.game.Zerlin.lightsaber;
+		var lightsaber = this.sceneManager.Zerlin.lightsaber;
 		var laserP1 = {x: laser.x, y: laser.y};
 		var laserP2 = {x: laser.prevX, y: laser.prevY};
 
@@ -440,7 +441,7 @@ class CollisionManager {
 	deflectLaser(laser, collisionPt) {
 		laser.isDeflected = true;
 
-		var zerlin = this.game.Zerlin;
+		var zerlin = this.sceneManager.Zerlin;
 		laser.angle = 2 * zerlin.lightsaber.getSaberAngle() - laser.angle;
 		laser.deltaX = Math.cos(laser.angle) * laser.speed + zerlin.deltaX;
 		laser.deltaY = Math.sin(laser.angle) * laser.speed + zerlin.deltaY;
@@ -509,6 +510,11 @@ class BoundingCircle {
 		this.x = x;
 		this.y = y;
 		this.radius = radius;
+	}
+
+	updateCoordinates(x, y) {
+		this.x = x;
+		this.y = y;
 	}
 
 	translateCoordinates(deltaX, deltaY) {

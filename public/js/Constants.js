@@ -77,9 +77,9 @@ Constants = {
     ZerlinConstants : {
         //PHI : 1.618,
 
-        Z_SCALE : PHI - 1,
+        Z_SCALE : .65,
 
-        DRAW_COLLISION_BOUNDRIES : false,
+        DRAW_COLLISION_BOUNDRIES : true,
 
         Z_WIDTH : 114,
         Z_HEIGHT : 306,
@@ -118,6 +118,10 @@ Constants = {
         Z_SLASH_START_FRAME : 9,
         Z_SLASH_END_FRAME : 11,
 
+        Z_DEATH_WIDTH : 414,
+        Z_DEATH_FRAMES : 30,
+
+
         Z_WALKING_SPEED : 150,
         Z_SOMERSAULT_SPEED : 400,
         FORCE_JUMP_DELTA_Y : -950,
@@ -150,7 +154,8 @@ Constants = {
 
     DroidUtilConstants: {
         EXPLOSION_SCALE : 2,
-        EXPLOSION_FRAME_SPEED : 0.05
+        EXPLOSION_FRAME_SPEED : 0.05,
+        DRAW_OUTLINES : true
     },
 
     DroidSmartConstants: {
@@ -174,7 +179,7 @@ Constants = {
     },
 
     BossConstants: {
-        B_SCALE : .6,
+        B_SCALE : .7,
         B_DRAW_COLLISION_BOUNDRIES : false,
         B_WIDTH : 120,
         B_HEIGHT : 240,
@@ -190,18 +195,21 @@ Constants = {
         B_ACCELERATION : 300,
         B_FALLING_REACTION_TIME : .85,
         B_RECOVERY_PERIOD : 2,
-        B_BEAM_EXPLOSION_THRESHHOLD : .1,
+        B_BEAM_EXPLOSION_THRESHHOLD : 10,
         BC_WIDTH : 198,
         BC_HEIGHT : 108,
         BC_X_AXIS : 38,
         BC_RIGHT_Y_AXIS : 17,
         BC_LEFT_Y_AXIS : 91,
-        BC_MUZZLE_X : 189,
+        BC_MUZZLE_X : 185,
         BC_MUZZLE_RIGHT_Y : 81,
         BC_MUZZLE_LEFT_Y : 27,
         BEAM_DROID_LASER_WIDTH : 26,
-        BEAM_HP_PER_SECOND : 3,
-        BEAM_ANGLE_ACCELERATION_RADIANS : Math.PI
+        BEAM_HP_PER_SECOND : .3,
+        BEAM_ANGLE_ACCELERATION_RADIANS : Math.PI,
+        MICRO_BEAM_COUNT : 5,
+        MUZZLE_WIDTH : 13, 
+        MAX_BEAM_LENGTH : 5000
     },
 
     StatusBarConstants: {
@@ -232,7 +240,9 @@ Constants = {
         HEALTH_SCALE: 3,
         RECOVER_HEALTH_AMOUNT: 20,
         RECOVER_FORCE_AMOUNT: 20,
-        FORCE_SCALE: 3
+        FORCE_SCALE: 3,
+        DRAW_OUTLINES : true,
+        FLOATING_MAGNITUDE : 12
     }
 
 };
