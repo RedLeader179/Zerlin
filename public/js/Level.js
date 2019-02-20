@@ -10,11 +10,16 @@ Assets:
 //powerups are capital
 
 -  =  tile
+=  =  moving tile
 d  =  basic droid
 s  =  scatter shot droid
-b  =  beam droid
+b  =  slow burst droid
+f  =  fast burst droid
+m  =  multi-shot droid
+n  =  sniper droid
 H  =  health powerup
-F =   force powerup
+F  =  force powerup
+I  =  invincibility powerup
 
 */
 
@@ -98,6 +103,9 @@ class Level {
                 }
                 else if (this.levelLayout[i][j] === 'F') {//force powerup
                     this.unspawnedPowerups.push(new ForcePowerUp(this.game, this.game.assetManager.getAsset("../img/powerup_force.png"), j * this.tileWidth, i * this.game.camera.height / rows));
+                }
+                else if (this.levelLayout[i][j] === 'I') { //invincibility powerup
+                    this.unspawnedPowerups.push(new InvincibilityPowerUp(this.game, this.game.assetManager.getAsset('../img/powerup_invincibility.png'), j * this.tileWidth, i * this.game.camera.height / rows));
                 }
                 
             }

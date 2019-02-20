@@ -77,6 +77,12 @@ Constants = {
     ZerlinConstants : {
         //PHI : 1.618,
 
+        /* Zerlin health and force stats*/
+        Z_MAX_HEALTH : 20,
+        Z_MAX_FORCE : 20,
+        Z_FORCE_JUMP_FORCE_COST: 2,
+        Z_SOMERSAULT_FORCE_COST: 2,
+
         Z_SCALE : PHI - 1,
 
         DRAW_COLLISION_BOUNDRIES : false,
@@ -122,11 +128,7 @@ Constants = {
         Z_SOMERSAULT_SPEED : 400,
         FORCE_JUMP_DELTA_Y : -950,
         JUMP_DELTA_Y : -500,
-        GRAVITATIONAL_ACCELERATION : 1000,
-
-        /* Zerlin health and force stats*/
-        Z_MAX_HEALTH : 20,
-        Z_MAX_FORCE : 20,
+        GRAVITATIONAL_ACCELERATION : 1000,  
 
         LS_UP_IMAGE_WIDTH : 126,
         LS_UP_IMAGE_HEIGHT : 228,
@@ -207,7 +209,7 @@ Constants = {
     StatusBarConstants: {
         STATUS_BAR_LENGTH : 0.25, // width of the canvas to use when drawing
         STATUS_BAR_WIDTH : 20,
-        STATUS_BAR_DISPLAY_TEXT : false,
+        STATUS_BAR_DISPLAY_TEXT : true,
 
         //when the current is less than or equal to the maxSize * CriticalAmount
         //then start alerting the user by using some graphics.
@@ -232,7 +234,9 @@ Constants = {
         HEALTH_SCALE: 3,
         RECOVER_HEALTH_AMOUNT: 20,
         RECOVER_FORCE_AMOUNT: 20,
-        FORCE_SCALE: 3
+        FORCE_SCALE: 3,
+        INVINCIBILITY_SCALE: 3,
+        INVINCIBILITY_TIME: 10
     }
 
 };

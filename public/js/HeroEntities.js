@@ -30,10 +30,24 @@ class Zerlin extends Entity {
 		this.maxHealth = zc.Z_MAX_HEALTH;
 		this.currentHealth = this.maxHealth;
 		this.maxForce = zc.Z_MAX_FORCE;
-		this.currentForce = this.maxForce/2;
+		this.currentForce = this.maxForce;
+
+		/* status' of zerlin */
+		this.invincible = false;
+		this.iSeconds = Constants.PowerUpConstants.INVINCIBILITY_TIME; //invincibility seconds
+		this.iColor = 'rgba(14, 61, 220, 1)';
 	}
 
 	update() {
+		//check basic status
+		if (this.invincible) {
+			this.iSeconds -= this.game.clockTick;
+			if (this.iSeconds <= 0) {
+				this.invincible = false;
+				this.iSeconds = Constants.PowerUpConstants.INVINCIBILITY_TIME;
+			}
+		}
+
 		// check basic movement
 		if (this.game.mouse.x + this.game.camera.x < this.x && this.facingRight) {
 			this.faceLeft();
@@ -55,13 +69,13 @@ class Zerlin extends Entity {
 		}
 		else if (this.game.keys[kc.MOVE_RIGHT] && !this.game.keys[kc.MOVE_LEFT]) { // TODO: change keys to constants
 			this.direction = 1;
-			if (!this.isInManeuver()) {
+			if ((!this.isInManeuver()) || (this.slashing && this.falling)) {
 				this.deltaX = zc.Z_WALKING_SPEED;
 			}
 		}
 		else if (!this.game.keys[kc.MOVE_RIGHT] && this.game.keys[kc.MOVE_LEFT]) {
 			this.direction = -1;
-			if (!this.isInManeuver()) {
+			if ((!this.isInManeuver()) || (this.slashing && this.falling)) {
 				this.deltaX = -zc.Z_WALKING_SPEED;
 			}
 		}
@@ -69,14 +83,32 @@ class Zerlin extends Entity {
 		// check adding new maneuver
 		if (!this.isInManeuver()) {
 			if (this.game.keys[kc.ROLL] && this.direction !== 0 && !this.falling) {
-				this.startSomersault();
+				//check if zerlin has enough force power for the somersault
+				if (this.currentForce - zc.Z_SOMERSAULT_FORCE_COST >= 0) {
+					//make force power cost force power
+					this.currentForce -= zc.Z_SOMERSAULT_FORCE_COST;
+					this.startSomersault();
+				}
+				
 			}
 			else if (this.game.keys[kc.JUMP_FORCE] && !this.falling) {
-				/** for testing sound */
-				this.tile = null;
-				this.game.audio.playSoundFx(this.game.audio.hero, 'forceJump');
-				this.falling = true;
-				this.deltaY = zc.FORCE_JUMP_DELTA_Y;
+				//check if zerlin has enough force for force jump
+				if (this.currentForce - zc.Z_FORCE_JUMP_FORCE_COST >= 0) {
+					/** for testing sound */
+					this.tile = null;
+					this.game.audio.playSoundFx(this.game.audio.hero, 'forceJump');
+					this.falling = true;
+					this.deltaY = zc.FORCE_JUMP_DELTA_Y;
+					//make force jump cost force power
+					this.currentForce -= zc.Z_FORCE_JUMP_FORCE_COST;
+				}
+				//otherwise do a regular jump
+				else {
+					this.tile = null;
+					this.falling = true;
+					this.deltaY = zc.JUMP_DELTA_Y;
+				}
+				
 			}
 			else if (this.game.keys[kc.JUMP] && !this.falling) {
 				this.tile = null;
@@ -106,10 +138,13 @@ class Zerlin extends Entity {
 			}
 		}
 		else if (this.slashing) {
-			this.deltaX = 0;
+			//this.deltaX = 0;
 			if (this.isAnimationDone()) {
 				this.finishSlash();
 			} else { // still in slash
+				if (!this.falling) {
+					this.deltaX = 0;
+				}
 				var animation = this.slashingDirection === 1 ? this.slashingAnimation : this.slashingLeftAnimation;
 				if (animation.elapsedTime >= zc.Z_SLASH_FRAME_SPEED * zc.Z_SLASH_START_FRAME &&
 					animation.elapsedTime < zc.Z_SLASH_FRAME_SPEED * (zc.Z_SLASH_END_FRAME + 1)) {
@@ -145,6 +180,7 @@ class Zerlin extends Entity {
 	}
 
 	draw() {
+		
 		if (this.somersaulting) {
 			this.drawX = this.x - zc.Z_SCALE * (zc.Z_SOMERSAULT_WIDTH / 2);
 			if (this.somersaultingDirection === -1) {
@@ -216,6 +252,25 @@ class Zerlin extends Entity {
 				this.ctx.arc(this.slashZone.innerCircle.x - this.game.camera.x, this.slashZone.innerCircle.y, this.slashZone.innerCircle.radius, 0, Math.PI * 2);
 				this.ctx.stroke();
 			}
+		}
+
+		//draw invincibility
+		if (this.invincible) {
+			var ctx = this.game.ctx;
+			ctx.save();
+			ctx.globalAlpha = 0.25;
+			ctx.lineWidth = 2;
+			ctx.fillStyle = this.iColor;
+			ctx.beginPath();
+			ctx.ellipse(
+				this.boundingbox.x - this.game.camera.x + this.boundingbox.width / 2, 
+				this.boundingbox.y + this.boundingbox.height / 2, 
+				this.animation.frameWidth * 0.25 + this.boundingbox.width * 0.25, 
+				(this.animation.frameHeight + this.boundingbox.height) * 0.25,
+				0, 0, Math.PI * 2);
+			ctx.fill();
+			ctx.restore();
+			
 		}
 	}
 

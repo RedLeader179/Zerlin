@@ -156,13 +156,16 @@ class CollisionManager {
 					laser.x < zerlin.boundingbox.right &&
 					laser.y > zerlin.boundingbox.top &&
 					laser.y < zerlin.boundingbox.bottom) {
-					// this.game.audio.wound.play();
-					this.game.audio.playSoundFx(this.game.audio.hero, 'heroHurt');
+					if (!zerlin.invincible) { //if zerlin is not invincible
+						// this.game.audio.wound.play();
+						this.game.audio.playSoundFx(this.game.audio.hero, 'heroHurt');
+						zerlin.hits++;
+						zerlin.currentHealth--; //eventually subtract by laser damage
+						//then maybe make zerlin invincible for a few ticks
+						// console.log(zerlin.hits);
+					}
 					laser.removeFromWorld = true;
-					zerlin.hits++;
-					zerlin.currentHealth--; //eventually subtract by laser damage
-					//then maybe make zerlin invincible for a few ticks
-					// console.log(zerlin.hits);
+
 				}
 			}
 		}
