@@ -235,7 +235,7 @@ Constants = {
         RECOVER_HEALTH_AMOUNT: 20,
         RECOVER_FORCE_AMOUNT: 20,
         FORCE_SCALE: 3,
-        INVINCIBILITY_SCALE: 3,
+        INVINCIBILITY_SCALE: 2.5,
         INVINCIBILITY_TIME: 10
     }
 

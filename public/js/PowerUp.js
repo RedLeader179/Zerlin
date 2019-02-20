@@ -48,6 +48,9 @@ class AbstractPowerUp extends Entity {
     effect() {
         throw new Error("Can't instantiate AbstractPowerUp");
     }
+    playSound() {
+        this.game.audio.playSoundFx(this.game.audio.item, 'itemPowerup');
+    }
 }
 //Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale)
 
@@ -76,6 +79,11 @@ class HealthPowerUp extends AbstractPowerUp {
         if (zerlin.currentHealth > zerlin.maxHealth) {
             zerlin.currentHealth = zerlin.maxHealth;
         }
+    }
+    playSound() {
+        //pretty quite, make louder in soundEngine
+        this.game.audio.playSoundFx(this.game.audio.item, 'pickupHeartItem');
+
     }
 }
 

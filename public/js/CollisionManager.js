@@ -182,6 +182,7 @@ class CollisionManager {
 
 				// call the powerup effect.
 				powerup.effect();
+				powerup.playSound();
 				powerup.removeFromWorld = true;
 			}
 			
