@@ -164,8 +164,10 @@ class CollisionManager {
 						zerlin.currentHealth--; //eventually subtract by laser damage
 						//then maybe make zerlin invincible for a few ticks
 						// console.log(zerlin.hits);
+						laser.removeFromWorld = true;
 					}
-					//laser.removeFromWorld = true;
+					
+					
 
 				}
 			}
