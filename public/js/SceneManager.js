@@ -33,22 +33,31 @@ const LEVEL_ONE_TILE_LAYOUT = [
 ' H  -- I    H    -  s       -       ',
 '--------n-- ----   ---  ====  ----'
 ]
-
+//I think becuase of the powerup scale, they need to be 1 row higher than where you want it.
+//can modify Z_SPAWN_X to make zerlin spawn later in the level.
 const MIKE_LEVEL_ONE = [
-'                                                            ',
-'                                                            ',
-'                                                            ',
-'                                                            ',
-'                                                            ',
-'                                                            ',
-'           - d                                              ',
-'           -                                                ',
-'                                                            ',
-'                                                           ',
-'          -                                                 ',
-'                                                            ',
-'------------------------------------------------------------'
-
+'                                                                                          I     d                                  ',
+'                                    d                                                              f                               ',
+'                                                                    s                           d                                  ',
+'                                        d                                                                                     I    ',
+'                                              d                            s              -                                        ',
+'                             d                                                                                                     ',
+'               d                                s         d       s           b         =                                          ',//from ground can force jump to here.
+'                                                                             d                               ---                   ',
+'                                                                              d        d                              X            ',//halfway of camera height.
+'                          d                                                d              s                              =         ',
+'                                            --------                          d                                                    ',
+'                                                                                                                                   ',
+'                  -----                                                    ---                                    ----             ',
+'                                                      H                                             H F                            ',
+'           ------                                          -----       ---            -                      -----       ----      ',//from ground level, can reg. jump to here.
+'                                 -----               ----                        --                 - -                            ',
+'                                                                                                                                   ',
+'------------           -----------------------------      ------------------- --  -------------------------------------------------'
+//   ^      ^- just on screen on start camera location.
+//   |-> Zerlin spawn point.
+//can jump 1 column
+//can roll 2 columns 
 ]
 
 const LEVEL_THREE_TILE_LAYOUT = [

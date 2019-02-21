@@ -12,7 +12,7 @@ class Zerlin extends Entity {
 
 	constructor(game) {
 		// NOTE: this.x is CENTER of Zerlin, not left side of image. this.y is feet.
-		super(game, game.camera.width * camConst.ZERLIN_POSITION_ON_SCREEN, 0, 0, 0);
+		super(game, game.camera.width * camConst.ZERLIN_POSITION_ON_SCREEN + zc.Z_SPAWN_X, 0, 0, 0);
 
 		this.assetManager = game.assetManager;
 		this.ctx = game.ctx;
@@ -32,6 +32,8 @@ class Zerlin extends Entity {
 		this.maxForce = zc.Z_MAX_FORCE;
 		this.currentForce = this.maxForce;
 
+		this.forceRegenTime = 1;
+
 		/* status' of zerlin */
 		this.invincible = false;
 		this.iSeconds = Constants.PowerUpConstants.INVINCIBILITY_TIME; //invincibility seconds
@@ -39,6 +41,18 @@ class Zerlin extends Entity {
 	}
 
 	update() {
+		this.forceRegenTime -= this.game.clockTick;
+		if (this.forceRegenTime <= 0) {
+			if (this.currentForce + zc.Z_FORCE_REGEN_PER_SECOND > this.maxForce) {
+				this.currentForce = this.maxForce;
+			}
+			else {
+				this.currentForce += zc.Z_FORCE_REGEN_PER_SECOND;
+			}
+			
+			this.forceRegenTime = 1;
+		}
+
 		//check basic status
 		if (this.invincible) {
 			this.iSeconds -= this.game.clockTick;

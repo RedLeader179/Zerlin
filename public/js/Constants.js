@@ -26,6 +26,10 @@ Constants = {
         BASIC_DROID_Y_ACCELERATION : 60,
         BASIC_DROID_ORBITAL_X_OFFSET : 200,
         BASIC_DROID_ORBITAL_Y_OFFSET : -200,
+        BASIC_DROID_SCALE : 0.65,
+
+        /* bounding circle scale */
+        BASIC_DROID_BOUND_CIRCLE_SCALE : 1.10,
 
         //Laser constants
         BASIC_DROID_LASER_SPEED : 400,
@@ -78,10 +82,11 @@ Constants = {
         //PHI : 1.618,
 
         /* Zerlin health and force stats*/
-        Z_MAX_HEALTH : 20,
-        Z_MAX_FORCE : 20,
-        Z_FORCE_JUMP_FORCE_COST: 2,
-        Z_SOMERSAULT_FORCE_COST: 2,
+        Z_MAX_HEALTH : 10,
+        Z_MAX_FORCE : 10,
+        Z_FORCE_REGEN_PER_SECOND : 0.5,
+        Z_FORCE_JUMP_FORCE_COST: 3,
+        Z_SOMERSAULT_FORCE_COST: 3,
         /* Zerlin damage */
         Z_SLASH_DAMAGE: 10,
         Z_BOSS_BEAM_DAMAGE: 1,
@@ -89,6 +94,9 @@ Constants = {
         Z_SCALE : PHI - 1,
 
         DRAW_COLLISION_BOUNDRIES : false,
+
+        Z_SPAWN_X : 0,  //modify this to spawn zerlin later in the level.
+                            //about 100 for 1 tile/column.
 
         Z_WIDTH : 114,
         Z_HEIGHT : 306,
@@ -155,7 +163,9 @@ Constants = {
 
     DroidUtilConstants: {
         EXPLOSION_SCALE : 2,
-        EXPLOSION_FRAME_SPEED : 0.05
+        EXPLOSION_FRAME_SPEED : 0.05,
+
+        DRAW_BOUNDING_CIRCLE : true
     },
 
     DroidSmartConstants: {

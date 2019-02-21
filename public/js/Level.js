@@ -79,7 +79,7 @@ class Level {
                     this.tiles.push(movingTile);
                 }
                 else if (this.levelLayout[i][j] === 'd') { // basic droid
-                    this.unspawnedDroids.push(new BasicDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * this.game.camera.height / rows, 14, .2, 100, 100, .5, 45));
+                    this.unspawnedDroids.push(new BasicDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * this.game.camera.height / rows, 14, .2, 100, 100, dbc.BASIC_DROID_SCALE, 45));
                 }
                 else if (this.levelLayout[i][j] === 's') { // scatter shot droid
                     this.unspawnedDroids.push(new LeggyDroid(this.game, this.game.assetManager.getAsset("../img/Droid 3.png"), j * this.tileWidth, i * this.game.camera.height / rows, 10, .2));

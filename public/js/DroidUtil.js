@@ -45,7 +45,7 @@ class AbstractDroid extends Entity {
         // only draw if in camera's view
         if (camera.isInView(this, dimension, dimension)) {
         //debug: draw the bounding circle around the droid
-            if (this.game.showOutlines) {
+            if (duc.DRAW_BOUNDING_CIRCLE) {
                 this.game.ctx.beginPath();
                 this.game.ctx.strokeStyle = "green";
                 this.game.ctx.arc(this.boundCircle.x - camera.x,
