@@ -28,7 +28,7 @@ const LEVEL_ONE_TILE_LAYOUT = [
 '            -      B    --       s',
 ' d F    m   I   -     d            -',
 '  H   H  B F    --  n                ',
-'  =    F    F     ===               ',
+'  =    F    F    X ===              ',
 'f   F --   I      --          d     ',
 ' H  -- I    H    -  s       -       ',
 '--------n-- ----   ---  ====  ----'

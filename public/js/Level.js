@@ -20,7 +20,7 @@ n  =  sniper droid
 H  =  health powerup
 F  =  force powerup
 I  =  invincibility powerup
-
+X  =  Boss
 */
 
 const lc = Constants.LevelConstants;
@@ -39,6 +39,7 @@ class Level {
         this.tiles = [];
         this.unspawnedDroids = []; // when spawned, pass to game engine
         this.unspawnedPowerups = [];
+        this.unspawnedBoss = null; //when boss is spawned create and display the boss' health bar.
 
         this.length = this.levelLayout[0].length * this.tileWidth;
         this._parseLevel();
@@ -96,7 +97,8 @@ class Level {
                     this.unspawnedDroids.push(new MultishotDroid(this.game, this.game.assetManager.getAsset("../img/Droid 5.png"), j * this.tileWidth, i * this.game.camera.height / rows, 21, .12));
                 }
                 else if (this.levelLayout[i][j] === 'X') { // Boss
-                    this.game.boss = new Boss(this.game, j * this.tileWidth, i * this.game.camera.height / rows);
+                    // this.game.boss = new Boss(this.game, j * this.tileWidth, i * this.game.camera.height / rows);
+                    this.unspawnedBoss = new Boss(this.game, j * this.tileWidth, i * this.game.camera.height / rows);
                 }
                 else if (this.levelLayout[i][j] === 'H') { //health powerup
                     this.unspawnedPowerups.push(new HealthPowerUp(this.game, this.game.assetManager.getAsset("../img/powerup_health.png"), j * this.tileWidth, i * this.game.camera.height / rows));
@@ -130,6 +132,17 @@ class Level {
                 this.unspawnedPowerups.splice(i, 1);
             }
         }
+
+        if (this.unspawnedBoss) {
+            if (this.game.camera.isInView(this.unspawnedBoss, 0, 0)) {
+                
+                this.game.boss = this.unspawnedBoss;
+                this.game.bossHealthBar = new BossHealthStatusBar(this.game, 250, 675);
+                this.unspawnedBoss = null;
+            }
+        }
+        
+
         this.tiles.forEach(function(tile) {
             if (tile instanceof MovingTile) {
                 tile.update();

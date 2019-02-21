@@ -180,6 +180,26 @@ class Zerlin extends Entity {
 	}
 
 	draw() {
+		this.ctx.save();
+		//draw invincibility
+		if (this.invincible) {
+			
+			// var ctx = this.game.ctx;
+			// ctx.save(); //move to bottom of draw method after uncommenting
+			// ctx.globalAlpha = 0.25;
+			// ctx.lineWidth = 2;
+			// ctx.fillStyle = this.iColor;
+			// ctx.beginPath();
+			// ctx.ellipse(
+			// 	this.boundingbox.x - this.game.camera.x + this.boundingbox.width / 2, 
+			// 	this.boundingbox.y + this.boundingbox.height / 2, 
+			// 	this.animation.frameWidth * 0.25 + this.boundingbox.width * 0.25, 
+			// 	(this.animation.frameHeight + this.boundingbox.height) * 0.25,
+			// 	0, 0, Math.PI * 2);
+			// ctx.fill();
+			// ctx.restore();
+			this.game.ctx.globalAlpha = 0.65;
+		}
 		
 		if (this.somersaulting) {
 			this.drawX = this.x - zc.Z_SCALE * (zc.Z_SOMERSAULT_WIDTH / 2);
@@ -253,25 +273,9 @@ class Zerlin extends Entity {
 				this.ctx.stroke();
 			}
 		}
+		this.ctx.restore();
 
-		//draw invincibility
-		if (this.invincible) {
-			var ctx = this.game.ctx;
-			ctx.save();
-			ctx.globalAlpha = 0.25;
-			ctx.lineWidth = 2;
-			ctx.fillStyle = this.iColor;
-			ctx.beginPath();
-			ctx.ellipse(
-				this.boundingbox.x - this.game.camera.x + this.boundingbox.width / 2, 
-				this.boundingbox.y + this.boundingbox.height / 2, 
-				this.animation.frameWidth * 0.25 + this.boundingbox.width * 0.25, 
-				(this.animation.frameHeight + this.boundingbox.height) * 0.25,
-				0, 0, Math.PI * 2);
-			ctx.fill();
-			ctx.restore();
-			
-		}
+		
 	}
 
 	setXY(x, y) {

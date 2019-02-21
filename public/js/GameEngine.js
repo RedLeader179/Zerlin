@@ -28,6 +28,9 @@ class GameEngine {
         this.droids = [];
         this.tiles = [];
         this.boss = null;
+        this.healthBar = null;
+        this.forceBar = null;
+        this.bossHealthBar = null;
         this.powerups = [];
         this.ctx = null;
         this.surfaceWidth = null;
@@ -49,8 +52,10 @@ class GameEngine {
         this.sceneManager = new SceneManager(this);
         this.level = this.sceneManager.currentLevel;
         this.Zerlin = new Zerlin(this);
-        this.addEntity(new HealthStatusBar(this, 25, 25)); //put these in scene manager??
-        this.addEntity(new ForceStatusBar(this, 50, 50));
+
+        this.healthBar = new HealthStatusBar(this, 25, 25); //put these in scene manager??
+        this.forceBar = new ForceStatusBar(this, 50, 50);
+        //this.addEntity(new BossHealthStatusBar(this, 250, 675));
 
         this.collisionManager = new CollisionManager(this);
         // TODO: instantiate Parallax manager here (and other managers)
@@ -108,6 +113,13 @@ class GameEngine {
         if (this.boss) {
             this.boss.update();
         }
+        if (this.healthBar) 
+            this.healthBar.update();
+        if (this.forceBar) 
+            this.forceBar.update();
+        
+        if (this.bossHealthBar)
+            this.bossHealthBar.update();
 
 
         this.collisionManager.handleCollisions();
@@ -135,6 +147,13 @@ class GameEngine {
         for (var i = 0; i < this.otherEntities.length; i++) {
             this.otherEntities[i].draw(this.ctx);
         }
+
+        if (this.healthBar)
+            this.healthBar.draw();
+        if (this.forceBar)
+            this.forceBar.draw();
+        if (this.bossHealthBar)
+            this.bossHealthBar.draw();
         
 
         if (this.gameOver) {

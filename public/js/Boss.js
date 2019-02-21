@@ -23,11 +23,20 @@ class Boss extends Entity {
 		this.secondsBeforeFire = bc.B_SHOOT_INTERVAL;
 		this.jetPackSoundOn = false;
 		this.beamDamageTimer = 0;
+
+		/* Boss Health Stats */
+		this.maxHealth = bc.B_MAX_HEALTH;
+		this.currentHealth = this.maxHealth;
+
 		this.faceLeft();
 		this.createAnimations();
 	}
 
 	update() {
+		if (this.currentHealth <= 0) {
+			//kill the boss
+		}
+		
 		if (!this.falling) {
 			if (this.y > (this.game.camera.height - bc.B_HOVERING_HEIGHT)) {
 				this.deltaY -= bc.B_ACCELERATION * this.game.clockTick;

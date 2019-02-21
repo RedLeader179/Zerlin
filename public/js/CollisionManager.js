@@ -34,6 +34,7 @@ class CollisionManager {
 		this.beamOnZerlin();
 		this.beamOnBoss();
 		this.saberOnBoss();
+		this.laserOnBoss();
 
 		// TODO: loop through only visible tiles instead of entire level
 	}
@@ -164,7 +165,7 @@ class CollisionManager {
 						//then maybe make zerlin invincible for a few ticks
 						// console.log(zerlin.hits);
 					}
-					laser.removeFromWorld = true;
+					//laser.removeFromWorld = true;
 
 				}
 			}
@@ -294,7 +295,10 @@ class CollisionManager {
 												 zerlinBox.x, zerlinBox.y, zerlinBox.width, zerlinBox.height);
 					if (zerlinCollision.collides) {
 						beam.isSizzling = true;
-						this.game.Zerlin.currentHealth -= this.game.clockTick * dbConst.BEAM_HP_PER_SECOND;
+						if (!this.game.Zerlin.invincible) {
+							this.game.Zerlin.currentHealth -= this.game.clockTick * dbConst.BEAM_HP_PER_SECOND;
+						}
+						
 						// console.log(this.game.Zerlin.hits);
 
 						// find intersection with box with shortest beam length, end beam there
@@ -323,6 +327,7 @@ class CollisionManager {
 
 						this.game.boss.hits += this.game.clockTick;
 						this.game.boss.beamDamageTimer += this.game.clockTick;
+						this.game.boss.currentHealth -= zConst.Z_BOSS_BEAM_DAMAGE;
 						// find intersection with box with shortest beam length, end beam there
 						var closestIntersection = findClosestIntersectionOnBox(bossCollision, beamSeg);
 						beamSeg.endX = closestIntersection.x;
@@ -341,6 +346,8 @@ class CollisionManager {
 		}
 	}
 
+	
+
 	beamOnPlatform() {
 		// only detects collision with top of platforms
 
@@ -358,6 +365,28 @@ class CollisionManager {
 							beamSegments.splice(j + 1);
 						}
 					}
+				}
+			}
+		}
+	}
+
+	laserOnBoss() {
+		if (this.game.boss && !this.game.boss.boundingbox.hidden) {
+			var boss = this.game.boss;
+			var bossBox = boss.boundingbox;
+			for (var i = 0; i < this.game.lasers.length; i++) {
+				var laser = this.game.lasers[i];
+				if (laser.isDeflected &&
+					laser.x > bossBox.left &&
+					laser.x < bossBox.right &&
+					laser.y > bossBox.top &&
+					laser.y < bossBox.bottom) {
+					
+					//play sound of boss being hit
+					boss.hits++;
+					boss.currentHealth -= 1 //laser damage later?
+					laser.removeFromWorld = true;
+
 				}
 			}
 		}
@@ -386,6 +415,7 @@ class CollisionManager {
 					this.game.addEntity(new DroidExplosion(this.game, bossCenterX, bossBox.y + bossBox.height / 2, 2.3, .5));
 					this.game.boss.hideBox();
 					this.game.boss.hits += 3;
+					this.game.boss.currentHealth -= zConst.Z_SLASH_DAMAGE;
 				}
 			}
 		}

@@ -45,12 +45,10 @@ class AbstractStatusBar extends Entity {
         this.borderColor = 'rgba(0, 0, 0, 1)';
         this.flashCritical = false; //toggle boolean
         this.secondsBeforeFlash = sbc.STATUS_BAR_CRITICAL_FLASH_INTERVAL;
+
+        this.image = null;
     
-        this.foregroundGrad = this.game.ctx.createLinearGradient(
-            this.x, this.y, this.x + this.maxLength, this.y);
-        this.foregroundGrad.addColorStop(0, 'rgb(255, 255, 255)');
-        this.foregroundGrad.addColorStop(0.5, 'rgb(126, 126, 126)');
-        this.foregroundGrad.addColorStop(1, 'rgb(0, 0, 0)');
+        
     }
 
     update() {
@@ -74,63 +72,74 @@ class AbstractStatusBar extends Entity {
         super.draw();
         var ctx = this.game.ctx;
 
-        var colorForeground = this.foregroundGrad;
-        var colorBackground = this.backgroundColor;
-        if (this.hasCriticalState && this.current <= sbc.STATUS_BAR_CRITICAL_AMOUNT * this.maxSize) {
-            //paint the critical state
-            if (this.flashCritical) {
-                colorForeground = this.foregroundGrad;
-                colorBackground = this.criticalBackgroundColor;
+        if (!this.hidden) { //if not hidden
+            var colorForeground = this.foregroundColor;
+            var colorBackground = this.backgroundColor;
+            if (this.hasCriticalState && this.current <= sbc.STATUS_BAR_CRITICAL_AMOUNT * this.maxSize) {
+                //paint the critical state
+                if (this.flashCritical) {
+                    colorForeground = this.foregroundColor;
+                    colorBackground = this.criticalBackgroundColor;
+                }
+
+            }
+            ctx.save();
+            ctx.shadowBlur = 5;
+            ctx.shadowColor = 'black';
+
+            //draw the image if it has one
+            if (this.image) {
+                ctx.drawImage(this.image, this.x - 65, this.y - 30, 
+                    50, 50);
             }
 
-        }
-        ctx.save();
-        ctx.shadowBlur = 5;
-        ctx.shadowColor = 'black';
-
-        
-        //draw the border of the status bars
-        ctx.lineWidth = sbc.STATUS_BAR_WIDTH + 5;
-        ctx.strokeStyle = this.borderColor;
-        ctx.lineCap = "round";
-        ctx.beginPath();
-        ctx.moveTo(this.x, this.y);
-        ctx.lineTo(this.x + this.maxLength, this.y);
-        ctx.stroke();
-        ctx.closePath();
-
-
-        //draw the background status bar
-        
-        ctx.lineWidth = sbc.STATUS_BAR_WIDTH;
-        ctx.strokeStyle = colorBackground;
-        ctx.lineCap = "round";
-        ctx.beginPath();
-        ctx.moveTo(this.x, this.y);
-        ctx.lineTo(this.x + this.maxLength, this.y);
-        ctx.stroke();
-        ctx.closePath();
-        
-        if (this.current > 0) {
-            //draw the foreground status bar over the background status bar
-            //ctx.strokeStyle = colorForeground;
-            ctx.strokeStyle = colorForeground;
-            //ctx.lineCap = butt;
+            
+            //draw the border of the status bars
+            ctx.lineWidth = sbc.STATUS_BAR_WIDTH + 5;
+            ctx.strokeStyle = this.borderColor;
+            ctx.lineCap = "round";
             ctx.beginPath();
             ctx.moveTo(this.x, this.y);
-            ctx.lineTo(this.x + ((this.maxLength / this.maxSize) * this.current), this.y);
+            ctx.lineTo(this.x + this.maxLength, this.y);
             ctx.stroke();
             ctx.closePath();
 
-        }
 
-        //draw the text of the status bar current/maxSize
-        if (this.displayText) {
-            ctx.fillText(`${this.current} / ${this.maxSize}`, this.x + this.maxLength/2, 
-                this.y + sbc.STATUS_BAR_WIDTH * 0.20);
+            //draw the background status bar
+            
+            ctx.lineWidth = sbc.STATUS_BAR_WIDTH;
+            ctx.strokeStyle = colorBackground;
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y);
+            ctx.lineTo(this.x + this.maxLength, this.y);
+            ctx.stroke();
+            ctx.closePath();
+            
+            if (this.current > 0) {
+                //draw the foreground status bar over the background status bar
+                //ctx.strokeStyle = colorForeground;
+                ctx.strokeStyle = colorForeground;
+                //ctx.lineCap = butt;
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(this.x + ((this.maxLength / this.maxSize) * this.current), this.y);
+                ctx.stroke();
+                ctx.closePath();
+
+            }
+
+            
+
+            //draw the text of the status bar current/maxSize
+            if (this.displayText) {
+                ctx.fillText(`${this.current} / ${this.maxSize}`, this.x + this.maxLength/2, 
+                    this.y + sbc.STATUS_BAR_WIDTH * 0.20);
+            }
+            
+            ctx.restore();
         }
         
-        ctx.restore();
 
         
     }
@@ -148,6 +157,9 @@ class AbstractStatusBar extends Entity {
     setMaxSize() {
         throw new Error("AbstractStatusBar can't be instantiated");
     }
+    setHidden(hidden) {
+        this.hidden = hidden;
+    }
 }
 
 
@@ -159,7 +171,8 @@ class AbstractStatusBar extends Entity {
 class HealthStatusBar extends AbstractStatusBar {
     constructor(game, x, y) {
         super(game, x, y, sbc.HEALTH_BAR_HAS_CRITICAL_STATE);
-        this.foregroundColor = "rgba(255, 0, 0, 1)"; //red
+        this.hidden = false;
+        //this.foregroundColor = "rgba(255, 0, 0, 1)"; //red
         this.backgroundColor = "rgba(255, 126, 126, 1)"; //light red
         //critical colors
         this.criticalForegroundColor = 'rgba(255, 128, 0, 1)'; //orange
@@ -168,11 +181,11 @@ class HealthStatusBar extends AbstractStatusBar {
         this.maxSize = this.game.Zerlin.maxHealth;
         this.current = this.game.Zerlin.currentHealth;
 
-        this.foregroundGrad = this.game.ctx.createLinearGradient(
+        this.foregroundColor = this.game.ctx.createLinearGradient(
             this.x, this.y, this.x + this.maxLength, this.y);
-        this.foregroundGrad.addColorStop(0, 'rgb(165, 0, 0)');
-        this.foregroundGrad.addColorStop(0.5, 'rgb(221, 0, 0)');
-        this.foregroundGrad.addColorStop(1, 'rgb(255, 55, 55)');
+        this.foregroundColor.addColorStop(0, 'rgb(165, 0, 0)');
+        this.foregroundColor.addColorStop(0.5, 'rgb(221, 0, 0)');
+        this.foregroundColor.addColorStop(1, 'rgb(255, 55, 55)');
     }
     /* method that will check the current health of zerlin then draw the status bar
     * with the new current health */
@@ -194,16 +207,17 @@ class HealthStatusBar extends AbstractStatusBar {
 class ForceStatusBar extends AbstractStatusBar {
     constructor(game, x, y) {
         super(game, x, y, sbc.FORCE_BAR_HAS_CRITICAL_STATE);
-        this.foregroundColor = "rgba(0, 0, 255, 1)"; //blue
+        this.hidden = false;
+        //this.foregroundColor = "rgba(0, 0, 255, 1)"; //blue
         this.backgroundColor = "rgba(126, 126, 255, 1)"; //light blue
         this.maxSize = this.game.Zerlin.maxForce;
         this.current = this.game.Zerlin.currentForce;
 
-        this.foregroundGrad = this.game.ctx.createLinearGradient(
+        this.foregroundColor = this.game.ctx.createLinearGradient(
             this.x, this.y, this.x + this.maxLength, this.y);
-        this.foregroundGrad.addColorStop(0, 'rgb(0, 0, 165)');
-        this.foregroundGrad.addColorStop(0.5, 'rgb(0, 0, 255)');
-        this.foregroundGrad.addColorStop(1, 'rgb(55, 55, 255)');
+        this.foregroundColor.addColorStop(0, 'rgb(0, 0, 165)');
+        this.foregroundColor.addColorStop(0.5, 'rgb(0, 0, 255)');
+        this.foregroundColor.addColorStop(1, 'rgb(55, 55, 255)');
     }
 
     /*
@@ -215,5 +229,35 @@ class ForceStatusBar extends AbstractStatusBar {
     }
     setMaxSize() {
         this.maxSize = this.game.Zerlin.maxForce;
+    }
+}
+
+class BossHealthStatusBar extends AbstractStatusBar {
+    constructor(game, x, y) {
+        super(game, x, y, sbc.BOSS_BAR_HAS_CRITICAL_STATE);
+        this.hidden = false;
+
+        this.maxLength = this.game.surfaceWidth * sbc.BOSS_BAR_LENGTH;
+
+        this.backgroundColor = 'rgb(232, 224, 74)';
+        //Sthis.foregroundColor = 'rgb(196, 187, 26)';
+
+        this.foregroundColor = this.game.ctx.createLinearGradient(
+            this.x, this.y, this.x + this.maxLength, this.y);
+        this.foregroundColor.addColorStop(0, 'rgb(196, 187, 26)');
+        this.foregroundColor.addColorStop(0.5, 'rgb(213, 203, 28)');
+        this.foregroundColor.addColorStop(1, 'rgb(231, 222, 65)');
+
+        this.maxSize = this.game.boss.maxHealth;
+        this.current = this.game.boss.currentHealth;
+
+        this.image = this.game.assetManager.getAsset("../img/boss_helmet.png");
+    }
+
+    setCurrent() {
+        this.current = this.game.boss.currentHealth;
+    }
+    setMaxSize() {
+        this.maxSize = this.game.boss.maxHealth;
     }
 }

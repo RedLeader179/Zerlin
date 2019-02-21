@@ -71,7 +71,7 @@ Constants = {
 
         /* multi-shot laser constants */
         MULTISHOT_DROID_SHOOT_INTERVAL : 2,
-        MULTISHOT_WIDTH : 35,
+        MULTISHOT_WIDTH : 35
     },
 
     ZerlinConstants : {
@@ -82,6 +82,9 @@ Constants = {
         Z_MAX_FORCE : 20,
         Z_FORCE_JUMP_FORCE_COST: 2,
         Z_SOMERSAULT_FORCE_COST: 2,
+        /* Zerlin damage */
+        Z_SLASH_DAMAGE: 10,
+        Z_BOSS_BEAM_DAMAGE: 1,
 
         Z_SCALE : PHI - 1,
 
@@ -176,6 +179,9 @@ Constants = {
     },
 
     BossConstants: {
+        B_MAX_HEALTH : 100,
+        BEAM_HP_PER_SECOND : 3,
+
         B_SCALE : .6,
         B_DRAW_COLLISION_BOUNDRIES : false,
         B_WIDTH : 120,
@@ -202,7 +208,6 @@ Constants = {
         BC_MUZZLE_RIGHT_Y : 81,
         BC_MUZZLE_LEFT_Y : 27,
         BEAM_DROID_LASER_WIDTH : 26,
-        BEAM_HP_PER_SECOND : 3,
         BEAM_ANGLE_ACCELERATION_RADIANS : Math.PI
     },
 
@@ -217,6 +222,11 @@ Constants = {
         STATUS_BAR_CRITICAL_FLASH_INTERVAL : 0.5,
         HEALTH_BAR_HAS_CRITICAL_STATE : true,
         FORCE_BAR_HAS_CRITICAL_STATE : false,
+
+        BOSS_BAR_LENGTH : 0.5,
+        BOSS_BAR_HAS_CRITICAL_STATE : false
+
+
     },
 
     CameraConstants: {
