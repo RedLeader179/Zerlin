@@ -87,11 +87,7 @@ class AbstractStatusBar extends Entity {
             ctx.shadowBlur = 5;
             ctx.shadowColor = 'black';
 
-            //draw the image if it has one
-            if (this.image) {
-                ctx.drawImage(this.image, this.x - 65, this.y - 30, 
-                    50, 50);
-            }
+            
 
             
             //draw the border of the status bars
@@ -259,5 +255,13 @@ class BossHealthStatusBar extends AbstractStatusBar {
     }
     setMaxSize() {
         this.maxSize = this.game.boss.maxHealth;
+    }
+    draw() {
+        super.draw();
+        //draw helmet image to the left of the status bar
+        if (this.image) {
+            this.game.ctx.drawImage(this.image, this.x - 65, this.y - 30, 
+                50, 50);
+        }
     }
 }
