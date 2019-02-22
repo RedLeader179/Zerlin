@@ -122,9 +122,11 @@ class AssetManager {
 	AM.queueDownload("../img/boss falling left.png");
 	AM.queueDownload("../img/beam cannon.png");
 	AM.queueDownload("../img/beam cannon left.png");
+	AM.queueDownload("../img/boss_helmet.png");
 	//powerups animations
 	AM.queueDownload('../img/powerup_health.png');
 	AM.queueDownload('../img/powerup_force.png');
+	AM.queueDownload('../img/powerup_invincibility.png');
 
 
 	AM.queueDownload('../img/music_menu.png');

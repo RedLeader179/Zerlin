@@ -26,6 +26,10 @@ Constants = {
         BASIC_DROID_Y_ACCELERATION : 60,
         BASIC_DROID_ORBITAL_X_OFFSET : 200,
         BASIC_DROID_ORBITAL_Y_OFFSET : -200,
+        BASIC_DROID_SCALE : 0.65,
+
+        /* bounding circle scale */
+        BASIC_DROID_BOUND_CIRCLE_SCALE : 1.10,
 
         //Laser constants
         BASIC_DROID_LASER_SPEED : 400,
@@ -71,15 +75,28 @@ Constants = {
 
         /* multi-shot laser constants */
         MULTISHOT_DROID_SHOOT_INTERVAL : 2,
-        MULTISHOT_WIDTH : 35,
+        MULTISHOT_WIDTH : 35
     },
 
     ZerlinConstants : {
         //PHI : 1.618,
 
-        Z_SCALE : .65,
+        /* Zerlin health and force stats*/
+        Z_MAX_HEALTH : 10,
+        Z_MAX_FORCE : 10,
+        Z_FORCE_REGEN_PER_SECOND : 0.5,
+        Z_FORCE_JUMP_FORCE_COST: 3,
+        Z_SOMERSAULT_FORCE_COST: 3,
+        /* Zerlin damage */
+        Z_SLASH_DAMAGE: 10,
+        Z_BOSS_BEAM_DAMAGE: 1,
+
+        Z_SCALE : 0.5,
 
         DRAW_COLLISION_BOUNDRIES : true,
+
+        Z_SPAWN_X : 0,  //modify this to spawn zerlin later in the level.
+                            //about 100 for 1 tile/column.
 
         Z_WIDTH : 114,
         Z_HEIGHT : 306,
@@ -128,10 +145,6 @@ Constants = {
         JUMP_DELTA_Y : -500,
         GRAVITATIONAL_ACCELERATION : 1000,
 
-        /* Zerlin health and force stats*/
-        Z_MAX_HEALTH : 20,
-        Z_MAX_FORCE : 20,
-
         LS_UP_IMAGE_WIDTH : 126,
         LS_UP_IMAGE_HEIGHT : 228,
         LS_DOWN_IMAGE_WIDTH : 126,
@@ -155,7 +168,8 @@ Constants = {
     DroidUtilConstants: {
         EXPLOSION_SCALE : 2,
         EXPLOSION_FRAME_SPEED : 0.05,
-        DRAW_OUTLINES : true
+        DRAW_OUTLINES : true,
+        DRAW_BOUNDING_CIRCLE : false
     },
 
     DroidSmartConstants: {
@@ -179,7 +193,10 @@ Constants = {
     },
 
     BossConstants: {
-        B_SCALE : .7,
+        B_MAX_HEALTH : 100,
+        BEAM_HP_PER_SECOND : 3,
+
+        B_SCALE : .6,
         B_DRAW_COLLISION_BOUNDRIES : false,
         B_WIDTH : 120,
         B_HEIGHT : 240,
@@ -208,14 +225,14 @@ Constants = {
         BEAM_HP_PER_SECOND : .3,
         BEAM_ANGLE_ACCELERATION_RADIANS : Math.PI,
         MICRO_BEAM_COUNT : 5,
-        MUZZLE_WIDTH : 13, 
+        MUZZLE_WIDTH : 13,
         MAX_BEAM_LENGTH : 5000
     },
 
     StatusBarConstants: {
         STATUS_BAR_LENGTH : 0.25, // width of the canvas to use when drawing
         STATUS_BAR_WIDTH : 20,
-        STATUS_BAR_DISPLAY_TEXT : false,
+        STATUS_BAR_DISPLAY_TEXT : true,
 
         //when the current is less than or equal to the maxSize * CriticalAmount
         //then start alerting the user by using some graphics.
@@ -223,6 +240,11 @@ Constants = {
         STATUS_BAR_CRITICAL_FLASH_INTERVAL : 0.5,
         HEALTH_BAR_HAS_CRITICAL_STATE : true,
         FORCE_BAR_HAS_CRITICAL_STATE : false,
+
+        BOSS_BAR_LENGTH : 0.5,
+        BOSS_BAR_HAS_CRITICAL_STATE : false
+
+
     },
 
     CameraConstants: {
@@ -243,6 +265,8 @@ Constants = {
         FORCE_SCALE: 3,
         DRAW_OUTLINES : true,
         FLOATING_MAGNITUDE : 12
+        INVINCIBILITY_SCALE: 2.5,
+        INVINCIBILITY_TIME: 10
     }
 
 };

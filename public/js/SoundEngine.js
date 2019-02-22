@@ -319,6 +319,7 @@ class SoundEngine {
 		  });
 
 			/***** set the default sound volumes *****/ //make into constants ?
+			//this.item.volume(10, 'pickupHeartItem'); //not working?
 			this.enemy.volume(.7, 'retroBlasterShot');
 			//for this.game.audio.enemy.volume(.07, this.game.audio.enemy.play('retroBlasterShot'));
 			this.hero.volume(.1, 'heroHurt');

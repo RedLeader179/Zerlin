@@ -4,17 +4,61 @@ TCSS 491 - Computational Worlds
 Joshua Atherton, Michael Josten, Steven Golob
 */
 
+/*
+Assets:
+//powerups are capital
+
+-  =  tile
+=  =  moving tile
+d  =  basic droid
+s  =  scatter shot droid
+b  =  slow burst droid
+f  =  fast burst droid
+m  =  multi-shot droid
+n  =  sniper droid
+H  =  health powerup
+F  =  force powerup
+I  =  invincibility powerup
+
+*/
+
 const LEVEL_ONE_TILE_LAYOUT = [
 '       b                          ',
 ' s            b    --   d     -s  ',
-'  F         -           --       s',
-' d     m      -     d            -',
-'             --  n                ',
-'  =       H     ===               ',
-'f    --         --          d     ',
-'   --          -  s       -       ',
+'            -      B    --       s',
+' d F    m   I   -     d            -',
+'  H   H  B F    --  n                ',
+'  =    F    F    X ===              ',
+'f   F --   I      --          d     ',
+' H  -- I    H    -  s       -       ',
 '--------n-- ----   ---  ====  ----'
-];
+]
+//I think becuase of the powerup scale, they need to be 1 row higher than where you want it.
+//can modify Z_SPAWN_X to make zerlin spawn later in the level.
+const MIKE_LEVEL_ONE = [
+'                                                                                          I     d                                  ',
+'                                    d                                                              f                               ',
+'                                                                    s                           d                                  ',
+'                                        d                                                                                     I    ',
+'                                              d                            s              -                                        ',
+'                             d                                                                                                     ',
+'               d                                s         d       s           b         =                                          ',//from ground can force jump to here.
+'                                                                             d                               ---                   ',
+'                                                                              d        d                              X            ',//halfway of camera height.
+'                          d                                                d              s                              =         ',
+'                                            --------                          d                                                    ',
+'                                                                                                                                   ',
+'                  -----                                                    ---                                    ----             ',
+'                                                      H                                             H F                            ',
+'           ------                                          -----       ---            -                      -----       ----      ',//from ground level, can reg. jump to here.
+'                                 -----               ----                        --                 - -                            ',
+'                                                                                                                                   ',
+'------------           -----------------------------      ------------------- --  -------------------------------------------------'
+//   ^      ^- just on screen on start camera location.
+//   |-> Zerlin spawn point.
+//can jump 1 column
+//can roll 2 columns
+]
 
 const LEVEL_THREE_TILE_LAYOUT = [
 '                 ',
@@ -158,19 +202,19 @@ class SceneManager2 {
         // console.log('added entity');
         this.otherEntities.push(entity);
     }
-    
+
     addDroid(droid) {
         // console.log('added droid');
         this.droids.push(droid);
         // this.otherEntities.push(droid);
     }
-    
+
     addLaser(laser) {
         // console.log('added laser');
         this.lasers.push(laser);
         // this.otherEntities.push(laser);
     }
-    
+
     addPowerup(powerup) {
         this.powerups.push(powerup);
     }
@@ -240,7 +284,7 @@ class SceneManager2 {
  		this.sceneEntities.push(new ParallaxScrollBackground(this.game, this, '../img/opening oasis 2.png', 1, 1300, 0, -265));
  		this.sceneEntities.push(new ParallaxScrollBackground(this.game, this, '../img/opening oasis 1.png', 1, 900, 0, -170));
  		//constructor(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale) {
- 		this.sceneEntities.push(new ParallaxAnimatedBackground(this.game, this, 
+ 		this.sceneEntities.push(new ParallaxAnimatedBackground(this.game, this,
  			new Animation(this.game.assetManager.getAsset('../img/zerlin at fire.png'), 0, 0, 600, 600, .125, 6, true, false, .5),
  			1, 800, 470, 450));
  		this.sceneEntities.push(new Overlay(this.game, true, OPENING_OVERLAY_TIME));
@@ -286,7 +330,7 @@ class SceneManager2 {
  		// 	// this.update = this.levelUpdate;
  		// 	// this.draw = this.levelDraw;
  		// 	// this.startLevelScene();
- 		// } 
+ 		// }
  	}
 
 	openingSceneDraw() {
@@ -425,8 +469,8 @@ class SceneManager2 {
  		// 	this.update = this.levelTransitionUpdate;
  		// 	this.draw = this.levelTransitionDraw;
  		// 	this.startLevelTransitionScene();
- 		// } 
- 		if (!this.startedFinalOverlay && !this.Zerlin.isAlive && 
+ 		// }
+ 		if (!this.startedFinalOverlay && !this.Zerlin.isAlive &&
  				this.Zerlin.timeOfDeath + this.Zerlin.deathAnimation.totalTime < this.levelSceneTimer) {
  			this.startedFinalOverlay = true;
  			this.sceneEntities.push(new Overlay(this.game, false, LEVEL_TRANSITION_OVERLAY_TIME));
@@ -609,5 +653,3 @@ class Overlay {
 	}
 
 }
-
-

@@ -70,7 +70,7 @@ class GameEngine {
         this.ctx.clearRect(0, 0, this.surfaceWidth, this.surfaceHeight);
         this.ctx.save();
         this.sceneManager.draw();
-        
+
 
         // if (this.gameOver) {
         //     this.ctx.textAlign = 'center';

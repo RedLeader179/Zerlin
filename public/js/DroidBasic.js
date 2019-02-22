@@ -31,7 +31,10 @@ class BasicDroid extends AbstractDroid {
         this.shootInterval = dbc.BASIC_DROID_SHOOT_INTERVAL;
 
         this.radius = radius * scale;
-        this.boundCircle = new BoundingCircle(this.x + this.animation.frameWidth / 2 * scale, this.y + this.animation.frameHeight / 2 * scale, this.radius);
+        this.boundCircle = new BoundingCircle(
+            this.x + this.animation.frameWidth / 2 * scale, 
+            this.y + this.animation.frameHeight / 2 * scale, 
+            this.radius * dbc.BASIC_DROID_BOUND_CIRCLE_SCALE);
 
 
         /* shooting fields */

@@ -35,6 +35,7 @@ class CollisionManager {
 		this.beamOnZerlin();
 		this.beamOnBoss();
 		this.saberOnBoss();
+		this.laserOnBoss();
 
 		// TODO: loop through only visible tiles instead of entire level
 	}
@@ -157,13 +158,18 @@ class CollisionManager {
 					laser.x < zerlin.boundingbox.right &&
 					laser.y > zerlin.boundingbox.top &&
 					laser.y < zerlin.boundingbox.bottom) {
-					// this.sceneManager.audio.wound.play();
-					this.game.audio.playSoundFx(this.game.audio.hero, 'heroHurt');
-					laser.removeFromWorld = true;
-					zerlin.hits++;
-					zerlin.currentHealth--; //eventually subtract by laser damage
-					//then maybe make zerlin invincible for a few ticks
-					// console.log(zerlin.hits);
+					if (!zerlin.invincible) { //if zerlin is not invincible
+						// this.game.audio.wound.play();
+						this.game.audio.playSoundFx(this.game.audio.hero, 'heroHurt');
+						zerlin.hits++;
+						zerlin.currentHealth--; //eventually subtract by laser damage
+						//then maybe make zerlin invincible for a few ticks
+						// console.log(zerlin.hits);
+						laser.removeFromWorld = true;
+					}
+
+
+
 				}
 			}
 		}
@@ -180,11 +186,12 @@ class CollisionManager {
 
 				// call the powerup effect.
 				powerup.effect();
+				powerup.playSound();
 				powerup.removeFromWorld = true;
 			}
-			
+
 		}
-	
+
 	}
 
 	ZerlinOnPlatform() {
@@ -291,8 +298,11 @@ class CollisionManager {
 												 zerlinBox.x, zerlinBox.y, zerlinBox.width, zerlinBox.height);
 					if (zerlinCollision.collides) {
 						beam.isSizzling = true;
+
+					if (!this.sceneManager.Zerlin.invincible) {
 						this.sceneManager.Zerlin.currentHealth -= this.game.clockTick * dbConst.BEAM_HP_PER_SECOND;
 						// console.log(this.sceneManager.Zerlin.hits);
+					}
 
 						// find intersection with box with shortest beam length, end beam there
 						var closestIntersection = findClosestIntersectionOnBox(zerlinCollision, beamSeg);
@@ -320,13 +330,16 @@ class CollisionManager {
 
 						this.sceneManager.boss.hits += this.game.clockTick;
 						this.sceneManager.boss.beamDamageTimer += this.game.clockTick;
+						//addition
+						this.sceneManager.boss.currentHealth -= zConst.Z_BOSS_BEAM_DAMAGE;
+
 						// find intersection with box with shortest beam length, end beam there
 						var closestIntersection = findClosestIntersectionOnBox(bossCollision, beamSeg);
 						beamSeg.endX = closestIntersection.x;
 						beamSeg.endY = closestIntersection.y;
 						if (this.sceneManager.boss.beamDamageTimer > bc.B_BEAM_EXPLOSION_THRESHHOLD) {
 							this.sceneManager.addEntity(new DroidExplosion(this.game, closestIntersection.x, closestIntersection.y, .3, .2));
-							
+
 							this.sceneManager.boss.beamCannon.turnOff();
 							this.sceneManager.boss.fall();
 							this.sceneManager.boss.beamDamageTimer = 0;
@@ -337,6 +350,8 @@ class CollisionManager {
 			}
 		}
 	}
+
+
 
 	beamOnPlatform() {
 		// only detects collision with top of platforms
@@ -360,6 +375,28 @@ class CollisionManager {
 		}
 	}
 
+	laserOnBoss() {
+		if (this.game.boss && !this.game.boss.boundingbox.hidden) {
+			var boss = this.game.boss;
+			var bossBox = boss.boundingbox;
+			for (var i = 0; i < this.game.lasers.length; i++) {
+				var laser = this.game.lasers[i];
+				if (laser.isDeflected &&
+					laser.x > bossBox.left &&
+					laser.x < bossBox.right &&
+					laser.y > bossBox.top &&
+					laser.y < bossBox.bottom) {
+
+					//play sound of boss being hit
+					boss.hits++;
+					boss.currentHealth -= 1 //laser damage later?
+					laser.removeFromWorld = true;
+
+				}
+			}
+		}
+	}
+
 	saberOnBoss() {
 		if (this.sceneManager.boss && !this.sceneManager.boss.boundingbox.hidden) {
 			var zerlin = this.sceneManager.Zerlin;
@@ -369,20 +406,22 @@ class CollisionManager {
 				var bossCenterY = bossBox.y + bossBox.height / 2;
 
 				// check if droid in circular path of saber and not below zerlin
-				if (collidePointWithCircle(bossCenterX, 
-										   bossCenterY, 
-										   zerlin.slashZone.outerCircle.x, 
-										   zerlin.slashZone.outerCircle.y, 
+				if (collidePointWithCircle(bossCenterX,
+										   bossCenterY,
+										   zerlin.slashZone.outerCircle.x,
+										   zerlin.slashZone.outerCircle.y,
 										   zerlin.slashZone.outerCircle.radius)
-					&& !collidePointWithCircle(bossCenterX, 
-										   bossCenterY, 
-										   zerlin.slashZone.innerCircle.x, 
-										   zerlin.slashZone.innerCircle.y, 
+					&& !collidePointWithCircle(bossCenterX,
+										   bossCenterY,
+										   zerlin.slashZone.innerCircle.x,
+										   zerlin.slashZone.innerCircle.y,
 										   zerlin.slashZone.innerCircle.radius)
 					&& bossCenterY < zerlin.y) {
 					this.sceneManager.addEntity(new DroidExplosion(this.game, bossCenterX, bossBox.y + bossBox.height / 2, 2.3, .7));
 					this.sceneManager.boss.hideBox();
 					this.sceneManager.boss.hits += 3;
+					//added ---- below
+					this.sceneManager.boss.currentHealth -= zConst.Z_SLASH_DAMAGE;
 				}
 			}
 		}

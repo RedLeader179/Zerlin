@@ -52,6 +52,9 @@ class AbstractPowerUp extends Entity {
     effect() {
         throw new Error("Can't instantiate AbstractPowerUp");
     }
+    playSound() {
+        this.game.audio.playSoundFx(this.game.audio.item, 'itemPowerup');
+    }
 }
 //Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale)
 
@@ -78,6 +81,11 @@ class HealthPowerUp extends AbstractPowerUp {
         if (zerlin.currentHealth > zerlin.maxHealth) {
             zerlin.currentHealth = zerlin.maxHealth;
         }
+    }
+    playSound() {
+        //pretty quite, make louder in soundEngine
+        this.game.audio.playSoundFx(this.game.audio.item, 'pickupHeartItem');
+
     }
 }
 
@@ -111,13 +119,22 @@ class ForcePowerUp extends AbstractPowerUp {
 * invincible, like a white outline, may need to draw another sprite sheet.
 * circle bounding box that has some alpha to make the force field transparent.
 */
+//Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale)
+
 class InvincibilityPowerUp extends AbstractPowerUp {
-    constructor(game, x, y) {
+    constructor(game, spritesheet, x, y) {
         super(game, x, y);
+        this.animation = new Animation(spritesheet, 0, 0, 32, 32, 0.1, 9, true, false, puc.INVINCIBILITY_SCALE);
+
+        /* bounding circle */
+        this.radius = (this.animation.frameWidth / 2) * this.animation.scale;
+        this.boundCircle = {radius: this.radius, 
+            x: this.x + this.radius,
+            y: this.y + this.radius};
     }
 
     effect() {
-
+        this.game.Zerlin.invincible = true;
     }
 }
 

@@ -43,7 +43,7 @@ class AbstractDroid extends Entity {
         // only draw if in camera's view
         if (camera.isInView(this, dimension, dimension)) {
         //debug: draw the bounding circle around the droid
-            if (duc.DRAW_OUTLINES) {
+            if (duc.DRAW_OUTLINES || duc.DRAW_BOUNDING_CIRCLE) { //todo: use only one
                 this.game.ctx.beginPath();
                 this.game.ctx.strokeStyle = "green";
                 this.game.ctx.arc(this.boundCircle.x - camera.x,
@@ -223,7 +223,7 @@ class DroidExplosion extends Entity {
         super(game, x, y, 0, 0);
 
         this.scale = scale? scale * duc.EXPLOSION_SCALE : duc.EXPLOSION_SCALE;
-        this.volume = explosionVolume? explosionVolume : .15; 
+        this.volume = explosionVolume? explosionVolume : .15;
         var spritesheet = this.game.assetManager.getAsset("../img/Explosion.png");
         //Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale)
         this.animation = new Animation(spritesheet, 0, 0, 64, 64,
