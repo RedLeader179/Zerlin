@@ -146,7 +146,7 @@ class SceneManager2 {
     this.levels = [];
     this.level = null;
     this.levelBackgrounds = [];
-    this.levels.push(new Level(this.game, this, LEVEL_ONE_TILE_LAYOUT, LEVEL_ONE_BACKGROUNDS, LEVEL_ONE_TILES));
+    this.levels.push(new Level(this.game, this, LEVEL_THREE_TILE_LAYOUT, LEVEL_ONE_BACKGROUNDS, LEVEL_ONE_TILES));
   }
 
   addEntity(entity) {
@@ -389,14 +389,11 @@ class SceneManager2 {
         }
       }
 
-      ////////
-
+      //if the boss has been spawned update him and his health bar
       if (this.boss) {
         this.boss.update();
         this.bossHealthBar.update();
       }
-
-      //////
 
       this.collisionManager.handleCollisions();
 
@@ -446,7 +443,7 @@ class SceneManager2 {
     for (var i = 0; i < this.lasers.length; i++) {
       this.lasers[i].draw(this.ctx);
     }
-    if (this.boss) {
+    if (this.boss) { // draw the boss and health bar if spawned
       this.boss.draw();
       this.bossHealthBar.draw();
     }

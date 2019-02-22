@@ -229,8 +229,8 @@ class ForceStatusBar extends AbstractStatusBar {
 }
 
 class BossHealthStatusBar extends AbstractStatusBar {
-    constructor(game, x, y) {
-        super(game, x, y, sbc.BOSS_BAR_HAS_CRITICAL_STATE);
+    constructor(game, sceneManager, x, y) {
+        super(game, sceneManager, x, y, sbc.BOSS_BAR_HAS_CRITICAL_STATE);
         this.hidden = false;
 
         this.maxLength = this.game.surfaceWidth * sbc.BOSS_BAR_LENGTH;
@@ -244,15 +244,14 @@ class BossHealthStatusBar extends AbstractStatusBar {
         this.foregroundColor.addColorStop(0.5, 'rgb(213, 203, 28)');
         this.foregroundColor.addColorStop(1, 'rgb(231, 222, 65)');
 
-        this.maxSize = sbc.BOSS_BAR_LENGTH;
-        this.current = sbc.BOSS_BAR_LENGTH;
+        this.maxSize = this.sceneManager.boss.maxHealth;
+        this.current = this.sceneManager.boss.currentHealth;
 
         this.image = this.game.assetManager.getAsset("../img/boss_helmet.png");
     }
 
     setCurrent() {
-      //todo: get this going
-        // this.current = this.sceneManager.boss.currentHealth;
+      this.current = this.sceneManager.boss.currentHealth;
     }
     setMaxSize() {
         this.maxSize = sbc.BOSS_BAR_LENGTH;
