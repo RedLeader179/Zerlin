@@ -415,4 +415,9 @@ class SoundEngine {
 		this.bossBackgroundMusic.play();
 		this.bossSongPlaying = true;
 	}
+	playBackgroundSong() {
+		this.bossBackgroundMusic.stop();
+		this.backgroundMusic.play();
+		this.bossSongPlaying = false;
+	}
 }

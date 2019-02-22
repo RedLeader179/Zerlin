@@ -463,6 +463,8 @@ class SceneManager2 {
       this.sceneEntities.push(new Overlay(this.game, false, LEVEL_TRANSITION_OVERLAY_TIME));
       this.sceneEntities.push(new GameOverTextScreen(this.game));
       this.stopLevelTime = this.levelSceneTimer + 6;
+      //could play death song or something
+      this.game.audio.playBackgroundSong();
     }
     if (this.stopLevelTime < this.levelSceneTimer) {
       this.game.audio.endAllSoundFX();
