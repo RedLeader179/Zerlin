@@ -229,10 +229,12 @@ class ForceStatusBar extends AbstractStatusBar {
 }
 
 class BossHealthStatusBar extends AbstractStatusBar {
-    constructor(game, sceneManager, x, y) {
-        super(game, sceneManager, x, y, sbc.BOSS_BAR_HAS_CRITICAL_STATE);
+    constructor(game, x, y, boss) {
+        super(game, game.sceneManagerm, x, y, sbc.BOSS_BAR_HAS_CRITICAL_STATE);
         this.hidden = false;
-
+        // console.log(x);
+        // console.log(y);
+        this.boss = boss;
         this.maxLength = this.game.surfaceWidth * sbc.BOSS_BAR_LENGTH;
 
         this.backgroundColor = 'rgb(92, 92, 92)';
@@ -244,17 +246,17 @@ class BossHealthStatusBar extends AbstractStatusBar {
         this.foregroundColor.addColorStop(0.5, 'rgb(213, 203, 28)');
         this.foregroundColor.addColorStop(1, 'rgb(231, 222, 65)');
 
-        this.maxSize = this.sceneManager.boss.maxHealth;
-        this.current = this.sceneManager.boss.currentHealth;
+        this.maxSize = this.boss.maxHealth;
+        this.current = this.boss.currentHealth;
 
         this.image = this.game.assetManager.getAsset("../img/boss_helmet.png");
     }
 
     setCurrent() {
-      this.current = this.sceneManager.boss.currentHealth;
+        this.current = this.boss.currentHealth;
     }
     setMaxSize() {
-        this.maxSize = sbc.BOSS_BAR_LENGTH;
+        this.maxSize = this.boss.maxHealth;
     }
     draw() {
         super.draw();
@@ -265,3 +267,41 @@ class BossHealthStatusBar extends AbstractStatusBar {
         }
     }
 }
+
+// class BossHealthStatusBar extends AbstractStatusBar {
+//     constructor(game, sceneManager, x, y) {
+//         super(game, sceneManager, x, y, sbc.BOSS_BAR_HAS_CRITICAL_STATE);
+//         this.hidden = false;
+//
+//         this.maxLength = this.game.surfaceWidth * sbc.BOSS_BAR_LENGTH;
+//
+//         this.backgroundColor = 'rgb(92, 92, 92)';
+//         //Sthis.foregroundColor = 'rgb(196, 187, 26)';
+//
+//         this.foregroundColor = this.game.ctx.createLinearGradient(
+//             this.x, this.y, this.x + this.maxLength, this.y);
+//         this.foregroundColor.addColorStop(0, 'rgb(196, 187, 26)');
+//         this.foregroundColor.addColorStop(0.5, 'rgb(213, 203, 28)');
+//         this.foregroundColor.addColorStop(1, 'rgb(231, 222, 65)');
+//
+//         this.maxSize = this.sceneManager.boss.maxHealth;
+//         this.current = this.sceneManager.boss.currentHealth;
+//
+//         this.image = this.game.assetManager.getAsset("../img/boss_helmet.png");
+//     }
+//
+//     setCurrent() {
+//       this.current = this.sceneManager.boss.currentHealth;
+//     }
+//     setMaxSize() {
+//         this.maxSize = sbc.BOSS_BAR_LENGTH;
+//     }
+//     draw() {
+//         super.draw();
+//         //draw helmet image to the left of the status bar
+//         if (this.image) {
+//             this.game.ctx.drawImage(this.image, this.x - 65, this.y - 30,
+//                 50, 50);
+//         }
+//     }
+// }

@@ -46,6 +46,18 @@ backgroundMusicArray['clashOfLightsabersTheme'] = new Howl({
 	// autoplay: true,
 	// preload: true
 });
+backgroundMusicArray['bossSong'] = new Howl({
+	src: [
+		"sound/bossSong.ogg",
+		"sound/bossSong.m4a",
+		"sound/bossSong.mp3",
+		"sound/bossSong.wav"
+	],
+  //html5: true,
+	rate: 1.1, //can set 0.0 - 4.0 for speed
+	loop: true,
+	volume: 2,
+});
 
 
 
@@ -325,6 +337,10 @@ class SoundEngine {
 			this.hero.volume(.1, 'heroHurt');
 			// this.game.audio.lightsaber.volume(.25, this.game.audio.lightsaber.play('lightsaberSwing'));
 			this.lightsaber.volume(.25, 'lightsaberSwing');
+
+			this.bossSongPlaying = false;
+			this.bossBackgroundMusic = backgroundMusicArray['bossSong'];
+			this.bossBackgroundMusic.volume = 1;
 
 			//array holding all of the howler soundFX objects
 			this.soundFXArray = [this.lightsaber, this.item, this.hero,

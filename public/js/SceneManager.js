@@ -41,29 +41,28 @@ const LEVEL_ONE_TILE_LAYOUT = [
 //I think becuase of the powerup scale, they need to be 2 row higher than where you want it.
 //can modify Z_SPAWN_X to make zerlin spawn later in the level.
 const MIKE_LEVEL_ONE = [
-  '                                                                                          I     d                                  ',
-  '                                    d                                                              f                               ',
-  '                                                                    s                           d                                  ',
-  '                                        d                                                                                     I    ',
-  '                                              d                            s              -                                        ',
-  '                             d                                                                                                     ',
-  '               d                                s         d       s           b         =                                          ', //from ground can force jump to here.
-  '                                                                             d                               ---                   ',
-  '                                                                              d        d                              X            ', //halfway of camera height.
-  '                          d                                                d              s                              =         ',
-  '                                            --------                          d                                                    ',
-  '                                                                                                                                   ',
-  '                  -----                                                    ---                                    ----             ',
-  '                                                      H                                             H F                            ',
-  '           ------                                          -----       ---            -                      -----       ----      ', //from ground level, can reg. jump to here.
-  '                                 -----               ----                        --                 - -                            ',
-  '                                                                                                                                   ',
-  '------------           -----------------------------      ------------------- --  -------------------------------------------------'
+'                                                                                          I     d  n                               ',
+'                                    d                                                              f                               ',
+'                                                                    s                        m  d     n                            ',
+'                                        d                                                         f                           I    ',
+'                                  s            d                            s              -   m                                   ',
+'                             d                  f                            n                                                     ',
+'               d                                s         d       s         f b         =                                          ',//from ground can force jump to here.
+'                                                                             d                               ---                   ',
+'                                               f b                          f d        d                              X            ',//halfway of camera height.
+'                          d       d                                        d b           s                              ==         ',
+'                                           --------                          d                                                     ',
+'                                                                                                                                   ',
+'                  -----                               H                   ---                       H F          --                ',
+'                                       ----                                                                                        ',
+'           ------                             I           -----       ---            -                      ---       --           ',//from ground level, can reg. jump to here.
+'                                 -----             ----                        --                   - -                            ',
+'                                                                            -                                                      ',
+'------------           -- -- ----            --------   --     --- ---------  -- ---- ---------------------------------------------'];
   //   ^      ^- just on screen on start camera location.
   //   |-> Zerlin spawn point.
   //can jump 1 column
   //can roll 2 columns
-]
 
 const LEVEL_THREE_TILE_LAYOUT = [
   '                 ',
@@ -110,7 +109,6 @@ class SceneManager2 {
     this.sceneEntities = [];
     this.Zerlin = new Zerlin(this.game, this.camera);
     this.boss = null;
-    this.bossHealthBar = null;
     this.collisionManager = new CollisionManager(this.game, this);
     this.levelNumber = 1;
     this.canPause = false;
@@ -165,6 +163,9 @@ class SceneManager2 {
     this.lasers.push(laser);
     // this.otherEntities.push(laser);
   }
+  addBeam(beam) {
+        this.beams.push(beam);
+    }
 
   addPowerup(powerup) {
     this.powerups.push(powerup);
@@ -240,7 +241,7 @@ class SceneManager2 {
       1, 800, 470, 450));
     this.sceneEntities.push(new Overlay(this.game, true, OPENING_OVERLAY_TIME));
 
-    // start openeing scene music
+    // start opening scene music
   }
 
   openingSceneUpdate() {
@@ -338,6 +339,7 @@ class SceneManager2 {
     this.level = this.levels[this.levelNumber - 1];
     this.droids = [];
     this.lasers = [];
+    this.beams = [];
     this.powerups = [];
     this.otherEntities = [];
     this.boss = null;
@@ -359,7 +361,20 @@ class SceneManager2 {
     this.levelSceneTimer += this.game.clockTick;
     this.musicMenu.update();
 
+    // this.musicMenu.update();
+    // if (this.boss && !this.game.audio.bossSongPlaying) {
+    //   this.game.audio.playBossSong();
+    // }
+
+
     if (!this.paused) {
+      if (this.boss && !this.bossHealthBar) {
+          this.bossHealthBar = new BossHealthStatusBar(
+            this.game,
+            this.game.surfaceWidth * 0.25,
+            675,
+            this.boss);
+      }
       this.Zerlin.update();
       this.camera.update();
       this.level.update();
@@ -392,6 +407,8 @@ class SceneManager2 {
       //if the boss has been spawned update him and his health bar
       if (this.boss) {
         this.boss.update();
+      }
+      if (this.bossHealthBar) {
         this.bossHealthBar.update();
       }
 
@@ -445,6 +462,8 @@ class SceneManager2 {
     }
     if (this.boss) { // draw the boss and health bar if spawned
       this.boss.draw();
+    }
+    if (this.bossHealthBar) {
       this.bossHealthBar.draw();
     }
     for (var i = 0; i < this.powerups.length; i++) {
@@ -514,10 +533,12 @@ class PauseScreen {
 
   draw() {
     this.overlay.draw();
+    this.game.ctx.save();
     this.game.ctx.fillStyle = "white";
     this.game.ctx.textAlign = "center";
     this.game.ctx.font = "70px Times New Roman MS";
     this.game.ctx.fillText("Paused", this.game.surfaceWidth / 2, 200);
+    this.game.ctx.restore();
   }
 }
 

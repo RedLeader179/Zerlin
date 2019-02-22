@@ -144,16 +144,10 @@ class Level {
       }
     }
 
+    //spawn the boss into the level
     if (this.unspawnedBoss) {
       if (this.sceneManager.camera.isInView(this.unspawnedBoss, 0, 0)) {
         this.sceneManager.boss = this.unspawnedBoss;
-
-        this.sceneManager.bossHealthBar =
-          new BossHealthStatusBar(
-              this.game,
-              this.sceneManager,
-              this.game.surfaceWidth * 0.25,
-              675);
         this.unspawnedBoss = null;
       }
     }
