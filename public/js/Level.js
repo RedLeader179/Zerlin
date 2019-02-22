@@ -137,7 +137,7 @@ class Level {
             if (this.game.camera.isInView(this.unspawnedBoss, 0, 0)) {
                 
                 this.game.boss = this.unspawnedBoss;
-                this.game.bossHealthBar = new BossHealthStatusBar(this.game, 250, 675);
+                this.game.bossHealthBar = new BossHealthStatusBar(this.game, this.game.surfaceWidth * 0.25, 675);
                 this.unspawnedBoss = null;
             }
         }

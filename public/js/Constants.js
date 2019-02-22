@@ -91,7 +91,7 @@ Constants = {
         Z_SLASH_DAMAGE: 10,
         Z_BOSS_BEAM_DAMAGE: 1,
 
-        Z_SCALE : PHI - 1,
+        Z_SCALE : 0.5,
 
         DRAW_COLLISION_BOUNDRIES : false,
 
@@ -165,7 +165,7 @@ Constants = {
         EXPLOSION_SCALE : 2,
         EXPLOSION_FRAME_SPEED : 0.05,
 
-        DRAW_BOUNDING_CIRCLE : true
+        DRAW_BOUNDING_CIRCLE : false
     },
 
     DroidSmartConstants: {
@@ -252,8 +252,8 @@ Constants = {
 
     PowerUpConstants: {
         HEALTH_SCALE: 3,
-        RECOVER_HEALTH_AMOUNT: 20,
-        RECOVER_FORCE_AMOUNT: 20,
+        RECOVER_HEALTH_AMOUNT: 10,
+        RECOVER_FORCE_AMOUNT: 10,
         FORCE_SCALE: 3,
         INVINCIBILITY_SCALE: 2.5,
         INVINCIBILITY_TIME: 10

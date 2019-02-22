@@ -235,7 +235,7 @@ class BossHealthStatusBar extends AbstractStatusBar {
 
         this.maxLength = this.game.surfaceWidth * sbc.BOSS_BAR_LENGTH;
 
-        this.backgroundColor = 'rgb(232, 224, 74)';
+        this.backgroundColor = 'rgb(92, 92, 92)';
         //Sthis.foregroundColor = 'rgb(196, 187, 26)';
 
         this.foregroundColor = this.game.ctx.createLinearGradient(
