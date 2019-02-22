@@ -389,7 +389,7 @@ class SceneManager2 {
           this.bossHealthBar = new BossHealthStatusBar(
             this.game,
             this.game.surfaceWidth * 0.25,
-            675,
+            680,
             this.boss);
       }
       this.Zerlin.update();

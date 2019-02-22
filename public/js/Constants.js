@@ -96,7 +96,7 @@ Constants = {
 
         DRAW_COLLISION_BOUNDRIES : false,
 
-        Z_SPAWN_X : 9800,  //modify this to spawn zerlin later in the level.
+        Z_SPAWN_X : 0,  //modify this to spawn zerlin later in the level.
                             //about 100 for 1 tile/column.
 
         Z_WIDTH : 114,
