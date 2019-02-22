@@ -83,7 +83,7 @@ Constants = {
         //PHI : 1.618,
 
         /* Zerlin health and force stats*/
-        Z_MAX_HEALTH : 100000, //was 10
+        Z_MAX_HEALTH : 20, //was 10
         Z_MAX_FORCE : 10,
         Z_FORCE_REGEN_PER_SECOND : 0.5,
         Z_FORCE_JUMP_FORCE_COST: 3,
@@ -96,7 +96,7 @@ Constants = {
 
         DRAW_COLLISION_BOUNDRIES : false,
 
-        Z_SPAWN_X : 400,  //modify this to spawn zerlin later in the level.
+        Z_SPAWN_X : 0,  //modify this to spawn zerlin later in the level.
                             //about 100 for 1 tile/column.
 
         Z_WIDTH : 114,
@@ -193,8 +193,8 @@ Constants = {
     },
 
     BossConstants: {
-        B_MAX_HEALTH : 100,
-        BEAM_HP_PER_SECOND : 3,
+        B_MAX_HEALTH : 150,
+        BEAM_HP_PER_SECOND : .5,
 
         B_SCALE : .6,
         B_DRAW_COLLISION_BOUNDRIES : false,
