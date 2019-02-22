@@ -85,8 +85,16 @@ class BasicDroid extends AbstractDroid {
         var targetY = this.sceneManager.Zerlin.boundingbox.y + this.sceneManager.Zerlin.boundingbox.height/2;
         var randTargetX = targetX + (this.sceneManager.Zerlin.boundingbox.width * (Math.random() - .5));
         var randTargetY = targetY + (this.sceneManager.Zerlin.boundingbox.height * (Math.random() - .5));
-        var droidLaser = new DroidLaser(this.game, this.x + 20, this.y + 20, dbc.BASIC_DROID_LASER_SPEED,
-            randTargetX, randTargetY, dbc.BASIC_DROID_LASER_LENGTH, dbc.BASIC_DROID_LASER_WIDTH, "#339933", "#00ff00");
+        var droidLaser = new DroidLaser(this.game, 
+            this.boundCircle.x, 
+            this.boundCircle.y, 
+            dbc.BASIC_DROID_LASER_SPEED,
+            randTargetX, 
+            randTargetY, 
+            dbc.BASIC_DROID_LASER_LENGTH, 
+            dbc.BASIC_DROID_LASER_WIDTH, 
+            "#339933", 
+            "#00ff00");
         this.sceneManager.addLaser(droidLaser);
         this.fire = false;
         this.game.audio.playSoundFx(this.game.audio.enemy, 'retroBlasterShot');
