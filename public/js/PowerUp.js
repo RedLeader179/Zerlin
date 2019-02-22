@@ -7,9 +7,9 @@ Joshua Atherton, Michael Josten, Steven Golob
 const puc = Constants.PowerUpConstants;
 
 /*
-* All powerups will extend from this class, 
-* 
-*/ 
+* All powerups will extend from this class,
+*
+*/
 class AbstractPowerUp extends Entity {
     constructor(game, x, y) {
         super(game, x, y, 0, 0);
@@ -34,20 +34,20 @@ class AbstractPowerUp extends Entity {
             if (puc.DRAW_OUTLINES) {
                 this.game.ctx.beginPath();
                 this.game.ctx.strokeStyle = "green";
-                this.game.ctx.arc(this.boundCircle.x - camera.x, 
+                this.game.ctx.arc(this.boundCircle.x - camera.x,
                     this.boundCircle.y, this.boundCircle.radius, 0, Math.PI * 2, false);
                 this.game.ctx.stroke();
                 this.game.ctx.closePath();
                 this.game.ctx.closePath();
-                this.game.ctx.restore(); 
+                this.game.ctx.restore();
             }
-            //child droid can choose which animation is the current one 
+            //child droid can choose which animation is the current one
             // check that animation is not null before drawing.
             if (this.animation) {
                 this.animation.drawFrame(this.game.clockTick, this.game.ctx, this.x - camera.x, this.y);
             }
             super.draw();
-        } 
+        }
     }
     effect() {
         throw new Error("Can't instantiate AbstractPowerUp");
@@ -61,7 +61,7 @@ class AbstractPowerUp extends Entity {
 /*
 * This power up will heal zerlin on pickup
 * will look like a red plus sign
-*/ 
+*/
 class HealthPowerUp extends AbstractPowerUp {
     constructor(game, spritesheet, x, y) {
         super(game, x, y);
@@ -71,7 +71,7 @@ class HealthPowerUp extends AbstractPowerUp {
         this.radius = (this.animation.frameWidth / 2) * this.animation.scale;
         this.boundCircle = new BoundingCircle(this.x + this.radius, this.y + this.radius, this.radius);
 
-        
+
     }
     //heal zerlin to max hp or a certain amount.
     effect() {
@@ -115,7 +115,7 @@ class ForcePowerUp extends AbstractPowerUp {
 
 /*
 * This power up will make zerlin invincible to a certain amount of time
-* perhaps could have some sort of visual effect to show zerlin is 
+* perhaps could have some sort of visual effect to show zerlin is
 * invincible, like a white outline, may need to draw another sprite sheet.
 * circle bounding box that has some alpha to make the force field transparent.
 */
@@ -128,18 +128,18 @@ class InvincibilityPowerUp extends AbstractPowerUp {
 
         /* bounding circle */
         this.radius = (this.animation.frameWidth / 2) * this.animation.scale;
-        this.boundCircle = {radius: this.radius, 
+        this.boundCircle = {radius: this.radius,
             x: this.x + this.radius,
             y: this.y + this.radius};
     }
 
     effect() {
-        this.game.Zerlin.invincible = true;
+        this.game.sceneManager.Zerlin.invincible = true;
     }
 }
 
 /*
-* This power up will make the deflected laser automatically 
+* This power up will make the deflected laser automatically
 * go to the nearest droid
 */
 class HomingLaserDeflectionPowerUp extends AbstractPowerUp {
@@ -148,7 +148,7 @@ class HomingLaserDeflectionPowerUp extends AbstractPowerUp {
     }
 
     effect() {
-        
+
     }
 }
 
@@ -161,8 +161,3 @@ class HomingLaserDeflectionPowerUp extends AbstractPowerUp {
 
 //ForcePowerUp
 //recharge force power
-
-
-
-
-
