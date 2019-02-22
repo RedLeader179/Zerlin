@@ -12,7 +12,7 @@ class Zerlin extends Entity {
 
 	constructor(game, camera) {
 		// NOTE: this.x is CENTER of Zerlin, not left side of image. this.y is feet.
-		super(game, game.surfaceWidth * camConst.ZERLIN_POSITION_ON_SCREEN, 0, 0, 0);
+		super(game, game.surfaceWidth * camConst.ZERLIN_POSITION_ON_SCREEN + zc.Z_SPAWN_X, 0, 0, 0);
 
 		this.assetManager = game.assetManager;
 		this.camera = camera;
@@ -41,9 +41,37 @@ class Zerlin extends Entity {
 		this.currentForce = this.maxForce/2;
 		this.lightsaber = new Lightsaber(this.game, this);
 		this.deathAnimation.elapsedTime = 0;
+
+		this.forceRegenTime = 1;
+
+		/* status' of zerlin */
+		this.invincible = false;
+		this.iSeconds = Constants.PowerUpConstants.INVINCIBILITY_TIME; //invincibility seconds
+		this.iColor = 'rgba(14, 61, 220, 1)';
 	}
 
 	update() {
+		this.forceRegenTime -= this.game.clockTick;
+		if (this.forceRegenTime <= 0) {
+			if (this.currentForce + zc.Z_FORCE_REGEN_PER_SECOND > this.maxForce) {
+				this.currentForce = this.maxForce;
+			}
+			else {
+				this.currentForce += zc.Z_FORCE_REGEN_PER_SECOND;
+			}
+
+			this.forceRegenTime = 1;
+		}
+
+		//check basic status
+		if (this.invincible) {
+			this.iSeconds -= this.game.clockTick;
+			if (this.iSeconds <= 0) {
+				this.invincible = false;
+				this.iSeconds = Constants.PowerUpConstants.INVINCIBILITY_TIME;
+			}
+		}
+
 		// check basic movement
 		if (this.alive) {
 			if (this.game.mouse.x + this.camera.x < this.x && this.facingRight) {
@@ -95,7 +123,7 @@ class Zerlin extends Entity {
 					this.deltaY = zc.JUMP_DELTA_Y;
 				}
 				else if (this.game.keys[kc.SLASH]) {
-					this.startSlash(); 
+					this.startSlash();
 				}
 				else if (this.game.keys[kc.CROUCH] && !this.falling) {
 					this.crouch();
@@ -115,6 +143,34 @@ class Zerlin extends Entity {
 					// don't fall for first half of roll
 					this.deltaY = 0;
 				}
+				// check adding new maneuver
+				if (!this.isInManeuver()) {
+					if (this.game.keys[kc.ROLL] && this.direction !== 0 && !this.falling) {
+						//check if zerlin has enough force power for the somersault
+						if (this.currentForce - zc.Z_SOMERSAULT_FORCE_COST >= 0) {
+							//make force power cost force power
+							this.currentForce -= zc.Z_SOMERSAULT_FORCE_COST;
+							this.startSomersault();
+						}
+
+					}
+					else if (this.game.keys[kc.JUMP_FORCE] && !this.falling) {
+						//check if zerlin has enough force for force jump
+						if (this.currentForce - zc.Z_FORCE_JUMP_FORCE_COST >= 0) {
+							/** for testing sound */
+							this.tile = null;
+							this.game.audio.playSoundFx(this.game.audio.hero, 'forceJump');
+							this.falling = true;
+							this.deltaY = zc.FORCE_JUMP_DELTA_Y;
+							//make force jump cost force power
+							this.currentForce -= zc.Z_FORCE_JUMP_FORCE_COST;
+						}
+						//otherwise do a regular jump
+						else {
+							this.tile = null;
+							this.falling = true;
+							this.deltaY = zc.JUMP_DELTA_Y;
+						}
 			}
 			else if (this.slashing) {
 				this.deltaX = 0;
@@ -172,11 +228,32 @@ class Zerlin extends Entity {
 	}
 
 	draw() {
-		if (!this.alive) {
-			this.drawX = this.x - zc.Z_ARM_SOCKET_X * zc.Z_SCALE;
-			this.animation = this.deathAnimation;
-		}
-		else if (this.somersaulting) {
+this.ctx.save();
+//draw invincibility
+if (this.invincible) {
+
+	// var ctx = this.game.ctx;
+	// ctx.save(); //move to bottom of draw method after uncommenting
+	// ctx.globalAlpha = 0.25;
+	// ctx.lineWidth = 2;
+	// ctx.fillStyle = this.iColor;
+	// ctx.beginPath();
+	// ctx.ellipse(
+	// 	this.boundingbox.x - this.game.camera.x + this.boundingbox.width / 2,
+	// 	this.boundingbox.y + this.boundingbox.height / 2,
+	// 	this.animation.frameWidth * 0.25 + this.boundingbox.width * 0.25,
+	// 	(this.animation.frameHeight + this.boundingbox.height) * 0.25,
+	// 	0, 0, Math.PI * 2);
+	// ctx.fill();
+	// ctx.restore();
+	this.game.ctx.globalAlpha = 0.65;
+}
+
+if (!this.alive) {
+	this.drawX = this.x - zc.Z_ARM_SOCKET_X * zc.Z_SCALE;
+	this.animation = this.deathAnimation;
+}
+else if (this.somersaulting) {
 			this.drawX = this.x - zc.Z_SCALE * (zc.Z_SOMERSAULT_WIDTH / 2);
 			if (this.somersaultingDirection === -1) {
 				this.animation = this.somersaultingLeftAnimation;
@@ -248,6 +325,9 @@ class Zerlin extends Entity {
 				this.ctx.stroke();
 			}
 		}
+		this.ctx.restore();
+
+
 	}
 
 	die() {
