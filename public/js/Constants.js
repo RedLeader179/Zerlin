@@ -82,7 +82,7 @@ Constants = {
         //PHI : 1.618,
 
         /* Zerlin health and force stats*/
-        Z_MAX_HEALTH : 10,
+        Z_MAX_HEALTH : 100000000, //was 10
         Z_MAX_FORCE : 10,
         Z_FORCE_REGEN_PER_SECOND : 0.5,
         Z_FORCE_JUMP_FORCE_COST: 3,
@@ -264,7 +264,7 @@ Constants = {
         RECOVER_FORCE_AMOUNT: 20,
         FORCE_SCALE: 3,
         DRAW_OUTLINES : true,
-        FLOATING_MAGNITUDE : 12
+        FLOATING_MAGNITUDE : 12,
         INVINCIBILITY_SCALE: 2.5,
         INVINCIBILITY_TIME: 10
     }

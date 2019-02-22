@@ -135,7 +135,7 @@ class AssetManager {
 
 
 	AM.downloadAll(function () {
-	    var canvas = document.getElementById("gameWorld");
+	  var canvas = document.getElementById("gameWorld");
 		var ctx = canvas.getContext("2d");
 
 	    var gameEngine = new GameEngine(AM);

@@ -174,7 +174,8 @@ class SceneManager2 {
 
 	init() {
  		this.buildLevels();
-		this.startOpeningScene();
+		// this.startOpeningScene();
+    this.startLevelScene();
 	}
 
 	buildLevels() {
@@ -195,7 +196,7 @@ class SceneManager2 {
 		this.levels = [];
 		this.level = null;
 		this.levelBackgrounds = [];
-		this.levels.push(new Level(this.game, this, LEVEL_THREE_TILE_LAYOUT, LEVEL_ONE_BACKGROUNDS, LEVEL_ONE_TILES));
+		this.levels.push(new Level(this.game, this, MIKE_LEVEL_ONE, LEVEL_ONE_BACKGROUNDS, LEVEL_ONE_TILES));
 	}
 
     addEntity(entity) {
