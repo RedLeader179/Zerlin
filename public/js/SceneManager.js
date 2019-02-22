@@ -35,8 +35,8 @@ const LEVEL_ONE_TILE_LAYOUT = [
   '  H   H  B F    --  n                ',
   '  =    F    F     ===        X      ',
   'f   F --   I      --          d     ',
-  ' H  -- I    H    -  s       -       ',
-  '--------n--------  ---  ====  ----'
+  ' H  -- I    H    -  s    ===   -       ',
+  '-------------------------------------'
   ];
 //I think becuase of the powerup scale, they need to be 1 row higher than where you want it.
 //can modify Z_SPAWN_X to make zerlin spawn later in the level.

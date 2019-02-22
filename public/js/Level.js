@@ -112,10 +112,9 @@ class Level {
 
           //todo: fix this
           //Stevens version
-          this.sceneManager.boss = new Boss(this.game, j * this.tileWidth, i * rowHeight);
-          // this.game.boss = new Boss(this.game, j * this.tileWidth, i * this.game.camera.height / rows);
+          // this.sceneManager.boss = new Boss(this.game, j * this.tileWidth, i * rowHeight);
           //michaels version //get working again
-          // this.unspawnedBoss = new Boss(this.game, j * this.tileWidth, i * this.game.surfaceHeight / rows);
+          this.unspawnedBoss = new Boss(this.game, j * this.tileWidth, i * this.game.surfaceHeight / rows);
 
 
         } else if (this.levelLayout[i][j] === 'H') { //health powerup
@@ -156,7 +155,9 @@ class Level {
       if (this.sceneManager.camera.isInView(this.unspawnedBoss, 0, 0)) {
 
         this.sceneManager.boss = this.unspawnedBoss;
-        this.sceneManager.bossHealthBar = new BossHealthStatusBar(this.game, this.game.surfaceWidth * 0.25, 675);
+
+        //todo: get this going again
+        // this.sceneManager.bossHealthBar = new BossHealthStatusBar(this.game, this.game.surfaceWidth * 0.25, 675);
         this.unspawnedBoss = null;
       }
     }
