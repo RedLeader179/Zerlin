@@ -368,6 +368,7 @@ class SceneManager2 {
     this.sceneEntities = [];
     //this.sceneEntities.push(new Overlay(this.game, true, PAUSE_TIME_AFTER_START_LEVEL / 2));
     this.startedFinalOverlay = false;
+    this.startNewScene = false;
 
     this.game.audio.playSoundFx(this.game.audio.lightsaber, 'lightsaberOn');
     this.game.audio.playSoundFx(this.game.audio.saberHum);
@@ -456,8 +457,8 @@ class SceneManager2 {
     // 	this.update = this.levelTransitionUpdate;
     // 	this.draw = this.levelTransitionDraw;
     // 	this.startLevelTransitionScene();
-    // }
-    if (!this.startedFinalOverlay && !this.Zerlin.isAlive &&
+    // }                            /*!this.Zerlin.isAlive &&*/
+    if (!this.startedFinalOverlay && !this.Zerlin.alive &&
       this.Zerlin.timeOfDeath + this.Zerlin.deathAnimation.totalTime < this.levelSceneTimer) {
       this.startedFinalOverlay = true;
       this.sceneEntities.push(new Overlay(this.game, false, LEVEL_TRANSITION_OVERLAY_TIME));
@@ -465,10 +466,12 @@ class SceneManager2 {
       this.stopLevelTime = this.levelSceneTimer + 6;
       //could play death song or something
       this.game.audio.playBackgroundSong();
+      this.startNewScene = true;
     }
-    if (this.stopLevelTime < this.levelSceneTimer) {
+    if (this.stopLevelTime < this.levelSceneTimer && this.startNewScene) {
       this.game.audio.endAllSoundFX();
       this.startLevelTransitionScene();
+      this.startNewScene = false;
     }
   }
 
