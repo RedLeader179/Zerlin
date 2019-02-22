@@ -48,7 +48,8 @@ class Boss extends Entity {
 				this.deltaY *= .99;
 			}
 			if (!this.jetPackSoundOn) {
-				this.game.audio.playSoundFx(this.game.audio.jetPack);
+				//this.game.audio.playSoundFx(this.game.audio.jetPack);
+				this.game.audio.playSound(this.game.audio.jetPack);
 				this.jetPackSoundOn = true;
 			}
 
@@ -60,7 +61,8 @@ class Boss extends Entity {
 			this.reactionTime -= this.game.clockTick;
 			if (this.reactionTime < 0) {
 				this.falling = false;
-				this.game.audio.playSoundFx(this.game.audio.jetPack);
+				//this.game.audio.playSoundFx(this.game.audio.jetPack);
+				this.game.audio.playSound(this.game.audio.jetPack);
 				this.jetPackSoundOn = true;
 			}
 		}
@@ -292,7 +294,8 @@ class BeamCannon extends Entity {
 		this.on = true;
 		this.beam = new Beam(this);
 		// this.sceneManager.beams.push(this.beam);
-		this.game.audio.playSoundFx(this.game.audio.beam);
+		//this.game.audio.playSoundFx(this.game.audio.beam);
+		this.game.audio.playSound(this.game.audio.beam);
 	}
 
 	turnOff() {
@@ -414,7 +417,8 @@ class Beam {
 		// collision manager adds new segments if deflected.
 
 		if (this.isSizzling && !this.sizzlingSoundOn) {
-			this.game.audio.playSoundFx(this.game.audio.sizzle);
+			//this.game.audio.playSoundFx(this.game.audio.sizzle);
+			this.game.audio.playSound(this.game.audio.sizzle);
 			this.sizzlingSoundOn = true;
 		} else if (!this.isSizzling && this.sizzlingSoundOn) {
 			this.game.audio.sizzle.stop();

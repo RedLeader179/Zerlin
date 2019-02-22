@@ -83,7 +83,7 @@ Constants = {
         //PHI : 1.618,
 
         /* Zerlin health and force stats*/
-        Z_MAX_HEALTH : 20, //was 10
+        Z_MAX_HEALTH : 20, //was 20
         Z_MAX_FORCE : 10,
         Z_FORCE_REGEN_PER_SECOND : 0.5,
         Z_FORCE_JUMP_FORCE_COST: 3,
@@ -92,7 +92,7 @@ Constants = {
         Z_SLASH_DAMAGE: 10,
         Z_BOSS_BEAM_DAMAGE: 1,
 
-        Z_SCALE : 0.5,
+        Z_SCALE : 0.55,
 
         DRAW_COLLISION_BOUNDRIES : false,
 
@@ -169,7 +169,7 @@ Constants = {
     DroidUtilConstants: {
         EXPLOSION_SCALE : 2,
         EXPLOSION_FRAME_SPEED : 0.05,
-        DRAW_BOUNDING_CIRCLE : true
+        DRAW_BOUNDING_CIRCLE : false
     },
 
     DroidSmartConstants: {
@@ -263,7 +263,7 @@ Constants = {
         RECOVER_HEALTH_AMOUNT: 20,
         RECOVER_FORCE_AMOUNT: 20,
         FORCE_SCALE: 3,
-        DRAW_OUTLINES : true,
+        DRAW_OUTLINES : false,
         FLOATING_MAGNITUDE : 12,
         INVINCIBILITY_SCALE: 2.5,
         INVINCIBILITY_TIME: 10

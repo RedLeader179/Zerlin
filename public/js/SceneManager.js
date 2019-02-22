@@ -50,7 +50,7 @@ const MIKE_LEVEL_ONE = [
 '               d                                s         d       s         f b         =                                          ',//from ground can force jump to here.
 '                                                                             d                               ---                   ',
 '                                               f b                          f d        d                              X            ',//halfway of camera height.
-'                          d       d                                        d b           s                              ==         ',
+'                          d       d                                        d b           s                  ==                     ',
 '                                           --------                          d                                                     ',
 '                                                                                                                                   ',
 '                  -----                               H                   ---                       H F          --                ',
@@ -245,9 +245,12 @@ class SceneManager2 {
   }
 
   openingSceneUpdate() {
-    if(this.game.click) {
+    if(!this.canPause && this.game.keys['Enter']) {
       this.startLevelTransitionScene(); //for going strait into the lvl
     }
+
+    this.musicMenu.update();
+
     this.openingSceneTimer += this.game.clockTick;
     if (this.openingSceneTimer < OPENING_SCENE_STOP_CAMERA_PAN) {
       this.camera.y = -Math.pow(this.openingSceneTimer - OPENING_SCENE_STOP_CAMERA_PAN, 2) * 280;
@@ -288,6 +291,7 @@ class SceneManager2 {
     for (let i = 0; i < this.sceneEntities.length; i++) {
       this.sceneEntities[i].draw();
     }
+    this.musicMenu.draw();
   }
 
   //________________________________________________________
@@ -305,6 +309,12 @@ class SceneManager2 {
   }
 
   levelTransitionUpdate() {
+    if (!this.canPause && this.game.keys['Enter']) {
+      this.startLevelScene();
+    }
+
+    this.musicMenu.update();
+    
     this.levelTransitionTimer += this.game.clockTick;
     for (let i = this.sceneEntities.length - 1; i >= 0; i--) {
       this.sceneEntities[i].update();
@@ -326,6 +336,7 @@ class SceneManager2 {
     for (let i = 0; i < this.sceneEntities.length; i++) {
       this.sceneEntities[i].draw();
     }
+    this.musicMenu.draw();
   }
 
 
@@ -346,6 +357,7 @@ class SceneManager2 {
     this.powerups = [];
     this.otherEntities = [];
     this.boss = null;
+    this.bossMusicSwitched = false;
     this.bossHealthBar = null;
     this.level.set();
     this.addEntity(new HealthStatusBar(this.game, this, 25, 25)); //put these in scene manager??
@@ -354,7 +366,7 @@ class SceneManager2 {
 
     this.initiallyPaused = false;
     this.sceneEntities = [];
-    this.sceneEntities.push(new Overlay(this.game, true, PAUSE_TIME_AFTER_START_LEVEL / 2));
+    //this.sceneEntities.push(new Overlay(this.game, true, PAUSE_TIME_AFTER_START_LEVEL / 2));
     this.startedFinalOverlay = false;
 
     this.game.audio.playSoundFx(this.game.audio.lightsaber, 'lightsaberOn');
@@ -411,6 +423,10 @@ class SceneManager2 {
       //if the boss has been spawned update him and his health bar
       if (this.boss) {
         this.boss.update();
+        if (!this.bossMusicSwitched) {
+          this.game.audio.playBossSong();
+          this.bossMusicSwitched = true;
+        }
       }
       if (this.bossHealthBar) {
         this.bossHealthBar.update();
