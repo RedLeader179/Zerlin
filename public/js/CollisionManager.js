@@ -244,7 +244,7 @@ class CollisionManager {
 			var beamSegments = this.sceneManager.boss.beamCannon.beam.segments;
 			let j = 0;
 			while (j < beamSegments.length) {
-				console.log(beamSegments.length);
+				// console.log(beamSegments.length);
 				if (!beamSegments[j].deflected) {
 					var collisionWithSaber = this.isCollidedLineWithLine({p1: {x: beamSegments[j].x, y: beamSegments[j].y}, p2: {x: beamSegments[j].endX, y: beamSegments[j].endY}},
 													{p1: lightsaber.bladeCollar, p2: lightsaber.bladeTip});

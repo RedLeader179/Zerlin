@@ -23,6 +23,7 @@ class Boss extends Entity {
 		this.secondsBeforeFire = bc.B_SHOOT_INTERVAL;
 		this.jetPackSoundOn = false;
 		this.beamDamageTimer = 0;
+		this.sceneManager = this.game.sceneManager;
 
 		/* Boss Health Stats */
 		this.maxHealth = bc.B_MAX_HEALTH;
@@ -47,7 +48,7 @@ class Boss extends Entity {
 				this.deltaY *= .99;
 			}
 			if (!this.jetPackSoundOn) {
-				this.game.audio.jetPack.play();
+				this.game.audio.playSoundFx(this.game.audio.jetPack);
 				this.jetPackSoundOn = true;
 			}
 
@@ -59,7 +60,7 @@ class Boss extends Entity {
 			this.reactionTime -= this.game.clockTick;
 			if (this.reactionTime < 0) {
 				this.falling = false;
-				this.game.audio.jetPack.play();
+				this.game.audio.playSoundFx(this.game.audio.jetPack);
 				this.jetPackSoundOn = true;
 			}
 		}
@@ -291,7 +292,7 @@ class BeamCannon extends Entity {
 		this.on = true;
 		this.beam = new Beam(this);
 		// this.sceneManager.beams.push(this.beam);
-		this.game.audio.beam.play();
+		this.game.audio.playSoundFx(this.game.audio.beam);
 	}
 
 	turnOff() {
@@ -310,9 +311,9 @@ class BeamCannon extends Entity {
 		this.muzzleY = (bc.BC_MUZZLE_RIGHT_Y - bc.BC_RIGHT_Y_AXIS) * bc.B_SCALE;
 		this.angleSocketToMuzzle = Math.atan2(this.muzzleY, this.muzzleX);
 		this.facingRight = true;
-		console.log("right");
-		console.log(this.muzzleX);
-		console.log(this.muzzleY);
+		// console.log("right");
+		// console.log(this.muzzleX);
+		// console.log(this.muzzleY);
 	}
 
 	faceLeft() {
@@ -323,9 +324,9 @@ class BeamCannon extends Entity {
 		this.muzzleY = (bc.BC_MUZZLE_LEFT_Y - bc.BC_LEFT_Y_AXIS) * bc.B_SCALE;
 		this.angleSocketToMuzzle = Math.atan2(this.muzzleY, this.muzzleX);
 		this.facingRight = false;
-		console.log("left");
-		console.log(this.muzzleX);
-		console.log(this.muzzleY);
+		// console.log("left");
+		// console.log(this.muzzleX);
+		// console.log(this.muzzleY);
 	}
 
 	setBeamAngle() {
@@ -413,7 +414,7 @@ class Beam {
 		// collision manager adds new segments if deflected.
 
 		if (this.isSizzling && !this.sizzlingSoundOn) {
-			this.game.audio.sizzle.play();
+			this.game.audio.playSoundFx(this.game.audio.sizzle);
 			this.sizzlingSoundOn = true;
 		} else if (!this.isSizzling && this.sizzlingSoundOn) {
 			this.game.audio.sizzle.stop();

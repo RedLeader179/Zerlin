@@ -24,7 +24,7 @@ class Zerlin extends Entity {
   }
 
   reset() {
-    this.x = this.game.surfaceWidth * camConst.ZERLIN_POSITION_ON_SCREEN;
+    this.x = this.game.surfaceWidth * camConst.ZERLIN_POSITION_ON_SCREEN + zc.Z_SPAWN_X;
     this.y = 0;
     this.deltaX = 0;
     this.deltaY = 0;
@@ -35,16 +35,19 @@ class Zerlin extends Entity {
     this.falling = true;
     this.armSocketY = zc.Z_ARM_SOCKET_Y;
     this.faceRight();
+
+    /* Zerlin Status' */
     this.maxHealth = zc.Z_MAX_HEALTH;
     this.currentHealth = this.maxHealth;
     this.maxForce = zc.Z_MAX_FORCE;
-    this.currentForce = this.maxForce / 2;
+    this.currentForce = this.maxForce;
+    this.forceRegenTime = 1;
+
     this.lightsaber = new Lightsaber(this.game, this);
     this.deathAnimation.elapsedTime = 0;
 
-    this.forceRegenTime = 1;
 
-    /* status' of zerlin */
+    /* powerup status' of zerlin */
     this.invincible = false;
     this.iSeconds = Constants.PowerUpConstants.INVINCIBILITY_TIME; //invincibility seconds
     this.iColor = 'rgba(14, 61, 220, 1)';
@@ -640,7 +643,7 @@ class Lightsaber extends Entity {
 
 
     if (this.deflectingBeam && !this.deflectingBeamSoundOn) {
-      this.game.audio.deflectBeam.play();
+      this.game.audio.playSoundFx(this.game.audio.deflectBeam);
       this.deflectingBeamSoundOn = true;
     } else if (!this.deflectingBeam && this.deflectingBeamSoundOn) {
       this.game.audio.deflectBeam.stop();

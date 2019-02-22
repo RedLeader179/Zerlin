@@ -95,7 +95,7 @@ class GameEngine {
 
         this.ctx.canvas.addEventListener("keydown", (e) => {
             if (that.keys[e.code]) { return; } // prevent repeating calls when key is held down
-            if (e.code === 'Enter') {
+            if (e.code === Constants.KeyConstants.PAUSE) {
                 if (that.sceneManager.paused) {
                     that.sceneManager.unpause();
                 } else {

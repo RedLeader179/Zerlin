@@ -15,11 +15,12 @@ Constants = {
         JUMP: 'KeyW',
         JUMP_FORCE: 'KeyE',
         SLASH: 'Space',
-        ROLL: 'KeyS'
+        ROLL: 'KeyS',
+        PAUSE: 'Enter'
     },
 
     DroidBasicConstants : {
-        BASIC_DROID_SHOOT_INTERVAL : 2,
+        BASIC_DROID_SHOOT_INTERVAL : 2, //default 2
         BASIC_DROID_X_MOVEMENT_SPEED : 150,
         BASIC_DROID_Y_MOVEMENT_SPEED : 100,
         BASIC_DROID_X_ACCELERATION : 60,
