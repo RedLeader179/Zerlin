@@ -182,6 +182,18 @@ Constants = {
 
     SceneManagerConstants: {
         //probably the scene manager file will hold the constants for the different scenes
+        // var OPENING_OVERLAY_TIME = 5;
+        // var OPENING_SCENE_STOP_CAMERA_PAN = 7;
+        // var OPENING_SCENE_FIRST_FADE_OUT_TIME = 10;
+        // var OPENING_MESSAGE = "There is a tremor in the Force on the Dagobah System.\nLegions of mining droids have been unleashed\non the peaceful planet. It's rich core\nof kyber is frail, and the droids are rapidly\ndestroying Dagobah's biosphere.\n\nA lone Jedi dispatched in the outer rim has\nfelt it. A lone warrior against evil...";
+        // var OPENING_MESSAGE_TIME = 10;
+        // const LEVEL_ONE_TEXT = "Here begins a new journey...";
+        // const LEVEL_TRANSITION_TIME = 7;
+        // const LEVEL_TRANSITION_OVERLAY_TIME = 3;
+        //
+        // var PAUSE_TIME_AFTER_START_LEVEL = 1.2;
+
+        GAME_FONT: 'VT323'
     },
 
     CollisionManagerConstants: {
@@ -255,7 +267,72 @@ Constants = {
     LevelConstants: {
         DRAW_BOXES : false,
         TILE_ACCELERATION : 200,
-        TILE_INITIAL_VELOCITY : 200
+        TILE_INITIAL_VELOCITY : 200,
+
+        const LEVEL_ONE_TILE_LAYOUT : [
+          '                                 ',
+          '                                 ',
+          '                                 ',
+          '                                 ',
+          '                                 ',
+          '       b                          ',
+          ' s            b    --   d     -s  ',
+          '     n       -      B    --       s',
+          ' d F    m   I   -     d            -',
+          '  H   H  B F    --  n                ',
+          '  =    F    F     ===        X      ',
+          'f   F --   I      --          d     ',
+          ' H  -- I    H    -  s    ===   -       ',
+          '-------------------------------------'
+        ],
+        //I think becuase of the powerup scale, they need to be 2 row higher than where you want it.
+        //can modify Z_SPAWN_X to make zerlin spawn later in the level.
+        const MIKE_LEVEL_ONE : [
+        '                                                                                          I     d  n                               ',
+        '                                    d                                                              f                               ',
+        '                                                                    s                        m  d     n                            ',
+        '                                        d                                                         f                           I    ',
+        '                                  s            d                            s              -   m                                   ',
+        '                             d                  f                            n                                                     ',
+        '               d                                s         d       s         f b         =                                          ',//from ground can force jump to here.
+        '                                                                             d                               ---                   ',
+        '                                               f b                          f d        d                              X            ',//halfway of camera height.
+        '                          d       d                                        d b           s                  ==                     ',
+        '                                           --------                          d                                                     ',
+        '                                                                                                                                   ',
+        '                  -----                               H                   ---                       H F          --                ',
+        '                                       ----                                                                                        ',
+        '           ------                             I           -----       ---            -                      ---       --           ',//from ground level, can reg. jump to here.
+        '                                 -----             ----                        --                   - -                            ',
+        '                                                                            -                                                      ',
+        '------------           -- -- ----            --------   --     --- ---------  -- ---- ---------------------------------------------'
+      ],
+          //   ^      ^- just on screen on start camera location.
+          //   |-> Zerlin spawn point.
+          //can jump 1 column
+          //can roll 2 columns
+          
+        const LEVEL_THREE_TILE_LAYOUT : [
+          '                 ',
+          '           d     ',
+          '  d   X          ',
+          '          --     ',
+          '       d       - ',
+          '---              ',
+          '   --            ',
+          '-----------------'
+        ],
+        const MOVING_TILE_TESTER_LAYOUT : [
+          '                 ',
+          '                 ',
+          '                 ',
+          '          --     ',
+          '    ==  -      - ',
+          '---              ',
+          '  ===========    ',
+          '-----------------'
+        ]
+
     },
 
     PowerUpConstants: {

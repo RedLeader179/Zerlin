@@ -97,6 +97,7 @@ const LEVEL_TRANSITION_OVERLAY_TIME = 3;
 
 
 var PAUSE_TIME_AFTER_START_LEVEL = 1.2;
+const smc = Constants.SceneManagerConstants;
 
 /**
  * Manage scene transitions between levels and cinematics.
@@ -314,7 +315,7 @@ class SceneManager2 {
     }
 
     this.musicMenu.update();
-    
+
     this.levelTransitionTimer += this.game.clockTick;
     for (let i = this.sceneEntities.length - 1; i >= 0; i--) {
       this.sceneEntities[i].update();
@@ -561,7 +562,7 @@ class PauseScreen {
     this.game.ctx.save();
     this.game.ctx.fillStyle = "white";
     this.game.ctx.textAlign = "center";
-    this.game.ctx.font = "70px Times New Roman MS";
+    this.game.ctx.font = "70px " + smc.GAME_FONT;
     this.game.ctx.fillText("Paused", this.game.surfaceWidth / 2, 200);
     this.game.ctx.restore();
   }
@@ -574,6 +575,7 @@ class TextScreen {
   constructor(game, message, color) {
     this.game = game;
     this.message = message;
+    this.font = '30px';
     this.linePieces = message.split("\n");
     this.lines = this.linePieces.length;
     this.color = color ? color : "white";
@@ -589,7 +591,7 @@ class TextScreen {
 
     this.game.ctx.fillStyle = this.color;
     this.game.ctx.textAlign = "center";
-    this.game.ctx.font = "30px Times New Roman MS";
+    this.game.ctx.font = this.font + ' ' + smc.GAME_FONT;
     for (let i = 0; i < this.lines; i++) {
       this.game.ctx.fillText(this.linePieces[i], this.game.surfaceWidth / 2, (i + 1) * (this.game.surfaceHeight / 2) / (this.lines + 1) + (this.game.surfaceHeight / 4));
     }
@@ -601,6 +603,7 @@ class GameOverTextScreen extends TextScreen {
 
   constructor(game) {
     super(game, "GAME OVER", "red");
+    this.font = '80px';
     this.opacity = 0;
     this.deltaOpacity = 1;
   }
