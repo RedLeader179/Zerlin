@@ -148,7 +148,6 @@ class Level {
       if (this.sceneManager.camera.isInView(this.unspawnedBoss, 0, 0)) {
         this.sceneManager.boss = this.unspawnedBoss;
 
-        //todo: get this going again ////////////
         this.sceneManager.bossHealthBar =
           new BossHealthStatusBar(
               this.game,
@@ -156,7 +155,6 @@ class Level {
               this.game.surfaceWidth * 0.25,
               675);
         this.unspawnedBoss = null;
-        /////////////
       }
     }
 
