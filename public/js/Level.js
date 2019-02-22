@@ -24,7 +24,6 @@ X  =  Boss
 */
 
 const lc = Constants.LevelConstants;
-const dbc = Constants.DroidBasicConstants;
 
 class Level {
   constructor(game, sceneManager, levelLayout, backgrounds, tileImages) {
@@ -98,7 +97,7 @@ class Level {
           var movingTile = new MovingTile(this, image2, j * this.tileWidth, i * this.camera.height / rows, lc.TILE_INITIAL_VELOCITY, 0, lc.TILE_ACCELERATION);
           this.tiles.push(movingTile);
         } else if (this.levelLayout[i][j] === 'd') { // basic droid
-          this.unspawnedDroids.push(new BasicDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * rowHeight, 14, .2, 100, 100,  dbc.BASIC_DROID_SCALE, 45));
+          this.unspawnedDroids.push(new BasicDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * rowHeight, 14, .2, 100, 100,  Constants.DroidBasicConstants.BASIC_DROID_SCALE, 45));
         } else if (this.levelLayout[i][j] === 's') { // scatter shot droid
           this.unspawnedDroids.push(new LeggyDroid(this.game, this.game.assetManager.getAsset("../img/Droid 3.png"), j * this.tileWidth, i * rowHeight, 10, .2));
         } else if (this.levelLayout[i][j] === 'b') { // slow burst droid
@@ -112,11 +111,13 @@ class Level {
         } else if (this.levelLayout[i][j] === 'X') { // Boss
 
           //todo: fix this
-          //Steven version
-          // this.sceneManager.boss = new Boss(this.game, j * this.tileWidth, i * rowHeight);
+          //Stevens version
+          this.sceneManager.boss = new Boss(this.game, j * this.tileWidth, i * rowHeight);
           // this.game.boss = new Boss(this.game, j * this.tileWidth, i * this.game.camera.height / rows);
-          //michaels version
-          this.unspawnedBoss = new Boss(this.game, j * this.tileWidth, i * this.game.surfaceHeight / rows);
+          //michaels version //get working again
+          // this.unspawnedBoss = new Boss(this.game, j * this.tileWidth, i * this.game.surfaceHeight / rows);
+
+
         } else if (this.levelLayout[i][j] === 'H') { //health powerup
           this.unspawnedPowerups.push(new HealthPowerUp(this.game, this.game.assetManager.getAsset("../img/powerup_health.png"), j * this.tileWidth, i * rowHeight));
         } else if (this.levelLayout[i][j] === 'F') { //force powerup
@@ -152,10 +153,10 @@ class Level {
     }
 
     if (this.unspawnedBoss) {
-      if (this.game.camera.isInView(this.unspawnedBoss, 0, 0)) {
+      if (this.sceneManager.camera.isInView(this.unspawnedBoss, 0, 0)) {
 
-        this.game.boss = this.unspawnedBoss;
-        this.game.bossHealthBar = new BossHealthStatusBar(this.game, this.game.surfaceWidth * 0.25, 675);
+        this.sceneManager.boss = this.unspawnedBoss;
+        this.sceneManager.bossHealthBar = new BossHealthStatusBar(this.game, this.game.surfaceWidth * 0.25, 675);
         this.unspawnedBoss = null;
       }
     }
@@ -181,10 +182,6 @@ class Level {
   }
 
 }
-
-
-
-
 
 
 
