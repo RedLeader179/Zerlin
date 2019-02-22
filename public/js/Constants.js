@@ -181,18 +181,16 @@ Constants = {
     },
 
     SceneManagerConstants: {
-        //probably the scene manager file will hold the constants for the different scenes
-        // var OPENING_OVERLAY_TIME = 5;
-        // var OPENING_SCENE_STOP_CAMERA_PAN = 7;
-        // var OPENING_SCENE_FIRST_FADE_OUT_TIME = 10;
-        // var OPENING_MESSAGE = "There is a tremor in the Force on the Dagobah System.\nLegions of mining droids have been unleashed\non the peaceful planet. It's rich core\nof kyber is frail, and the droids are rapidly\ndestroying Dagobah's biosphere.\n\nA lone Jedi dispatched in the outer rim has\nfelt it. A lone warrior against evil...";
-        // var OPENING_MESSAGE_TIME = 10;
-        // const LEVEL_ONE_TEXT = "Here begins a new journey...";
-        // const LEVEL_TRANSITION_TIME = 7;
-        // const LEVEL_TRANSITION_OVERLAY_TIME = 3;
-        //
-        // var PAUSE_TIME_AFTER_START_LEVEL = 1.2;
-
+        OPENING_OVERLAY_TIME: 5,
+        OPENING_SCENE_STOP_CAMERA_PAN: 7,
+        OPENING_SCENE_FIRST_FADE_OUT_TIME: 10,
+        OPENING_MESSAGE: "There is a tremor in the Force on the Dagobah System.\nLegions of mining droids have been unleashed\non the peaceful planet. It's rich core\nof kyber is frail, and the droids are rapidly\ndestroying Dagobah's biosphere.\n\nA lone Jedi dispatched in the outer rim has\nfelt it. A lone warrior against evil...",
+        OPENING_MESSAGE_TIME: 10,
+        LEVEL_ONE_TEXT: "Here begins a new journey...",
+        LEVEL_TRANSITION_TIME: 7,
+        LEVEL_TRANSITION_OVERLAY_TIME: 3,
+        PAUSE_TIME_AFTER_START_LEVEL: 1.2,
+        
         GAME_FONT: 'VT323'
     },
 
@@ -269,7 +267,7 @@ Constants = {
         TILE_ACCELERATION : 200,
         TILE_INITIAL_VELOCITY : 200,
 
-        const LEVEL_ONE_TILE_LAYOUT : [
+        LEVEL_ONE_TILE_LAYOUT : [
           '                                 ',
           '                                 ',
           '                                 ',
@@ -287,7 +285,7 @@ Constants = {
         ],
         //I think becuase of the powerup scale, they need to be 2 row higher than where you want it.
         //can modify Z_SPAWN_X to make zerlin spawn later in the level.
-        const MIKE_LEVEL_ONE : [
+        MIKE_LEVEL_ONE : [
         '                                                                                          I     d  n                               ',
         '                                    d                                                              f                               ',
         '                                                                    s                        m  d     n                            ',
@@ -311,8 +309,8 @@ Constants = {
           //   |-> Zerlin spawn point.
           //can jump 1 column
           //can roll 2 columns
-          
-        const LEVEL_THREE_TILE_LAYOUT : [
+
+        LEVEL_THREE_TILE_LAYOUT : [
           '                 ',
           '           d     ',
           '  d   X          ',
@@ -322,7 +320,7 @@ Constants = {
           '   --            ',
           '-----------------'
         ],
-        const MOVING_TILE_TESTER_LAYOUT : [
+        MOVING_TILE_TESTER_LAYOUT : [
           '                 ',
           '                 ',
           '                 ',

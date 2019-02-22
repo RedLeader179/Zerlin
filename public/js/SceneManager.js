@@ -22,82 +22,8 @@ I  =  invincibility powerup
 X = boss
 */
 
-const LEVEL_ONE_TILE_LAYOUT = [
-  '                                 ',
-  '                                 ',
-  '                                 ',
-  '                                 ',
-  '                                 ',
-  '       b                          ',
-  ' s            b    --   d     -s  ',
-  '     n       -      B    --       s',
-  ' d F    m   I   -     d            -',
-  '  H   H  B F    --  n                ',
-  '  =    F    F     ===        X      ',
-  'f   F --   I      --          d     ',
-  ' H  -- I    H    -  s    ===   -       ',
-  '-------------------------------------'
-];
-//I think becuase of the powerup scale, they need to be 2 row higher than where you want it.
-//can modify Z_SPAWN_X to make zerlin spawn later in the level.
-const MIKE_LEVEL_ONE = [
-'                                                                                          I     d  n                               ',
-'                                    d                                                              f                               ',
-'                                                                    s                        m  d     n                            ',
-'                                        d                                                         f                           I    ',
-'                                  s            d                            s              -   m                                   ',
-'                             d                  f                            n                                                     ',
-'               d                                s         d       s         f b         =                                          ',//from ground can force jump to here.
-'                                                                             d                               ---                   ',
-'                                               f b                          f d        d                              X            ',//halfway of camera height.
-'                          d       d                                        d b           s                  ==                     ',
-'                                           --------                          d                                                     ',
-'                                                                                                                                   ',
-'                  -----                               H                   ---                       H F          --                ',
-'                                       ----                                                                                        ',
-'           ------                             I           -----       ---            -                      ---       --           ',//from ground level, can reg. jump to here.
-'                                 -----             ----                        --                   - -                            ',
-'                                                                            -                                                      ',
-'------------           -- -- ----            --------   --     --- ---------  -- ---- ---------------------------------------------'];
-  //   ^      ^- just on screen on start camera location.
-  //   |-> Zerlin spawn point.
-  //can jump 1 column
-  //can roll 2 columns
-
-const LEVEL_THREE_TILE_LAYOUT = [
-  '                 ',
-  '           d     ',
-  '  d   X          ',
-  '          --     ',
-  '       d       - ',
-  '---              ',
-  '   --            ',
-  '-----------------'
-];
-
-const MOVING_TILE_TESTER_LAYOUT = [
-  '                 ',
-  '                 ',
-  '                 ',
-  '          --     ',
-  '    ==  -      - ',
-  '---              ',
-  '  ===========    ',
-  '-----------------'
-];
-
-var OPENING_OVERLAY_TIME = 5;
-var OPENING_SCENE_STOP_CAMERA_PAN = 7;
-var OPENING_SCENE_FIRST_FADE_OUT_TIME = 10;
-var OPENING_MESSAGE = "There is a tremor in the Force on the Dagobah System.\nLegions of mining droids have been unleashed\non the peaceful planet. It's rich core\nof kyber is frail, and the droids are rapidly\ndestroying Dagobah's biosphere.\n\nA lone Jedi dispatched in the outer rim has\nfelt it. A lone warrior against evil...";
-var OPENING_MESSAGE_TIME = 10;
-const LEVEL_ONE_TEXT = "Here begins a new journey...";
-const LEVEL_TRANSITION_TIME = 7;
-const LEVEL_TRANSITION_OVERLAY_TIME = 3;
-
-
-var PAUSE_TIME_AFTER_START_LEVEL = 1.2;
 const smc = Constants.SceneManagerConstants;
+const lvlConst = Constants.LevelConstants;
 
 /**
  * Manage scene transitions between levels and cinematics.
@@ -145,7 +71,7 @@ class SceneManager2 {
     this.levels = [];
     this.level = null;
     this.levelBackgrounds = [];
-    this.levels.push(new Level(this.game, this, MIKE_LEVEL_ONE, LEVEL_ONE_BACKGROUNDS, LEVEL_ONE_TILES));
+    this.levels.push(new Level(this.game, this, lvlConst.MIKE_LEVEL_ONE, LEVEL_ONE_BACKGROUNDS, LEVEL_ONE_TILES));
   }
 
   addEntity(entity) {
@@ -240,7 +166,7 @@ class SceneManager2 {
     this.sceneEntities.push(new ParallaxAnimatedBackground(this.game, this,
       new Animation(this.game.assetManager.getAsset('../img/zerlin at fire.png'), 0, 0, 600, 600, .125, 6, true, false, .5),
       1, 800, 470, 450));
-    this.sceneEntities.push(new Overlay(this.game, true, OPENING_OVERLAY_TIME));
+    this.sceneEntities.push(new Overlay(this.game, true, smc.OPENING_OVERLAY_TIME));
 
     // start opening scene music
   }
@@ -253,19 +179,19 @@ class SceneManager2 {
     this.musicMenu.update();
 
     this.openingSceneTimer += this.game.clockTick;
-    if (this.openingSceneTimer < OPENING_SCENE_STOP_CAMERA_PAN) {
-      this.camera.y = -Math.pow(this.openingSceneTimer - OPENING_SCENE_STOP_CAMERA_PAN, 2) * 280;
-    } else if (!this.seq1FadeOut && this.openingSceneTimer > OPENING_SCENE_FIRST_FADE_OUT_TIME) {
+    if (this.openingSceneTimer < smc.OPENING_SCENE_STOP_CAMERA_PAN) {
+      this.camera.y = -Math.pow(this.openingSceneTimer - smc.OPENING_SCENE_STOP_CAMERA_PAN, 2) * 280;
+    } else if (!this.seq1FadeOut && this.openingSceneTimer > smc.OPENING_SCENE_FIRST_FADE_OUT_TIME) {
       this.seq1FadeOut = true;
-      this.sceneEntities.push(new Overlay(this.game, false, OPENING_OVERLAY_TIME));
-    } else if (!this.seq2 && this.openingSceneTimer > OPENING_OVERLAY_TIME + OPENING_SCENE_FIRST_FADE_OUT_TIME) {
+      this.sceneEntities.push(new Overlay(this.game, false, smc.OPENING_OVERLAY_TIME));
+    } else if (!this.seq2 && this.openingSceneTimer > smc.OPENING_OVERLAY_TIME + smc.OPENING_SCENE_FIRST_FADE_OUT_TIME) {
       this.seq2 = true;
-      this.sceneEntities.push(new TextScreen(this.game, OPENING_MESSAGE));
-      this.sceneEntities.push(new Overlay(this.game, true, OPENING_OVERLAY_TIME));
-    } else if (!this.seq2FadeOut && this.openingSceneTimer > OPENING_OVERLAY_TIME + OPENING_SCENE_FIRST_FADE_OUT_TIME + OPENING_MESSAGE_TIME) {
+      this.sceneEntities.push(new TextScreen(this.game, smc.OPENING_MESSAGE));
+      this.sceneEntities.push(new Overlay(this.game, true, smc.OPENING_OVERLAY_TIME));
+    } else if (!this.seq2FadeOut && this.openingSceneTimer > smc.OPENING_OVERLAY_TIME + smc.OPENING_SCENE_FIRST_FADE_OUT_TIME + smc.OPENING_MESSAGE_TIME) {
       this.seq2FadeOut = true;
-      this.sceneEntities.push(new Overlay(this.game, false, OPENING_OVERLAY_TIME));
-    } else if (this.openingSceneTimer > OPENING_OVERLAY_TIME + OPENING_SCENE_FIRST_FADE_OUT_TIME + OPENING_MESSAGE_TIME + OPENING_OVERLAY_TIME) {
+      this.sceneEntities.push(new Overlay(this.game, false, smc.OPENING_OVERLAY_TIME));
+    } else if (this.openingSceneTimer > smc.OPENING_OVERLAY_TIME + smc.OPENING_SCENE_FIRST_FADE_OUT_TIME + smc.OPENING_MESSAGE_TIME + smc.OPENING_OVERLAY_TIME) {
       this.startLevelScene();
     }
 
@@ -304,8 +230,8 @@ class SceneManager2 {
 
     this.initiallyPaused = false;
     this.sceneEntities = [];
-    this.sceneEntities.push(new TextScreen(this.game, LEVEL_ONE_TEXT));
-    this.sceneEntities.push(new Overlay(this.game, true, LEVEL_TRANSITION_OVERLAY_TIME));
+    this.sceneEntities.push(new TextScreen(this.game, smc.LEVEL_ONE_TEXT));
+    this.sceneEntities.push(new Overlay(this.game, true, smc.LEVEL_TRANSITION_OVERLAY_TIME));
     this.startedFinalOverlay = false;
   }
 
@@ -324,11 +250,11 @@ class SceneManager2 {
       }
     }
 
-    if (!this.startedFinalOverlay && this.levelTransitionTimer > (LEVEL_TRANSITION_TIME - LEVEL_TRANSITION_OVERLAY_TIME)) {
+    if (!this.startedFinalOverlay && this.levelTransitionTimer > (smc.LEVEL_TRANSITION_TIME - smc.LEVEL_TRANSITION_OVERLAY_TIME)) {
       this.startedFinalOverlay = true;
-      this.sceneEntities.push(new Overlay(this.game, false, LEVEL_TRANSITION_OVERLAY_TIME));
+      this.sceneEntities.push(new Overlay(this.game, false, smc.LEVEL_TRANSITION_OVERLAY_TIME));
     }
-    if (this.levelTransitionTimer > LEVEL_TRANSITION_TIME) {
+    if (this.levelTransitionTimer > smc.LEVEL_TRANSITION_TIME) {
       this.startLevelScene();
     }
   }
@@ -367,7 +293,7 @@ class SceneManager2 {
 
     this.initiallyPaused = false;
     this.sceneEntities = [];
-    //this.sceneEntities.push(new Overlay(this.game, true, PAUSE_TIME_AFTER_START_LEVEL / 2));
+    //this.sceneEntities.push(new Overlay(this.game, true, smc.PAUSE_TIME_AFTER_START_LEVEL / 2));
     this.startedFinalOverlay = false;
     this.startNewScene = false;
 
@@ -444,7 +370,7 @@ class SceneManager2 {
       }
     }
 
-    if (!this.initiallyPaused && this.levelSceneTimer > PAUSE_TIME_AFTER_START_LEVEL) {
+    if (!this.initiallyPaused && this.levelSceneTimer > smc.PAUSE_TIME_AFTER_START_LEVEL) {
       this.initiallyPaused = true;
       this.canPause = true;
       this.pause();
@@ -462,7 +388,7 @@ class SceneManager2 {
     if (!this.startedFinalOverlay && !this.Zerlin.alive &&
       this.Zerlin.timeOfDeath + this.Zerlin.deathAnimation.totalTime < this.levelSceneTimer) {
       this.startedFinalOverlay = true;
-      this.sceneEntities.push(new Overlay(this.game, false, LEVEL_TRANSITION_OVERLAY_TIME));
+      this.sceneEntities.push(new Overlay(this.game, false, smc.LEVEL_TRANSITION_OVERLAY_TIME));
       this.sceneEntities.push(new GameOverTextScreen(this.game));
       this.stopLevelTime = this.levelSceneTimer + 6;
       //could play death song or something
