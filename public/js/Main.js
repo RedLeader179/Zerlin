@@ -74,11 +74,21 @@ class AssetManager {
 	AM.queueDownload("../img/Zerlin slash left.png");
 	AM.queueDownload("../img/Zerlin crouch.png");
 	AM.queueDownload("../img/Zerlin crouch left.png");
+	AM.queueDownload("../img/Zerlin death.png");
+	AM.queueDownload("../img/zerlin at fire.png");
 
 	AM.queueDownload("../img/saber up.png");
 	AM.queueDownload("../img/saber up left.png");
 	AM.queueDownload("../img/saber down.png");
 	AM.queueDownload("../img/saber down left.png");
+
+	AM.queueDownload('../img/opening stars.png');
+	AM.queueDownload('../img/opening oasis 6.png');
+	AM.queueDownload('../img/opening oasis 5.png');
+	AM.queueDownload('../img/opening oasis 4.png');
+	AM.queueDownload('../img/opening oasis 3.png');
+	AM.queueDownload('../img/opening oasis 2.png');
+	AM.queueDownload('../img/opening oasis 1.png');
 
 	AM.queueDownload("../img/backgroundStars.png");
 	AM.queueDownload("../img/backgroundTrees1.png");
@@ -112,6 +122,7 @@ class AssetManager {
 	AM.queueDownload("../img/boss falling left.png");
 	AM.queueDownload("../img/beam cannon.png");
 	AM.queueDownload("../img/beam cannon left.png");
+	AM.queueDownload("../img/boss_helmet.png");
 	//powerups animations
 	AM.queueDownload('../img/powerup_health.png');
 	AM.queueDownload('../img/powerup_force.png');
@@ -124,7 +135,7 @@ class AssetManager {
 
 
 	AM.downloadAll(function () {
-	    var canvas = document.getElementById("gameWorld");
+	  var canvas = document.getElementById("gameWorld");
 		var ctx = canvas.getContext("2d");
 
 	    var gameEngine = new GameEngine(AM);

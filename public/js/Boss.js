@@ -23,22 +23,32 @@ class Boss extends Entity {
 		this.secondsBeforeFire = bc.B_SHOOT_INTERVAL;
 		this.jetPackSoundOn = false;
 		this.beamDamageTimer = 0;
+		this.sceneManager = this.game.sceneManager;
+
+		/* Boss Health Stats */
+		this.maxHealth = bc.B_MAX_HEALTH;
+		this.currentHealth = this.maxHealth;
+
 		this.faceLeft();
 		this.createAnimations();
 	}
 
 	update() {
+		if (this.currentHealth <= 0) {
+			//kill the boss
+		}
+
 		if (!this.falling) {
-			if (this.y > (this.game.camera.height - bc.B_HOVERING_HEIGHT)) {
+			if (this.y > (this.sceneManager.camera.height - bc.B_HOVERING_HEIGHT)) {
 				this.deltaY -= bc.B_ACCELERATION * this.game.clockTick;
 			} else {
-				this.deltaY += bc.B_ACCELERATION * this.game.clockTick;	
+				this.deltaY += bc.B_ACCELERATION * this.game.clockTick;
 			}
 			if (Math.abs(this.deltaY) > 200) {
 				this.deltaY *= .99;
 			}
 			if (!this.jetPackSoundOn) {
-				this.game.audio.jetPack.play();
+				this.game.audio.playSoundFx(this.game.audio.jetPack);
 				this.jetPackSoundOn = true;
 			}
 
@@ -50,14 +60,14 @@ class Boss extends Entity {
 			this.reactionTime -= this.game.clockTick;
 			if (this.reactionTime < 0) {
 				this.falling = false;
-				this.game.audio.jetPack.play();
+				this.game.audio.playSoundFx(this.game.audio.jetPack);
 				this.jetPackSoundOn = true;
 			}
 		}
 
-		if (this.game.Zerlin.x < this.x && this.facingRight) {
+		if (this.sceneManager.Zerlin.x < this.x && this.facingRight) {
 			this.faceLeft();
-		} else if (this.game.Zerlin.x > this.x && !this.facingRight) {
+		} else if (this.sceneManager.Zerlin.x > this.x && !this.facingRight) {
 			this.faceRight();
 		}
 
@@ -88,7 +98,7 @@ class Boss extends Entity {
 		this.y += this.game.clockTick * this.deltaY;
 
 		this.boundingbox.translateCoordinates(this.game.clockTick * this.deltaX, this.game.clockTick * this.deltaY);
-		
+
 		this.beamCannon.update();
 		super.update();
 	}
@@ -102,7 +112,7 @@ class Boss extends Entity {
 			} else {
 				this.animation = this.flyRightAnimation;
 			}
-		} 
+		}
 		else { // facing left
 			this.drawX = this.x - (bc.B_WIDTH - bc.B_ARM_SOCKET_X) * bc.B_SCALE;
 			if (this.falling) {
@@ -112,13 +122,13 @@ class Boss extends Entity {
 			}
 		}
 
-		this.animation.drawFrame(this.game.clockTick, this.ctx, this.drawX - this.game.camera.x, this.drawY);
+		this.animation.drawFrame(this.game.clockTick, this.ctx, this.drawX - this.sceneManager.camera.x, this.drawY);
 		this.beamCannon.draw();
 
 		if (bc.B_DRAW_COLLISION_BOUNDRIES) {
 			this.ctx.strokeStyle = "black";
 			if (!this.boundingbox.hidden) {
-				this.ctx.strokeRect(this.boundingbox.x - this.game.camera.x, this.boundingbox.y, this.boundingbox.width, this.boundingbox.height);
+				this.ctx.strokeRect(this.boundingbox.x - this.sceneManager.camera.x, this.boundingbox.y, this.boundingbox.width, this.boundingbox.height);
 			}
 		}
 	}
@@ -147,7 +157,7 @@ class Boss extends Entity {
 		this.y = y;
 		// update boundingBox
 		if (this.facingRight) {
-			this.faceRight(); 
+			this.faceRight();
 		} else {
 			this.faceLeft();
 		}
@@ -156,7 +166,7 @@ class Boss extends Entity {
 	isTileBelow(tile) {
 		return (this.boundingbox.left < tile.boundingBox.right)
 				&& (this.boundingbox.right > tile.boundingBox.left)
-				&& (this.boundingbox.bottom + 10 > tile.boundingBox.top) 
+				&& (this.boundingbox.bottom + 10 > tile.boundingBox.top)
 				&& (this.boundingbox.bottom - 10 < tile.boundingBox.top);
 	}
 
@@ -182,38 +192,38 @@ class Boss extends Entity {
 
 	createAnimations() {
 		this.flyRightAnimation = new Animation(this.assetManager.getAsset("../img/boss flying.png"),
-													0, 0, 
-												   bc.B_WIDTH, 
-												   bc.B_HEIGHT, 
-												   bc.B_FLYING_FRAME_SPEED, 
-												   bc.B_FLYING_FRAMES, 
+													0, 0,
+												   bc.B_WIDTH,
+												   bc.B_HEIGHT,
+												   bc.B_FLYING_FRAME_SPEED,
+												   bc.B_FLYING_FRAMES,
 												   true, false,
 												   bc.B_SCALE);
 		this.flyLeftAnimation = new Animation(this.assetManager.getAsset("../img/boss flying left.png"),
-													0, 0, 
-												   bc.B_WIDTH, 
-												   bc.B_HEIGHT, 
-												   bc.B_FLYING_FRAME_SPEED, 
-												   bc.B_FLYING_FRAMES, 
+													0, 0,
+												   bc.B_WIDTH,
+												   bc.B_HEIGHT,
+												   bc.B_FLYING_FRAME_SPEED,
+												   bc.B_FLYING_FRAMES,
 												   true, false,
 												   bc.B_SCALE);
 		this.fallRightAnimation = new Animation(this.assetManager.getAsset("../img/boss falling.png"),
-													0, 0, 
-												   bc.B_WIDTH, 
-												   bc.B_HEIGHT, 
-												   bc.B_FALLING_FRAME_SPEED, 
-												   bc.B_FALLING_FRAMES, 
+													0, 0,
+												   bc.B_WIDTH,
+												   bc.B_HEIGHT,
+												   bc.B_FALLING_FRAME_SPEED,
+												   bc.B_FALLING_FRAMES,
 												   true, false,
 												   bc.B_SCALE);
 		this.fallLeftAnimation = new Animation(this.assetManager.getAsset("../img/boss falling left.png"),
-													0, 0, 
-												   bc.B_WIDTH, 
-												   bc.B_HEIGHT, 
-												   bc.B_FALLING_FRAME_SPEED, 
-												   bc.B_FALLING_FRAMES, 
+													0, 0,
+												   bc.B_WIDTH,
+												   bc.B_HEIGHT,
+												   bc.B_FALLING_FRAME_SPEED,
+												   bc.B_FALLING_FRAMES,
 												   true, false,
 												   bc.B_SCALE);
-		// this.dieAnimation = 
+		// this.dieAnimation =
 	}
 }
 
@@ -236,6 +246,7 @@ class BeamCannon extends Entity {
 		this.setUpCannonImages();
 		this.faceRight();
 		this.lengthSocketToMuzzle = Math.sqrt(Math.pow(this.muzzleY, 2) + Math.pow(this.muzzleX, 2));
+		this.muzzleWidth = bc.MUZZLE_WIDTH * bc.B_SCALE;
 	}
 
 	update() {
@@ -251,11 +262,11 @@ class BeamCannon extends Entity {
 
 	draw() {
 		if (!this.hidden) {
+			this.ctx.save();
 			if (this.beam) {
 				this.beam.draw();
 			}
-			this.ctx.save();
-			this.ctx.translate(this.x - this.game.camera.x, this.y);
+			this.ctx.translate(this.x - this.sceneManager.camera.x, this.y);
 			this.ctx.rotate(this.beamAngle);
 			this.ctx.drawImage(this.image,
 							   0,
@@ -266,6 +277,12 @@ class BeamCannon extends Entity {
 							   -(this.armSocketY),
 							   this.width,
 							   this.height);
+
+            // this.ctx.beginPath();
+            // this.ctx.strokeStyle = "green";
+            // this.ctx.arc(this.muzzleX, this.muzzleY, 5, 0, Math.PI * 2, false);
+            // this.ctx.stroke();
+            // this.ctx.closePath();
 			this.ctx.restore();
 		}
 		super.draw();
@@ -274,8 +291,8 @@ class BeamCannon extends Entity {
 	turnOn() {
 		this.on = true;
 		this.beam = new Beam(this);
-		this.game.beams.push(this.beam);
-		this.game.audio.beam.play();
+		// this.sceneManager.beams.push(this.beam);
+		this.game.audio.playSoundFx(this.game.audio.beam);
 	}
 
 	turnOff() {
@@ -294,9 +311,9 @@ class BeamCannon extends Entity {
 		this.muzzleY = (bc.BC_MUZZLE_RIGHT_Y - bc.BC_RIGHT_Y_AXIS) * bc.B_SCALE;
 		this.angleSocketToMuzzle = Math.atan2(this.muzzleY, this.muzzleX);
 		this.facingRight = true;
-		console.log("right");
-		console.log(this.muzzleX);
-		console.log(this.muzzleY);
+		// console.log("right");
+		// console.log(this.muzzleX);
+		// console.log(this.muzzleY);
 	}
 
 	faceLeft() {
@@ -307,32 +324,32 @@ class BeamCannon extends Entity {
 		this.muzzleY = (bc.BC_MUZZLE_LEFT_Y - bc.BC_LEFT_Y_AXIS) * bc.B_SCALE;
 		this.angleSocketToMuzzle = Math.atan2(this.muzzleY, this.muzzleX);
 		this.facingRight = false;
-		console.log("left");
-		console.log(this.muzzleX);
-		console.log(this.muzzleY);
+		// console.log("left");
+		// console.log(this.muzzleX);
+		// console.log(this.muzzleY);
 	}
 
 	setBeamAngle() {
 		/*
 			    Axis  A	|\
-						| \	
+						| \
 						|  \
 			   elbow  B |___\ C   Target
 		*/
-		var zerlinBox = this.game.Zerlin.boundingbox;
+		var zerlinBox = this.sceneManager.Zerlin.boundingbox;
 		var angleAxisToTarget = Math.atan2(zerlinBox.y + zerlinBox.height / 2 - this.y, zerlinBox.x + zerlinBox.width / 2 - this.x);
-		var distanceAxisToTarget = distance(this, this.game.Zerlin.boundingbox);
+		var distanceAxisToTarget = distance(this, this.sceneManager.Zerlin.boundingbox);
 		var distanceAxisToElbow = this.muzzleY;
 		var angleBCA = Math.asin(distanceAxisToElbow / distanceAxisToTarget);
 		var angleToZerlin = angleAxisToTarget - angleBCA;
 
-		var angleDiff = this.shaveRadians(angleToZerlin - this.beamAngle);
+		var angleDiff = shaveRadians(angleToZerlin - this.beamAngle);
 		if (angleDiff > Math.PI) {
 			// rotate beam clockwise
 			this.beamAngleDelta -= bc.BEAM_ANGLE_ACCELERATION_RADIANS * this.game.clockTick;
 		} else {
 			// rotate beam counterclockwise
-			this.beamAngleDelta += bc.BEAM_ANGLE_ACCELERATION_RADIANS * this.game.clockTick; 
+			this.beamAngleDelta += bc.BEAM_ANGLE_ACCELERATION_RADIANS * this.game.clockTick;
 		}
 		this.beamAngleDelta *= .97; // zero in on target by reducing speed of beam rotation
 		this.beamAngle += this.beamAngleDelta * this.game.clockTick;
@@ -343,45 +360,61 @@ class BeamCannon extends Entity {
 		this.faceLeftCannonImage = this.assetManager.getAsset("../img/beam cannon left.png");
 	}
 
-	/*
-	 * Converts an angle to inside range [0, Math.PI * 2).
-	 */
-	shaveRadians(angle) {
-		var newAngle = angle;
-		while (newAngle >= Math.PI * 2) {
-			newAngle -= Math.PI * 2;
-		}
-		while (newAngle < 0) {
-			newAngle += Math.PI * 2;
-		}
-		return newAngle;
-	}
 }
 
+/*
+ * Converts an angle to inside range [0, Math.PI * 2).
+ */
+var shaveRadians = function(angle) {
+	var newAngle = angle;
+	while (newAngle >= Math.PI * 2) {
+		newAngle -= Math.PI * 2;
+	}
+	while (newAngle < 0) {
+		newAngle += Math.PI * 2;
+	}
+	return newAngle;
+}
 
 
 
 class Beam {
 	constructor(cannon) {
 		this.game = cannon.game;
+		this.sceneManager = cannon.sceneManager;
 		this.cannon = cannon;
 		this.segments = [];
-		this.segments.push({x: cannon.x, y: cannon.y, angle: cannon.beamAngle});
+		for (let i = 0; i < bc.MICRO_BEAM_COUNT; i++) {
+			this.segments.push({x: cannon.x, y: cannon.y, angle: cannon.beamAngle});
+		}
 		this.isSizzling = false;
 		this.sizzlingSoundOn = false;
+		this.width = this.cannon.muzzleWidth / bc.MICRO_BEAM_COUNT * 2;
 	}
 
 	update() {
-		var xOffset = this.cannon.lengthSocketToMuzzle * Math.cos(this.cannon.beamAngle + this.cannon.angleSocketToMuzzle); 
-		var yOffset = this.cannon.lengthSocketToMuzzle * Math.sin(this.cannon.beamAngle + this.cannon.angleSocketToMuzzle); 
+		this.segments.splice(bc.MICRO_BEAM_COUNT); // recreate all deflected segments;
+		var xOffsetArmSocketToCenterOfMuzzle = this.cannon.lengthSocketToMuzzle * Math.cos(this.cannon.beamAngle + this.cannon.angleSocketToMuzzle);
+		var yOffsetArmSocketToCenterOfMuzzle = this.cannon.lengthSocketToMuzzle * Math.sin(this.cannon.beamAngle + this.cannon.angleSocketToMuzzle);
+
+		var xOffsetCenterOfMuzzleToCorner = -this.cannon.muzzleWidth / 2 * Math.sin(this.cannon.beamAngle);
+		var yOffsetCenterOfMuzzleToCorner = this.cannon.muzzleWidth / 2 * Math.cos(this.cannon.beamAngle);
 		// console.log(this.cannon.lengthSocketToMuzzle);
-		this.segments[0].x = this.cannon.x + xOffset;
-		this.segments[0].y = this.cannon.y + yOffset;
-		this.segments[0].angle = this.cannon.beamAngle;
-		// collision manager detects end of beam segements and adds new ones if deflected.
+
+		for (let i = 0; i < bc.MICRO_BEAM_COUNT; i++) {
+			let microBeamPlacementMultiplier = (2 / (bc.MICRO_BEAM_COUNT - 1) * i - 1);
+			this.segments[i].x = this.cannon.x + xOffsetArmSocketToCenterOfMuzzle + xOffsetCenterOfMuzzleToCorner * microBeamPlacementMultiplier;
+			this.segments[i].y = this.cannon.y + yOffsetArmSocketToCenterOfMuzzle + yOffsetCenterOfMuzzleToCorner * microBeamPlacementMultiplier;
+			this.segments[i].angle = this.cannon.beamAngle;
+			// set beam to reasonable length
+			this.segments[i].endX = Math.cos(this.segments[i].angle) * bc.MAX_BEAM_LENGTH + this.segments[i].x;
+			this.segments[i].endY = Math.sin(this.segments[i].angle) * bc.MAX_BEAM_LENGTH + this.segments[i].y;
+		}
+
+		// collision manager adds new segments if deflected.
 
 		if (this.isSizzling && !this.sizzlingSoundOn) {
-			this.game.audio.sizzle.play();
+			this.game.audio.playSoundFx(this.game.audio.sizzle);
 			this.sizzlingSoundOn = true;
 		} else if (!this.isSizzling && this.sizzlingSoundOn) {
 			this.game.audio.sizzle.stop();
@@ -390,14 +423,14 @@ class Beam {
 	}
 
 	draw() {
-		var cameraX = this.game.camera.x; // just draw beams without checking if in view of camera?
+		var cameraX = this.sceneManager.camera.x; // just draw beams without checking if in view of camera?
 		var ctx = this.game.ctx;
 		ctx.save();
 		for (let i = 0; i < this.segments.length; i++) {
 			var segment = this.segments[i];
 
 			//Outer Layer of beam
-			ctx.lineWidth = bc.BEAM_DROID_LASER_WIDTH * bc.B_SCALE;
+			ctx.lineWidth = this.width * 5;
 			ctx.strokeStyle = "red";
 			ctx.lineCap = "round";
 			ctx.beginPath();
@@ -410,7 +443,7 @@ class Beam {
 			var segment = this.segments[i];
 
 			//Outer Layer of beam
-			ctx.lineWidth = bc.BEAM_DROID_LASER_WIDTH * bc.B_SCALE * .75;
+			ctx.lineWidth = this.width * 3;
 			ctx.strokeStyle = "orange";
 			ctx.lineCap = "round";
 			ctx.beginPath();
@@ -424,7 +457,7 @@ class Beam {
 			var segment = this.segments[i];
 
 			//inner layer of beam.
-			ctx.lineWidth = bc.BEAM_DROID_LASER_WIDTH * bc.B_SCALE * .5;
+			ctx.lineWidth = this.width;
 			ctx.strokeStyle = "white";
 			ctx.lineCap = "round";
 			ctx.beginPath();
@@ -432,9 +465,8 @@ class Beam {
 			ctx.lineTo(segment.endX - cameraX, segment.endY);
 			ctx.stroke();
 			ctx.closePath();
-		} 
+		}
 
-		ctx.restore(); 
+		ctx.restore();
 	}
 }
-

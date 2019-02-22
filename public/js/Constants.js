@@ -15,17 +15,22 @@ Constants = {
         JUMP: 'KeyW',
         JUMP_FORCE: 'KeyE',
         SLASH: 'Space',
-        ROLL: 'KeyS'
+        ROLL: 'KeyS',
+        PAUSE: 'Enter'
     },
 
     DroidBasicConstants : {
-        BASIC_DROID_SHOOT_INTERVAL : 2,
+        BASIC_DROID_SHOOT_INTERVAL : 2, //default 2
         BASIC_DROID_X_MOVEMENT_SPEED : 150,
         BASIC_DROID_Y_MOVEMENT_SPEED : 100,
         BASIC_DROID_X_ACCELERATION : 60,
         BASIC_DROID_Y_ACCELERATION : 60,
         BASIC_DROID_ORBITAL_X_OFFSET : 200,
         BASIC_DROID_ORBITAL_Y_OFFSET : -200,
+        BASIC_DROID_SCALE : 0.65,
+
+        /* bounding circle scale */
+        BASIC_DROID_BOUND_CIRCLE_SCALE : 1.10,
 
         //Laser constants
         BASIC_DROID_LASER_SPEED : 400,
@@ -71,21 +76,28 @@ Constants = {
 
         /* multi-shot laser constants */
         MULTISHOT_DROID_SHOOT_INTERVAL : 2,
-        MULTISHOT_WIDTH : 35,
+        MULTISHOT_WIDTH : 35
     },
 
     ZerlinConstants : {
         //PHI : 1.618,
 
         /* Zerlin health and force stats*/
-        Z_MAX_HEALTH : 20,
-        Z_MAX_FORCE : 20,
-        Z_FORCE_JUMP_FORCE_COST: 2,
-        Z_SOMERSAULT_FORCE_COST: 2,
+        Z_MAX_HEALTH : 20, //was 10
+        Z_MAX_FORCE : 10,
+        Z_FORCE_REGEN_PER_SECOND : 0.5,
+        Z_FORCE_JUMP_FORCE_COST: 3,
+        Z_SOMERSAULT_FORCE_COST: 3,
+        /* Zerlin damage */
+        Z_SLASH_DAMAGE: 10,
+        Z_BOSS_BEAM_DAMAGE: 1,
 
-        Z_SCALE : PHI - 1,
+        Z_SCALE : 0.5,
 
         DRAW_COLLISION_BOUNDRIES : false,
+
+        Z_SPAWN_X : 0,  //modify this to spawn zerlin later in the level.
+                            //about 100 for 1 tile/column.
 
         Z_WIDTH : 114,
         Z_HEIGHT : 306,
@@ -124,11 +136,15 @@ Constants = {
         Z_SLASH_START_FRAME : 9,
         Z_SLASH_END_FRAME : 11,
 
+        Z_DEATH_WIDTH : 414,
+        Z_DEATH_FRAMES : 30,
+
+
         Z_WALKING_SPEED : 150,
         Z_SOMERSAULT_SPEED : 400,
         FORCE_JUMP_DELTA_Y : -950,
         JUMP_DELTA_Y : -500,
-        GRAVITATIONAL_ACCELERATION : 1000,  
+        GRAVITATIONAL_ACCELERATION : 1000,
 
         LS_UP_IMAGE_WIDTH : 126,
         LS_UP_IMAGE_HEIGHT : 228,
@@ -152,7 +168,8 @@ Constants = {
 
     DroidUtilConstants: {
         EXPLOSION_SCALE : 2,
-        EXPLOSION_FRAME_SPEED : 0.05
+        EXPLOSION_FRAME_SPEED : 0.05,
+        DRAW_BOUNDING_CIRCLE : true
     },
 
     DroidSmartConstants: {
@@ -176,6 +193,9 @@ Constants = {
     },
 
     BossConstants: {
+        B_MAX_HEALTH : 150,
+        BEAM_HP_PER_SECOND : .5,
+
         B_SCALE : .6,
         B_DRAW_COLLISION_BOUNDRIES : false,
         B_WIDTH : 120,
@@ -192,24 +212,27 @@ Constants = {
         B_ACCELERATION : 300,
         B_FALLING_REACTION_TIME : .85,
         B_RECOVERY_PERIOD : 2,
-        B_BEAM_EXPLOSION_THRESHHOLD : .1,
+        B_BEAM_EXPLOSION_THRESHHOLD : 10,
         BC_WIDTH : 198,
         BC_HEIGHT : 108,
         BC_X_AXIS : 38,
         BC_RIGHT_Y_AXIS : 17,
         BC_LEFT_Y_AXIS : 91,
-        BC_MUZZLE_X : 189,
+        BC_MUZZLE_X : 185,
         BC_MUZZLE_RIGHT_Y : 81,
         BC_MUZZLE_LEFT_Y : 27,
         BEAM_DROID_LASER_WIDTH : 26,
-        BEAM_HP_PER_SECOND : 3,
-        BEAM_ANGLE_ACCELERATION_RADIANS : Math.PI
+        BEAM_HP_PER_SECOND : .3,
+        BEAM_ANGLE_ACCELERATION_RADIANS : Math.PI,
+        MICRO_BEAM_COUNT : 5,
+        MUZZLE_WIDTH : 13,
+        MAX_BEAM_LENGTH : 5000
     },
 
     StatusBarConstants: {
         STATUS_BAR_LENGTH : 0.25, // width of the canvas to use when drawing
         STATUS_BAR_WIDTH : 20,
-        STATUS_BAR_DISPLAY_TEXT : true,
+        STATUS_BAR_DISPLAY_TEXT : false,
 
         //when the current is less than or equal to the maxSize * CriticalAmount
         //then start alerting the user by using some graphics.
@@ -217,6 +240,11 @@ Constants = {
         STATUS_BAR_CRITICAL_FLASH_INTERVAL : 0.5,
         HEALTH_BAR_HAS_CRITICAL_STATE : true,
         FORCE_BAR_HAS_CRITICAL_STATE : false,
+
+        BOSS_BAR_LENGTH : 0.5,
+        BOSS_BAR_HAS_CRITICAL_STATE : false
+
+
     },
 
     CameraConstants: {
@@ -235,7 +263,9 @@ Constants = {
         RECOVER_HEALTH_AMOUNT: 20,
         RECOVER_FORCE_AMOUNT: 20,
         FORCE_SCALE: 3,
-        INVINCIBILITY_SCALE: 3,
+        DRAW_OUTLINES : true,
+        FLOATING_MAGNITUDE : 12,
+        INVINCIBILITY_SCALE: 2.5,
         INVINCIBILITY_TIME: 10
     }
 

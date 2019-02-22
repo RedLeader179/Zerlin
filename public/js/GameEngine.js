@@ -5,7 +5,7 @@ Joshua Atherton, Michael Josten, Steven Golob
 */
 
 //PHI is now a global constant so dont need to call c.PHI, can just call PHI
-const gec = Constants.GameEngineConstants;
+var gec = Constants.GameEngineConstants;
 
 window.requestAnimFrame = (function () {
     return window.requestAnimationFrame ||
@@ -19,50 +19,33 @@ window.requestAnimFrame = (function () {
 })();
 
 class GameEngine {
+
     constructor(assetManager) {
         this.assetManager = assetManager;
-        this.showOutlines = false; //debug bit
-        this.otherEntities = [];
-        this.lasers = [];
-        this.beams = [];
-        this.droids = [];
-        this.tiles = [];
-        this.boss = null;
-        this.powerups = [];
         this.ctx = null;
         this.surfaceWidth = null;
         this.surfaceHeight = null;
-        this.moveLeft = null;
-        this.moveRight = null;
         this.mouse = {x: 100, y: 100};
         this.click = null;
-        this.Zerlin = null;
         this.keys = {};
-
     }
+
     init(ctx) {
         this.ctx = ctx;
         this.surfaceWidth = this.ctx.canvas.width;
         this.surfaceHeight = this.ctx.canvas.height;
-        this.timer = new Timer();
-        this.camera = new Camera(this, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height); // TODO: Change to constant camera dimension to pair up with template
-        this.sceneManager = new SceneManager(this);
-        this.level = this.sceneManager.currentLevel;
-        this.Zerlin = new Zerlin(this);
-        this.addEntity(new HealthStatusBar(this, 25, 25)); //put these in scene manager??
-        this.addEntity(new ForceStatusBar(this, 50, 50));
+        this.timer = new Timer(this);
+        this.sceneManager = new SceneManager2(this);
 
-        this.collisionManager = new CollisionManager(this);
-        // TODO: instantiate Parallax manager here (and other managers)
         this.audio = new SoundEngine(this);
         this.startInput();
+        this.sceneManager.init();
         console.log('game initialized');
     }
+
     start() { //todo: don't start the game until user clicks on canvas
         console.log("starting game");
         this.audio.backgroundMusic.play();
-        this.audio.playSoundFx(this.audio.lightsaber, 'lightsaberOn');
-        this.audio.playSoundFx(this.audio.saberHum);
         var that = this;
         (function gameLoop() {
             that.loop();
@@ -75,100 +58,32 @@ class GameEngine {
         this.update();
         this.draw();
     }
+
     update() {
-        this.Zerlin.update();
-        this.camera.update();
-        this.level.update();
+        // if (!this.paused) {
         this.sceneManager.update();
-
-        for (var i = this.droids.length - 1; i >= 0; i--) {
-            this.droids[i].update();
-            if (this.droids[i].removeFromWorld) {
-                this.droids.splice(i, 1);
-            }
-        }
-        for (var i = this.lasers.length - 1; i >= 0; i--) {
-            this.lasers[i].update();
-            if (this.lasers[i].removeFromWorld) {
-                this.lasers.splice(i, 1);
-            }
-        }
-        for (var i = this.powerups.length -1; i >= 0; i--) {
-            this.powerups[i].update();
-            if(this.powerups[i].removeFromWorld) {
-                this.powerups.splice(i, 1);
-            }
-        }
-        for (var i = this.otherEntities.length - 1; i >= 0; i--) {
-            this.otherEntities[i].update();
-            if (this.otherEntities[i].removeFromWorld) {
-                this.otherEntities.splice(i, 1);
-            }
-        }
-        if (this.boss) {
-            this.boss.update();
-        }
-
-
-        this.collisionManager.handleCollisions();
         this.click = null;
     }
+
     draw() {
         this.ctx.clearRect(0, 0, this.surfaceWidth, this.surfaceHeight);
         this.ctx.save();
-        this.camera.draw();
-        this.level.draw();
-        this.Zerlin.draw();
         this.sceneManager.draw();
-        for (var i = 0; i < this.droids.length; i++) {
-            this.droids[i].draw(this.ctx);
-        }
-        for (var i = 0; i < this.lasers.length; i++) {
-            this.lasers[i].draw(this.ctx);
-        }
-        if (this.boss) {
-            this.boss.draw();
-        }
-        for (var i = 0; i < this.powerups.length; i++) {
-            this.powerups[i].draw(this.ctx);
-        }
-        for (var i = 0; i < this.otherEntities.length; i++) {
-            this.otherEntities[i].draw(this.ctx);
-        }
-        
 
-        if (this.gameOver) {
-            this.ctx.textAlign = 'center';
-            this.ctx.font = '70px serif';
-            this.ctx.fillText('GAME OVER', this.camera.width / 2, this.camera.height / 2);
-        }
+
+        // if (this.gameOver) {
+        //     this.ctx.textAlign = 'center';
+        //     this.ctx.font = '70px serif';
+        //     this.ctx.fillText('GAME OVER', this.camera.width / 2, this.camera.height / 2);
+        // }
 
 
         this.ctx.restore();
     }
-    addEntity(entity) {
-        // console.log('added entity');
-        this.otherEntities.push(entity);
-    }
-    addDroid(droid) {
-        console.log('added droid');
-        this.droids.push(droid);
-        // this.otherEntities.push(droid);
-    }
-    addLaser(laser) {
-        // console.log('added laser');
-        this.lasers.push(laser);
-        // this.otherEntities.push(laser);
-    }
-    addTile(tile) {
-        console.log('added laser');
-        this.tiles.push(tile);
-        // this.otherEntities.push(tile);
-    }
-    addPowerup(powerup) {
-        this.powerups.push(powerup);
-    }
-    startInput () {
+
+
+
+    startInput() {
         console.log('Starting input');
         var that = this;
 
@@ -178,18 +93,20 @@ class GameEngine {
             return { x: x, y: y };
         }
 
-
-        // Keyboard
-
         this.ctx.canvas.addEventListener("keydown", (e) => {
             if (that.keys[e.code]) { return; } // prevent repeating calls when key is held down
-            // console.log("Key Down Event - Char " + e.code + " Code " + e.keyCode);
+            if (e.code === Constants.KeyConstants.PAUSE) {
+                if (that.sceneManager.paused) {
+                    that.sceneManager.unpause();
+                } else {
+                    that.sceneManager.pause();
+                }
+            }
             that.keys[e.code] = true;
             e.preventDefault();
         }, false);
 
         this.ctx.canvas.addEventListener("keyup", function (e) {
-            // console.log("Key Up Event - Char " + e.code + " Code " + e.keyCode);
             that.keys[e.code] = false;
             e.preventDefault();
         }, false);
@@ -198,10 +115,6 @@ class GameEngine {
         // Mouse
         this.ctx.canvas.addEventListener("click", function(e) {
             that.click = getXandY(e);
-            //debug
-            //that.addEntity(new DroidLaser(that, 300, 300, 20, that.click.x, that.click.y, 20, 10));
-            //console.log("click X: %d, Y: %d", that.click.x, that.click.y);
-            //console.log(e);
         }, false);
 
         this.ctx.canvas.addEventListener("contextmenu", function (e) {
@@ -225,26 +138,45 @@ class GameEngine {
             }
         }, false);
 
-
-
         console.log('Input started');
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
 
 class Timer {
     constructor() {
         this.gameTime = 0;
         this.maxStep = 0.05;
         this.wallLastTimestamp = 0;
+        this.disabled = false;
     }
     tick() {
+        if (this.disabled) {
+            return 0;
+        }
         var wallCurrent = Date.now();
         var wallDelta = (wallCurrent - this.wallLastTimestamp) / 1000;
         this.wallLastTimestamp = wallCurrent;
         var gameDelta = Math.min(wallDelta, this.maxStep); // TODO: are these 3  lines okay?
         this.gameTime += gameDelta;
         return gameDelta;
+    }
+    disable() {
+        this.disabled = true;
+    }
+    enable() {
+        this.disabled = false;
     }
 }
 
@@ -253,25 +185,19 @@ class Timer {
 class Entity {
     constructor(game, x, y, deltaX, deltaY) {
         this.game = game;
+        this.sceneManager = this.game.sceneManager;
         this.x = x;
         this.y = y;
         this.removeFromWorld = false;
         // Entity's velocity
         this.deltaX = deltaX;
         this.deltaY = deltaY;
-
     }
     update() {
 
     }
     draw() {
-        // if (this.game.showOutlines && this.radius) {
-        //     this.game.ctx.beginPath();
-        //     this.game.ctx.strokeStyle = "green";
-        //     this.game.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-        //     this.game.ctx.stroke();
-        //     this.game.ctx.closePath();
-        // }
+
     }
     rotateAndCache(image, angle) {
         var offscreenCanvas = document.createElement('canvas');
