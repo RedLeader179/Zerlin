@@ -168,8 +168,7 @@ Constants = {
     DroidUtilConstants: {
         EXPLOSION_SCALE : 2,
         EXPLOSION_FRAME_SPEED : 0.05,
-        DRAW_OUTLINES : true,
-        DRAW_BOUNDING_CIRCLE : false
+        DRAW_BOUNDING_CIRCLE : true
     },
 
     DroidSmartConstants: {
