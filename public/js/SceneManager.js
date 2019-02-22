@@ -245,6 +245,9 @@ class SceneManager2 {
   }
 
   openingSceneUpdate() {
+    if(this.game.click) {
+      this.startLevelTransitionScene(); //for going strait into the lvl
+    }
     this.openingSceneTimer += this.game.clockTick;
     if (this.openingSceneTimer < OPENING_SCENE_STOP_CAMERA_PAN) {
       this.camera.y = -Math.pow(this.openingSceneTimer - OPENING_SCENE_STOP_CAMERA_PAN, 2) * 280;
@@ -343,6 +346,7 @@ class SceneManager2 {
     this.powerups = [];
     this.otherEntities = [];
     this.boss = null;
+    this.bossHealthBar = null;
     this.level.set();
     this.addEntity(new HealthStatusBar(this.game, this, 25, 25)); //put these in scene manager??
     this.addEntity(new ForceStatusBar(this.game, this, 50, 50));

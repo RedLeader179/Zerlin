@@ -99,7 +99,7 @@ class Level {
         } else if (this.levelLayout[i][j] === 'd') { // basic droid
           this.unspawnedDroids.push(new BasicDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * rowHeight, 14, .2, 100, 100,  Constants.DroidBasicConstants.BASIC_DROID_SCALE, 45));
         } else if (this.levelLayout[i][j] === 's') { // scatter shot droid
-          this.unspawnedDroids.push(new LeggyDroid(this.game, this.game.assetManager.getAsset("../img/Droid 3.png"), j * this.tileWidth, i * rowHeight, 10, .2));
+          this.unspawnedDroids.push(new ScatterShotDroid(this.game, this.game.assetManager.getAsset("../img/Droid 3.png"), j * this.tileWidth, i * rowHeight, 10, .2));
         } else if (this.levelLayout[i][j] === 'b') { // slow burst droid
           this.unspawnedDroids.push(new SlowBurstDroid(this.game, this.game.assetManager.getAsset("../img/Droid 1.png"), j * this.tileWidth, i * rowHeight, 2, .8));
         } else if (this.levelLayout[i][j] === 'f') { // fast burst droid
