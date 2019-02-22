@@ -244,17 +244,18 @@ class BossHealthStatusBar extends AbstractStatusBar {
         this.foregroundColor.addColorStop(0.5, 'rgb(213, 203, 28)');
         this.foregroundColor.addColorStop(1, 'rgb(231, 222, 65)');
 
-        this.maxSize = this.game.boss.maxHealth;
-        this.current = this.game.boss.currentHealth;
+        this.maxSize = sbc.BOSS_BAR_LENGTH;
+        this.current = sbc.BOSS_BAR_LENGTH;
 
         this.image = this.game.assetManager.getAsset("../img/boss_helmet.png");
     }
 
     setCurrent() {
-        this.current = this.game.boss.currentHealth;
+      //todo: get this going
+        // this.current = this.sceneManager.boss.currentHealth;
     }
     setMaxSize() {
-        this.maxSize = this.game.boss.maxHealth;
+        this.maxSize = sbc.BOSS_BAR_LENGTH;
     }
     draw() {
         super.draw();

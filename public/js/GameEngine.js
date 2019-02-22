@@ -37,7 +37,6 @@ class GameEngine {
         this.timer = new Timer(this);
         this.sceneManager = new SceneManager2(this);
 
-
         this.audio = new SoundEngine(this);
         this.startInput();
         this.sceneManager.init();

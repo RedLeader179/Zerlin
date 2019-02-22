@@ -109,14 +109,7 @@ class Level {
         } else if (this.levelLayout[i][j] === 'm') { // multishot droid
           this.unspawnedDroids.push(new MultishotDroid(this.game, this.game.assetManager.getAsset("../img/Droid 5.png"), j * this.tileWidth, i * rowHeight, 21, .12));
         } else if (this.levelLayout[i][j] === 'X') { // Boss
-
-          //todo: fix this
-          //Stevens version
-          // this.sceneManager.boss = new Boss(this.game, j * this.tileWidth, i * rowHeight);
-          //michaels version //get working again
           this.unspawnedBoss = new Boss(this.game, j * this.tileWidth, i * this.game.surfaceHeight / rows);
-
-
         } else if (this.levelLayout[i][j] === 'H') { //health powerup
           this.unspawnedPowerups.push(new HealthPowerUp(this.game, this.game.assetManager.getAsset("../img/powerup_health.png"), j * this.tileWidth, i * rowHeight));
         } else if (this.levelLayout[i][j] === 'F') { //force powerup
@@ -157,7 +150,7 @@ class Level {
         this.sceneManager.boss = this.unspawnedBoss;
 
         //todo: get this going again
-        // this.sceneManager.bossHealthBar = new BossHealthStatusBar(this.game, this.game.surfaceWidth * 0.25, 675);
+        this.sceneManager.bossHealthBar = new BossHealthStatusBar(this.game, this.game.surfaceWidth * 0.25, 675);
         this.unspawnedBoss = null;
       }
     }

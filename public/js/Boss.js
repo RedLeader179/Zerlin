@@ -36,12 +36,12 @@ class Boss extends Entity {
 		if (this.currentHealth <= 0) {
 			//kill the boss
 		}
-		
+
 		if (!this.falling) {
 			if (this.y > (this.sceneManager.camera.height - bc.B_HOVERING_HEIGHT)) {
 				this.deltaY -= bc.B_ACCELERATION * this.game.clockTick;
 			} else {
-				this.deltaY += bc.B_ACCELERATION * this.game.clockTick;	
+				this.deltaY += bc.B_ACCELERATION * this.game.clockTick;
 			}
 			if (Math.abs(this.deltaY) > 200) {
 				this.deltaY *= .99;
@@ -97,7 +97,7 @@ class Boss extends Entity {
 		this.y += this.game.clockTick * this.deltaY;
 
 		this.boundingbox.translateCoordinates(this.game.clockTick * this.deltaX, this.game.clockTick * this.deltaY);
-		
+
 		this.beamCannon.update();
 		super.update();
 	}
@@ -111,7 +111,7 @@ class Boss extends Entity {
 			} else {
 				this.animation = this.flyRightAnimation;
 			}
-		} 
+		}
 		else { // facing left
 			this.drawX = this.x - (bc.B_WIDTH - bc.B_ARM_SOCKET_X) * bc.B_SCALE;
 			if (this.falling) {
@@ -156,7 +156,7 @@ class Boss extends Entity {
 		this.y = y;
 		// update boundingBox
 		if (this.facingRight) {
-			this.faceRight(); 
+			this.faceRight();
 		} else {
 			this.faceLeft();
 		}
@@ -165,7 +165,7 @@ class Boss extends Entity {
 	isTileBelow(tile) {
 		return (this.boundingbox.left < tile.boundingBox.right)
 				&& (this.boundingbox.right > tile.boundingBox.left)
-				&& (this.boundingbox.bottom + 10 > tile.boundingBox.top) 
+				&& (this.boundingbox.bottom + 10 > tile.boundingBox.top)
 				&& (this.boundingbox.bottom - 10 < tile.boundingBox.top);
 	}
 
@@ -191,38 +191,38 @@ class Boss extends Entity {
 
 	createAnimations() {
 		this.flyRightAnimation = new Animation(this.assetManager.getAsset("../img/boss flying.png"),
-													0, 0, 
-												   bc.B_WIDTH, 
-												   bc.B_HEIGHT, 
-												   bc.B_FLYING_FRAME_SPEED, 
-												   bc.B_FLYING_FRAMES, 
+													0, 0,
+												   bc.B_WIDTH,
+												   bc.B_HEIGHT,
+												   bc.B_FLYING_FRAME_SPEED,
+												   bc.B_FLYING_FRAMES,
 												   true, false,
 												   bc.B_SCALE);
 		this.flyLeftAnimation = new Animation(this.assetManager.getAsset("../img/boss flying left.png"),
-													0, 0, 
-												   bc.B_WIDTH, 
-												   bc.B_HEIGHT, 
-												   bc.B_FLYING_FRAME_SPEED, 
-												   bc.B_FLYING_FRAMES, 
+													0, 0,
+												   bc.B_WIDTH,
+												   bc.B_HEIGHT,
+												   bc.B_FLYING_FRAME_SPEED,
+												   bc.B_FLYING_FRAMES,
 												   true, false,
 												   bc.B_SCALE);
 		this.fallRightAnimation = new Animation(this.assetManager.getAsset("../img/boss falling.png"),
-													0, 0, 
-												   bc.B_WIDTH, 
-												   bc.B_HEIGHT, 
-												   bc.B_FALLING_FRAME_SPEED, 
-												   bc.B_FALLING_FRAMES, 
+													0, 0,
+												   bc.B_WIDTH,
+												   bc.B_HEIGHT,
+												   bc.B_FALLING_FRAME_SPEED,
+												   bc.B_FALLING_FRAMES,
 												   true, false,
 												   bc.B_SCALE);
 		this.fallLeftAnimation = new Animation(this.assetManager.getAsset("../img/boss falling left.png"),
-													0, 0, 
-												   bc.B_WIDTH, 
-												   bc.B_HEIGHT, 
-												   bc.B_FALLING_FRAME_SPEED, 
-												   bc.B_FALLING_FRAMES, 
+													0, 0,
+												   bc.B_WIDTH,
+												   bc.B_HEIGHT,
+												   bc.B_FALLING_FRAME_SPEED,
+												   bc.B_FALLING_FRAMES,
 												   true, false,
 												   bc.B_SCALE);
-		// this.dieAnimation = 
+		// this.dieAnimation =
 	}
 }
 
@@ -331,7 +331,7 @@ class BeamCannon extends Entity {
 	setBeamAngle() {
 		/*
 			    Axis  A	|\
-						| \	
+						| \
 						|  \
 			   elbow  B |___\ C   Target
 		*/
@@ -348,7 +348,7 @@ class BeamCannon extends Entity {
 			this.beamAngleDelta -= bc.BEAM_ANGLE_ACCELERATION_RADIANS * this.game.clockTick;
 		} else {
 			// rotate beam counterclockwise
-			this.beamAngleDelta += bc.BEAM_ANGLE_ACCELERATION_RADIANS * this.game.clockTick; 
+			this.beamAngleDelta += bc.BEAM_ANGLE_ACCELERATION_RADIANS * this.game.clockTick;
 		}
 		this.beamAngleDelta *= .97; // zero in on target by reducing speed of beam rotation
 		this.beamAngle += this.beamAngleDelta * this.game.clockTick;
@@ -393,8 +393,8 @@ class Beam {
 
 	update() {
 		this.segments.splice(bc.MICRO_BEAM_COUNT); // recreate all deflected segments;
-		var xOffsetArmSocketToCenterOfMuzzle = this.cannon.lengthSocketToMuzzle * Math.cos(this.cannon.beamAngle + this.cannon.angleSocketToMuzzle); 
-		var yOffsetArmSocketToCenterOfMuzzle = this.cannon.lengthSocketToMuzzle * Math.sin(this.cannon.beamAngle + this.cannon.angleSocketToMuzzle); 
+		var xOffsetArmSocketToCenterOfMuzzle = this.cannon.lengthSocketToMuzzle * Math.cos(this.cannon.beamAngle + this.cannon.angleSocketToMuzzle);
+		var yOffsetArmSocketToCenterOfMuzzle = this.cannon.lengthSocketToMuzzle * Math.sin(this.cannon.beamAngle + this.cannon.angleSocketToMuzzle);
 
 		var xOffsetCenterOfMuzzleToCorner = -this.cannon.muzzleWidth / 2 * Math.sin(this.cannon.beamAngle);
 		var yOffsetCenterOfMuzzleToCorner = this.cannon.muzzleWidth / 2 * Math.cos(this.cannon.beamAngle);
@@ -464,9 +464,8 @@ class Beam {
 			ctx.lineTo(segment.endX - cameraX, segment.endY);
 			ctx.stroke();
 			ctx.closePath();
-		} 
+		}
 
-		ctx.restore(); 
+		ctx.restore();
 	}
 }
-
