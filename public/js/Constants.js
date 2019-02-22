@@ -82,7 +82,7 @@ Constants = {
         //PHI : 1.618,
 
         /* Zerlin health and force stats*/
-        Z_MAX_HEALTH : 100000000, //was 10
+        Z_MAX_HEALTH : 100000, //was 10
         Z_MAX_FORCE : 10,
         Z_FORCE_REGEN_PER_SECOND : 0.5,
         Z_FORCE_JUMP_FORCE_COST: 3,
@@ -93,9 +93,9 @@ Constants = {
 
         Z_SCALE : 0.5,
 
-        DRAW_COLLISION_BOUNDRIES : true,
+        DRAW_COLLISION_BOUNDRIES : false,
 
-        Z_SPAWN_X : 0,  //modify this to spawn zerlin later in the level.
+        Z_SPAWN_X : 400,  //modify this to spawn zerlin later in the level.
                             //about 100 for 1 tile/column.
 
         Z_WIDTH : 114,
@@ -231,7 +231,7 @@ Constants = {
     StatusBarConstants: {
         STATUS_BAR_LENGTH : 0.25, // width of the canvas to use when drawing
         STATUS_BAR_WIDTH : 20,
-        STATUS_BAR_DISPLAY_TEXT : true,
+        STATUS_BAR_DISPLAY_TEXT : false,
 
         //when the current is less than or equal to the maxSize * CriticalAmount
         //then start alerting the user by using some graphics.
