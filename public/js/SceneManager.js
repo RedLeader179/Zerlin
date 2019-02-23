@@ -181,7 +181,8 @@ class SceneManager2 {
       //     prompt bad info
       //   }
       // }
-      //user can't skip opening camer pan down
+
+      //user can't skip opening camera pan down
       if (this.openingSceneTimer > smc.OPENING_SCENE_STOP_CAMERA_PAN) {
         this.playGame = true;
         document.getElementById("formOverlay").style.display = "none";

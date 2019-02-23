@@ -55,9 +55,7 @@ class AssetManager {
 (function() {
   var AM = new AssetManager();
 
-  AM.queueDownload("../img/basic_droid.png");
-  AM.queueDownload("../img/Explosion.png");
-
+  /********** Zerlin assets ******************/
   AM.queueDownload("../img/Zerlin bobbing walking.png");
   AM.queueDownload("../img/Zerlin left bobbing walking.png");
   AM.queueDownload("../img/Zerlin backwards bobbing walking.png");
@@ -76,12 +74,47 @@ class AssetManager {
   AM.queueDownload("../img/Zerlin crouch left.png");
   AM.queueDownload("../img/Zerlin death.png");
   AM.queueDownload("../img/zerlin at fire.png");
-
   AM.queueDownload("../img/saber up.png");
   AM.queueDownload("../img/saber up left.png");
   AM.queueDownload("../img/saber down.png");
   AM.queueDownload("../img/saber down left.png");
 
+
+
+  /********** Boss assets ******************/
+  AM.queueDownload("../img/boss flying.png");
+  AM.queueDownload("../img/boss flying left.png");
+  AM.queueDownload("../img/boss falling.png");
+  AM.queueDownload("../img/boss falling left.png");
+  AM.queueDownload("../img/beam cannon.png");
+  AM.queueDownload("../img/beam cannon left.png");
+  AM.queueDownload("../img/boss_helmet.png");
+
+
+
+  /********** Powerup assets ******************/
+  AM.queueDownload('../img/powerup_health.png');
+  AM.queueDownload('../img/powerup_force.png');
+  AM.queueDownload('../img/powerup_invincibility.png');
+
+
+  /********** Droid assets ******************/
+  AM.queueDownload("../img/droid-j-row.png");
+  AM.queueDownload("../img/leggy_droid.png");
+  AM.queueDownload("../img/Droid 1.png");
+  AM.queueDownload("../img/Droid 2.png");
+  AM.queueDownload("../img/Droid 3.png");
+  AM.queueDownload("../img/Droid 4.png");
+  AM.queueDownload("../img/Droid 5.png");
+  AM.queueDownload("../img/basic_droid.png");
+
+
+  /********** VisualFX assets ******************/
+  AM.queueDownload("../img/Explosion.png");
+
+
+  /********** Background assets ******************/
+  //oasis
   AM.queueDownload('../img/opening stars.png');
   AM.queueDownload('../img/opening oasis 6.png');
   AM.queueDownload('../img/opening oasis 5.png');
@@ -90,6 +123,7 @@ class AssetManager {
   AM.queueDownload('../img/opening oasis 2.png');
   AM.queueDownload('../img/opening oasis 1.png');
 
+  // forest
   AM.queueDownload("../img/backgroundStars.png");
   AM.queueDownload("../img/backgroundTrees1.png");
   AM.queueDownload("../img/backgroundTrees2.png");
@@ -99,39 +133,35 @@ class AssetManager {
   AM.queueDownload("../img/god light (1).png");
   AM.queueDownload("../img/god light (2).png");
 
-  AM.queueDownload("../img/forest_left_tile.png"); //tiles are 60x60
-  AM.queueDownload("../img/forest_center_tile.png");
-  AM.queueDownload("../img/forest_right_tile.png");
-  AM.queueDownload("../img/forest_both_rounded_tile.png");
-
-  AM.queueDownload("../img/droid-j-row.png");
-  AM.queueDownload("../img/leggy_droid.png");
-  AM.queueDownload("../img/Droid 1.png");
-  AM.queueDownload("../img/Droid 2.png");
-  AM.queueDownload("../img/Droid 3.png");
-  AM.queueDownload("../img/Droid 4.png");
-  AM.queueDownload("../img/Droid 5.png");
-
+  //city --not all downloaded yet.....
   AM.queueDownload('../img/city_background.png');
   AM.queueDownload('../img/city_buildings_back.png');
   AM.queueDownload('../img/city_clouds_left.png');
 
-  AM.queueDownload("../img/boss flying.png");
-  AM.queueDownload("../img/boss flying left.png");
-  AM.queueDownload("../img/boss falling.png");
-  AM.queueDownload("../img/boss falling left.png");
-  AM.queueDownload("../img/beam cannon.png");
-  AM.queueDownload("../img/beam cannon left.png");
-  AM.queueDownload("../img/boss_helmet.png");
-  //powerups animations
-  AM.queueDownload('../img/powerup_health.png');
-  AM.queueDownload('../img/powerup_force.png');
-  AM.queueDownload('../img/powerup_invincibility.png');
+
+  //Hoth snow
 
 
+  /********** Tile assets ******************/
+  //forest
+  AM.queueDownload("../img/forest_left_tile.png"); //tiles are 100x100
+  AM.queueDownload("../img/forest_center_tile.png");
+  AM.queueDownload("../img/forest_right_tile.png");
+  AM.queueDownload("../img/forest_both_rounded_tile.png");
+
+  //city
+
+  //Hoth snow
+
+  /********** SceneManager assets ******************/
+  //music menu
   AM.queueDownload('../img/music_menu.png');
   AM.queueDownload('../img/music_menu_xfx.png');
   AM.queueDownload('../img/music_menu_xmusic.png');
+
+
+
+
 
 
   AM.downloadAll(function() {
