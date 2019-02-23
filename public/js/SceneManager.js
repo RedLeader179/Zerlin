@@ -172,7 +172,20 @@ class SceneManager2 {
     //link up html buttons to try to login or register a user
     this.playGame = false; //for now use button to start the game
     document.getElementById("loginButton").addEventListener('click', () => {
-      this.playGame = true;
+      //do user validation here
+      // if (fields not blank) {
+      //   if (is user or can register) {
+      //     set playGame to true
+      //     hide login form
+      //   } else {
+      //     prompt bad info
+      //   }
+      // }
+      //user can't skip opening camer pan down
+      if (this.openingSceneTimer > smc.OPENING_SCENE_STOP_CAMERA_PAN) {
+        this.playGame = true;
+        document.getElementById("formOverlay").style.display = "none";
+      }
     });
   }
 
@@ -190,8 +203,6 @@ class SceneManager2 {
     if (!this.playGame && this.openingSceneTimer < smc.OPENING_SCENE_STOP_CAMERA_PAN) {
       this.camera.y = -Math.pow(this.openingSceneTimer - smc.OPENING_SCENE_STOP_CAMERA_PAN, 2) * 280;
     } else if (this.playGame) {
-      //hide the user login info
-      document.getElementById("formOverlay").style.display = "none";
       //reset the openingSceneTimer ??? to get final transition scene back?
       if (!this.seq1FadeOut && this.openingSceneTimer > smc.OPENING_SCENE_FIRST_FADE_OUT_TIME) {
         this.seq1FadeOut = true;
