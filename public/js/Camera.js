@@ -9,29 +9,29 @@ const cc = Constants.CameraConstants;
 
 class Camera {
 
-	constructor(sceneManager, startX, startY, width, height) {
-		this.sceneManager = sceneManager;
-		this.x = startX;
-		this.y = startY;
-		this.width = width;
-		this.height = height;
-		// this.parallaxManager = new ParallaxBackgroundManager(game, this);
-	}
+  constructor(sceneManager, startX, startY, width, height) {
+    this.sceneManager = sceneManager;
+    this.x = startX;
+    this.y = startY;
+    this.width = width;
+    this.height = height;
+    // this.parallaxManager = new ParallaxBackgroundManager(game, this);
+  }
 
-	update() {
-		this.x = this.sceneManager.Zerlin.x - cc.ZERLIN_POSITION_ON_SCREEN * this.width;
-	}
+  update() {
+    this.x = this.sceneManager.Zerlin.x - cc.ZERLIN_POSITION_ON_SCREEN * this.width;
+  }
 
-	draw() {
-		
-	}
+  draw() {
 
-	isInView(entity, width, height) { // TODO: verify sure things are not drawn when not in view
-		return entity.x + width + cc.BUFFER > this.x &&
-			   entity.x - cc.BUFFER < this.x + this.width &&
-			   entity.y + height + cc.BUFFER > this.y &&
-			   entity.y - cc.BUFFER < this.y + this.height;
-	}
+  }
+
+  isInView(entity, width, height) { // TODO: verify sure things are not drawn when not in view
+    return entity.x + width + cc.BUFFER > this.x &&
+      entity.x - cc.BUFFER < this.x + this.width &&
+      entity.y + height + cc.BUFFER > this.y &&
+      entity.y - cc.BUFFER < this.y + this.height;
+  }
 
 }
 
