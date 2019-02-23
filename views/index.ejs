@@ -1,38 +1,56 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <meta charset="utf-8">
-    <title>Zerlin</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="utf-8">
+  <title>Zerlin</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
 
-    <script type="text/javascript" src="./js/Constants.js"></script>
-    <script type="text/javascript" src="./js/GameEngine.js"></script>
-    <script type="text/javascript" src="./js/Camera.js"></script>
-    <script type="text/javascript" src="./js/Level.js"></script>
-    <script type="text/javascript" src="./js/SceneManager.js"></script>
-    <script type="text/javascript" src="./js/CollisionManager.js"></script>
-    <script type="text/javascript" src="./js/HeroEntities.js"></script>
-    <script type="text/javascript" src="./js/Animation.js"></script>
+  <script type="text/javascript" src="./js/Constants.js"></script>
+  <script type="text/javascript" src="./js/GameEngine.js"></script>
+  <script type="text/javascript" src="./js/Camera.js"></script>
+  <script type="text/javascript" src="./js/Level.js"></script>
+  <script type="text/javascript" src="./js/SceneManager.js"></script>
+  <script type="text/javascript" src="./js/CollisionManager.js"></script>
+  <script type="text/javascript" src="./js/HeroEntities.js"></script>
+  <script type="text/javascript" src="./js/Animation.js"></script>
 
-    <script type="text/javascript" src="./js/DroidUtil.js"></script>
-    <script type="text/javascript" src="./js/DroidBasic.js"></script>
-    <script type="text/javascript" src="./js/DroidSmart.js"></script>
-    <script type="text/javascript" src="./js/StatusBar.js"></script>
-    <script type="text/javascript" src="./js/PowerUp.js"></script>
+  <script type="text/javascript" src="./js/DroidUtil.js"></script>
+  <script type="text/javascript" src="./js/DroidBasic.js"></script>
+  <script type="text/javascript" src="./js/DroidSmart.js"></script>
+  <script type="text/javascript" src="./js/StatusBar.js"></script>
+  <script type="text/javascript" src="./js/PowerUp.js"></script>
 
 
-    <script type="text/javascript" src="./js/howler.js"></script>
-    <script type="text/javascript" src="./js/SoundEngine.js"></script>
-    <script type="text/javascript" src="./js/Boss.js"></script>
-    <script type="text/javascript" src="./js/Main.js"></script>
+  <script type="text/javascript" src="./js/howler.js"></script>
+  <script type="text/javascript" src="./js/SoundEngine.js"></script>
+  <script type="text/javascript" src="./js/Boss.js"></script>
+  <script type="text/javascript" src="./js/Main.js"></script>
 </head>
-<body>
-    <!-- width = height * PHI -->
-    <canvas id="gameWorld" tabindex="1" width="1133" height="700" style="border: 1px solid black; background: black"></canvas>
 
-    <span id="playerControls">
-        <p>
-            <b>Controls: <br></b>
+<body>
+
+  <div class="grid-container">
+    <div class="login-form">
+      <div class="form" id="formOverlay">
+        <!-- canvas overlay div -->
+        <h2>Login or Register</h2>
+        <form class="login-form">
+          <input type="text" placeholder="username" required="required" />
+          <input type="password" placeholder="password" required="required" />
+          <button id="loginButton">Get slashing</button>
+        </form>
+      </div>
+      <!-- width = height * PHI -->
+      <canvas id="gameWorld" tabindex="1" width="1133" height="700" style="border: 1px solid black; background: black"></canvas>
+    </div>
+
+    <div class="instructions">
+      <hr>
+      <span id="playerControls">
+
+        <h2>Controls: <br></h3>
+          <p>
             Jump: W <br>
             Force Jump: E <br>
             Roll: (right roll) hold D + S, (left roll) A + S <br>
@@ -40,7 +58,13 @@
             Flip Lightsaber: Right Click <br>
             Crouch: X <br>
             Unpause / Pause : Enter <br>
-        </p>
-    </span>
+            Skip Scene : Enter <br>
+          </p>
+      </span>
+    </div>
+
+  </div>
+
 </body>
+
 </html>

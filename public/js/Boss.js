@@ -9,7 +9,6 @@ Joshua Atherton, Michael Josten, Steven Golob
 var bc = Constants.BossConstants;
 
 class Boss extends Entity {
-
 	constructor(game, startX, startY) {
 		// NOTE: this.(x, y) is his arm socket.
 		super(game, startX, startY, 0, 0);
@@ -39,71 +38,70 @@ class Boss extends Entity {
 			this.die();
 		}
 
-		if (this.alive) {
-			if (!this.falling) {
-				if (this.y > (this.sceneManager.camera.height - bc.B_HOVERING_HEIGHT)) {
-					this.deltaY -= bc.B_ACCELERATION * this.game.clockTick;
-				} else {
-					this.deltaY += bc.B_ACCELERATION * this.game.clockTick;
-				}
-				if (Math.abs(this.deltaY) > 200) {
-					this.deltaY *= .99;
-				}
-				if (!this.jetPackSoundOn) {
-					this.game.audio.playSoundFx(this.game.audio.jetPack);
-					this.jetPackSoundOn = true;
-				}
-
-				this.deltaX = Math.cos(this.game.timer.gameTime) * bc.B_ACCELERATION;
+		if (!this.falling) {
+			if (this.y > (this.sceneManager.camera.height - bc.B_HOVERING_HEIGHT)) {
+				this.deltaY -= bc.B_ACCELERATION * this.game.clockTick;
+			} else {
+				this.deltaY += bc.B_ACCELERATION * this.game.clockTick;
 			}
-			else {
-				this.lastBottom = this.boundingbox.bottom;
-				this.deltaY += zc.GRAVITATIONAL_ACCELERATION * .7 * this.game.clockTick;
-				this.reactionTime -= this.game.clockTick;
-				if (this.reactionTime < 0) {
-					this.falling = false;
-					this.game.audio.playSoundFx(this.game.audio.jetPack);
-					this.jetPackSoundOn = true;
-				}
+			if (Math.abs(this.deltaY) > 200) {
+				this.deltaY *= .99;
+			}
+			if (!this.jetPackSoundOn) {
+				//this.game.audio.playSoundFx(this.game.audio.jetPack);
+				this.game.audio.playSound(this.game.audio.jetPack);
+				this.jetPackSoundOn = true;
 			}
 
-			if (this.sceneManager.Zerlin.x < this.x && this.facingRight) {
-				this.faceLeft();
-			} else if (this.sceneManager.Zerlin.x > this.x && !this.facingRight) {
-				this.faceRight();
+			this.deltaX = Math.cos(this.game.timer.gameTime) * bc.B_ACCELERATION;
+		} else {
+			this.lastBottom = this.boundingbox.bottom;
+			this.deltaY += zc.GRAVITATIONAL_ACCELERATION * .7 * this.game.clockTick;
+			this.reactionTime -= this.game.clockTick;
+			if (this.reactionTime < 0) {
+				this.falling = false;
+				//this.game.audio.playSoundFx(this.game.audio.jetPack);
+				this.game.audio.playSound(this.game.audio.jetPack);
+				this.jetPackSoundOn = true;
 			}
-
-			if (this.boundingbox.hidden) {
-				this.imuneToDamageTimer -= this.game.clockTick;
-				if (this.imuneToDamageTimer < 0) {
-					this.boundingbox.hidden = false;
-				}
-			}
-
-			this.secondsBeforeFire -= this.game.clockTick;
-			if (this.secondsBeforeFire <= 0 && !this.shooting) {
-				this.shoot();
-			}
-			if (this.shooting) {
-				this.shootingTime -= this.game.clockTick;
-				if (this.shootingTime <= 0) {
-					this.shooting = false;
-					if (this.beamCannon.on) {
-						this.beamCannon.turnOff();
-						// reset damage timer for every shoot
-						this.secondsBeforeFire = bc.B_SHOOT_INTERVAL;
-					}
-				}
-			}
-
-			this.x += this.game.clockTick * this.deltaX;
-			this.y += this.game.clockTick * this.deltaY;
-
-			this.boundingbox.translateCoordinates(this.game.clockTick * this.deltaX, this.game.clockTick * this.deltaY);
-
-			this.beamCannon.update();
-			super.update();
 		}
+
+		if (this.sceneManager.Zerlin.x < this.x && this.facingRight) {
+			this.faceLeft();
+		} else if (this.sceneManager.Zerlin.x > this.x && !this.facingRight) {
+			this.faceRight();
+		}
+
+		if (this.boundingbox.hidden) {
+			this.imuneToDamageTimer -= this.game.clockTick;
+			if (this.imuneToDamageTimer < 0) {
+				this.boundingbox.hidden = false;
+			}
+		}
+
+		this.secondsBeforeFire -= this.game.clockTick;
+		if (this.secondsBeforeFire <= 0 && !this.shooting) {
+			this.shoot();
+		}
+		if (this.shooting) {
+			this.shootingTime -= this.game.clockTick;
+			if (this.shootingTime <= 0) {
+				this.shooting = false;
+				if (this.beamCannon.on) {
+					this.beamCannon.turnOff();
+					// reset damage timer for every shoot
+					this.secondsBeforeFire = bc.B_SHOOT_INTERVAL;
+				}
+			}
+		}
+
+		this.x += this.game.clockTick * this.deltaX;
+		this.y += this.game.clockTick * this.deltaY;
+
+		this.boundingbox.translateCoordinates(this.game.clockTick * this.deltaX, this.game.clockTick * this.deltaY);
+
+		this.beamCannon.update();
+		super.update();
 	}
 
 	draw() {
@@ -115,8 +113,7 @@ class Boss extends Entity {
 			} else {
 				this.animation = this.flyRightAnimation;
 			}
-		}
-		else { // facing left
+		} else { // facing left
 			this.drawX = this.x - (bc.B_WIDTH - bc.B_ARM_SOCKET_X) * bc.B_SCALE;
 			if (this.falling) {
 				this.animation = this.fallLeftAnimation;
@@ -142,12 +139,12 @@ class Boss extends Entity {
 		if (this.shooting) {
 			this.shooting = false;
 			this.beamCannon.turnOff();
-	    this.sceneManager.addEntity(new DroidExplosion(this.game, 
-	    																							this.x + (this.animation.scale * this.animation.frameWidth / 2), 
-	    																							this.y + (this.animation.scale * this.animation.frameHeight / 2),
-	    																							7, .5, .2));
-	    this.removeFromWorld = true;
-	  }
+			this.sceneManager.addEntity(new DroidExplosion(this.game, 
+																										this.x + (this.animation.scale * this.animation.frameWidth / 2), 
+																										this.y + (this.animation.scale * this.animation.frameHeight / 2),
+																										7, .5, .2));
+			this.removeFromWorld = true;
+		}
 	}
 
 	fall() {
@@ -181,10 +178,10 @@ class Boss extends Entity {
 	}
 
 	isTileBelow(tile) {
-		return (this.boundingbox.left < tile.boundingBox.right)
-				&& (this.boundingbox.right > tile.boundingBox.left)
-				&& (this.boundingbox.bottom + 10 > tile.boundingBox.top)
-				&& (this.boundingbox.bottom - 10 < tile.boundingBox.top);
+		return (this.boundingbox.left < tile.boundingBox.right) &&
+			(this.boundingbox.right > tile.boundingBox.left) &&
+			(this.boundingbox.bottom + 10 > tile.boundingBox.top) &&
+			(this.boundingbox.bottom - 10 < tile.boundingBox.top);
 	}
 
 	/*
@@ -209,37 +206,37 @@ class Boss extends Entity {
 
 	createAnimations() {
 		this.flyRightAnimation = new Animation(this.assetManager.getAsset("../img/boss flying.png"),
-													0, 0,
-												   bc.B_WIDTH,
-												   bc.B_HEIGHT,
-												   bc.B_FLYING_FRAME_SPEED,
-												   bc.B_FLYING_FRAMES,
-												   true, false,
-												   bc.B_SCALE);
+			0, 0,
+			bc.B_WIDTH,
+			bc.B_HEIGHT,
+			bc.B_FLYING_FRAME_SPEED,
+			bc.B_FLYING_FRAMES,
+			true, false,
+			bc.B_SCALE);
 		this.flyLeftAnimation = new Animation(this.assetManager.getAsset("../img/boss flying left.png"),
-													0, 0,
-												   bc.B_WIDTH,
-												   bc.B_HEIGHT,
-												   bc.B_FLYING_FRAME_SPEED,
-												   bc.B_FLYING_FRAMES,
-												   true, false,
-												   bc.B_SCALE);
+			0, 0,
+			bc.B_WIDTH,
+			bc.B_HEIGHT,
+			bc.B_FLYING_FRAME_SPEED,
+			bc.B_FLYING_FRAMES,
+			true, false,
+			bc.B_SCALE);
 		this.fallRightAnimation = new Animation(this.assetManager.getAsset("../img/boss falling.png"),
-													0, 0,
-												   bc.B_WIDTH,
-												   bc.B_HEIGHT,
-												   bc.B_FALLING_FRAME_SPEED,
-												   bc.B_FALLING_FRAMES,
-												   true, false,
-												   bc.B_SCALE);
+			0, 0,
+			bc.B_WIDTH,
+			bc.B_HEIGHT,
+			bc.B_FALLING_FRAME_SPEED,
+			bc.B_FALLING_FRAMES,
+			true, false,
+			bc.B_SCALE);
 		this.fallLeftAnimation = new Animation(this.assetManager.getAsset("../img/boss falling left.png"),
-													0, 0,
-												   bc.B_WIDTH,
-												   bc.B_HEIGHT,
-												   bc.B_FALLING_FRAME_SPEED,
-												   bc.B_FALLING_FRAMES,
-												   true, false,
-												   bc.B_SCALE);
+			0, 0,
+			bc.B_WIDTH,
+			bc.B_HEIGHT,
+			bc.B_FALLING_FRAME_SPEED,
+			bc.B_FALLING_FRAMES,
+			true, false,
+			bc.B_SCALE);
 		// this.dieAnimation =
 	}
 }
@@ -286,20 +283,20 @@ class BeamCannon extends Entity {
 			this.ctx.translate(this.x - this.sceneManager.camera.x, this.y);
 			this.ctx.rotate(this.beamAngle);
 			this.ctx.drawImage(this.image,
-							   0,
-							   0,
-							   bc.BC_WIDTH,
-							   bc.BC_HEIGHT,
-							   -(this.armSocketX),
-							   -(this.armSocketY),
-							   this.width,
-							   this.height);
+				0,
+				0,
+				bc.BC_WIDTH,
+				bc.BC_HEIGHT,
+				-(this.armSocketX),
+				-(this.armSocketY),
+				this.width,
+				this.height);
 
-            // this.ctx.beginPath();
-            // this.ctx.strokeStyle = "green";
-            // this.ctx.arc(this.muzzleX, this.muzzleY, 5, 0, Math.PI * 2, false);
-            // this.ctx.stroke();
-            // this.ctx.closePath();
+			// this.ctx.beginPath();
+			// this.ctx.strokeStyle = "green";
+			// this.ctx.arc(this.muzzleX, this.muzzleY, 5, 0, Math.PI * 2, false);
+			// this.ctx.stroke();
+			// this.ctx.closePath();
 			this.ctx.restore();
 		}
 		super.draw();
@@ -309,7 +306,8 @@ class BeamCannon extends Entity {
 		this.on = true;
 		this.beam = new Beam(this);
 		// this.sceneManager.beams.push(this.beam);
-		this.game.audio.playSoundFx(this.game.audio.beam);
+		//this.game.audio.playSoundFx(this.game.audio.beam);
+		this.game.audio.playSound(this.game.audio.beam);
 	}
 
 	turnOff() {
@@ -348,10 +346,10 @@ class BeamCannon extends Entity {
 
 	setBeamAngle() {
 		/*
-			    Axis  A	|\
+					Axis  A	|\
 						| \
 						|  \
-			   elbow  B |___\ C   Target
+				 elbow  B |___\ C   Target
 		*/
 		var zerlinBox = this.sceneManager.Zerlin.boundingbox;
 		var angleAxisToTarget = Math.atan2(zerlinBox.y + zerlinBox.height / 2 - this.y, zerlinBox.x + zerlinBox.width / 2 - this.x);
@@ -402,7 +400,11 @@ class Beam {
 		this.cannon = cannon;
 		this.segments = [];
 		for (let i = 0; i < bc.MICRO_BEAM_COUNT; i++) {
-			this.segments.push({x: cannon.x, y: cannon.y, angle: cannon.beamAngle});
+			this.segments.push({
+				x: cannon.x,
+				y: cannon.y,
+				angle: cannon.beamAngle
+			});
 		}
 		this.isSizzling = false;
 		this.sizzlingSoundOn = false;
@@ -431,7 +433,8 @@ class Beam {
 		// collision manager adds new segments if deflected.
 
 		if (this.isSizzling && !this.sizzlingSoundOn) {
-			this.game.audio.playSoundFx(this.game.audio.sizzle);
+			//this.game.audio.playSoundFx(this.game.audio.sizzle);
+			this.game.audio.playSound(this.game.audio.sizzle);
 			this.sizzlingSoundOn = true;
 		} else if (!this.isSizzling && this.sizzlingSoundOn) {
 			this.game.audio.sizzle.stop();

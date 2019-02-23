@@ -97,7 +97,7 @@ class Level {
           var movingTile = new MovingTile(this, image2, j * this.tileWidth, i * this.camera.height / rows, lc.TILE_INITIAL_VELOCITY, 0, lc.TILE_ACCELERATION);
           this.tiles.push(movingTile);
         } else if (this.levelLayout[i][j] === 'd') { // basic droid
-          this.unspawnedDroids.push(new BasicDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * rowHeight, 14, .2, 100, 100,  Constants.DroidBasicConstants.BASIC_DROID_SCALE, 45));
+          this.unspawnedDroids.push(new BasicDroid(this.game, this.game.assetManager.getAsset("../img/droid-j-row.png"), j * this.tileWidth, i * rowHeight, 14, .2, 100, 100, Constants.DroidBasicConstants.BASIC_DROID_SCALE, 45));
         } else if (this.levelLayout[i][j] === 's') { // scatter shot droid
           this.unspawnedDroids.push(new ScatterShotDroid(this.game, this.game.assetManager.getAsset("../img/Droid 3.png"), j * this.tileWidth, i * rowHeight, 10, .2));
         } else if (this.levelLayout[i][j] === 'b') { // slow burst droid
