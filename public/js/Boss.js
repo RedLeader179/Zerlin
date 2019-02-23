@@ -24,6 +24,7 @@ class Boss extends Entity {
 		this.jetPackSoundOn = false;
 		this.beamDamageTimer = 0;
 		this.sceneManager = this.game.sceneManager;
+		this.alive = true;
 
 		/* Boss Health Stats */
 		this.maxHealth = bc.B_MAX_HEALTH;
@@ -35,72 +36,74 @@ class Boss extends Entity {
 
 	update() {
 		if (this.currentHealth <= 0) {
-			//kill the boss
+			this.die();
 		}
 
-		if (!this.falling) {
-			if (this.y > (this.sceneManager.camera.height - bc.B_HOVERING_HEIGHT)) {
-				this.deltaY -= bc.B_ACCELERATION * this.game.clockTick;
-			} else {
-				this.deltaY += bc.B_ACCELERATION * this.game.clockTick;
-			}
-			if (Math.abs(this.deltaY) > 200) {
-				this.deltaY *= .99;
-			}
-			if (!this.jetPackSoundOn) {
-				this.game.audio.playSoundFx(this.game.audio.jetPack);
-				this.jetPackSoundOn = true;
-			}
+		if (this.alive) {
+			if (!this.falling) {
+				if (this.y > (this.sceneManager.camera.height - bc.B_HOVERING_HEIGHT)) {
+					this.deltaY -= bc.B_ACCELERATION * this.game.clockTick;
+				} else {
+					this.deltaY += bc.B_ACCELERATION * this.game.clockTick;
+				}
+				if (Math.abs(this.deltaY) > 200) {
+					this.deltaY *= .99;
+				}
+				if (!this.jetPackSoundOn) {
+					this.game.audio.playSoundFx(this.game.audio.jetPack);
+					this.jetPackSoundOn = true;
+				}
 
-			this.deltaX = Math.cos(this.game.timer.gameTime) * bc.B_ACCELERATION;
-		}
-		else {
-			this.lastBottom = this.boundingbox.bottom;
-			this.deltaY += zc.GRAVITATIONAL_ACCELERATION * .7 * this.game.clockTick;
-			this.reactionTime -= this.game.clockTick;
-			if (this.reactionTime < 0) {
-				this.falling = false;
-				this.game.audio.playSoundFx(this.game.audio.jetPack);
-				this.jetPackSoundOn = true;
+				this.deltaX = Math.cos(this.game.timer.gameTime) * bc.B_ACCELERATION;
 			}
-		}
-
-		if (this.sceneManager.Zerlin.x < this.x && this.facingRight) {
-			this.faceLeft();
-		} else if (this.sceneManager.Zerlin.x > this.x && !this.facingRight) {
-			this.faceRight();
-		}
-
-		if (this.boundingbox.hidden) {
-			this.imuneToDamageTimer -= this.game.clockTick;
-			if (this.imuneToDamageTimer < 0) {
-				this.boundingbox.hidden = false;
-			}
-		}
-
-		this.secondsBeforeFire -= this.game.clockTick;
-		if (this.secondsBeforeFire <= 0 && !this.shooting) {
-			this.shoot();
-		}
-		if (this.shooting) {
-			this.shootingTime -= this.game.clockTick;
-			if (this.shootingTime <= 0) {
-				this.shooting = false;
-				if (this.beamCannon.on) {
-					this.beamCannon.turnOff();
-					// reset damage timer for every shoot
-					this.secondsBeforeFire = bc.B_SHOOT_INTERVAL;
+			else {
+				this.lastBottom = this.boundingbox.bottom;
+				this.deltaY += zc.GRAVITATIONAL_ACCELERATION * .7 * this.game.clockTick;
+				this.reactionTime -= this.game.clockTick;
+				if (this.reactionTime < 0) {
+					this.falling = false;
+					this.game.audio.playSoundFx(this.game.audio.jetPack);
+					this.jetPackSoundOn = true;
 				}
 			}
+
+			if (this.sceneManager.Zerlin.x < this.x && this.facingRight) {
+				this.faceLeft();
+			} else if (this.sceneManager.Zerlin.x > this.x && !this.facingRight) {
+				this.faceRight();
+			}
+
+			if (this.boundingbox.hidden) {
+				this.imuneToDamageTimer -= this.game.clockTick;
+				if (this.imuneToDamageTimer < 0) {
+					this.boundingbox.hidden = false;
+				}
+			}
+
+			this.secondsBeforeFire -= this.game.clockTick;
+			if (this.secondsBeforeFire <= 0 && !this.shooting) {
+				this.shoot();
+			}
+			if (this.shooting) {
+				this.shootingTime -= this.game.clockTick;
+				if (this.shootingTime <= 0) {
+					this.shooting = false;
+					if (this.beamCannon.on) {
+						this.beamCannon.turnOff();
+						// reset damage timer for every shoot
+						this.secondsBeforeFire = bc.B_SHOOT_INTERVAL;
+					}
+				}
+			}
+
+			this.x += this.game.clockTick * this.deltaX;
+			this.y += this.game.clockTick * this.deltaY;
+
+			this.boundingbox.translateCoordinates(this.game.clockTick * this.deltaX, this.game.clockTick * this.deltaY);
+
+			this.beamCannon.update();
+			super.update();
 		}
-
-		this.x += this.game.clockTick * this.deltaX;
-		this.y += this.game.clockTick * this.deltaY;
-
-		this.boundingbox.translateCoordinates(this.game.clockTick * this.deltaX, this.game.clockTick * this.deltaY);
-
-		this.beamCannon.update();
-		super.update();
 	}
 
 	draw() {
@@ -131,6 +134,20 @@ class Boss extends Entity {
 				this.ctx.strokeRect(this.boundingbox.x - this.sceneManager.camera.x, this.boundingbox.y, this.boundingbox.width, this.boundingbox.height);
 			}
 		}
+	}
+
+	die() {
+		this.alive = false;
+		this.game.audio.jetPack.stop();
+		if (this.shooting) {
+			this.shooting = false;
+			this.beamCannon.turnOff();
+	    this.sceneManager.addEntity(new DroidExplosion(this.game, 
+	    																							this.x + (this.animation.scale * this.animation.frameWidth / 2), 
+	    																							this.y + (this.animation.scale * this.animation.frameHeight / 2),
+	    																							7, .5, .2));
+	    this.removeFromWorld = true;
+	  }
 	}
 
 	fall() {

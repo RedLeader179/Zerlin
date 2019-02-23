@@ -219,15 +219,15 @@ class DroidLaser extends Entity {
  * although if sprite sheet is null then use the static animation.
  */
 class DroidExplosion extends Entity {
-    constructor(game, x, y, scale, explosionVolume) {
+    constructor(game, x, y, scale, explosionVolume, speed) {
         super(game, x, y, 0, 0);
 
         this.scale = scale? scale * duc.EXPLOSION_SCALE : duc.EXPLOSION_SCALE;
         this.volume = explosionVolume? explosionVolume : .15;
+        this.speed = speed? speed : duc.EXPLOSION_FRAME_SPEED;
         var spritesheet = this.game.assetManager.getAsset("../img/Explosion.png");
-        //Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale)
         this.animation = new Animation(spritesheet, 0, 0, 64, 64,
-            duc.EXPLOSION_FRAME_SPEED, 15, false, false, this.scale);
+            this.speed, 15, false, false, this.scale);
 
         this.x = x - this.animation.frameWidth * this.scale / 2;
         this.y = y - this.animation.frameHeight * this.scale / 2;
