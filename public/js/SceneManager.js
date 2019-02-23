@@ -70,7 +70,7 @@ class SceneManager2 {
     this.levels = [];
     this.level = null;
     this.levelBackgrounds = [];
-    this.levels.push(new Level(this.game, this, lvlConst.MIKE_LEVEL_ONE, LEVEL_ONE_BACKGROUNDS, LEVEL_ONE_TILES));
+    this.levels.push(new Level(this.game, this, lvlConst.LEVEL_THREE_TILE_LAYOUT, LEVEL_ONE_BACKGROUNDS, LEVEL_ONE_TILES));
   }
 
   addEntity(entity) {
@@ -244,16 +244,6 @@ class SceneManager2 {
         this.sceneEntities.splice(i, 1);
       }
     }
-    // if ()
-
-    // if (opening scene timer is finished) {
-    // 	this.update = this.levelTransitionUpdate;
-    // 	this.draw = this.levelTransitionDraw;
-    // 	this.startLevelTransitionScene();
-    // 	// this.update = this.levelUpdate;
-    // 	// this.draw = this.levelDraw;
-    // 	// this.startLevelScene();
-    // }
   }
 
   openingSceneDraw() {
@@ -335,7 +325,6 @@ class SceneManager2 {
 
     this.initiallyPaused = false;
     this.sceneEntities = [];
-    //this.sceneEntities.push(new Overlay(this.game, true, smc.PAUSE_TIME_AFTER_START_LEVEL / 2));
     this.startedFinalOverlay = false;
     this.startNewScene = false;
 
@@ -419,14 +408,28 @@ class SceneManager2 {
       // this.gameEngine.startInput();
     }
 
-    // if (boss for current level is dead) {
-    // 	this.level++;
-    // 	this.saveProgress();
-
-    // 	this.update = this.levelTransitionUpdate;
-    // 	this.draw = this.levelTransitionDraw;
-    // 	this.startLevelTransitionScene();
-    // }                            /*!this.Zerlin.isAlive &&*/
+	if (this.boss && !this.boss.alive) {
+		this.wonLevel = true;
+		this.boss = null;
+		this.saveProgress();
+		this.startedFinalOverlay = true;
+		this.timeSinceBossDeath = 0;
+		this.sceneEntities.push(new Overlay(this.game, false, smc.LEVEL_COMPLETE_OVERLAY_TIME));
+		for (var i = this.droids.length - 1; i >= 0; i--) {
+			this.droids[i].explode();
+		}
+	}
+	if (this.wonLevel) {
+		this.timeSinceBossDeath += this.game.clockTick;
+		if (this.timeSinceBossDeath > smc.LEVEL_COMPLETE_OVERLAY_TIME) {
+			this.levelNumber++;
+			if (this.levelNumber > smc.NUM_LEVELS) {
+				this.startCreditsScene();
+			} else {
+				this.startLevelTransitionScene();
+			}
+		}
+	}
     if (!this.startedFinalOverlay && !this.Zerlin.alive &&
       this.Zerlin.timeOfDeath + this.Zerlin.deathAnimation.totalTime < this.levelSceneTimer) {
       this.startedFinalOverlay = true;
@@ -491,17 +494,34 @@ class SceneManager2 {
 
 
   //________________________________________________________
-  startCreditsScene() {
+	startCreditsScene() {
+		this.creditsTimer = 0;
+		this.update = this.creditsUpdate;
+		this.draw = this.creditsDraw;
+		this.canPause = false;
 
-  }
+		this.initiallyPaused = false;
+		this.sceneEntities = [];
+		this.sceneEntities.push(new TextScreen(this.game, smc.CREDITS));
+		this.sceneEntities.push(new Overlay(this.game, true, smc.LEVEL_TRANSITION_OVERLAY_TIME));
+		this.startedFinalOverlay = false;
+	}
 
-  levelCreditsUpdate() {
+	creditsUpdate() {
+		this.creditsTimer += this.game.clockTick;
+		for (let i = this.sceneEntities.length - 1; i >= 0; i--) {
+			this.sceneEntities[i].update();
+			if (this.sceneEntities[i].removeFromWorld) {
+				this.sceneEntities.splice(i, 1);
+			}
+		}
+	}
 
-  }
-
-  levelCreditsDraw() {
-
-  }
+	creditsDraw() {
+		for (let i = 0; i < this.sceneEntities.length; i++) {
+			this.sceneEntities[i].draw();
+		}
+	}
 
 
   //________________________________________________________
@@ -514,7 +534,6 @@ class SceneManager2 {
 
 
 class PauseScreen {
-
   constructor(game) {
     this.game = game;
     this.overlay = new Overlay(game, true, 1);
@@ -539,7 +558,6 @@ class PauseScreen {
 
 
 class TextScreen {
-
   constructor(game, message, color) {
     this.game = game;
     this.message = message;
@@ -568,7 +586,6 @@ class TextScreen {
 
 
 class GameOverTextScreen extends TextScreen {
-
   constructor(game) {
     super(game, "GAME OVER", "red");
     this.font = '80px';
@@ -591,33 +608,33 @@ class GameOverTextScreen extends TextScreen {
 
 class Overlay {
 
-  constructor(game, lighten, timeToFinish) {
-    this.game = game;
-    this.opacity = lighten ? 1 : 0;
-    this.deltaOpacity = 1 / timeToFinish;
-    this.lighten = lighten;
-    this.timeToFinish = timeToFinish;
-    this.timer = 0;
-  }
+	constructor(game, lighten, timeToFinish) {
+		this.game = game;
+		this.opacity = lighten ? 1 : 0;
+		this.deltaOpacity = 1 / timeToFinish;
+		this.lighten = lighten;
+		this.timeToFinish = timeToFinish;
+		this.timer = 0;
+	}
 
-  update() {
-    this.timer += this.game.clockTick;
-    if (this.lighten) {
-      this.opacity -= this.game.clockTick * this.deltaOpacity;
-    } else {
-      this.opacity += this.game.clockTick * this.deltaOpacity;
-    }
+	update() {
+		this.timer += this.game.clockTick;
+		if (this.lighten) {
+			this.opacity -= this.game.clockTick * this.deltaOpacity;
+		} else {
+			this.opacity += this.game.clockTick * this.deltaOpacity;
+		}
 
-    if (this.lighten && this.opacity <= 0) {
-      this.removeFromWorld = true;
-    }
-  }
+		if (this.lighten && this.opacity <= 0) {
+			this.removeFromWorld = true;
+		}
+	}
 
-  draw() {
-    this.game.ctx.fillStyle = 'rgb(0,0,0)';
-    this.game.ctx.globalAlpha = this.opacity;
-    this.game.ctx.fillRect(0, 0, this.game.surfaceWidth, this.game.surfaceHeight);
-    this.game.ctx.globalAlpha = 1;
-  }
+	draw() {
+		this.game.ctx.fillStyle = 'rgb(0,0,0)';
+		this.game.ctx.globalAlpha = this.opacity;
+		this.game.ctx.fillRect(0, 0, this.game.surfaceWidth, this.game.surfaceHeight);
+		this.game.ctx.globalAlpha = 1;
+	}
 
 }

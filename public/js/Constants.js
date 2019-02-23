@@ -189,6 +189,9 @@ Constants = {
     LEVEL_ONE_TEXT: "Here begins a new journey...",
     LEVEL_TRANSITION_TIME: 7,
     LEVEL_TRANSITION_OVERLAY_TIME: 3,
+    LEVEL_COMPLETE_OVERLAY_TIME: 10,
+    NUM_LEVELS: 1,
+    CREDITS: "The End",
     PAUSE_TIME_AFTER_START_LEVEL: 1.2,
 
     GAME_FONT: 'VT323'

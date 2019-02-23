@@ -30,9 +30,9 @@ class CollisionManager {
     this.ZerlinOnPlatform();
     this.ZerlinOnEdgeOfMap();
     this.beamOnPlatform();
+    this.beamOnZerlin();
     this.beamOnSaber();
     this.beamOnDroid();
-    this.beamOnZerlin();
     this.beamOnBoss();
     this.saberOnBoss();
     this.laserOnBoss();
