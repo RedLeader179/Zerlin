@@ -63,6 +63,7 @@ class GameEngine {
         // if (!this.paused) {
         this.sceneManager.update();
         this.click = null;
+        this.keys['Enter'] = false
     }
 
     draw() {

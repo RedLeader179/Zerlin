@@ -97,12 +97,12 @@ class Zerlin extends Entity {
         }
       } else if (this.game.keys[kc.MOVE_RIGHT] && !this.game.keys[kc.MOVE_LEFT]) { // TODO: change keys to constants
         this.direction = 1;
-        if (!this.isInManeuver()) {
+        if (!this.isInManeuver() || (this.slashing && this.falling)) {
           this.deltaX = zc.Z_WALKING_SPEED;
         }
       } else if (!this.game.keys[kc.MOVE_RIGHT] && this.game.keys[kc.MOVE_LEFT]) {
         this.direction = -1;
-        if (!this.isInManeuver()) {
+        if (!this.isInManeuver() || (this.slashing && this.falling)) {
           this.deltaX = -zc.Z_WALKING_SPEED;
         }
       }
@@ -643,7 +643,8 @@ class Lightsaber extends Entity {
 
 
     if (this.deflectingBeam && !this.deflectingBeamSoundOn) {
-      this.game.audio.playSoundFx(this.game.audio.deflectBeam);
+      //this.game.audio.playSoundFx(this.game.audio.deflectBeam);
+      this.game.audio.playSound(this.game.audio.deflectBeam);
       this.deflectingBeamSoundOn = true;
     } else if (!this.deflectingBeam && this.deflectingBeamSoundOn) {
       this.game.audio.deflectBeam.stop();

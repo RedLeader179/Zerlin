@@ -30,7 +30,8 @@ backgroundMusicArray['yodaTheme'] = new Howl({
 		"sound/yodaTheme.m4a",
 		"sound/yodaTheme.mp3",
 		"sound/yodaTheme.ac3"
-	  ],
+		],
+	html5: true,
 	loop: true,
 	preload: true
 });
@@ -282,7 +283,7 @@ class SoundEngine {
 			  "sound/beam2.wav"
 			],
 			loop: true,
-			volume: .1
+			volume: .2
 		  });
 
 		  this.saberHum = new Howl({
@@ -320,7 +321,7 @@ class SoundEngine {
 			  "sound/jet pack.wav"
 			],
 			loop: true,
-			volume: .3
+			volume: .1
 		  });
 		  this.deflectBeam = new Howl({
 			src: [
@@ -351,10 +352,22 @@ class SoundEngine {
 
 	//pauseBackgroundMusic, unpauseBackgroundMusic
 	unPauseBackgroundMusic() {
-		this.backgroundMusic.play();
+		if (!this.backgroundMusic.playing() && !this.bossSongPlaying) {
+			this.backgroundMusic.play();
+		}
+		if (!this.bossBackgroundMusic.playing() && this.bossSongPlaying) {
+			this.bossBackgroundMusic.play();
+}
+		
 	}
 	pauseBackgroundMusic() {
-		this.backgroundMusic.pause();
+		if (this.backgroundMusic.playing() && !this.bossSongPlaying) {
+			this.backgroundMusic.pause();
+		}
+		if (this.bossBackgroundMusic.playing() && this.bossSongPlaying) {
+			this.bossBackgroundMusic.pause();
+}
+		
 	}
 
 	//add methods to mute and unmute sound effects
@@ -370,6 +383,8 @@ class SoundEngine {
 		this.soundFXArray.forEach( function(item) {
 			// item.volume(3);
 		});
+		if (this.gameEngine.sceneManager.boss) //hacky way to reinitalize jetpack noise after unmuting
+				this.gameEngine.sceneManager.boss.jetPackSoundOn = false;
 	}
 
 	endAllSoundFX() {
@@ -388,5 +403,21 @@ class SoundEngine {
 		if (!this.soundFxMuted) {
 			howlerSound.play(id);
 		}
+	}
+
+	playSound(howlerSound) {
+		if (!this.soundFxMuted) {
+			howlerSound.play();
+		}
+	}
+	playBossSong() {
+		this.backgroundMusic.stop();
+		this.bossBackgroundMusic.play();
+		this.bossSongPlaying = true;
+	}
+	playBackgroundSong() {
+		this.bossBackgroundMusic.stop();
+		this.backgroundMusic.play();
+		this.bossSongPlaying = false;
 	}
 }
