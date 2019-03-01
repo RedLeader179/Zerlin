@@ -43,6 +43,9 @@ Constants = {
     LEGGY_DROID_LASER_LENGTH: 25,
     LEGGY_DROID_LASER_WIDTH: 12,
 
+    /* leggy droid boss constants */
+    LEGGY_DROID_BOSS_SHOOT_INTERVAL: .5,
+
     SPRAY_LASER_COUNT: 5,
     SPRAY_LASER_WIDTH_RADIANS: Math.PI / 6,
 
@@ -169,7 +172,7 @@ Constants = {
   DroidUtilConstants: {
     EXPLOSION_SCALE: 2,
     EXPLOSION_FRAME_SPEED: 0.05,
-    DRAW_BOUNDING_CIRCLE: false
+    DRAW_BOUNDING_CIRCLE: true
   },
 
   DroidSmartConstants: {
@@ -323,13 +326,13 @@ Constants = {
       '             =                                                                d                               ---                                                                                                                                                    ',
       '          ~                                     f b                          f d        d                              X                                                                                                                                             ', //halfway of camera height.
       '             ~~             d       d                                        d b           s                  ==                                                                                                                                                      ',
-      '                                           --------                          d                                                                                                                                                                                      ',
+      '  *                                         --------                          d                                                                                                                                                                                      ',
       '       ~                                                                                                                                                                                                                                                             ',
-      '                  -----                               H                   ---                       H F          --                                                                                                                                                 ',
-      '  ~~                                   ----                                                                                                                                                                                                                         ',
+      '                  -----        *                       H                   ---                       H F          --                                                                                                                                                 ',
+      '  ~~          *                         ----                                                                                                                                                                                                                         ',
       '           ------                             I           -----       ---            -                      ---       --                                                                                                                                            ', //from ground level, can reg. jump to here.
       '          ~~                       -----             ----                        --                   - -                                                                                                                                                             ',
-      '                                                                            -                                                                                                                                                                                       ',
+      '                                 ~                                           -                                                                                                                                                                                       ',
       '----~~--------           -- -- ----            --------   --     --- ---------  -- ---- ---------------------------------------------                                                                                                                                 '
     ],
 

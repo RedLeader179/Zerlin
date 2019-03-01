@@ -21,6 +21,7 @@ n  =  sniper droid
 H  =  health powerup
 F  =  force powerup
 I  =  invincibility powerup
+*  = leggy droid boss
 X  =  Boss
 */
 
@@ -115,6 +116,9 @@ class Level {
           this.unspawnedDroids.push(new MultishotDroid(this.game, this.game.assetManager.getAsset("../img/Droid 5.png"), j * this.tileWidth, i * rowHeight, 21, .12));
         } else if (this.levelLayout[i][j] === 'X') { // Boss
           this.unspawnedBoss = new Boss(this.game, j * this.tileWidth, i * this.game.surfaceHeight / rows);
+        } else if (this.levelLayout[i][j] === '*') { // leggy boss droid
+          this.unspawnedDroids.push(new LeggyDroidBoss(this.game, this.game.assetManager.getAsset("../img/leggy_droid.png"), j * this.tileWidth, i * rowHeight, 4, .51));
+
         } else if (this.levelLayout[i][j] === 'H') { //health powerup
           this.unspawnedPowerups.push(new HealthPowerUp(this.game, this.game.assetManager.getAsset("../img/powerup_health.png"), j * this.tileWidth, i * rowHeight));
         } else if (this.levelLayout[i][j] === 'F') { //force powerup
@@ -223,16 +227,21 @@ class Tile extends Entity {
 
 /**
  Tiles that have a lifeSpan and steadily move down the screen once that
- lifeSpan has expired.
+ lifeSpan has expired. Lifespan count down starts when a player sees the tile.
 */
 class FallingTile extends Tile {
   constructor(game, image, startX, startY) {
     super(game, image, startX, startY);
     this.lifeSpan = 5;
+    this.playerHasSeenTile = false;
   }
 
   update() {
-    this.lifeSpan += -1 * this.game.clockTick;
+    if (this.camera.isInView(this, this.width, this.height))
+      this.playerHasSeenTile = true;
+
+    if (this.playerHasSeenTile)
+      this.lifeSpan += -1 * this.game.clockTick;
     // console.log(this.lifeSpan);
     if (this.lifeSpan < 0) { //falling tile
       this.y += 10 * this.game.clockTick;
