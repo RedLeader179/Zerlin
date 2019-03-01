@@ -234,6 +234,7 @@ class FallingTile extends Tile {
     super(game, image, startX, startY);
     this.lifeSpan = 4;
     this.playerHasSeenTile = false;
+    this.deltaYForZerlin = 0;
   }
 
   update() {
@@ -242,11 +243,11 @@ class FallingTile extends Tile {
 
     if (this.playerHasSeenTile)
       this.lifeSpan += -1 * this.game.clockTick;
-    // console.log(this.lifeSpan);
     if (this.lifeSpan < 0) { //falling tile
+      this.falling = true;
       this.y += 10 * this.game.clockTick;
+      this.boundingBox.updateCoordinates(this.x, this.y);
     }
-    this.boundingBox.updateCoordinates(this.x, this.y);
     if (this.y > 700) {
       this.removeFromWorld = true;
       // console.log("removed from world");

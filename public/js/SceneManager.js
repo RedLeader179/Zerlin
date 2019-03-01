@@ -49,7 +49,10 @@ class SceneManager2 {
 
   init() {
     this.buildLevels();
-    this.startOpeningScene();
+    // this.startOpeningScene();
+    /* skip intro stuff */
+    this.startLevelScene();
+    document.getElementById("formOverlay").style.display = "none";
   }
 
   buildLevels() {

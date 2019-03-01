@@ -194,6 +194,9 @@ class Zerlin extends Entity {
       }
       if (this.tile) {
         this.deltaX += this.tile.deltaX;
+        if (this.tile.falling) { // console.log("on falling tile");
+          this.setXY(this.x, this.tile.boundingBox.top + zConst.Z_FEET_ABOVE_FRAME * zConst.Z_SCALE);
+        }
       }
       this.x += this.game.clockTick * this.deltaX;
       this.y += this.game.clockTick * this.deltaY;
@@ -211,6 +214,9 @@ class Zerlin extends Entity {
       }
       if (this.tile) {
         this.deltaX = this.tile.deltaX;
+        if (this.tile.falling) { // console.log("on falling tile");
+          this.setXY(this.x, this.tile.boundingBox.top + zConst.Z_FEET_ABOVE_FRAME * zConst.Z_SCALE);
+        }
       }
       this.x += this.game.clockTick * this.deltaX;
       this.y += this.game.clockTick * this.deltaY;
