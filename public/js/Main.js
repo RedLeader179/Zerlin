@@ -133,11 +133,14 @@ class AssetManager {
   AM.queueDownload("../img/god light (1).png");
   AM.queueDownload("../img/god light (2).png");
 
-  //city --not all downloaded yet.....
-  AM.queueDownload('../img/city_background.png');
-  AM.queueDownload('../img/city_buildings_back.png');
-  AM.queueDownload('../img/city_clouds_left.png');
-
+  //city
+  AM.queueDownload("../img/city_background.png");
+  AM.queueDownload("../img/city_buildings_back.png");
+  AM.queueDownload("../img/city_buildings_foreground.png");
+  AM.queueDownload("../img/city_buildings_middle.png");
+  AM.queueDownload("../img/city_clouds_left.png");
+  AM.queueDownload("../img/city_clouds2.png");
+  AM.queueDownload("../img/city_clouds_center.png");
 
   //Hoth snow
 
@@ -150,6 +153,10 @@ class AssetManager {
   AM.queueDownload("../img/forest_both_rounded_tile.png");
 
   //city
+  AM.queueDownload("../img/city_tile_center.png");
+  AM.queueDownload("../img/city_tile_left.png");
+  AM.queueDownload("../img/city_tile_right.png");
+  AM.queueDownload("../img/city_tile_left_right.png");
 
   //Hoth snow
 

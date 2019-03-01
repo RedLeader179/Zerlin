@@ -70,7 +70,7 @@ class SceneManager2 {
     this.levels = [];
     this.level = null;
     this.levelBackgrounds = [];
-    this.levels.push(new Level(this.game, this, lvlConst.MIKE_LEVEL_ONE, LEVEL_ONE_BACKGROUNDS, LEVEL_ONE_TILES));
+    this.levels.push(new Level(this.game, this, lvlConst.CITY_LEVEL, LEVEL_ONE_BACKGROUNDS, LEVEL_ONE_TILES));
   }
 
   addEntity(entity) {
