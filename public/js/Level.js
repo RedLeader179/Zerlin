@@ -11,6 +11,7 @@ Assets:
 
 -  =  tile
 =  =  moving tile
+~  =  falling tile
 d  =  basic droid
 s  =  scatter shot droid
 b  =  slow burst droid
@@ -85,6 +86,10 @@ class Level {
           }
           var tile = new Tile(this, image, j * this.tileWidth, i * this.camera.height / rows);
           this.tiles.push(tile);
+        } else if (this.levelLayout[i][j] === '~') { // falling tile
+            let roundedTile = this.tileImages.leftRightTile;
+            let fallingTile = new FallingTile(this, roundedTile, j * this.tileWidth, i * this.camera.height / rows);
+            this.tiles.push(fallingTile);
         } else if (this.levelLayout[i][j] === '=') { // moving tile
           var image2 = this.tileImages.centerTile;
           if (this.levelLayout[i][j - 1] !== '=' && this.levelLayout[i][j + 1] !== '=') {
@@ -154,7 +159,7 @@ class Level {
 
 
     this.tiles.forEach(function(tile) {
-      if (tile instanceof MovingTile) {
+      if (tile instanceof MovingTile || tile instanceof FallingTile) {
         tile.update();
       }
     });
@@ -216,6 +221,31 @@ class Tile extends Entity {
   }
 }
 
+/**
+ Tiles that have a lifeSpan and steadily move down the screen once that
+ lifeSpan has expired.
+*/
+class FallingTile extends Tile {
+  constructor(game, image, startX, startY) {
+    super(game, image, startX, startY);
+    this.lifeSpan = 5;
+  }
+
+  update() {
+    this.lifeSpan += -1 * this.game.clockTick;
+    // console.log(this.lifeSpan);
+    if (this.lifeSpan < 0) { //falling tile
+      this.y += 10 * this.game.clockTick;
+    }
+    this.boundingBox.updateCoordinates(this.x, this.y);
+    if (this.y > 700) {
+      this.removeFromWorld = true;
+      // console.log("removed from world");
+    }
+  }
+}
+
+
 class MovingTile extends Tile {
   constructor(game, image, startX, startY, initialDeltaX, initialDeltaY, acceleration) {
     super(game, image, startX, startY);
@@ -249,11 +279,6 @@ class MovingTile extends Tile {
   }
 
 }
-
-
-
-
-
 
 
 

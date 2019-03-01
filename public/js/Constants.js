@@ -266,7 +266,7 @@ Constants = {
   },
 
   LevelConstants: {
-    DRAW_BOXES: false,
+    DRAW_BOXES: true,
     TILE_ACCELERATION: 200,
     TILE_INITIAL_VELOCITY: 200,
 
@@ -320,17 +320,17 @@ Constants = {
       '                                  s            d                            s              -   m                                                                                                                                                                    ',
       '                             d                  f                            n                                                                                                                                                                                      ',
       '               d                                s         d       s         f b         =                                                                                                                                                                           ', //from ground can force jump to here.
-      '                                                                             d                               ---                                                                                                                                                    ',
-      '                                               f b                          f d        d                              X                                                                                                                                             ', //halfway of camera height.
-      '                          d       d                                        d b           s                  ==                                                                                                                                                      ',
+      '             =                                                                d                               ---                                                                                                                                                    ',
+      '          ~                                     f b                          f d        d                              X                                                                                                                                             ', //halfway of camera height.
+      '             ~~             d       d                                        d b           s                  ==                                                                                                                                                      ',
       '                                           --------                          d                                                                                                                                                                                      ',
-      '                                                                                                                                                                                                                                                                    ',
+      '       ~                                                                                                                                                                                                                                                             ',
       '                  -----                               H                   ---                       H F          --                                                                                                                                                 ',
-      '                                       ----                                                                                                                                                                                                                         ',
+      '  ~~                                   ----                                                                                                                                                                                                                         ',
       '           ------                             I           -----       ---            -                      ---       --                                                                                                                                            ', //from ground level, can reg. jump to here.
-      '                                 -----             ----                        --                   - -                                                                                                                                                             ',
+      '          ~~                       -----             ----                        --                   - -                                                                                                                                                             ',
       '                                                                            -                                                                                                                                                                                       ',
-      '------------           -- -- ----            --------   --     --- ---------  -- ---- ---------------------------------------------                                                                                                                                 '
+      '----~~--------           -- -- ----            --------   --     --- ---------  -- ---- ---------------------------------------------                                                                                                                                 '
     ],
 
     LEVEL_THREE_TILE_LAYOUT: [

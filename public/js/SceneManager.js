@@ -60,17 +60,33 @@ class SceneManager2 {
       new ParallaxScrollBackground(this.game, this, '../img/backgroundTrees2.png', 1, 1000),
       new ParallaxScrollBackground(this.game, this, '../img/backgroundTrees1.png', 1, 600)
     ];
-
     var LEVEL_ONE_TILES = {
       centerTile: '../img/forest_center_tile.png',
       leftTile: '../img/forest_left_tile.png',
       rightTile: '../img/forest_right_tile.png',
       leftRightTile: '../img/forest_both_rounded_tile.png'
     };
+
+    var CITY_LEVEL_BACKGROUNDS = [
+      new ParallaxScrollBackground(this.game, this, '../img/city_background.png', 1, 5200),
+      new ParallaxScrollBackground(this.game, this, '../img/city_buildings_back.png', 1, 2500),
+      new ParallaxScrollBackground(this.game, this, '../img/city_buildings_middle.png', 1, 1000),
+      new ParallaxScrollBackground(this.game, this, '../img/city_buildings_foreground.png', 1, 1400),
+      new ParallaxFloatingBackground(this.game, this, '../img/city_clouds_left.png', 1, 800),
+      new ParallaxFloatingBackground(this.game, this, '../img/city_clouds2.png', 1, 12000),
+      new ParallaxFloatingBackground(this.game, this, '../img/city_clouds_center.png', 1, 600)
+    ];
+    var CITY_LEVEL_TILES = {
+      centerTile: '../img/city_tile_center.png',
+      leftTile: '../img/city_tile_left.png',
+      rightTile: '../img/city_tile_right.png',
+      leftRightTile: '../img/city_tile_left_right.png'
+    };
+
     this.levels = [];
     this.level = null;
     this.levelBackgrounds = [];
-    this.levels.push(new Level(this.game, this, lvlConst.CITY_LEVEL, LEVEL_ONE_BACKGROUNDS, LEVEL_ONE_TILES));
+    this.levels.push(new Level(this.game, this, lvlConst.CITY_LEVEL, CITY_LEVEL_BACKGROUNDS, CITY_LEVEL_TILES));
   }
 
   addEntity(entity) {
