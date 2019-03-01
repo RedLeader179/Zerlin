@@ -232,7 +232,7 @@ class Tile extends Entity {
 class FallingTile extends Tile {
   constructor(game, image, startX, startY) {
     super(game, image, startX, startY);
-    this.lifeSpan = 5;
+    this.lifeSpan = 4;
     this.playerHasSeenTile = false;
   }
 

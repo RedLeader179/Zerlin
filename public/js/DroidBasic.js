@@ -309,7 +309,10 @@ class MultishotDroid extends BasicDroid {
 }
 
 
-/* One bad ass mother */
+
+
+
+
 // implement a poison shot
 class LeggyDroidBoss extends BasicDroid {
   constructor(game, spritesheet, startX, startY, frames, frameSpeed) {
@@ -318,6 +321,7 @@ class LeggyDroidBoss extends BasicDroid {
     //Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale)
     this.shootInterval = dbc.LEGGY_DROID_BOSS_SHOOT_INTERVAL;
     this.shootPattern = 1;
+    this.health = 10;
   }
 
   update() {
@@ -349,6 +353,10 @@ class LeggyDroidBoss extends BasicDroid {
         this.shootMultiShot();
         this.shootPattern = 0;
       }
+    }
+
+    if (this.health < 0) {
+      // die();
     }
     super.update();
   }
@@ -454,6 +462,16 @@ class LeggyDroidBoss extends BasicDroid {
     this.fire = false;
   }
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
