@@ -118,7 +118,6 @@ class Level {
           this.unspawnedBoss = new Boss(this.game, j * this.tileWidth, i * this.game.surfaceHeight / rows);
         } else if (this.levelLayout[i][j] === '*') { // leggy boss droid
           this.unspawnedDroids.push(new LeggyDroidBoss(this.game, this.game.assetManager.getAsset("../img/leggy_droid.png"), j * this.tileWidth, i * rowHeight, 4, .51));
-          // this.unspawnedDroidBoss = new LeggyDroidBoss(this.game, this.game.assetManager.getAsset("../img/leggy_droid.png"), j * this.tileWidth, i * rowHeight, 4, .51);
         } else if (this.levelLayout[i][j] === 'H') { //health powerup
           this.unspawnedPowerups.push(new HealthPowerUp(this.game, this.game.assetManager.getAsset("../img/powerup_health.png"), j * this.tileWidth, i * rowHeight));
         } else if (this.levelLayout[i][j] === 'F') { //force powerup

@@ -149,7 +149,11 @@ class CollisionManager {
           var collision = this.isCollidedWithSaber(laser);
           if (collision.collided) {
             this.deflectLaser(laser, collision.intersection);
-            this.game.audio.playSoundFx(this.game.audio.enemy, 'retroBlasterShot');
+            if (laser.poisoned) {
+              this.game.audio.playSoundFx(this.game.audio.saberDeflectLaser);
+            } else {
+              this.game.audio.playSoundFx(this.game.audio.enemy, 'retroBlasterShot');
+            }
           }
         }
       }

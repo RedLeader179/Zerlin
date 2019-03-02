@@ -7,11 +7,9 @@ class LeggyDroidBoss extends BasicDroid {
     // constructor(game, spritesheet, startX, startY, frames, frameSpeed, frameWidth, frameHeight, scale, radius)
     //Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale)
     this.shootInterval = Constants.DroidBossConstants.DROID_BOSS_SHOOT_INTERVAL;
-    this.shootPattern = 1;
 
     this.maxHealth = Constants.DroidBossConstants.DROID_BOSS_MAX_HEATH;
 		this.currentHealth = this.maxHealth;
-    // this.alive = true;
 
     this.spawned = false;
     this.healthStatusBar = null;
@@ -21,10 +19,13 @@ class LeggyDroidBoss extends BasicDroid {
   hitWithLaser() {
     this.currentHealth -= Constants.DroidBossConstants.HIT_WITH_LASER_DAMAGE;
     // console.log('leggy hit with laser', this.currentHealth);
+    //todo: play soundFx
+    // this.game.audio.playSoundFx(this.game.audio.saberDeflectLaser);
   }
 
   hitWithSaber() {
     this.currentHealth -= Constants.DroidBossConstants.HIT_WITH_SABER_DAMAGE;
+    //todo: play soundFx
     // console.log('leggy hit with saber', this.currentHealth);
   }
 
@@ -36,6 +37,7 @@ class LeggyDroidBoss extends BasicDroid {
       console.log('spawned bar');
       this.game.sceneManager.bossHealthBar = this.healthStatusBar;
       this.spawned = true;
+      this.game.audio.playSoundFx(this.game.audio.droidBossMechanical);
     } else { //droid spawned update health bar
       this.healthStatusBar.update();
     }
@@ -59,23 +61,21 @@ class LeggyDroidBoss extends BasicDroid {
     if (this.secondsBeforeFire <= 0 && (!this.fire)) {
       this.secondsBeforeFire = this.shootInterval;
       this.fire = true;
+      // or for random choice of shoot pattern instead of cycling through all of them
+      this.shootPattern = Math.floor(Math.random() * Math.floor(5) + 1);
+
       if (this.shootPattern === 1) {
         this.shootScatterShot();
-        this.shootPattern++;
       } else if (this.shootPattern === 2) {
         this.shootSlowBurst();
-        this.shootPattern++;
       } else if (this.shootPattern === 3) {
         this.shootFastBurst();
-        this.shootPattern++;
       } else if (this.shootPattern === 4) {
-        this.shootSniper();
-        this.shootPattern++;
+        this.shootPoisonLaser();
       } else if (this.shootPattern === 5) { //last for now
         this.shootMultiShot();
-        this.shootPattern = 0;
       }
-      this.shootPoisonLaser();
+      // this.shootPoisonLaser(); //shoot poison laser every fire ?
     }
     super.update();
   }
@@ -155,13 +155,13 @@ class LeggyDroidBoss extends BasicDroid {
   shootPoisonLaser() {
     // console.log('shoot poision');
     let laser = new DroidLaser(this.game, this.boundCircle.x, this.boundCircle.y,
-      dbc.SNIPER_DROID_LASER_SPEED,
+      Constants.DroidBossConstants.POISON_LASER_SPEED,
       this.sceneManager.Zerlin.x,
       this.sceneManager.Zerlin.boundingbox.y + this.sceneManager.Zerlin.boundingbox.height / 2,
-      dbc.SNIPER_DROID_LASER_LENGTH, dbc.SNIPER_DROID_LASER_WIDTH, "#cccc00", "#ffff00");
+      Constants.DroidBossConstants.POISON_LASER_LENGTH, Constants.DroidBossConstants.POISON_LASER_WIDTH, "#33cc33", "#ffff00");
     laser.poisoned = true;
     this.sceneManager.addLaser(laser);
-    this.game.audio.playSoundFx(this.game.audio.enemy, 'bowcasterShoot');
+    this.game.audio.playSoundFx(this.game.audio.poisonShot);
     this.fire = false;
   }
 
@@ -216,16 +216,16 @@ class LeggyDroidBoss extends BasicDroid {
     this.fire = false;
   }
 
-  shootSniper() {
-    let laser = new DroidLaser(this.game, this.boundCircle.x, this.boundCircle.y,
-      dbc.SNIPER_DROID_LASER_SPEED,
-      this.sceneManager.Zerlin.x,
-      this.sceneManager.Zerlin.boundingbox.y + this.sceneManager.Zerlin.boundingbox.height / 2,
-      dbc.SNIPER_DROID_LASER_LENGTH, dbc.SNIPER_DROID_LASER_WIDTH, "#cccc00", "#ffff00");
-    this.sceneManager.addLaser(laser);
-    this.game.audio.playSoundFx(this.game.audio.enemy, 'bowcasterShoot');
-    this.fire = false;
-  }
+  // shootSniper() {
+  //   let laser = new DroidLaser(this.game, this.boundCircle.x, this.boundCircle.y,
+  //     dbc.SNIPER_DROID_LASER_SPEED,
+  //     this.sceneManager.Zerlin.x,
+  //     this.sceneManager.Zerlin.boundingbox.y + this.sceneManager.Zerlin.boundingbox.height / 2,
+  //     dbc.SNIPER_DROID_LASER_LENGTH, dbc.SNIPER_DROID_LASER_WIDTH, "#cccc00", "#ffff00");
+  //   this.sceneManager.addLaser(laser);
+  //   this.game.audio.playSoundFx(this.game.audio.enemy, 'bowcasterShoot');
+  //   this.fire = false;
+  // }
 
   shootMultiShot() {
     var angleToZerlin = Math.atan2(this.sceneManager.Zerlin.y - 150 - this.boundCircle.y, this.sceneManager.Zerlin.x - this.boundCircle.x);
