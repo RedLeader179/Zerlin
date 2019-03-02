@@ -6,10 +6,10 @@ class LeggyDroidBoss extends BasicDroid {
     super(game, spritesheet, startX, startY, frames, frameSpeed, 315, 620, .5, 200);
     // constructor(game, spritesheet, startX, startY, frames, frameSpeed, frameWidth, frameHeight, scale, radius)
     //Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale)
-    this.shootInterval = dbc.LEGGY_DROID_BOSS_SHOOT_INTERVAL;
+    this.shootInterval = Constants.DroidBossConstants.DROID_BOSS_SHOOT_INTERVAL;
     this.shootPattern = 1;
 
-    this.maxHealth = bc.B_MAX_HEALTH;
+    this.maxHealth = Constants.DroidBossConstants.DROID_BOSS_MAX_HEATH;
 		this.currentHealth = this.maxHealth;
     // this.alive = true;
 
@@ -19,12 +19,12 @@ class LeggyDroidBoss extends BasicDroid {
 
 
   hitWithLaser() {
-    this.currentHealth -= 15;
+    this.currentHealth -= Constants.DroidBossConstants.HIT_WITH_LASER_DAMAGE;
     // console.log('leggy hit with laser', this.currentHealth);
   }
 
   hitWithSaber() {
-    this.currentHealth -= 30;
+    this.currentHealth -= Constants.DroidBossConstants.HIT_WITH_SABER_DAMAGE;
     // console.log('leggy hit with saber', this.currentHealth);
   }
 
@@ -33,7 +33,8 @@ class LeggyDroidBoss extends BasicDroid {
       this.healthStatusBar = new DroidBossHealthStatusBar(this.game,
           this.game.surfaceWidth * 0.25,
           680,  this);
-          console.log('spawned bar');
+      console.log('spawned bar');
+      this.game.sceneManager.bossHealthBar = this.healthStatusBar;
       this.spawned = true;
     } else { //droid spawned update health bar
       this.healthStatusBar.update();
@@ -42,6 +43,7 @@ class LeggyDroidBoss extends BasicDroid {
     // check if boss alive otherwise kill him
     if (this.currentHealth <= 0) {
       this.explode();
+      // this.game.sceneManager.bossHealthBar.removeFromWorld = true;
     }
 
 
@@ -94,25 +96,25 @@ class LeggyDroidBoss extends BasicDroid {
           this.game,
           this.x + (this.animation.scale * this.animation.frameWidth / 2) + 50,
           this.y + (this.animation.scale * this.animation.frameHeight / 2) + 50,
-          1, 1, .2));
+          1, .2, .2));
       this.sceneManager.addEntity(
         new DroidExplosion(
           this.game,
           this.x + (this.animation.scale * this.animation.frameWidth / 2) - 50,
           this.y + (this.animation.scale * this.animation.frameHeight / 2) - 50,
-          1, 1, .2));
+          1, .2, .2));
       this.sceneManager.addEntity(
         new DroidExplosion(
           this.game,
           this.x + (this.animation.scale * this.animation.frameWidth / 2) + 50,
           this.y + (this.animation.scale * this.animation.frameHeight / 2) - 50,
-          1, 1, .2));
+          1, .2, .2));
       this.sceneManager.addEntity(
         new DroidExplosion(
           this.game,
           this.x + (this.animation.scale * this.animation.frameWidth / 2) - 50,
           this.y + (this.animation.scale * this.animation.frameHeight / 2) + 50,
-          1, 1, .2));
+          1, .2, .2));
     }, 1000);
     //third explosions
     setTimeout(() => {
@@ -121,25 +123,25 @@ class LeggyDroidBoss extends BasicDroid {
           this.game,
           this.x + (this.animation.scale * this.animation.frameWidth / 2) + 80,
           this.y + (this.animation.scale * this.animation.frameHeight / 2) + 100,
-          .4, 1, .2));
+          .4, .2, .2));
       this.sceneManager.addEntity(
         new DroidExplosion(
           this.game,
           this.x + (this.animation.scale * this.animation.frameWidth / 2) - 80,
           this.y + (this.animation.scale * this.animation.frameHeight / 2) - 100,
-          .4, 1, .2));
+          .4, .2, .2));
       this.sceneManager.addEntity(
         new DroidExplosion(
           this.game,
           this.x + (this.animation.scale * this.animation.frameWidth / 2) - 80,
           this.y + (this.animation.scale * this.animation.frameHeight / 2) + 100,
-          .4, 1, .2));
+          .4, .2, .2));
       this.sceneManager.addEntity(
         new DroidExplosion(
           this.game,
           this.x + (this.animation.scale * this.animation.frameWidth / 2) + 80,
           this.y + (this.animation.scale * this.animation.frameHeight / 2) - 100,
-          .4, 1, .2));
+          .4, .2, .2));
     }, 1500);
     //main explosion
     this.sceneManager.addEntity(
@@ -147,7 +149,7 @@ class LeggyDroidBoss extends BasicDroid {
         this.game,
         this.x + (this.animation.scale * this.animation.frameWidth / 2),
         this.y + (this.animation.scale * this.animation.frameHeight / 2),
-        2, 1, .2));
+        2, .2, .2));
   }
 
   shootPoisonLaser() {

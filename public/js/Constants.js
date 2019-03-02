@@ -36,21 +36,16 @@ Constants = {
     BASIC_DROID_LASER_SPEED: 400,
     BASIC_DROID_LASER_LENGTH: 10,
     BASIC_DROID_LASER_WIDTH: 10,
-    POISON_LASER_DURATION: 5,
-    POISION_LASER_DAMAGE_PER_TICK: 5,
 
-    /* leggy droid constants */
+    /* This is actually spray droid? leggy droid constants */
     LEGGY_DROID_SHOOT_INTERVAL: 4,
     LEGGY_DROID_LASER_SPEED: 350,
     LEGGY_DROID_LASER_LENGTH: 25,
     LEGGY_DROID_LASER_WIDTH: 12,
 
-    /* leggy droid boss constants */
-    LEGGY_DROID_BOSS_SHOOT_INTERVAL: .5,
 
     SPRAY_LASER_COUNT: 5,
     SPRAY_LASER_WIDTH_RADIANS: Math.PI / 6,
-
 
     /* beam droid constants */
     BEAM_DROID_SHOOT_INTERVAL: 6,
@@ -88,8 +83,8 @@ Constants = {
     //PHI : 1.618,
 
     /* Zerlin health and force stats*/
-    Z_MAX_HEALTH: 2000, //was 20
-    Z_MAX_FORCE: 1000,
+    Z_MAX_HEALTH: 40, //was 20
+    Z_MAX_FORCE: 10,
     Z_FORCE_REGEN_PER_SECOND: 0.5,
     Z_FORCE_JUMP_FORCE_COST: 3,
     Z_SOMERSAULT_FORCE_COST: 3,
@@ -97,9 +92,9 @@ Constants = {
     Z_SLASH_DAMAGE: 10,
     Z_BOSS_BEAM_DAMAGE: 1,
 
-    Z_SCALE: 0.55,
+    Z_SCALE: 0.4, //was .55
 
-    DRAW_COLLISION_BOUNDRIES: true,
+    DRAW_COLLISION_BOUNDRIES: false,
 
     Z_SPAWN_X: 0, //modify this to spawn zerlin later in the level.
     //about 100 for 1 tile/column.
@@ -174,7 +169,7 @@ Constants = {
   DroidUtilConstants: {
     EXPLOSION_SCALE: 2,
     EXPLOSION_FRAME_SPEED: 0.05,
-    DRAW_BOUNDING_CIRCLE: true
+    DRAW_BOUNDING_CIRCLE: false
   },
 
   DroidSmartConstants: {
@@ -210,8 +205,17 @@ Constants = {
 
   },
 
+  DroidBossConstants: {
+    DROID_BOSS_MAX_HEATH: 100,
+    POISON_LASER_DURATION: 5,
+    POISION_LASER_DAMAGE_PER_TICK: .3,
+    DROID_BOSS_SHOOT_INTERVAL: .5,
+    HIT_WITH_SABER_DAMAGE: 10,
+    HIT_WITH_LASER_DAMAGE: 2
+  },
+
   BossConstants: {
-    B_MAX_HEALTH: 60, // was 150
+    B_MAX_HEALTH: 150, // was 150
     BEAM_HP_PER_SECOND: .2, //was .5
 
     B_SCALE: .6,
@@ -331,8 +335,8 @@ Constants = {
       '                                       m                 f                                   b                                                         ---                                                      s                           ----                            ',
       '           s         ~                                                     ~         s                                                        ===                          -                     m       f                                                                   ',
       '                                    F                          -~                                                                                                                           -                            ~~                 ~--~    ==                        ',
-      '                ~~                           ~  ~ ~~    H        --    ~~                                  m                        d       --           b              ~~~--~--  H      ---           b                   ====            ~~--~~                              ',
-      '        *                 d         === ==                 -~    ~       ~-~~  --~---~--          ~~-~              b           -----~-~-                         ~~~~~~                                ---         -~        ===                             I      ~~~---~   ', //from ground level, can reg. jump to here. well higher now
+      '                ~~                           ~  ~ ~~    H        --    ~~               *                  m                        d       --           b              ~~~--~--  H      ---           b                   ====            ~~--~~                              ',
+      '                          d         === ==                 -~    ~       ~-~~  --~---~--          ~~-~              b           -----~-~-                         ~~~~~~                                ---         -~        ===                             I      ~~~---~   ', //from ground level, can reg. jump to here. well higher now
       '    ~                                                ==  =                                                                         I                   ---~~-~~    =            ==                            ~~                 F                                          ~~ ',
       '        --~~       --             ~     d                        ~~~  =  =       H   F    ~~~~ --    =====  ~~         ~-~-----                   --~                                            n                                ----~~ -  ~~~---~~~~------------~~~-----     ',
       '~~~~ ~-               --   -~   --           --                                                                 ~~-~~              -                                                       f------------------~-~~-  --   --     --                   ======       --      --- '

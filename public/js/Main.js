@@ -89,6 +89,10 @@ class AssetManager {
   AM.queueDownload("../img/beam cannon.png");
   AM.queueDownload("../img/beam cannon left.png");
   AM.queueDownload("../img/boss_helmet.png");
+  // Droid boss
+  AM.queueDownload("../img/leggy_droid.png");
+  AM.queueDownload("../img/boss_status_bar_icon.png");
+
 
 
 
@@ -100,7 +104,6 @@ class AssetManager {
 
   /********** Droid assets ******************/
   AM.queueDownload("../img/droid-j-row.png");
-  AM.queueDownload("../img/leggy_droid.png");
   AM.queueDownload("../img/Droid 1.png");
   AM.queueDownload("../img/Droid 2.png");
   AM.queueDownload("../img/Droid 3.png");
