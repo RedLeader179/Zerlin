@@ -55,7 +55,7 @@ class Zerlin extends Entity {
     /* poisioned */
     this.poisoned = false;
     this.poisonedCounter = 0;
-    this.poisonedMaxTime = 5;
+    this.poisonedMaxTime = Constants.DroidBasicConstants.POISON_LASER_DURATION;
   }
 
   update() {
@@ -63,7 +63,7 @@ class Zerlin extends Entity {
     if (this.alive) {
 
       if (this.poisoned) {
-        this.currentHealth -= 5 * this.game.clockTick;
+        this.currentHealth -= Constants.DroidBasicConstants.POISION_LASER_DAMAGE_PER_TICK * this.game.clockTick;
         this.poisonedCounter += 1 * this.game.clockTick;
         // console.log(this.currentHealth, 'poisoned');
         if (this.poisonedCounter > this.poisonedMaxTime) {

@@ -151,7 +151,7 @@ class LeggyDroidBoss extends BasicDroid {
   }
 
   shootPoisonLaser() {
-    console.log('shoot poision');
+    // console.log('shoot poision');
     let laser = new DroidLaser(this.game, this.boundCircle.x, this.boundCircle.y,
       dbc.SNIPER_DROID_LASER_SPEED,
       this.sceneManager.Zerlin.x,
