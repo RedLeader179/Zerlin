@@ -49,10 +49,10 @@ class SceneManager2 {
 
   init() {
     this.buildLevels();
-    // this.startOpeningScene();
-    /* skip intro stuff */
-    this.startLevelScene();
-    document.getElementById("formOverlay").style.display = "none";
+    this.startOpeningScene();
+    /* skip intro stuff and go strait to the level */
+    // this.startLevelScene();
+    // document.getElementById("formOverlay").style.display = "none"; // hide login if not hid in css (curently is)
   }
 
   buildLevels() {
@@ -219,42 +219,43 @@ class SceneManager2 {
 
     this.openingSceneTimer += this.game.clockTick;
 
-    //play the sweet rotating stars until the user clicks play or logs in
-    if (!this.playGame && this.openingSceneTimer < smc.OPENING_SCENE_STOP_CAMERA_PAN) {
-      this.camera.y = -Math.pow(this.openingSceneTimer - smc.OPENING_SCENE_STOP_CAMERA_PAN, 2) * 280;
-    } else if (this.playGame) {
-      //reset the openingSceneTimer ??? to get final transition scene back?
-      if (!this.seq1FadeOut && this.openingSceneTimer > smc.OPENING_SCENE_FIRST_FADE_OUT_TIME) {
-        this.seq1FadeOut = true;
-        this.sceneEntities.push(new Overlay(this.game, false, smc.OPENING_OVERLAY_TIME));
-      } else if (!this.seq2 && this.openingSceneTimer > smc.OPENING_OVERLAY_TIME + smc.OPENING_SCENE_FIRST_FADE_OUT_TIME) {
-        this.seq2 = true;
-        this.sceneEntities.push(new TextScreen(this.game, smc.OPENING_MESSAGE));
-        this.sceneEntities.push(new Overlay(this.game, true, smc.OPENING_OVERLAY_TIME));
-      } else if (!this.seq2FadeOut && this.openingSceneTimer > smc.OPENING_OVERLAY_TIME + smc.OPENING_SCENE_FIRST_FADE_OUT_TIME + smc.OPENING_MESSAGE_TIME) {
-        this.seq2FadeOut = true;
-        this.sceneEntities.push(new Overlay(this.game, false, smc.OPENING_OVERLAY_TIME));
-      } else if (this.openingSceneTimer > smc.OPENING_OVERLAY_TIME + smc.OPENING_SCENE_FIRST_FADE_OUT_TIME + smc.OPENING_MESSAGE_TIME + smc.OPENING_OVERLAY_TIME) {
-        this.startLevelScene();
-      }
-    }
-
-    // commented out auto play scene into bit as steven had it
-    // if (this.openingSceneTimer < smc.OPENING_SCENE_STOP_CAMERA_PAN) {
+    // To start game with login screen
+    // //play the sweet rotating stars until the user clicks play or logs in
+    // if (!this.playGame && this.openingSceneTimer < smc.OPENING_SCENE_STOP_CAMERA_PAN) {
     //   this.camera.y = -Math.pow(this.openingSceneTimer - smc.OPENING_SCENE_STOP_CAMERA_PAN, 2) * 280;
-    // } else if (!this.seq1FadeOut && this.openingSceneTimer > smc.OPENING_SCENE_FIRST_FADE_OUT_TIME) {
-    //   this.seq1FadeOut = true;
-    //   this.sceneEntities.push(new Overlay(this.game, false, smc.OPENING_OVERLAY_TIME));
-    // } else if (!this.seq2 && this.openingSceneTimer > smc.OPENING_OVERLAY_TIME + smc.OPENING_SCENE_FIRST_FADE_OUT_TIME) {
-    //   this.seq2 = true;
-    //   this.sceneEntities.push(new TextScreen(this.game, smc.OPENING_MESSAGE));
-    //   this.sceneEntities.push(new Overlay(this.game, true, smc.OPENING_OVERLAY_TIME));
-    // } else if (!this.seq2FadeOut && this.openingSceneTimer > smc.OPENING_OVERLAY_TIME + smc.OPENING_SCENE_FIRST_FADE_OUT_TIME + smc.OPENING_MESSAGE_TIME) {
-    //   this.seq2FadeOut = true;
-    //   this.sceneEntities.push(new Overlay(this.game, false, smc.OPENING_OVERLAY_TIME));
-    // } else if (this.openingSceneTimer > smc.OPENING_OVERLAY_TIME + smc.OPENING_SCENE_FIRST_FADE_OUT_TIME + smc.OPENING_MESSAGE_TIME + smc.OPENING_OVERLAY_TIME) {
-    //   this.startLevelScene();
+    // } else if (this.playGame) {
+    //   //reset the openingSceneTimer ??? to get final transition scene back?
+    //   if (!this.seq1FadeOut && this.openingSceneTimer > smc.OPENING_SCENE_FIRST_FADE_OUT_TIME) {
+    //     this.seq1FadeOut = true;
+    //     this.sceneEntities.push(new Overlay(this.game, false, smc.OPENING_OVERLAY_TIME));
+    //   } else if (!this.seq2 && this.openingSceneTimer > smc.OPENING_OVERLAY_TIME + smc.OPENING_SCENE_FIRST_FADE_OUT_TIME) {
+    //     this.seq2 = true;
+    //     this.sceneEntities.push(new TextScreen(this.game, smc.OPENING_MESSAGE));
+    //     this.sceneEntities.push(new Overlay(this.game, true, smc.OPENING_OVERLAY_TIME));
+    //   } else if (!this.seq2FadeOut && this.openingSceneTimer > smc.OPENING_OVERLAY_TIME + smc.OPENING_SCENE_FIRST_FADE_OUT_TIME + smc.OPENING_MESSAGE_TIME) {
+    //     this.seq2FadeOut = true;
+    //     this.sceneEntities.push(new Overlay(this.game, false, smc.OPENING_OVERLAY_TIME));
+    //   } else if (this.openingSceneTimer > smc.OPENING_OVERLAY_TIME + smc.OPENING_SCENE_FIRST_FADE_OUT_TIME + smc.OPENING_MESSAGE_TIME + smc.OPENING_OVERLAY_TIME) {
+    //     this.startLevelScene();
+    //   }
     // }
+
+    // to auto play intro scene bit as steven had it and then go to the level
+    if (this.openingSceneTimer < smc.OPENING_SCENE_STOP_CAMERA_PAN) {
+      this.camera.y = -Math.pow(this.openingSceneTimer - smc.OPENING_SCENE_STOP_CAMERA_PAN, 2) * 280;
+    } else if (!this.seq1FadeOut && this.openingSceneTimer > smc.OPENING_SCENE_FIRST_FADE_OUT_TIME) {
+      this.seq1FadeOut = true;
+      this.sceneEntities.push(new Overlay(this.game, false, smc.OPENING_OVERLAY_TIME));
+    } else if (!this.seq2 && this.openingSceneTimer > smc.OPENING_OVERLAY_TIME + smc.OPENING_SCENE_FIRST_FADE_OUT_TIME) {
+      this.seq2 = true;
+      this.sceneEntities.push(new TextScreen(this.game, smc.OPENING_MESSAGE));
+      this.sceneEntities.push(new Overlay(this.game, true, smc.OPENING_OVERLAY_TIME));
+    } else if (!this.seq2FadeOut && this.openingSceneTimer > smc.OPENING_OVERLAY_TIME + smc.OPENING_SCENE_FIRST_FADE_OUT_TIME + smc.OPENING_MESSAGE_TIME) {
+      this.seq2FadeOut = true;
+      this.sceneEntities.push(new Overlay(this.game, false, smc.OPENING_OVERLAY_TIME));
+    } else if (this.openingSceneTimer > smc.OPENING_OVERLAY_TIME + smc.OPENING_SCENE_FIRST_FADE_OUT_TIME + smc.OPENING_MESSAGE_TIME + smc.OPENING_OVERLAY_TIME) {
+      this.startLevelScene();
+    }
 
 
     for (let i = this.sceneEntities.length - 1; i >= 0; i--) {

@@ -275,7 +275,7 @@ Constants = {
   },
 
   LevelConstants: {
-    DRAW_BOXES: true,
+    DRAW_BOXES: false,
     TILE_ACCELERATION: 200,
     TILE_INITIAL_VELOCITY: 200,
 
