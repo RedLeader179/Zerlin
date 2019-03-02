@@ -148,9 +148,9 @@ class AssetManager {
   //Hoth snow
 
 
-  /********** Tile assets ******************/
+  /********** Tile assets ******************/  //tiles are 100x100
   //forest
-  AM.queueDownload("../img/forest_left_tile.png"); //tiles are 100x100
+  AM.queueDownload("../img/forest_left_tile.png"); 
   AM.queueDownload("../img/forest_center_tile.png");
   AM.queueDownload("../img/forest_right_tile.png");
   AM.queueDownload("../img/forest_both_rounded_tile.png");
@@ -162,6 +162,11 @@ class AssetManager {
   AM.queueDownload("../img/city_tile_left_right.png");
 
   //Hoth snow
+  AM.queueDownload("../img/ice_tile_center.png");
+  AM.queueDownload("../img/ice_tile_left_right.png");
+  AM.queueDownload("../img/ice_tile_left.png");
+  AM.queueDownload("../img/ice_tile_right.png");
+
 
   /********** SceneManager assets ******************/
   //music menu
