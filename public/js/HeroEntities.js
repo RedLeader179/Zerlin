@@ -51,11 +51,27 @@ class Zerlin extends Entity {
     this.invincible = false;
     this.iSeconds = Constants.PowerUpConstants.INVINCIBILITY_TIME; //invincibility seconds
     this.iColor = 'rgba(14, 61, 220, 1)';
+
+    /* poisioned */
+    this.poisoned = false;
+    this.poisonedCounter = 0;
+    this.poisonedMaxTime = 5;
   }
 
   update() {
     // check basic movement
     if (this.alive) {
+
+      if (this.poisoned) {
+        this.currentHealth -= 5 * this.game.clockTick;
+        this.poisonedCounter += 1 * this.game.clockTick;
+        // console.log(this.currentHealth, 'poisoned');
+        if (this.poisonedCounter > this.poisonedMaxTime) {
+          this.poisoned = false;
+          this.poisonedCounter = 0;
+          // console.log('not poisoned');
+        }
+      }
 
       // manage force regeneration
       this.forceRegenTime -= this.game.clockTick;

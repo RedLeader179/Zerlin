@@ -1,5 +1,3 @@
-// const camConst = Constants.CameraConstants;
-// const dbc = Constants.DroidBasicConstants;
 
 /* One bad ass mother */
 // implement a poison shot
@@ -10,9 +8,43 @@ class LeggyDroidBoss extends BasicDroid {
     //Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale)
     this.shootInterval = dbc.LEGGY_DROID_BOSS_SHOOT_INTERVAL;
     this.shootPattern = 1;
+
+    this.maxHealth = bc.B_MAX_HEALTH;
+		this.currentHealth = this.maxHealth;
+    // this.alive = true;
+
+    this.spawned = false;
+    this.healthStatusBar = null;
+  }
+
+
+  hitWithLaser() {
+    this.currentHealth -= 15;
+    // console.log('leggy hit with laser', this.currentHealth);
+  }
+
+  hitWithSaber() {
+    this.currentHealth -= 30;
+    // console.log('leggy hit with saber', this.currentHealth);
   }
 
   update() {
+    if(!this.spawned) { //create the boss health bar when spawned
+      this.healthStatusBar = new DroidBossHealthStatusBar(this.game,
+          this.game.surfaceWidth * 0.25,
+          680,  this);
+          console.log('spawned bar');
+      this.spawned = true;
+    } else { //droid spawned update health bar
+      this.healthStatusBar.update();
+    }
+
+    // check if boss alive otherwise kill him
+    if (this.currentHealth <= 0) {
+      this.explode();
+    }
+
+
     //update coordinates so the droid will orbit the center of the canvas
     if (!this.sceneManager) {
       this.sceneManager = this.game.sceneManager;
@@ -41,8 +73,94 @@ class LeggyDroidBoss extends BasicDroid {
         this.shootMultiShot();
         this.shootPattern = 0;
       }
+      this.shootPoisonLaser();
     }
     super.update();
+  }
+
+  explode() {
+		this.removeFromWorld = true;
+
+    this.game.audio.playSoundFx(this.game.audio.enemy, 'rubbleExplosion');
+    // this.game.audio.playSoundFx(this.game.audio.enemy, 'largeExplosion');
+
+    // class DroidExplosion extends Entity {
+    // 	constructor(game, x, y,
+              //    scale, explosionVolume, speed) {
+    //second explosions
+    setTimeout( () => {
+      this.sceneManager.addEntity(
+        new DroidExplosion(
+          this.game,
+          this.x + (this.animation.scale * this.animation.frameWidth / 2) + 50,
+          this.y + (this.animation.scale * this.animation.frameHeight / 2) + 50,
+          1, 1, .2));
+      this.sceneManager.addEntity(
+        new DroidExplosion(
+          this.game,
+          this.x + (this.animation.scale * this.animation.frameWidth / 2) - 50,
+          this.y + (this.animation.scale * this.animation.frameHeight / 2) - 50,
+          1, 1, .2));
+      this.sceneManager.addEntity(
+        new DroidExplosion(
+          this.game,
+          this.x + (this.animation.scale * this.animation.frameWidth / 2) + 50,
+          this.y + (this.animation.scale * this.animation.frameHeight / 2) - 50,
+          1, 1, .2));
+      this.sceneManager.addEntity(
+        new DroidExplosion(
+          this.game,
+          this.x + (this.animation.scale * this.animation.frameWidth / 2) - 50,
+          this.y + (this.animation.scale * this.animation.frameHeight / 2) + 50,
+          1, 1, .2));
+    }, 1000);
+    //third explosions
+    setTimeout(() => {
+      this.sceneManager.addEntity(
+        new DroidExplosion(
+          this.game,
+          this.x + (this.animation.scale * this.animation.frameWidth / 2) + 80,
+          this.y + (this.animation.scale * this.animation.frameHeight / 2) + 100,
+          .4, 1, .2));
+      this.sceneManager.addEntity(
+        new DroidExplosion(
+          this.game,
+          this.x + (this.animation.scale * this.animation.frameWidth / 2) - 80,
+          this.y + (this.animation.scale * this.animation.frameHeight / 2) - 100,
+          .4, 1, .2));
+      this.sceneManager.addEntity(
+        new DroidExplosion(
+          this.game,
+          this.x + (this.animation.scale * this.animation.frameWidth / 2) - 80,
+          this.y + (this.animation.scale * this.animation.frameHeight / 2) + 100,
+          .4, 1, .2));
+      this.sceneManager.addEntity(
+        new DroidExplosion(
+          this.game,
+          this.x + (this.animation.scale * this.animation.frameWidth / 2) + 80,
+          this.y + (this.animation.scale * this.animation.frameHeight / 2) - 100,
+          .4, 1, .2));
+    }, 1500);
+    //main explosion
+    this.sceneManager.addEntity(
+      new DroidExplosion(
+        this.game,
+        this.x + (this.animation.scale * this.animation.frameWidth / 2),
+        this.y + (this.animation.scale * this.animation.frameHeight / 2),
+        2, 1, .2));
+  }
+
+  shootPoisonLaser() {
+    console.log('shoot poision');
+    let laser = new DroidLaser(this.game, this.boundCircle.x, this.boundCircle.y,
+      dbc.SNIPER_DROID_LASER_SPEED,
+      this.sceneManager.Zerlin.x,
+      this.sceneManager.Zerlin.boundingbox.y + this.sceneManager.Zerlin.boundingbox.height / 2,
+      dbc.SNIPER_DROID_LASER_LENGTH, dbc.SNIPER_DROID_LASER_WIDTH, "#cccc00", "#ffff00");
+    laser.poisoned = true;
+    this.sceneManager.addLaser(laser);
+    this.game.audio.playSoundFx(this.game.audio.enemy, 'bowcasterShoot');
+    this.fire = false;
   }
 
   shootScatterShot() {
@@ -146,20 +264,3 @@ class LeggyDroidBoss extends BasicDroid {
     this.fire = false;
   }
 }
-
-
-// -  =  tile
-// =  =  moving tile
-// ~  =  falling tile
-// d  =  basic droid
-// s  =  scatter shot droid
-// b  =  slow burst droid
-// f  =  fast burst droid
-// m  =  multi-shot droid
-// n  =  sniper droid
-// H  =  health powerup
-// F  =  force powerup
-// I  =  invincibility powerup
-// *  = leggy droid boss
-// X  =  Boss
-// */

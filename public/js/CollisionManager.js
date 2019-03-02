@@ -114,7 +114,11 @@ class CollisionManager {
             zerlin.slashZone.innerCircle.y,
             zerlin.slashZone.innerCircle.radius) &&
           droid.boundCircle.y < zerlin.y) {
-          droid.explode();
+          if (droid instanceof LeggyDroidBoss) {
+            droid.hitWithSaber();
+          } else {
+            droid.explode();
+          }
         }
       }
     }
@@ -125,7 +129,11 @@ class CollisionManager {
       if (this.sceneManager.lasers[i].isDeflected) {
         for (var j = this.sceneManager.droids.length - 1; j >= 0; j--) {
           if (this.isLaserCollidedWithDroid(this.sceneManager.lasers[i], this.sceneManager.droids[j])) {
-            this.sceneManager.droids[j].explode();
+            if (this.sceneManager.droids[j] instanceof LeggyDroidBoss) {
+              this.sceneManager.droids[j].hitWithLaser();
+            } else {
+              this.sceneManager.droids[j].explode();
+            }
             this.sceneManager.lasers[i].removeFromWorld = true;
           }
         }
@@ -159,7 +167,8 @@ class CollisionManager {
           laser.y > zerlin.boundingbox.top &&
           laser.y < zerlin.boundingbox.bottom) {
           if (!zerlin.invincible) { //if zerlin is not invincible
-            // this.game.audio.wound.play();
+            if (laser.poisoned)
+              zerlin.poisoned = true;
             this.game.audio.playSoundFx(this.game.audio.hero, 'heroHurt');
             zerlin.hits++;
             zerlin.currentHealth--; //eventually subtract by laser damage

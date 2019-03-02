@@ -209,8 +209,8 @@ Constants = {
   },
 
   BossConstants: {
-    B_MAX_HEALTH: 150,
-    BEAM_HP_PER_SECOND: .5,
+    B_MAX_HEALTH: 60, // was 150
+    BEAM_HP_PER_SECOND: .2, //was .5
 
     B_SCALE: .6,
     B_DRAW_COLLISION_BOUNDRIES: false,
@@ -330,7 +330,7 @@ Constants = {
       '           s         ~                                                     ~         s                                                        ===                          -                     m       f                                                                   ',
       '                                    F                          -~                                                                                                                           -                            ~~                 ~--~    ==                        ',
       '                ~~                           ~  ~ ~~    H        --    ~~                                  m                        d       --           b              ~~~--~--  H      ---           b                   ====            ~~--~~                              ',
-      '                          d         === ==                 -~    ~       ~-~~  --~---~--          ~~-~              b           -----~-~-                         ~~~~~~                                ---         -~        ===                             I      ~~~---~   ', //from ground level, can reg. jump to here. well higher now
+      '        *                 d         === ==                 -~    ~       ~-~~  --~---~--          ~~-~              b           -----~-~-                         ~~~~~~                                ---         -~        ===                             I      ~~~---~   ', //from ground level, can reg. jump to here. well higher now
       '    ~                                                ==  =                                                                         I                   ---~~-~~    =            ==                            ~~                 F                                          ~~ ',
       '        --~~       --             ~     d                        ~~~  =  =       H   F    ~~~~ --    =====  ~~         ~-~-----                   --~                                            n                                ----~~ -  ~~~---~~~~------------~~~-----     ',
       '~~~~ ~-               --   -~   --           --                                                                 ~~-~~              -                                                       f------------------~-~~-  --   --     --                   ======       --      --- '
