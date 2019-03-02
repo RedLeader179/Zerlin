@@ -30,12 +30,16 @@ class CollisionManager {
     this.ZerlinOnPlatform();
     this.ZerlinOnEdgeOfMap();
     this.beamOnPlatform();
-    this.beamOnZerlin();
+    // this.beamOnZerlin();
     this.beamOnSaber();
     this.beamOnDroid();
     this.beamOnBoss();
     this.saberOnBoss();
     this.laserOnBoss();
+    this.catchSaber();
+    this.airbornSaberOnDroid();
+    this.bombOnPlatform();
+    this.bombExplosionOnZerlin();
 
     // TODO: loop through only visible tiles instead of entire level
   }
@@ -134,7 +138,7 @@ class CollisionManager {
   }
 
   laserOnSaber() {
-    if (!this.sceneManager.Zerlin.lightsaber.hidden) {
+    if (!this.sceneManager.Zerlin.lightsaber.hidden && !this.sceneManager.Zerlin.lightsaber.throwing) {
       for (var i = this.sceneManager.lasers.length - 1; i >= 0; i--) {
         var laser = this.sceneManager.lasers[i];
         if (!laser.isDeflected) {
@@ -277,6 +281,7 @@ class CollisionManager {
         j++;
       }
     }
+    this.beamOnPlatform();
   }
 
   beamOnDroid() {
@@ -447,6 +452,59 @@ class CollisionManager {
       }
     }
   }
+
+  catchSaber() {
+    var saberArm = this.sceneManager.Zerlin.lightsaber;
+    if (saberArm.throwing) {
+      if (saberArm.airbornSaber.throwTimer > .5) {
+        if (collidePointWithCircle(saberArm.x, saberArm.y, saberArm.airbornSaber.x, saberArm.airbornSaber.y, saberArm.airbornSaber.radius)) {
+          saberArm.catch();
+        }
+      }
+    }
+  }
+
+  airbornSaberOnDroid() {
+    var saberArm = this.sceneManager.Zerlin.lightsaber;
+    if (saberArm.throwing) {
+      for (var i = this.sceneManager.droids.length - 1; i >= 0; i--) {
+        var droid = this.sceneManager.droids[i];
+        if (collidePointWithCircle(droid.boundCircle.x, droid.boundCircle.y, saberArm.airbornSaber.x, saberArm.airbornSaber.y, saberArm.airbornSaber.radius)) {
+          droid.explode();
+        }
+      }
+    }
+  }
+
+  bombOnPlatform() {
+    if (this.sceneManager.boss) {
+      let bombs = this.sceneManager.boss.bombs;
+      for (let i = bombs.length - 1; i >= 0; i--) {
+        for (let k = 0; k < this.sceneManager.level.tiles.length; k++) {
+          let tile = this.sceneManager.level.tiles[k];
+          if (collideLineWithCircle2(tile.surface, bombs[i].boundingCircle)) {
+            bombs[i].explode();
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  bombExplosionOnZerlin() {
+    var zerlin = this.sceneManager.Zerlin;
+    if (!zerlin.boundingbox.hidden) {
+      for (let i = 0; i < this.sceneManager.otherEntities.length; i++) {
+        if (this.sceneManager.otherEntities[i] instanceof DamagingExplosion && !this.sceneManager.otherEntities[i].damageDone) {
+          if (collideCircleWithRectangle2(this.sceneManager.otherEntities[i].boundingCircle, zerlin.boundingbox)) {
+            this.sceneManager.otherEntities[i].damageDone = true;
+            zerlin.currentHealth -= bc.BOMB_DAMAGE;
+          }
+        }
+      }
+    }
+  }
+
 
   isLaserCollidedWithDroid(laser, droid) {
     return collideLineWithCircle(laser.x, laser.y, laser.tailX, laser.tailY, droid.boundCircle.x,
@@ -694,6 +752,10 @@ var collideLineWithCircle = function(x1, y1, x2, y2, cx, cy, r) {
 
 }
 
+var collideLineWithCircle2 = function(line, circle) {
+  return collideLineWithCircle(line.p1.x, line.p1.y, line.p2.x, line.p2.y, circle.x, circle.y, circle.radius);
+}
+
 /**
  * This function will check to see if a point is on a line segment
  * @param {number} x1 is the start x cord of the line segment
@@ -904,4 +966,8 @@ var collideCircleWithRectangle = function(cx, cy, cr, rx, ry, rw, rh) {
     result = true;
   }
   return result;
+}
+
+var collideCircleWithRectangle2 = function(circle, box) {
+  return collideCircleWithRectangle(circle.x, circle.y, circle.radius, box.x, box.y, box.width, box.height);
 }

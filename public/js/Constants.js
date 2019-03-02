@@ -16,7 +16,8 @@ Constants = {
     JUMP_FORCE: 'KeyE',
     SLASH: 'Space',
     ROLL: 'KeyS',
-    PAUSE: 'Enter'
+    PAUSE: 'Enter',
+    THROW_SABER: 'KeyR'
   },
 
   DroidBasicConstants: {
@@ -84,10 +85,11 @@ Constants = {
 
     /* Zerlin health and force stats*/
     Z_MAX_HEALTH: 20, //was 20
-    Z_MAX_FORCE: 10,
+    Z_MAX_FORCE: 100,
     Z_FORCE_REGEN_PER_SECOND: 0.5,
     Z_FORCE_JUMP_FORCE_COST: 3,
     Z_SOMERSAULT_FORCE_COST: 3,
+    Z_SABER_THROW_FORCE_COST: 4,
     /* Zerlin damage */
     Z_SLASH_DAMAGE: 10,
     Z_BOSS_BEAM_DAMAGE: 1,
@@ -163,7 +165,19 @@ Constants = {
     LS_RIGHT_X_AXIS: 10,
     LS_LEFT_X_AXIS: 10,
     LS_UP_Y_AXIS: 159,
-    LS_DOWN_Y_AXIS: 63
+    LS_DOWN_Y_AXIS: 63,
+
+    LS_THROW_IMAGE_WIDTH: 144,
+    LS_THROW_IMAGE_HEIGHT: 48,
+    LS_THROW_RIGHT_X_AXIS: 9,
+    LS_THROW_RIGHT_Y_AXIS: 13,
+
+    LS_AIRBORN_WIDTH: 234,
+    LS_AIRBORN_HEIGHT: 234,
+    LS_AIRBORN_FRAME_DURATION: .07,
+    LS_AIRBORN_FRAMES: 4,
+    SABER_THROW_INITIAL_SPEED: 1000,
+    SABER_THROW_ACCELERATION: 800
   },
 
   DroidUtilConstants: {
@@ -207,7 +221,7 @@ Constants = {
 
   BossConstants: {
     B_MAX_HEALTH: 150,
-    BEAM_HP_PER_SECOND: .5,
+    BEAM_HP_PER_SECOND: .1,
 
     B_SCALE: .6,
     B_DRAW_COLLISION_BOUNDRIES: false,
@@ -239,7 +253,16 @@ Constants = {
     BEAM_ANGLE_ACCELERATION_RADIANS: Math.PI,
     MICRO_BEAM_COUNT: 5,
     MUZZLE_WIDTH: 13,
-    MAX_BEAM_LENGTH: 5000
+    MAX_BEAM_LENGTH: 5000,
+
+    BOMB_FRAMES: 25,
+    BOMB_FRAME_DURATION: .1,
+    BOMB_SCALE: .35,
+    BOMB_DROP_INTERVAL: .5,
+    BOMB_DAMAGE: 5, 
+
+    BEAM_MODE_DURATION: 10,
+    BOMB_MODE_DURATION: 5
   },
 
   StatusBarConstants: {

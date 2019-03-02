@@ -41,7 +41,6 @@ class Zerlin extends Entity {
     this.currentHealth = this.maxHealth;
     this.maxForce = zc.Z_MAX_FORCE;
     this.currentForce = this.maxForce;
-    this.forceRegenTime = 1;
 
     this.lightsaber = new Lightsaber(this.game, this);
     this.deathAnimation.elapsedTime = 0;
@@ -58,15 +57,9 @@ class Zerlin extends Entity {
     if (this.alive) {
 
       // manage force regeneration
-      this.forceRegenTime -= this.game.clockTick;
-      if (this.forceRegenTime <= 0) {
-        if (this.currentForce + zc.Z_FORCE_REGEN_PER_SECOND > this.maxForce) {
-          this.currentForce = this.maxForce;
-        } else {
-          this.currentForce += zc.Z_FORCE_REGEN_PER_SECOND;
-        }
 
-        this.forceRegenTime = 1;
+      if (this.currentForce < zc.Z_MAX_FORCE) {
+        this.currentForce += zc.Z_FORCE_REGEN_PER_SECOND * this.game.clockTick;
       }
 
       //check basic status
@@ -112,26 +105,22 @@ class Zerlin extends Entity {
         if (this.game.keys[kc.ROLL] && this.direction !== 0 && !this.falling) {
           //check if zerlin has enough force power for the somersault
           if (this.currentForce - zc.Z_SOMERSAULT_FORCE_COST >= 0) {
-            //make force power cost force power
-            this.currentForce -= zc.Z_SOMERSAULT_FORCE_COST;
             this.startSomersault();
           }
 
         } else if (this.game.keys[kc.JUMP_FORCE] && !this.falling) {
           //check if zerlin has enough force for force jump
+          this.tile = null;
+          this.falling = true;
           if (this.currentForce - zc.Z_FORCE_JUMP_FORCE_COST >= 0) {
             /** for testing sound */
-            this.tile = null;
             this.game.audio.playSoundFx(this.game.audio.hero, 'forceJump');
-            this.falling = true;
             this.deltaY = zc.FORCE_JUMP_DELTA_Y;
             //make force jump cost force power
             this.currentForce -= zc.Z_FORCE_JUMP_FORCE_COST;
           }
           //otherwise do a regular jump
           else {
-            this.tile = null;
-            this.falling = true;
             this.deltaY = zc.JUMP_DELTA_Y;
           }
 
@@ -139,7 +128,7 @@ class Zerlin extends Entity {
           this.tile = null;
           this.falling = true;
           this.deltaY = zc.JUMP_DELTA_Y;
-        } else if (this.game.keys[kc.SLASH]) {
+        } else if (this.game.keys[kc.SLASH] && !this.lightsaber.throwing) {
           this.startSlash();
         } else if (this.game.keys[kc.CROUCH] && !this.falling) {
           this.crouch();
@@ -321,6 +310,9 @@ class Zerlin extends Entity {
     this.alive = false;
     this.timeOfDeath = this.game.sceneManager.levelSceneTimer;
     this.lightsaber.hidden = true;
+    if (this.lightsaber.throwing) {
+      this.lightsaber.catch();
+    }
     this.boundingbox = new BoundingBox(this.x + 90 * zc.Z_SCALE, this.y - 120 * zc.Z_SCALE, 50 * zc.Z_SCALE, 108 * zc.Z_SCALE);
     this.boundingbox.hidden = true;
   }
@@ -357,6 +349,7 @@ class Zerlin extends Entity {
   }
 
   startSomersault() {
+    this.currentForce -= zc.Z_SOMERSAULT_FORCE_COST;
     this.game.audio.playSoundFx(this.game.audio.lightsaber, 'lightsaberOff');
     this.game.audio.saberHum.stop();
     this.somersaulting = true;
@@ -605,33 +598,43 @@ class Lightsaber extends Entity {
     this.y = this.Zerlin.y - (zc.Z_HEIGHT - this.Zerlin.armSocketY) * zc.Z_SCALE;
     // rotate
     if (this.game.mouse) {
-      // TODO: rotateAndCache if mouse not moved
       this.angle = Math.atan2(this.game.mouse.y - this.y, this.game.mouse.x + this.camera.x - this.x);
 
       // change sprite on any of these conditions
-      // TODO: consolidate logic here
+      if (!this.throwing && this.game.click && !this.Zerlin.isInManeuver()) {
+        if (this.Zerlin.currentForce >= zc.Z_SABER_THROW_FORCE_COST) {
+          this.throw(); 
+        }
+      }
+
       if (this.game.mouse.x + this.camera.x < this.Zerlin.x && this.facingRight) {
         this.saberUp = !this.saberUp;
-        if (this.inClickPosition) {
+        if (this.throwing) {
+          this.faceLeftThrowing();
+        }
+        else if (this.inClickPosition) {
           this.faceLeftUpSaber();
         } else {
           this.faceLeftDownSaber();
         }
       } else if (this.game.mouse.x + this.camera.x > this.Zerlin.x && !this.facingRight) {
         this.saberUp = !this.saberUp;
-        if (this.inClickPosition) {
+        if (this.throwing) {
+          this.faceRightThrowing();
+        }
+        else if (this.inClickPosition) {
           this.faceRightDownSaber();
         } else {
           this.faceRightUpSaber();
         }
-      } else if (this.game.rightClickDown && !this.inClickPosition) {
+      } else if (!this.throwing && this.game.rightClickDown && !this.inClickPosition) {
         this.inClickPosition = true;
         if (this.game.mouse.x + this.camera.x < this.Zerlin.x) {
           this.faceLeftUpSaber();
         } else {
           this.faceRightDownSaber();
         }
-      } else if (!this.game.rightClickDown && this.inClickPosition) {
+      } else if (!this.throwing && !this.game.rightClickDown && this.inClickPosition) {
         this.inClickPosition = false;
         if (this.game.mouse.x + this.camera.x < this.Zerlin.x) {
           this.faceLeftDownSaber();
@@ -654,6 +657,9 @@ class Lightsaber extends Entity {
     this.updateCollisionLine();
 
     super.update();
+    if (this.airbornSaber) {
+      this.airbornSaber.update();
+    }
   }
 
   draw() {
@@ -683,6 +689,9 @@ class Lightsaber extends Entity {
       this.ctx.restore();
     }
     super.draw();
+    if (this.airbornSaber) {
+      this.airbornSaber.draw();
+    }
   }
 
   saberSlope() {
@@ -714,6 +723,35 @@ class Lightsaber extends Entity {
       x: tipXrotated * zc.Z_SCALE + this.x,
       y: tipYrotated * zc.Z_SCALE + this.y
     };
+  }
+
+  throw() {
+    this.Zerlin.currentForce -= zc.Z_SABER_THROW_FORCE_COST;
+    this.throwing = true;
+    this.airbornSaber = new AirbornSaber(this.game, this, Math.cos(this.angle) * zc.SABER_THROW_INITIAL_SPEED, Math.sin(this.angle) * zc.SABER_THROW_INITIAL_SPEED);
+    if (this.facingRight) {
+      this.faceRightThrowing();
+    } else {
+      this.faceLeftThrowing();
+    }
+  }
+
+  catch() {
+    this.throwing = false;
+    this.airbornSaber = null;
+    if (this.facingRight) {
+      if (this.inClickPosition) {
+        this.faceRightDownSaber();
+      } else {
+        this.faceRightUpSaber();
+      }
+    } else {
+      if (this.inClickPosition) {
+        this.faceLeftUpSaber();
+      } else {
+        this.faceLeftDownSaber();
+      }
+    }
   }
 
   faceRightUpSaber() {
@@ -780,10 +818,84 @@ class Lightsaber extends Entity {
     this.saberUp = false;
   }
 
+  faceLeftThrowing() {
+    this.image = this.faceLeftThrowImage;
+    this.width = zc.LS_THROW_IMAGE_WIDTH;
+    this.height = zc.LS_THROW_IMAGE_HEIGHT;
+    this.armSocketX = zc.LS_THROW_RIGHT_X_AXIS;
+    this.armSocketY = this.height - zc.LS_THROW_RIGHT_Y_AXIS;
+
+    this.facingRight = false;
+  }
+
+  faceRightThrowing() {
+    this.image = this.faceRightThrowImage;
+    this.width = zc.LS_THROW_IMAGE_WIDTH;
+    this.height = zc.LS_THROW_IMAGE_HEIGHT;
+    this.armSocketX = zc.LS_THROW_RIGHT_X_AXIS;
+    this.armSocketY = zc.LS_THROW_RIGHT_Y_AXIS;
+
+    this.facingRight = true;
+  }
+
   setUpSaberImages() {
     this.faceRightUpSaberImage = this.assetManager.getAsset("../img/saber up.png");
     this.faceLeftUpSaberImage = this.assetManager.getAsset("../img/saber up left.png");
     this.faceRightDownSaberImage = this.assetManager.getAsset("../img/saber down.png");
     this.faceLeftDownSaberImage = this.assetManager.getAsset("../img/saber down left.png");
+    this.faceRightThrowImage = this.assetManager.getAsset("../img/throwing arm.png");
+    this.faceLeftThrowImage = this.assetManager.getAsset("../img/throwing arm left.png");
+  }
+}
+
+
+
+
+class AirbornSaber extends Entity {
+
+  constructor(game, arm, deltaX, deltaY) {
+    super(game, arm.x, arm.y, deltaX, deltaY);
+    this.arm = arm;
+    this.throwTimer = 0;
+    this.camera = this.arm.camera;
+    this.width = zc.LS_AIRBORN_WIDTH * zc.Z_SCALE;
+    this.height = zc.LS_AIRBORN_HEIGHT * zc.Z_SCALE;
+    this.radius = this.width / 2;
+    this.animation = new Animation(this.game.assetManager.getAsset("../img/airborn saber.png"), 0, 0, 
+      zc.LS_AIRBORN_WIDTH, zc.LS_AIRBORN_HEIGHT, zc.LS_AIRBORN_FRAME_DURATION, zc.LS_AIRBORN_FRAMES, true, false, zc.Z_SCALE);
+    this.maxDistanceFromArm = 0;
+  }
+  
+
+  update() {
+    this.throwTimer += this.game.clockTick;
+
+    this.angleFromArm = Math.atan2(this.arm.y - this.y, this.arm.x - this.x);
+    this.distanceFromArm = distance(this, this.arm);
+    if (!this.reachedPinnacle) {
+      this.accelerationX = zc.SABER_THROW_ACCELERATION * Math.cos(this.angleFromArm);
+      this.accelerationY = zc.SABER_THROW_ACCELERATION * Math.sin(this.angleFromArm);
+      this.deltaX += this.accelerationX * this.game.clockTick;
+      this.deltaY += this.accelerationY * this.game.clockTick;
+      this.checkIfReachedPinnacle(); 
+    } else {
+      this.deltaX = 300 * Math.cos(this.angleFromArm) * zc.SABER_THROW_ACCELERATION / this.distanceFromArm;
+      this.deltaY = 300 * Math.sin(this.angleFromArm) * zc.SABER_THROW_ACCELERATION / this.distanceFromArm;
+    }
+    
+    this.x += this.deltaX * this.game.clockTick;
+    this.y += this.deltaY * this.game.clockTick;
+  }
+
+  draw() {
+    this.animation.drawFrame(this.game.clockTick, this.game.ctx, this.x - this.width / 2 - this.camera.x, this.y - this.height / 2);
+  }
+
+  checkIfReachedPinnacle() {
+    if (this.distanceFromArm > this.maxDistanceFromArm) {
+      this.maxDistanceFromArm = this.distanceFromArm;
+    } else if (this.throwTimer > .5) {
+      this.reachedPinnacle = true;
+    }
   }
 }

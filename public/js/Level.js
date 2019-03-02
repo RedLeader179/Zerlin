@@ -274,6 +274,7 @@ class ParallaxScrollBackground extends Entity {
     this.scale = scale; // TODO: integrate scale of image
     this.backgroundImage = game.assetManager.getAsset(backgroundImage);
     this.imageWidth = this.backgroundImage.width;
+    this.imageHeight = this.backgroundImage.height;
     // this.game.camera = camera;
 
     console.assert(this.imageWidth >= this.camera.width, "Image width must be larger than camera width!");
@@ -410,4 +411,88 @@ class ParallaxFloatingBackground extends ParallaxScrollBackground {
   draw() {
     super.draw();
   }
+}
+
+
+
+
+var SNOW_PERIOD_FACTOR = 3;
+var SNOW_SPEED = 10;
+
+class ParallaxSnowBackground extends Entity {
+
+  constructor(game, sceneManager, distanceFromCamera) {
+    super(game, 0, 0, 0, 0);
+
+    this.camera = sceneManager.camera;
+    this.backgroundImage = game.assetManager.getAsset("../img/snow layer.png");
+    this.imageWidth = this.backgroundImage.width;
+    this.imageHeight = this.backgroundImage.height;
+    this.distanceFromCamera = distanceFromCamera;
+    this.functionX = Math.random() * 2 * Math.PI / SNOW_PERIOD_FACTOR;
+
+    this.ctx = game.ctx;
+    this.imageDistanceFromX = 0;
+    this.scale = 10 * Math.pow(Math.E, -this.distanceFromCamera * .001);
+    this.deltaY = 120000 / this.distanceFromCamera + SNOW_SPEED;
+    console.log(this.scale);
+  }
+
+  instantiate(game, camera) {
+    this.game = game;
+    this.camera = camera;
+  }
+
+  update() {
+    this.functionX += this.game.clockTick;
+
+    // simulates slower movement for further distances
+    this.x = this.camera.x - (this.camera.x * 100 / this.distanceFromCamera);
+
+    // snow movement
+    this.x += Math.sin(this.functionX * SNOW_PERIOD_FACTOR) * this.scale * 10;
+    this.y += this.deltaY * this.game.clockTick;
+
+
+    // x moves slower than camera, so update how far image is drawn from x to "keep up" with camera.
+    if (this.imageDistanceFromX + (2 * this.imageWidth * this.scale) + this.x < this.camera.x + this.camera.width) {
+      this.imageDistanceFromX += this.imageWidth * this.scale;
+    } else if (this.imageDistanceFromX + this.x > this.camera.x) {
+      this.imageDistanceFromX -= this.imageWidth * this.scale;
+    }
+
+    if (this.y > this.camera.y) {
+      this.y -= this.imageHeight * this.scale;
+    }
+
+  }
+
+  draw() {
+    //void ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+    this.ctx.drawImage(this.backgroundImage, 0, 0, this.imageWidth, this.imageHeight, 
+                                            this.imageDistanceFromX + this.x - this.camera.x, 
+                                            this.y - this.camera.y,
+                                            this.imageWidth * this.scale,
+                                            this.imageHeight * this.scale);
+
+    this.ctx.drawImage(this.backgroundImage, 0, 0, this.imageWidth, this.imageHeight, 
+                                            this.imageDistanceFromX + this.x + this.imageWidth * this.scale - this.camera.x, 
+                                            this.y - this.camera.y,
+                                            this.imageWidth * this.scale,
+                                            this.imageHeight * this.scale);
+
+    this.ctx.drawImage(this.backgroundImage, 0, 0, this.imageWidth, this.imageHeight, 
+                                            this.imageDistanceFromX + this.x - this.camera.x, 
+                                            this.y + this.imageHeight * this.scale - this.camera.y,
+                                            this.imageWidth * this.scale,
+                                            this.imageHeight * this.scale);
+
+    this.ctx.drawImage(this.backgroundImage, 0, 0, this.imageWidth, this.imageHeight, 
+                                            this.imageDistanceFromX + this.x + this.imageWidth * this.scale - this.camera.x, 
+                                            this.y + this.imageHeight * this.scale - this.camera.y,
+                                            this.imageWidth * this.scale,
+                                            this.imageHeight * this.scale);
+
+  }
+
 }

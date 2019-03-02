@@ -254,3 +254,28 @@ class DroidExplosion extends Entity {
 		}
 	}
 }
+
+
+class DamagingExplosion extends DroidExplosion {
+
+	constructor(game, x, y) {
+		super(game, x, y, 2, null, .025);
+		this.boundingCircle = new BoundingCircle(x, y, this.animation.frameWidth * this.animation.scale / 2);
+		this.damageDone = false; // can only inflict 1 damage
+	}
+
+	draw() {
+		super.draw();
+
+		// draw bounding circle
+		
+		// this.game.ctx.beginPath();
+		// this.game.ctx.strokeStyle = "black";
+		// this.game.ctx.arc(this.boundingCircle.x - this.sceneManager.camera.x,
+		// 	this.boundingCircle.y, this.boundingCircle.radius, 0, Math.PI * 2, false);
+		// this.game.ctx.stroke();
+		// this.game.ctx.closePath();
+	}
+
+
+}

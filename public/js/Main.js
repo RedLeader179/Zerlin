@@ -78,6 +78,9 @@ class AssetManager {
   AM.queueDownload("../img/saber up left.png");
   AM.queueDownload("../img/saber down.png");
   AM.queueDownload("../img/saber down left.png");
+  AM.queueDownload("../img/throwing arm.png");
+  AM.queueDownload("../img/throwing arm left.png");
+  AM.queueDownload("../img/airborn saber.png");
 
 
 
@@ -89,6 +92,7 @@ class AssetManager {
   AM.queueDownload("../img/beam cannon.png");
   AM.queueDownload("../img/beam cannon left.png");
   AM.queueDownload("../img/boss_helmet.png");
+  AM.queueDownload("../img/bomb.png");
 
 
 
@@ -140,6 +144,8 @@ class AssetManager {
 
 
   //Hoth snow
+  AM.queueDownload('../img/snow layer.png');
+
 
 
   /********** Tile assets ******************/

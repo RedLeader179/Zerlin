@@ -49,16 +49,28 @@ class SceneManager2 {
 
   init() {
     this.buildLevels();
-    this.startOpeningScene();
+    document.getElementById("formOverlay").style.display = "none";
+    this.startLevelScene();
   }
 
   buildLevels() {
     var LEVEL_ONE_BACKGROUNDS = [
       new ParallaxScrollBackground(this.game, this, '../img/backgroundTrees4.png', 1, 5200),
+      new ParallaxSnowBackground(this.game, this, 2000),
+      new ParallaxSnowBackground(this.game, this, 1800),
       new ParallaxScrollBackground(this.game, this, '../img/backgroundTrees3.png', 1, 2500),
+      new ParallaxSnowBackground(this.game, this, 1500),
+      new ParallaxSnowBackground(this.game, this, 1300),
       new ParallaxFloatingBackground(this.game, this, '../img/backgroundStars.png', 1, 1400),
+      new ParallaxSnowBackground(this.game, this, 1100),
+      new ParallaxSnowBackground(this.game, this, 1000),
       new ParallaxScrollBackground(this.game, this, '../img/backgroundTrees2.png', 1, 1000),
-      new ParallaxScrollBackground(this.game, this, '../img/backgroundTrees1.png', 1, 600)
+      new ParallaxSnowBackground(this.game, this, 800),
+      new ParallaxSnowBackground(this.game, this, 700),
+      new ParallaxScrollBackground(this.game, this, '../img/backgroundTrees1.png', 1, 600),
+      new ParallaxSnowBackground(this.game, this, 600),
+      new ParallaxSnowBackground(this.game, this, 500),
+      new ParallaxSnowBackground(this.game, this, 400)
     ];
 
     var LEVEL_ONE_TILES = {
@@ -70,7 +82,7 @@ class SceneManager2 {
     this.levels = [];
     this.level = null;
     this.levelBackgrounds = [];
-    this.levels.push(new Level(this.game, this, lvlConst.MIKE_LEVEL_ONE, LEVEL_ONE_BACKGROUNDS, LEVEL_ONE_TILES));
+    this.levels.push(new Level(this.game, this, lvlConst.LEVEL_THREE_TILE_LAYOUT, LEVEL_ONE_BACKGROUNDS, LEVEL_ONE_TILES));
   }
 
   addEntity(entity) {
@@ -323,8 +335,11 @@ class SceneManager2 {
     this.addEntity(new ForceStatusBar(this.game, this, 50, 50));
     this.Zerlin.reset();
 
-    this.initiallyPaused = false;
+    this.initiallyPaused = true;
     this.sceneEntities = [];
+    this.sceneEntities.push(new ParallaxSnowBackground(this.game, this, 300));
+    this.sceneEntities.push(new ParallaxSnowBackground(this.game, this, 200));
+    this.sceneEntities.push(new ParallaxSnowBackground(this.game, this, 100));
     this.startedFinalOverlay = false;
     this.startNewScene = false;
 
