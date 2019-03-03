@@ -66,7 +66,6 @@ class AbstractDroid extends Entity {
 	 */
 	explode() {
 		this.removeFromWorld = true;
-		//TODO: play droid explosion sound
 		this.sceneManager.addEntity(new DroidExplosion(this.game, this.x + (this.animation.scale * this.animation.frameWidth / 2), this.y + (this.animation.scale * this.animation.frameHeight / 2)));
 	}
 	collideWithDroid(ent) {
@@ -92,6 +91,7 @@ class DroidLaser extends Entity {
 		this.deflectedColor = deflectedColor;
 		this.secondaryColor = "white";
 		this.isDeflected = false;
+    this.poisoned = false;
 
 		var distFromStartToTarget = distance({
 			x: targetX,
@@ -238,6 +238,7 @@ class DroidExplosion extends Entity {
 		this.x = x - this.animation.frameWidth * this.scale / 2;
 		this.y = y - this.animation.frameHeight * this.scale / 2;
 		this.game.audio.playSoundFx(this.game.audio.enemy, 'largeExplosion');
+    // this.game.audio.playSoundFx(this.game.audio.enemy, 'explosionBoomBoom');
 	}
 	update() {
 		super.update();
@@ -245,7 +246,7 @@ class DroidExplosion extends Entity {
 			this.removeFromWorld = true;
 		}
 	}
-	
+
 	draw() {
 		// only draw if in camera's view
 		if (this.sceneManager.camera.isInView(this, this.animation.frameWidth * this.scale, this.animation.frameHeight * this.scale)) {

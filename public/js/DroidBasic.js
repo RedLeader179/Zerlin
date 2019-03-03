@@ -194,11 +194,6 @@ class ScatterShotDroid extends BasicDroid {
   }
 }
 
-
-
-
-
-
 class SlowBurstDroid extends BasicDroid {
   constructor(game, spritesheet, startX, startY, frames, frameSpeed) {
     super(game, spritesheet, startX, startY, frames, frameSpeed, 160, 160, .5, 65);
@@ -223,8 +218,6 @@ class SlowBurstDroid extends BasicDroid {
     this.fire = false;
   }
 }
-
-
 
 class FastBurstDroid extends BasicDroid {
   constructor(game, spritesheet, startX, startY, frames, frameSpeed) {
@@ -251,9 +244,6 @@ class FastBurstDroid extends BasicDroid {
   }
 }
 
-
-
-
 class SniperDroid extends BasicDroid {
   constructor(game, spritesheet, startX, startY, frames, frameSpeed) {
     super(game, spritesheet, startX, startY, frames, frameSpeed, 160, 160, .5, 65);
@@ -271,7 +261,6 @@ class SniperDroid extends BasicDroid {
     this.fire = false;
   }
 }
-
 
 class MultishotDroid extends BasicDroid {
   constructor(game, spritesheet, startX, startY, frames, frameSpeed) {
@@ -318,6 +307,16 @@ class MultishotDroid extends BasicDroid {
     this.fire = false;
   }
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

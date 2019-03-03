@@ -51,11 +51,27 @@ class Zerlin extends Entity {
     this.invincible = false;
     this.iSeconds = Constants.PowerUpConstants.INVINCIBILITY_TIME; //invincibility seconds
     this.iColor = 'rgba(14, 61, 220, 1)';
+
+    /* poisioned */
+    this.poisoned = false;
+    this.poisonedCounter = 0;
+    this.poisonedMaxTime = Constants.DroidBossConstants.POISON_LASER_DURATION;
   }
 
   update() {
     // check basic movement
     if (this.alive) {
+
+      if (this.poisoned) {
+        this.currentHealth -= Constants.DroidBossConstants.POISION_LASER_DAMAGE_PER_TICK * this.game.clockTick;
+        this.poisonedCounter += 1 * this.game.clockTick;
+        // console.log(this.currentHealth, 'poisoned');
+        if (this.poisonedCounter > this.poisonedMaxTime) {
+          this.poisoned = false;
+          this.poisonedCounter = 0;
+          // console.log('not poisoned');
+        }
+      }
 
       // manage force regeneration
       this.forceRegenTime -= this.game.clockTick;
@@ -194,6 +210,9 @@ class Zerlin extends Entity {
       }
       if (this.tile) {
         this.deltaX += this.tile.deltaX;
+        if (this.tile.falling) { // console.log("on falling tile");
+          this.setXY(this.x, this.tile.boundingBox.top + zConst.Z_FEET_ABOVE_FRAME * zConst.Z_SCALE);
+        }
       }
       this.x += this.game.clockTick * this.deltaX;
       this.y += this.game.clockTick * this.deltaY;
@@ -211,6 +230,9 @@ class Zerlin extends Entity {
       }
       if (this.tile) {
         this.deltaX = this.tile.deltaX;
+        if (this.tile.falling) { // console.log("on falling tile");
+          this.setXY(this.x, this.tile.boundingBox.top + zConst.Z_FEET_ABOVE_FRAME * zConst.Z_SCALE);
+        }
       }
       this.x += this.game.clockTick * this.deltaX;
       this.y += this.game.clockTick * this.deltaY;

@@ -11,6 +11,7 @@ Assets:
 
 -  =  tile
 =  =  moving tile
+~  =  falling tile
 d  =  basic droid
 s  =  scatter shot droid
 b  =  slow burst droid
@@ -20,6 +21,7 @@ n  =  sniper droid
 H  =  health powerup
 F  =  force powerup
 I  =  invincibility powerup
+*  = leggy droid boss
 X  =  Boss
 */
 
@@ -85,6 +87,10 @@ class Level {
           }
           var tile = new Tile(this, image, j * this.tileWidth, i * this.camera.height / rows);
           this.tiles.push(tile);
+        } else if (this.levelLayout[i][j] === '~') { // falling tile
+            let roundedTile = this.tileImages.leftRightTile;
+            let fallingTile = new FallingTile(this, roundedTile, j * this.tileWidth, i * this.camera.height / rows);
+            this.tiles.push(fallingTile);
         } else if (this.levelLayout[i][j] === '=') { // moving tile
           var image2 = this.tileImages.centerTile;
           if (this.levelLayout[i][j - 1] !== '=' && this.levelLayout[i][j + 1] !== '=') {
@@ -110,6 +116,8 @@ class Level {
           this.unspawnedDroids.push(new MultishotDroid(this.game, this.game.assetManager.getAsset("../img/Droid 5.png"), j * this.tileWidth, i * rowHeight, 21, .12));
         } else if (this.levelLayout[i][j] === 'X') { // Boss
           this.unspawnedBoss = new Boss(this.game, j * this.tileWidth, i * this.game.surfaceHeight / rows);
+        } else if (this.levelLayout[i][j] === '*') { // leggy boss droid
+          this.unspawnedDroids.push(new LeggyDroidBoss(this.game, this.game.assetManager.getAsset("../img/leggy_droid.png"), j * this.tileWidth, i * rowHeight, 4, .51));
         } else if (this.levelLayout[i][j] === 'H') { //health powerup
           this.unspawnedPowerups.push(new HealthPowerUp(this.game, this.game.assetManager.getAsset("../img/powerup_health.png"), j * this.tileWidth, i * rowHeight));
         } else if (this.levelLayout[i][j] === 'F') { //force powerup
@@ -154,7 +162,7 @@ class Level {
 
 
     this.tiles.forEach(function(tile) {
-      if (tile instanceof MovingTile) {
+      if (tile instanceof MovingTile || tile instanceof FallingTile) {
         tile.update();
       }
     });
@@ -216,6 +224,37 @@ class Tile extends Entity {
   }
 }
 
+/**
+ Tiles that have a lifeSpan and steadily move down the screen once that
+ lifeSpan has expired. Lifespan count down starts when a player sees the tile.
+*/
+class FallingTile extends Tile {
+  constructor(game, image, startX, startY) {
+    super(game, image, startX, startY);
+    this.lifeSpan = 4;
+    this.playerHasSeenTile = false;
+    this.deltaYForZerlin = 0;
+  }
+
+  update() {
+    if (this.camera.isInView(this, this.width, this.height))
+      this.playerHasSeenTile = true;
+
+    if (this.playerHasSeenTile)
+      this.lifeSpan += -1 * this.game.clockTick;
+    if (this.lifeSpan < 0) { //falling tile
+      this.falling = true;
+      this.y += 10 * this.game.clockTick;
+      this.boundingBox.updateCoordinates(this.x, this.y);
+    }
+    if (this.y > 700) {
+      this.removeFromWorld = true;
+      // console.log("removed from world");
+    }
+  }
+}
+
+
 class MovingTile extends Tile {
   constructor(game, image, startX, startY, initialDeltaX, initialDeltaY, acceleration) {
     super(game, image, startX, startY);
@@ -249,11 +288,6 @@ class MovingTile extends Tile {
   }
 
 }
-
-
-
-
-
 
 
 

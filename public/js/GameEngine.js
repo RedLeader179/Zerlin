@@ -138,12 +138,17 @@ class GameEngine {
     this.ctx.canvas.addEventListener("mousedown", function(e) {
       if (e.button === 2) { // right click
         that.rightClickDown = true; // change to inside that.keys['rightClick']
+        // that.keys['rightClick'] = true;
+      } else if (e.button === 0) { // left click
+        that.keys['leftClick'] = true;
       }
     }, false);
 
     this.ctx.canvas.addEventListener("mouseup", function(e) {
       if (e.button === 2) { // right click
         that.rightClickDown = false;
+      } else if (e.button === 0) {
+        that.keys['leftClick'] = false;
       }
     }, false);
 

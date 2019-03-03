@@ -331,8 +331,35 @@ class SoundEngine {
       volume: .8
     });
 
+    /* boss droid sounds */
+    this.droidBossMechanical = new Howl({
+      src: [
+        "sound/bossDroidDoor.wav",
+        "sound/bossDroidDoor.mp3"
+      ],
+      loop: true,
+      volume: 1
+    });
+    this.saberDeflectLaser = new Howl({
+      src: [
+        "sound/laserHitSaber.mp3"
+      ],
+      loop: false,
+      volume: .25
+    });
+    this.poisonShot = new Howl({
+      src: [
+        "sound/poisonLaser.mp3",
+        "poisonLaser.wav"
+      ],
+      loop: false,
+      volume: .4
+    });
+
+
     /***** set the default sound volumes *****/ //make into constants ?
     this.item.volume(10, 'pickupHeartItem'); //not working?
+    this.enemy.volume(3, 'rubbleExplosion');
     this.enemy.volume(.7, 'retroBlasterShot');
     //for this.game.audio.enemy.volume(.07, this.game.audio.enemy.play('retroBlasterShot'));
     this.hero.volume(.1, 'heroHurt');
@@ -346,7 +373,8 @@ class SoundEngine {
     //array holding all of the howler soundFX objects
     this.soundFXArray = [this.lightsaber, this.item, this.hero,
       this.enemy, this.beam, this.saberHum, this.wound, this.sizzle,
-      this.sizzle2, this.sizzle2, this.jetPack, this.deflectBeam
+      this.sizzle2, this.sizzle2, this.jetPack, this.deflectBeam,
+      this.droidBossMechanical, this.saberDeflectLaser, this.poisonShot
     ];
     this.soundFxMuted = false;
   }
@@ -402,7 +430,11 @@ class SoundEngine {
   //play a sound fx if not currently muted
   playSoundFx(howlerSound, id = '') {
     if (!this.soundFxMuted) {
-      howlerSound.play(id);
+      if (id === '') {
+        howlerSound.play();
+      } else {
+        howlerSound.play(id);
+      }
     }
   }
 
