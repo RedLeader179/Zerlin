@@ -10,10 +10,11 @@ var kc = Constants.KeyConstants;
 
 class Zerlin extends Entity {
 
-  constructor(game, camera) {
+  constructor(game, camera, sceneManager) {
     // NOTE: this.x is CENTER of Zerlin, not left side of image. this.y is feet.
     super(game, game.surfaceWidth * camConst.ZERLIN_POSITION_ON_SCREEN + zc.Z_SPAWN_X, 0, 0, 0);
-
+    //this.sceneManager = sceneManager;
+    this.sceneManager = sceneManager;
     this.assetManager = game.assetManager;
     this.camera = camera;
     this.ctx = game.ctx;
@@ -25,6 +26,9 @@ class Zerlin extends Entity {
 
   reset() {
     this.x = this.game.surfaceWidth * camConst.ZERLIN_POSITION_ON_SCREEN + zc.Z_SPAWN_X;
+    if (!this.sceneManager.checkPoint.boundingBox.x == 0) {
+      this.x = this.sceneManager.checkPoint.boundingBox.x + this.sceneManager.checkPoint.boundingBox.width/4;
+    }
     this.y = 0;
     this.deltaX = 0;
     this.deltaY = 0;

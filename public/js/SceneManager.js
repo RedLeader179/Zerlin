@@ -33,8 +33,9 @@ class SceneManager2 {
   constructor(game) {
     this.game = game;
     this.camera = new Camera(this, 0, 0, this.game.ctx.canvas.width, this.game.ctx.canvas.height);
+    this.checkPoint = new CheckPoint(this.game, 0, 0);
     this.sceneEntities = [];
-    this.Zerlin = new Zerlin(this.game, this.camera);
+    this.Zerlin = new Zerlin(this.game, this.camera, this);
     this.boss = null;
     this.collisionManager = new CollisionManager(this.game, this);
     this.levelNumber = 1;
@@ -92,6 +93,9 @@ class SceneManager2 {
     this.levels.push(new Level(this.game, this, lvlConst.CITY_LEVEL, CITY_LEVEL_BACKGROUNDS, CITY_LEVEL_TILES));
   }
 
+  setCheckPoint(checkPoint) {
+    this.checkPoint = checkPoint;
+  }
   addEntity(entity) {
     // console.log('added entity');
     this.otherEntities.push(entity);
@@ -330,6 +334,10 @@ class SceneManager2 {
 
     // load game engine with tiles for current level
     this.level = this.levels[this.levelNumber - 1];
+    if (this.newLevel) {
+      this.checkPoint = new CheckPoint(this.game, 0, 0);
+    }
+    this.newLevel = false; //if this is set to true when the next level is loaded, then reset the checkpoint.
     this.droids = [];
     this.lasers = [];
     this.beams = [];

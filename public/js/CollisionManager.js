@@ -35,7 +35,8 @@ class CollisionManager {
     this.beamOnDroid();
     this.beamOnBoss();
     this.saberOnBoss();
-    this.laserOnBoss();
+	this.laserOnBoss();
+	this.ZerlinOnCheckpoint();
 
     // TODO: loop through only visible tiles instead of entire level
   }
@@ -246,6 +247,20 @@ class CollisionManager {
       zerlin.setXY(this.sceneManager.level.length - cm.EDGE_OF_MAP_BUFFER, zerlin.y);
     }
 
+  }
+
+  ZerlinOnCheckpoint() {
+    var zerlin = this.sceneManager.Zerlin;
+    for (var i = 0; i < this.sceneManager.otherEntities.length; i++) {
+        if (this.sceneManager.otherEntities[i] instanceof CheckPoint) {
+            var checkPoint = this.sceneManager.otherEntities[i];
+            if (checkPoint.boundingBox.collide(zerlin.boundingbox)) {
+                checkPoint.removeFromWorld = true;
+                this.sceneManager.setCheckPoint(checkPoint);
+                checkPoint.playSound();
+            }
+        }
+	}
   }
 
   beamOnSaber() {

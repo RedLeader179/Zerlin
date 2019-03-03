@@ -124,6 +124,8 @@ class Level {
           this.unspawnedPowerups.push(new ForcePowerUp(this.game, this.game.assetManager.getAsset("../img/powerup_force.png"), j * this.tileWidth, i * rowHeight));
         } else if (this.levelLayout[i][j] === 'I') { //invincibility powerup
           this.unspawnedPowerups.push(new InvincibilityPowerUp(this.game, this.game.assetManager.getAsset('../img/powerup_invincibility.png'), j * this.tileWidth, i * this.game.surfaceHeight / rows));
+        } else if (this.levelLayout[i][j] === 'C') { //checkpoint
+          this.sceneManager.addEntity(new CheckPoint(this.game, j * this.tileWidth, i * rowHeight));
         }
 
       }

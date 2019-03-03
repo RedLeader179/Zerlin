@@ -315,7 +315,7 @@ Constants = {
       '                                                                                                                                   ',
       '                  -----                               H                   ---                       H F          --                ',
       '                                       ----                                                                                        ',
-      '           ------                             I           -----       ---            -                      ---       --           ', //from ground level, can reg. jump to here.
+      '          C------                             I           -----       ---            -                      ---       --           ', //from ground level, can reg. jump to here.
       '                                 -----             ----                        --                   - -                            ',
       '                                                                            -                                                      ',
       '------------           -- -- ----            --------   --     --- ---------  -- ---- ---------------------------------------------'
@@ -377,6 +377,11 @@ Constants = {
     FLOATING_MAGNITUDE: 12,
     INVINCIBILITY_SCALE: 2.5,
     INVINCIBILITY_TIME: 10
+  },
+
+  CheckPointConstants: {
+    WIDTH: 50,
+    HEIGHT: 120
   }
 
 };
