@@ -92,7 +92,14 @@ class AssetManager {
   AM.queueDownload("../img/beam cannon.png");
   AM.queueDownload("../img/beam cannon left.png");
   AM.queueDownload("../img/boss_helmet.png");
+<<<<<<< HEAD
   AM.queueDownload("../img/bomb.png");
+=======
+  // Droid boss
+  AM.queueDownload("../img/leggy_droid.png");
+  AM.queueDownload("../img/boss_status_bar_icon.png");
+
+>>>>>>> master
 
 
 
@@ -106,7 +113,6 @@ class AssetManager {
 
   /********** Droid assets ******************/
   AM.queueDownload("../img/droid-j-row.png");
-  AM.queueDownload("../img/leggy_droid.png");
   AM.queueDownload("../img/Droid 1.png");
   AM.queueDownload("../img/Droid 2.png");
   AM.queueDownload("../img/Droid 3.png");
@@ -139,11 +145,14 @@ class AssetManager {
   AM.queueDownload("../img/god light (1).png");
   AM.queueDownload("../img/god light (2).png");
 
-  //city --not all downloaded yet.....
-  AM.queueDownload('../img/city_background.png');
-  AM.queueDownload('../img/city_buildings_back.png');
-  AM.queueDownload('../img/city_clouds_left.png');
-
+  //city
+  AM.queueDownload("../img/city_background.png");
+  AM.queueDownload("../img/city_buildings_back.png");
+  AM.queueDownload("../img/city_buildings_foreground.png");
+  AM.queueDownload("../img/city_buildings_middle.png");
+  AM.queueDownload("../img/city_clouds_left.png");
+  AM.queueDownload("../img/city_clouds2.png");
+  AM.queueDownload("../img/city_clouds_center.png");
 
   //Hoth snow
   AM.queueDownload('../img/snow layer.png');
@@ -157,21 +166,24 @@ class AssetManager {
 
 
 
-  /********** Tile assets ******************/
+  /********** Tile assets ******************/  //tiles are 100x100
   //forest
-  AM.queueDownload("../img/forest_left_tile.png"); //tiles are 100x100
+  AM.queueDownload("../img/forest_left_tile.png"); 
   AM.queueDownload("../img/forest_center_tile.png");
   AM.queueDownload("../img/forest_right_tile.png");
   AM.queueDownload("../img/forest_both_rounded_tile.png");
 
   //city
+  AM.queueDownload("../img/city_tile_center.png");
+  AM.queueDownload("../img/city_tile_left.png");
+  AM.queueDownload("../img/city_tile_right.png");
+  AM.queueDownload("../img/city_tile_left_right.png");
 
   //Hoth snow
   AM.queueDownload("../img/ice_tile_center.png");
+  AM.queueDownload("../img/ice_tile_left_right.png");
   AM.queueDownload("../img/ice_tile_left.png");
   AM.queueDownload("../img/ice_tile_right.png");
-  AM.queueDownload("../img/ice_tile_left_right.png")
-  ;
   /********** SceneManager assets ******************/
   //music menu
   AM.queueDownload('../img/music_menu.png');

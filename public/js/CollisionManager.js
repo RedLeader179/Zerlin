@@ -30,7 +30,7 @@ class CollisionManager {
     this.ZerlinOnPlatform();
     this.ZerlinOnEdgeOfMap();
     this.beamOnPlatform();
-    // this.beamOnZerlin();
+    this.beamOnZerlin();
     this.beamOnSaber();
     this.beamOnDroid();
     this.beamOnBoss();
@@ -40,6 +40,7 @@ class CollisionManager {
     this.airbornSaberOnDroid();
     this.bombOnPlatform();
     this.bombExplosionOnZerlin();
+    this.ZerlinOnCheckpoint();
 
     // TODO: loop through only visible tiles instead of entire level
   }
@@ -118,7 +119,11 @@ class CollisionManager {
             zerlin.slashZone.innerCircle.y,
             zerlin.slashZone.innerCircle.radius) &&
           droid.boundCircle.y < zerlin.y) {
-          droid.explode();
+          if (droid instanceof LeggyDroidBoss) {
+            droid.hitWithSaber();
+          } else {
+            droid.explode();
+          }
         }
       }
     }
@@ -129,7 +134,11 @@ class CollisionManager {
       if (this.sceneManager.lasers[i].isDeflected) {
         for (var j = this.sceneManager.droids.length - 1; j >= 0; j--) {
           if (this.isLaserCollidedWithDroid(this.sceneManager.lasers[i], this.sceneManager.droids[j])) {
-            this.sceneManager.droids[j].explode();
+            if (this.sceneManager.droids[j] instanceof LeggyDroidBoss) {
+              this.sceneManager.droids[j].hitWithLaser();
+            } else {
+              this.sceneManager.droids[j].explode();
+            }
             this.sceneManager.lasers[i].removeFromWorld = true;
           }
         }
@@ -144,12 +153,18 @@ class CollisionManager {
         if (!laser.isDeflected) {
           var collision = this.isCollidedWithSaber(laser);
           if (collision.collided) {
+
             if (!this.sceneManager.Zerlin.lightsaber.splitLasers) {
               this.deflectLaser(laser, collision.intersection);
             } else {
               this.deflectLaserSplit(laser, collision.intersection);
             }
-            this.game.audio.playSoundFx(this.game.audio.enemy, 'retroBlasterShot');
+
+            if (laser.poisoned) {
+              this.game.audio.playSoundFx(this.game.audio.saberDeflectLaser);
+            } else {
+              this.game.audio.playSoundFx(this.game.audio.enemy, 'retroBlasterShot');
+            }
           }
         }
       }
@@ -162,11 +177,13 @@ class CollisionManager {
       for (var i = 0; i < this.sceneManager.lasers.length; i++) {
         var laser = this.sceneManager.lasers[i];
         if (!laser.isDeflected &&
-          laser.x > zerlin.boundingbox.left &&
-          laser.x < zerlin.boundingbox.right &&
-          laser.y > zerlin.boundingbox.top &&
-          laser.y < zerlin.boundingbox.bottom) {
+        laser.x > zerlin.boundingbox.left &&
+        laser.x < zerlin.boundingbox.right &&
+        laser.y > zerlin.boundingbox.top &&
+        laser.y < zerlin.boundingbox.bottom) {
           // this.game.audio.wound.play();
+          if (laser.poisoned)
+            zerlin.poisoned = true;
           this.game.audio.playSoundFx(this.game.audio.hero, 'heroHurt');
           zerlin.hits++;
           zerlin.currentHealth--; //eventually subtract by laser damage
@@ -222,7 +239,7 @@ class CollisionManager {
     }
   }
 
-  ZerlinOnEdgeOfMap() { // TODO: currently, keeps zerlin from falling off edge of map, but do we want to allow that for daring players?
+  ZerlinOnEdgeOfMap() { // TODO: currently, keeps zerlin from falling off edge of map, but do we want to allow that for daring players? Adventurous but foolhardy
     var zerlin = this.sceneManager.Zerlin;
     if (zerlin.y > 2 * this.sceneManager.camera.height) {
       // game over
@@ -236,6 +253,20 @@ class CollisionManager {
       zerlin.setXY(this.sceneManager.level.length - cm.EDGE_OF_MAP_BUFFER, zerlin.y);
     }
 
+  }
+
+  ZerlinOnCheckpoint() {
+    var zerlin = this.sceneManager.Zerlin;
+    for (var i = 0; i < this.sceneManager.otherEntities.length; i++) {
+        if (this.sceneManager.otherEntities[i] instanceof CheckPoint) {
+            var checkPoint = this.sceneManager.otherEntities[i];
+            if (checkPoint.boundingBox.collide(zerlin.boundingbox)) {
+                checkPoint.removeFromWorld = true;
+                this.sceneManager.setCheckPoint(checkPoint);
+                checkPoint.playSound();
+            }
+        }
+	}
   }
 
   beamOnSaber() {
