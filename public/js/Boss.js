@@ -26,7 +26,7 @@ class Boss extends Entity {
 		this.beamDamageTimer = 0;
 		this.sceneManager = this.game.sceneManager;
 		this.alive = true;
-		this.beamMode = false;
+		this.beamMode = true;
 		this.bombs = [];
 
 		/* Boss Health Stats */
@@ -90,7 +90,7 @@ class Boss extends Entity {
 			this.beamMode = false;
 			this.attackModeTimer = 0;
 		} else if (!this.beamMode && this.attackModeTimer > bc.BOMB_MODE_DURATION) {
-			// this.beamMode = true;
+			this.beamMode = true;
 			this.attackModeTimer = 0;
 		}
 
@@ -402,7 +402,7 @@ class BeamCannon extends Entity {
 			// rotate beam counterclockwise
 			this.beamAngleDelta += bc.BEAM_ANGLE_ACCELERATION_RADIANS * this.game.clockTick;
 		}
-		this.beamAngleDelta *= .97; // zero in on target by reducing speed of beam rotation
+		this.beamAngleDelta *= .92; // zero in on target by reducing speed of beam rotation
 		this.beamAngle += this.beamAngleDelta * this.game.clockTick;
 	}
 

@@ -84,7 +84,7 @@ Constants = {
     //PHI : 1.618,
 
     /* Zerlin health and force stats*/
-    Z_MAX_HEALTH: 20, //was 20
+    Z_MAX_HEALTH: 1000, //was 20
     Z_MAX_FORCE: 100,
     Z_FORCE_REGEN_PER_SECOND: 0.5,
     Z_FORCE_JUMP_FORCE_COST: 3,
@@ -95,6 +95,7 @@ Constants = {
     Z_BOSS_BEAM_DAMAGE: 1,
 
     Z_SCALE: 0.55,
+    
 
     DRAW_COLLISION_BOUNDRIES: false,
 
@@ -177,7 +178,8 @@ Constants = {
     LS_AIRBORN_FRAME_DURATION: .07,
     LS_AIRBORN_FRAMES: 4,
     SABER_THROW_INITIAL_SPEED: 1000,
-    SABER_THROW_ACCELERATION: 800
+    SABER_THROW_ACCELERATION: 800,
+    AIRBORN_SABER_DAMAGE: 3
   },
 
   DroidUtilConstants: {
@@ -204,7 +206,7 @@ Constants = {
     LEVEL_TRANSITION_TIME: 7,
     LEVEL_TRANSITION_OVERLAY_TIME: 3,
     LEVEL_COMPLETE_OVERLAY_TIME: 10,
-    NUM_LEVELS: 1,
+    NUM_LEVELS: 3,
     CREDITS: "The End",
     PAUSE_TIME_AFTER_START_LEVEL: 1.2,
 
@@ -220,7 +222,7 @@ Constants = {
   },
 
   BossConstants: {
-    B_MAX_HEALTH: 150,
+    B_MAX_HEALTH: 10,
     BEAM_HP_PER_SECOND: .1,
 
     B_SCALE: .6,
@@ -239,7 +241,7 @@ Constants = {
     B_ACCELERATION: 300,
     B_FALLING_REACTION_TIME: .85,
     B_RECOVERY_PERIOD: 2,
-    B_BEAM_EXPLOSION_THRESHHOLD: 10,
+    B_BEAM_EXPLOSION_THRESHHOLD: 1,
     BC_WIDTH: 198,
     BC_HEIGHT: 108,
     BC_X_AXIS: 38,
@@ -321,13 +323,13 @@ Constants = {
       '               d                                s         d       s         f b         =                                          ', //from ground can force jump to here.
       '                                                                             d                               ---                   ',
       '                                               f b                          f d        d                              X            ', //halfway of camera height.
-      '                          d       d                                        d b           s                  ==                     ',
-      '                                           --------                          d                                                     ',
-      '                                                                                                                                   ',
-      '                  -----                               H                   ---                       H F          --                ',
+      '                     S    d       d                                                                         ==                     ',
+      '                                            --------                          d                                                    ',
+      '                                   S                                                                                               ',
+      '    ===           -----                               H                   ---                       H F          --                ',
       '                                       ----                                                                                        ',
       '           ------                             I           -----       ---            -                      ---       --           ', //from ground level, can reg. jump to here.
-      '                                 -----             ----                        --                   - -                            ',
+      ' T                               -----             ----                        --                   - -                            ',
       '                                                                            -                                                      ',
       '------------           -- -- ----            --------   --     --- ---------  -- ---- ---------------------------------------------'
     ],
@@ -367,7 +369,16 @@ Constants = {
     DRAW_OUTLINES: false,
     FLOATING_MAGNITUDE: 12,
     INVINCIBILITY_SCALE: 2.5,
-    INVINCIBILITY_TIME: 10
+    INVINCIBILITY_TIME: 10,
+    COIN_IMAGE_SCALE: .5,
+    SPLIT_SHOT_TIME: 7,
+    SPLIT_LASER_AMOUNT: 4,
+    SPLIT_LASER_ARC_WIDTH: Math.PI / 9,
+
+    TINY_MODE_TIME: 20,
+    SHRINKING_TIME: 1.5,
+    TINY_SCALE: .2,
+
   }
 
 };

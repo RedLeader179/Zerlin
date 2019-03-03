@@ -62,8 +62,6 @@ class Level {
       rightTile: this.game.assetManager.getAsset(tileImages.rightTile),
       leftRightTile: this.game.assetManager.getAsset(tileImages.leftRightTile)
     };
-
-
   }
 
   _parseTiles() {
@@ -116,6 +114,10 @@ class Level {
           this.unspawnedPowerups.push(new ForcePowerUp(this.game, this.game.assetManager.getAsset("../img/powerup_force.png"), j * this.tileWidth, i * rowHeight));
         } else if (this.levelLayout[i][j] === 'I') { //invincibility powerup
           this.unspawnedPowerups.push(new InvincibilityPowerUp(this.game, this.game.assetManager.getAsset('../img/powerup_invincibility.png'), j * this.tileWidth, i * this.game.surfaceHeight / rows));
+        } else if (this.levelLayout[i][j] === 'S') { //split laser powerup
+          this.unspawnedPowerups.push(new SplitLaserPowerUp(this.game, j * this.tileWidth, i * this.game.surfaceHeight / rows));
+        } else if (this.levelLayout[i][j] === 'T') { // tiny mode powerup
+          this.unspawnedPowerups.push(new TinyModePowerUp(this.game, j * this.tileWidth, i * this.game.surfaceHeight / rows));
         }
 
       }
@@ -151,7 +153,6 @@ class Level {
         this.unspawnedBoss = null;
       }
     }
-
 
     this.tiles.forEach(function(tile) {
       if (tile instanceof MovingTile) {
@@ -219,6 +220,7 @@ class Tile extends Entity {
 class MovingTile extends Tile {
   constructor(game, image, startX, startY, initialDeltaX, initialDeltaY, acceleration) {
     super(game, image, startX, startY);
+    this.initialDeltaX = initialDeltaX;
     this.deltaX = initialDeltaX;
     this.deltaY = initialDeltaY;
     this.startX = startX;
@@ -232,7 +234,12 @@ class MovingTile extends Tile {
     } else {
       this.deltaX -= this.acceleration * this.game.clockTick;
     }
+    if (this.prevX < this.startX && this.x >= this.startX) { // give tile its initial velocity to prevent gradual decay of pendulum motion
+      this.deltaX = this.initialDeltaX;
+    }
 
+
+    this.prevX = this.x;
     this.x += this.deltaX * this.game.clockTick;
     this.surface = {
       p1: {

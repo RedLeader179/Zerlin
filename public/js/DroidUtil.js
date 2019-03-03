@@ -120,6 +120,13 @@ class DroidLaser extends Entity {
 		this.tailY = startY;
 		this.angle = this.findAngleRadians(this.x, this.y, this.tailX, this.tailY);
 	}
+
+	static angleConstructor(game, startX, startY, speed, angle, length, width, color, deflectedColor) {
+		var targetX = startX + 100 * Math.cos(angle);
+		var targetY = startY + 100 * Math.sin(angle);
+		return new DroidLaser(game, startX, startY, speed, targetX, targetY, length, width, color, deflectedColor);
+	}
+
 	update() {
 		// keep track of previous position for collision detection
 		this.prevX = this.x;

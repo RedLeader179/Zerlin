@@ -42,6 +42,7 @@ class Zerlin extends Entity {
     this.maxForce = zc.Z_MAX_FORCE;
     this.currentForce = this.maxForce;
 
+    this.scale = zc.Z_SCALE;
     this.lightsaber = new Lightsaber(this.game, this);
     this.deathAnimation.elapsedTime = 0;
 
@@ -68,6 +69,21 @@ class Zerlin extends Entity {
         if (this.iSeconds <= 0) {
           this.invincible = false;
           this.iSeconds = Constants.PowerUpConstants.INVINCIBILITY_TIME;
+        }
+      }
+
+      if (this.tiny) {
+        this.updateBoundingBox();
+        this.tinyTimer += this.game.clockTick;
+        if (this.tinyTimer <= puc.SHRINKING_TIME) {
+          this.scale -= (zc.Z_SCALE - puc.TINY_SCALE) / puc.SHRINKING_TIME * this.game.clockTick;
+        } else if (this.tinyTimer > puc.SHRINKING_TIME && this.tinyTimer <= puc.TINY_MODE_TIME - puc.SHRINKING_TIME) {
+          this.scale = puc.TINY_SCALE;
+        } else if (this.tinyTimer > puc.TINY_MODE_TIME - puc.SHRINKING_TIME && this.tinyTimer <= puc.TINY_MODE_TIME) {
+          this.scale += (zc.Z_SCALE - puc.TINY_SCALE) / puc.SHRINKING_TIME * this.game.clockTick;
+        } else if (this.tinyTimer > puc.TINY_MODE_TIME) {
+          this.tiny = false;
+          this.scale = zc.Z_SCALE;
         }
       }
 
@@ -162,14 +178,14 @@ class Zerlin extends Entity {
             if (this.slashingDirection === 1) {
               this.slashZone = {
                 active: true,
-                outerCircle: new BoundingCircle(this.x + zc.Z_SLASH_CENTER_X * zc.Z_SCALE, this.y - zc.Z_SLASH_CENTER_Y * zc.Z_SCALE, zc.Z_SLASH_RADIUS * zc.Z_SCALE),
-                innerCircle: new BoundingCircle(this.x + zc.Z_SLASH_INNER_CENTER_X * zc.Z_SCALE, this.y - zc.Z_SLASH_INNER_CENTER_Y * zc.Z_SCALE, zc.Z_SLASH_INNER_RADIUS * zc.Z_SCALE)
+                outerCircle: new BoundingCircle(this.x + zc.Z_SLASH_CENTER_X * this.scale, this.y - zc.Z_SLASH_CENTER_Y * this.scale, zc.Z_SLASH_RADIUS * this.scale),
+                innerCircle: new BoundingCircle(this.x + zc.Z_SLASH_INNER_CENTER_X * this.scale, this.y - zc.Z_SLASH_INNER_CENTER_Y * this.scale, zc.Z_SLASH_INNER_RADIUS * this.scale)
               };
             } else {
               this.slashZone = {
                 active: true,
-                outerCircle: new BoundingCircle(this.x - zc.Z_SLASH_CENTER_X * zc.Z_SCALE, this.y - zc.Z_SLASH_CENTER_Y * zc.Z_SCALE, zc.Z_SLASH_RADIUS * zc.Z_SCALE),
-                innerCircle: new BoundingCircle(this.x - zc.Z_SLASH_INNER_CENTER_X * zc.Z_SCALE, this.y - zc.Z_SLASH_INNER_CENTER_Y * zc.Z_SCALE, zc.Z_SLASH_INNER_RADIUS * zc.Z_SCALE)
+                outerCircle: new BoundingCircle(this.x - zc.Z_SLASH_CENTER_X * this.scale, this.y - zc.Z_SLASH_CENTER_Y * this.scale, zc.Z_SLASH_RADIUS * this.scale),
+                innerCircle: new BoundingCircle(this.x - zc.Z_SLASH_INNER_CENTER_X * this.scale, this.y - zc.Z_SLASH_INNER_CENTER_Y * this.scale, zc.Z_SLASH_INNER_RADIUS * this.scale)
               };
             }
           } else {
@@ -183,6 +199,9 @@ class Zerlin extends Entity {
       }
       if (this.tile) {
         this.deltaX += this.tile.deltaX;
+        // if (this.tile instanceof MovingTile) {
+        //   this.setXY(this., this.y);
+        // }
       }
       this.x += this.game.clockTick * this.deltaX;
       this.y += this.game.clockTick * this.deltaY;
@@ -232,10 +251,10 @@ class Zerlin extends Entity {
     }
 
     if (!this.alive) {
-      this.drawX = this.x - zc.Z_ARM_SOCKET_X * zc.Z_SCALE;
+      this.drawX = this.x - zc.Z_ARM_SOCKET_X * this.scale;
       this.animation = this.deathAnimation;
     } else if (this.somersaulting) {
-      this.drawX = this.x - zc.Z_SCALE * (zc.Z_SOMERSAULT_WIDTH / 2);
+      this.drawX = this.x - this.scale * (zc.Z_SOMERSAULT_WIDTH / 2);
       if (this.somersaultingDirection === -1) {
         this.animation = this.somersaultingLeftAnimation;
       } else if (this.somersaultingDirection === 1) {
@@ -243,30 +262,30 @@ class Zerlin extends Entity {
       }
     } else if (this.slashing) {
       if (this.slashingDirection === 1) {
-        this.drawX = this.x - zc.Z_ARM_SOCKET_X_SLASH_FRAME * zc.Z_SCALE;
+        this.drawX = this.x - zc.Z_ARM_SOCKET_X_SLASH_FRAME * this.scale;
         this.animation = this.slashingAnimation;
       } else if (this.slashingDirection === -1) {
-        this.drawX = this.x - (zc.Z_SLASH_WIDTH - zc.Z_ARM_SOCKET_X_SLASH_FRAME) * zc.Z_SCALE;
+        this.drawX = this.x - (zc.Z_SLASH_WIDTH - zc.Z_ARM_SOCKET_X_SLASH_FRAME) * this.scale;
         this.animation = this.slashingLeftAnimation;
       }
     } else if (this.falling) {
       if (this.facingRight) {
         this.animation = this.deltaY < 0 ? this.fallingUpAnimation : this.fallingDownAnimation;
-        this.drawX = this.x - zc.Z_ARM_SOCKET_X * zc.Z_SCALE;
+        this.drawX = this.x - zc.Z_ARM_SOCKET_X * this.scale;
       } else { // facing left
         this.animation = this.deltaY < 0 ? this.fallingUpLeftAnimation : this.fallingDownLeftAnimation;
-        this.drawX = this.x - (zc.Z_WIDTH - zc.Z_ARM_SOCKET_X) * zc.Z_SCALE;
+        this.drawX = this.x - (zc.Z_WIDTH - zc.Z_ARM_SOCKET_X) * this.scale;
       }
     } else if (this.crouching) {
       if (this.facingRight) {
         this.animation = this.crouchAnimation;
-        this.drawX = this.x - zc.Z_ARM_SOCKET_X * zc.Z_SCALE;
+        this.drawX = this.x - zc.Z_ARM_SOCKET_X * this.scale;
       } else { // facing left
         this.animation = this.crouchLeftAnimation;
-        this.drawX = this.x - (zc.Z_WIDTH - zc.Z_ARM_SOCKET_X) * zc.Z_SCALE;
+        this.drawX = this.x - (zc.Z_WIDTH - zc.Z_ARM_SOCKET_X) * this.scale;
       }
     } else if (this.facingRight) {
-      this.drawX = this.x - zc.Z_ARM_SOCKET_X * zc.Z_SCALE;
+      this.drawX = this.x - zc.Z_ARM_SOCKET_X * this.scale;
       if (this.direction === -1) {
         this.animation = this.moveLeftFaceRightAnimation;
       } else if (this.direction === 0) {
@@ -275,7 +294,7 @@ class Zerlin extends Entity {
         this.animation = this.moveRightFaceRightAnimation;
       }
     } else { // facing left
-      this.drawX = this.x - (zc.Z_WIDTH - zc.Z_ARM_SOCKET_X) * zc.Z_SCALE;
+      this.drawX = this.x - (zc.Z_WIDTH - zc.Z_ARM_SOCKET_X) * this.scale;
       if (this.direction === -1) {
         this.animation = this.moveLeftFaceLeftAnimation;
       } else if (this.direction === 0) {
@@ -285,7 +304,8 @@ class Zerlin extends Entity {
       }
     }
 
-    this.animation.drawFrame(this.game.clockTick, this.ctx, this.drawX - this.camera.x, this.y - this.animation.frameHeight * zc.Z_SCALE);
+    this.animation.scale = this.scale;
+    this.animation.drawFrame(this.game.clockTick, this.ctx, this.drawX - this.camera.x, this.y - this.animation.frameHeight * this.scale);
     this.lightsaber.draw();
 
     if (zc.DRAW_COLLISION_BOUNDRIES) {
@@ -306,6 +326,11 @@ class Zerlin extends Entity {
 
   }
 
+  shrink() {
+    this.tiny = true;
+    this.tinyTimer = 0;
+  }
+
   die() {
     this.alive = false;
     this.timeOfDeath = this.game.sceneManager.levelSceneTimer;
@@ -313,7 +338,7 @@ class Zerlin extends Entity {
     if (this.lightsaber.throwing) {
       this.lightsaber.catch();
     }
-    this.boundingbox = new BoundingBox(this.x + 90 * zc.Z_SCALE, this.y - 120 * zc.Z_SCALE, 50 * zc.Z_SCALE, 108 * zc.Z_SCALE);
+    this.boundingbox = new BoundingBox(this.x + 90 * this.scale, this.y - 120 * this.scale, 50 * this.scale, 108 * this.scale);
     this.boundingbox.hidden = true;
   }
 
@@ -400,7 +425,7 @@ class Zerlin extends Entity {
     this.slashingDirection = this.facingRight ? 1 : -1;
     this.slashZone = {};
     // TODO: new bounding box for slash, left and right
-    this.boundingbox = new BoundingBox(this.boundingbox.x, this.y - (zc.Z_HEIGHT - 73) * zc.Z_SCALE, this.boundingbox.width, this.boundingbox.height);
+    this.boundingbox = new BoundingBox(this.boundingbox.x, this.y - (zc.Z_HEIGHT - 73) * this.scale, this.boundingbox.width, this.boundingbox.height);
   }
 
   finishSlash() {
@@ -413,18 +438,34 @@ class Zerlin extends Entity {
   faceRight() {
     this.facingRight = true;
     if (this.crouching) {
-      this.boundingbox = new BoundingBox(this.x - (15 * zc.Z_SCALE), this.y - (zc.Z_HEIGHT - 120) * zc.Z_SCALE, (zc.Z_WIDTH - 39) * zc.Z_SCALE, (zc.Z_HEIGHT - 132) * zc.Z_SCALE);
+      this.boundingbox = new BoundingBox(this.x - (15 * this.scale), this.y - (zc.Z_HEIGHT - 120) * this.scale, (zc.Z_WIDTH - 39) * this.scale, (zc.Z_HEIGHT - 132) * this.scale);
     } else {
-      this.boundingbox = new BoundingBox(this.x - (15 * zc.Z_SCALE), this.y - (zc.Z_HEIGHT - 73) * zc.Z_SCALE, (zc.Z_WIDTH - 39) * zc.Z_SCALE, (zc.Z_HEIGHT - 85) * zc.Z_SCALE);
+      this.boundingbox = new BoundingBox(this.x - (15 * this.scale), this.y - (zc.Z_HEIGHT - 73) * this.scale, (zc.Z_WIDTH - 39) * this.scale, (zc.Z_HEIGHT - 85) * this.scale);
     }
   }
 
   faceLeft() {
     this.facingRight = false;
     if (this.crouching) {
-      this.boundingbox = new BoundingBox(this.x - (zc.Z_WIDTH - 55) * zc.Z_SCALE, this.y - (zc.Z_HEIGHT - 120) * zc.Z_SCALE, (zc.Z_WIDTH - 39) * zc.Z_SCALE, (zc.Z_HEIGHT - 132) * zc.Z_SCALE);
+      this.boundingbox = new BoundingBox(this.x - (zc.Z_WIDTH - 55) * this.scale, this.y - (zc.Z_HEIGHT - 120) * this.scale, (zc.Z_WIDTH - 39) * this.scale, (zc.Z_HEIGHT - 132) * this.scale);
     } else {
-      this.boundingbox = new BoundingBox(this.x - (zc.Z_WIDTH - 55) * zc.Z_SCALE, this.y - (zc.Z_HEIGHT - 73) * zc.Z_SCALE, (zc.Z_WIDTH - 39) * zc.Z_SCALE, (zc.Z_HEIGHT - 85) * zc.Z_SCALE);
+      this.boundingbox = new BoundingBox(this.x - (zc.Z_WIDTH - 55) * this.scale, this.y - (zc.Z_HEIGHT - 73) * this.scale, (zc.Z_WIDTH - 39) * this.scale, (zc.Z_HEIGHT - 85) * this.scale);
+    }
+  }
+
+  updateBoundingBox() {
+    if (this.facingRight) {
+      if (this.crouching) {
+        this.boundingbox = new BoundingBox(this.x - (15 * this.scale), this.y - (zc.Z_HEIGHT - 120) * this.scale, (zc.Z_WIDTH - 39) * this.scale, (zc.Z_HEIGHT - 132) * this.scale);
+      } else {
+        this.boundingbox = new BoundingBox(this.x - (15 * this.scale), this.y - (zc.Z_HEIGHT - 73) * this.scale, (zc.Z_WIDTH - 39) * this.scale, (zc.Z_HEIGHT - 85) * this.scale);
+      }
+    } else {
+      if (this.crouching) {
+        this.boundingbox = new BoundingBox(this.x - (zc.Z_WIDTH - 55) * this.scale, this.y - (zc.Z_HEIGHT - 120) * this.scale, (zc.Z_WIDTH - 39) * this.scale, (zc.Z_HEIGHT - 132) * this.scale);
+      } else {
+        this.boundingbox = new BoundingBox(this.x - (zc.Z_WIDTH - 55) * this.scale, this.y - (zc.Z_HEIGHT - 73) * this.scale, (zc.Z_WIDTH - 39) * this.scale, (zc.Z_HEIGHT - 85) * this.scale);
+      }
     }
   }
 
@@ -588,6 +629,8 @@ class Lightsaber extends Entity {
     this.inClickPosition = false;
     this.deflectingBeam = false;
     this.deflectingBeamSoundOn = false;
+    this.splitLasers = false;
+    this.splitShotTimer = puc.SPLIT_SHOT_TIME;
     this.setUpSaberImages();
     this.faceRightUpSaber();
     this.updateCollisionLine();
@@ -595,7 +638,17 @@ class Lightsaber extends Entity {
 
   update() {
     this.x = this.Zerlin.x;
-    this.y = this.Zerlin.y - (zc.Z_HEIGHT - this.Zerlin.armSocketY) * zc.Z_SCALE;
+    this.y = this.Zerlin.y - (zc.Z_HEIGHT - this.Zerlin.armSocketY) * this.Zerlin.scale;
+
+      //check basic status
+    if (this.splitLasers) {
+      this.splitShotTimer -= this.game.clockTick;
+      if (this.splitShotTimer <= 0) {
+        this.splitLasers = false;
+        this.splitShotTimer = puc.SPLIT_SHOT_TIME;
+      }
+    }
+
     // rotate
     if (this.game.mouse) {
       this.angle = Math.atan2(this.game.mouse.y - this.y, this.game.mouse.x + this.camera.x - this.x);
@@ -672,10 +725,10 @@ class Lightsaber extends Entity {
         0,
         this.width,
         this.height,
-        -(this.armSocketX * zc.Z_SCALE), // is this correct?
-        -(this.armSocketY * zc.Z_SCALE),
-        zc.Z_SCALE * this.width,
-        zc.Z_SCALE * this.height);
+        -(this.armSocketX * this.Zerlin.scale), // is this correct?
+        -(this.armSocketY * this.Zerlin.scale),
+        this.Zerlin.scale * this.width,
+        this.Zerlin.scale * this.height);
       this.ctx.restore();
     }
     if (zc.DRAW_COLLISION_BOUNDRIES) {
@@ -716,12 +769,12 @@ class Lightsaber extends Entity {
     this.prevBladeCollar = this.bladeCollar;
     this.prevBladeTip = this.bladeTip;
     this.bladeCollar = {
-      x: collarXrotated * zc.Z_SCALE + this.x,
-      y: collarYrotated * zc.Z_SCALE + this.y
+      x: collarXrotated * this.Zerlin.scale + this.x,
+      y: collarYrotated * this.Zerlin.scale + this.y
     };
     this.bladeTip = {
-      x: tipXrotated * zc.Z_SCALE + this.x,
-      y: tipYrotated * zc.Z_SCALE + this.y
+      x: tipXrotated * this.Zerlin.scale + this.x,
+      y: tipYrotated * this.Zerlin.scale + this.y
     };
   }
 
@@ -858,11 +911,11 @@ class AirbornSaber extends Entity {
     this.arm = arm;
     this.throwTimer = 0;
     this.camera = this.arm.camera;
-    this.width = zc.LS_AIRBORN_WIDTH * zc.Z_SCALE;
-    this.height = zc.LS_AIRBORN_HEIGHT * zc.Z_SCALE;
+    this.width = zc.LS_AIRBORN_WIDTH * this.arm.Zerlin.scale;
+    this.height = zc.LS_AIRBORN_HEIGHT * this.arm.Zerlin.scale;
     this.radius = this.width / 2;
     this.animation = new Animation(this.game.assetManager.getAsset("../img/airborn saber.png"), 0, 0, 
-      zc.LS_AIRBORN_WIDTH, zc.LS_AIRBORN_HEIGHT, zc.LS_AIRBORN_FRAME_DURATION, zc.LS_AIRBORN_FRAMES, true, false, zc.Z_SCALE);
+      zc.LS_AIRBORN_WIDTH, zc.LS_AIRBORN_HEIGHT, zc.LS_AIRBORN_FRAME_DURATION, zc.LS_AIRBORN_FRAMES, true, false, this.arm.Zerlin.scale);
     this.maxDistanceFromArm = 0;
   }
   
@@ -888,6 +941,7 @@ class AirbornSaber extends Entity {
   }
 
   draw() {
+    this.animation.scale = this.arm.Zerlin.scale;
     this.animation.drawFrame(this.game.clockTick, this.game.ctx, this.x - this.width / 2 - this.camera.x, this.y - this.height / 2);
   }
 

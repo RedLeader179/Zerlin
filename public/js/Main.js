@@ -100,6 +100,8 @@ class AssetManager {
   AM.queueDownload('../img/powerup_health.png');
   AM.queueDownload('../img/powerup_force.png');
   AM.queueDownload('../img/powerup_invincibility.png');
+  AM.queueDownload('../img/powerup_coin.png');
+  AM.queueDownload('../img/powerup_coin_T.png');
 
 
   /********** Droid assets ******************/
@@ -145,6 +147,13 @@ class AssetManager {
 
   //Hoth snow
   AM.queueDownload('../img/snow layer.png');
+  AM.queueDownload('../img/snow level 0.png');
+  AM.queueDownload('../img/snow level 1.png');
+  AM.queueDownload('../img/snow level 2.png');
+  AM.queueDownload('../img/snow level 3.png');
+  AM.queueDownload('../img/snow level 4.png');
+  AM.queueDownload('../img/snow level 5.png');
+  AM.queueDownload('../img/snow level 6.png');
 
 
 
@@ -158,7 +167,11 @@ class AssetManager {
   //city
 
   //Hoth snow
-
+  AM.queueDownload("../img/ice_tile_center.png");
+  AM.queueDownload("../img/ice_tile_left.png");
+  AM.queueDownload("../img/ice_tile_right.png");
+  AM.queueDownload("../img/ice_tile_left_right.png")
+  ;
   /********** SceneManager assets ******************/
   //music menu
   AM.queueDownload('../img/music_menu.png');

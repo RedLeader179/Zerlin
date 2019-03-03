@@ -144,7 +144,11 @@ class CollisionManager {
         if (!laser.isDeflected) {
           var collision = this.isCollidedWithSaber(laser);
           if (collision.collided) {
-            this.deflectLaser(laser, collision.intersection);
+            if (!this.sceneManager.Zerlin.lightsaber.splitLasers) {
+              this.deflectLaser(laser, collision.intersection);
+            } else {
+              this.deflectLaserSplit(laser, collision.intersection);
+            }
             this.game.audio.playSoundFx(this.game.audio.enemy, 'retroBlasterShot');
           }
         }
@@ -154,7 +158,7 @@ class CollisionManager {
 
   laserOnZerlin() {
     var zerlin = this.sceneManager.Zerlin;
-    if (!zerlin.boundingbox.hidden) {
+    if (!zerlin.boundingbox.hidden && !zerlin.invincible) {
       for (var i = 0; i < this.sceneManager.lasers.length; i++) {
         var laser = this.sceneManager.lasers[i];
         if (!laser.isDeflected &&
@@ -162,19 +166,14 @@ class CollisionManager {
           laser.x < zerlin.boundingbox.right &&
           laser.y > zerlin.boundingbox.top &&
           laser.y < zerlin.boundingbox.bottom) {
-          if (!zerlin.invincible) { //if zerlin is not invincible
-            // this.game.audio.wound.play();
-            this.game.audio.playSoundFx(this.game.audio.hero, 'heroHurt');
-            zerlin.hits++;
-            zerlin.currentHealth--; //eventually subtract by laser damage
-            //then maybe make zerlin invincible for a few ticks
-            // console.log(zerlin.hits);
-            laser.removeFromWorld = true;
-          }
-
-
-
-        }
+          // this.game.audio.wound.play();
+          this.game.audio.playSoundFx(this.game.audio.hero, 'heroHurt');
+          zerlin.hits++;
+          zerlin.currentHealth--; //eventually subtract by laser damage
+          //then maybe make zerlin invincible for a few ticks
+          // console.log(zerlin.hits);
+          laser.removeFromWorld = true;
+        }  
       }
     }
   }
@@ -241,7 +240,7 @@ class CollisionManager {
 
   beamOnSaber() {
     this.sceneManager.Zerlin.lightsaber.deflectingBeam = false;
-    if (this.sceneManager.boss && this.sceneManager.boss.beamCannon.beam && !this.sceneManager.Zerlin.lightsaber.hidden) {
+    if (this.sceneManager.boss && this.sceneManager.boss.beamCannon.beam && !this.sceneManager.Zerlin.lightsaber.hidden && !this.sceneManager.Zerlin.lightsaber.throwing) {
       var zerlin = this.sceneManager.Zerlin;
       var lightsaber = zerlin.lightsaber;
       var beamSegments = this.sceneManager.boss.beamCannon.beam.segments;
@@ -355,7 +354,7 @@ class CollisionManager {
             beamSeg.endX = closestIntersection.x;
             beamSeg.endY = closestIntersection.y;
             if (this.sceneManager.boss.beamDamageTimer > bc.B_BEAM_EXPLOSION_THRESHHOLD) {
-              this.sceneManager.addEntity(new DroidExplosion(this.game, closestIntersection.x, closestIntersection.y, .3, .2));
+              this.sceneManager.addEntity(new DroidExplosion(this.game, closestIntersection.x, closestIntersection.y, .7, .2));
 
               this.sceneManager.boss.beamCannon.turnOff();
               this.sceneManager.boss.fall();
@@ -426,10 +425,10 @@ class CollisionManager {
   saberOnBoss() {
     if (this.sceneManager.boss && !this.sceneManager.boss.boundingbox.hidden) {
       var zerlin = this.sceneManager.Zerlin;
+      var bossBox = this.sceneManager.boss.boundingbox;
+      var bossCenterX = bossBox.x + bossBox.width / 2;
+      var bossCenterY = bossBox.y + bossBox.height / 2;
       if (zerlin.slashing && zerlin.slashZone.active) {
-        var bossBox = this.sceneManager.boss.boundingbox;
-        var bossCenterX = bossBox.x + bossBox.width / 2;
-        var bossCenterY = bossBox.y + bossBox.height / 2;
 
         // check if droid in circular path of saber and not below zerlin
         if (collidePointWithCircle(bossCenterX,
@@ -448,6 +447,12 @@ class CollisionManager {
           this.sceneManager.boss.hits += 3;
           //added ---- below
           this.sceneManager.boss.currentHealth -= zConst.Z_SLASH_DAMAGE;
+        }
+      } else if (zerlin.lightsaber.throwing) {
+        if (collidePointWithCircle(bossCenterX, bossCenterY, zerlin.lightsaber.airbornSaber.x, zerlin.lightsaber.airbornSaber.y, zerlin.lightsaber.airbornSaber.radius)) {
+          this.sceneManager.boss.currentHealth -= zc.AIRBORN_SABER_DAMAGE;
+          this.sceneManager.addEntity(new DroidExplosion(this.game, bossCenterX, bossCenterY, .7, .2));
+          console.log("hihihi");
         }
       }
     }
@@ -594,6 +599,26 @@ class CollisionManager {
     laser.x = laser.tailX + laser.deltaX / deltaMagnitude * laser.length;
     laser.y = laser.tailY + laser.deltaY / deltaMagnitude * laser.length;
     // laser.angle = this.findAngle(this.x, this.y, this.tailX, this.tailY);
+  }
+
+
+  deflectLaserSplit(laser, collisionPt) {
+    laser.isDeflected = true;
+
+    var zerlin = this.sceneManager.Zerlin;
+    var coreAngle = 2 * zerlin.lightsaber.getSaberAngle() - laser.angle;
+    // var deltaX = Math.cos(laser.angle) * laser.speed + zerlin.deltaX;
+    // var deltaY = Math.sin(laser.angle) * laser.speed + zerlin.deltaY;
+    // laser.slope = laser.deltaY / laser.deltaX;
+
+    var individualAngle = coreAngle - puc.SPLIT_LASER_ARC_WIDTH / 2;
+    for (let i = 0; i < puc.SPLIT_LASER_AMOUNT; i++) {
+      let newLaser = DroidLaser.angleConstructor(this.game, laser.x, laser.y, laser.speed, individualAngle, laser.length, laser.width, laser.color, laser.deflectedColor);
+      newLaser.isDeflected = true;
+      this.sceneManager.lasers.push(newLaser);
+      individualAngle += puc.SPLIT_LASER_ARC_WIDTH / (puc.SPLIT_LASER_AMOUNT - 1);
+    }
+    laser.removeFromWorld = true;
   }
 
 }
