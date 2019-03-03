@@ -92,14 +92,12 @@ class AssetManager {
   AM.queueDownload("../img/beam cannon.png");
   AM.queueDownload("../img/beam cannon left.png");
   AM.queueDownload("../img/boss_helmet.png");
-<<<<<<< HEAD
   AM.queueDownload("../img/bomb.png");
-=======
+  
   // Droid boss
   AM.queueDownload("../img/leggy_droid.png");
   AM.queueDownload("../img/boss_status_bar_icon.png");
 
->>>>>>> master
 
 
 

@@ -14,7 +14,7 @@ Constants = {
     CROUCH: 'KeyX',
     JUMP: 'KeyW',
     JUMP_FORCE: 'Space',
-    SLASH: 'leftClick',
+    SLASH: 'KeyF',
     ROLL: 'KeyS',
     PAUSE: 'Enter',
     THROW_SABER: 'KeyR'
@@ -22,10 +22,10 @@ Constants = {
 
   DroidBasicConstants: {
     BASIC_DROID_SHOOT_INTERVAL: 2, //default 2
-    BASIC_DROID_X_MOVEMENT_SPEED: 150,
+    BASIC_DROID_X_MOVEMENT_SPEED: 350,
     BASIC_DROID_Y_MOVEMENT_SPEED: 100,
-    BASIC_DROID_X_ACCELERATION: 60,
-    BASIC_DROID_Y_ACCELERATION: 60,
+    BASIC_DROID_X_ACCELERATION: 400,
+    BASIC_DROID_Y_ACCELERATION: 100,
     BASIC_DROID_ORBITAL_X_OFFSET: 200,
     BASIC_DROID_ORBITAL_Y_OFFSET: -200,
     BASIC_DROID_SCALE: 0.65,
@@ -142,7 +142,7 @@ Constants = {
     Z_DEATH_FRAMES: 30,
 
 
-    Z_WALKING_SPEED: 280,
+    Z_WALKING_SPEED: 240,
     Z_SOMERSAULT_SPEED: 450,
     FORCE_JUMP_DELTA_Y: -950,
     JUMP_DELTA_Y: -600,
@@ -274,7 +274,7 @@ Constants = {
     BOMB_DROP_INTERVAL: .5,
     BOMB_DAMAGE: 5, 
 
-    BEAM_MODE_DURATION: 10,
+    BEAM_MODE_DURATION: 15,
     BOMB_MODE_DURATION: 5
   },
 
@@ -339,7 +339,7 @@ Constants = {
       '                                   S                                                                                               ',
       '    ===           -----                               H                   ---                       H F          --                ',
       '                                       ----                                                                                        ',
-      '          C------                             I           -----       ---            -                      ---       --           ', //from ground level, can reg. jump to here.
+      '  T       C------                             I           -----       ---            -                      ---       --           ', //from ground level, can reg. jump to here.
       '                                 -----             ----                        --                   - -                            ',
       '                                                                            -                                                      ',
       '------------           -- -- ----            --------   --     --- ---------  -- ---- ---------------------------------------------'

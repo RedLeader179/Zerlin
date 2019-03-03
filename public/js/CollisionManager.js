@@ -37,7 +37,6 @@ class CollisionManager {
     this.saberOnBoss();
     this.laserOnBoss();
     this.catchSaber();
-    this.airbornSaberOnDroid();
     this.bombOnPlatform();
     this.bombExplosionOnZerlin();
     this.ZerlinOnCheckpoint();
@@ -124,6 +123,13 @@ class CollisionManager {
           } else {
             droid.explode();
           }
+        }
+      }
+    } else if (zerlin.lightsaber.throwing) {
+      for (var i = this.sceneManager.droids.length - 1; i >= 0; i--) {
+        var droid = this.sceneManager.droids[i];
+        if (collidePointWithCircle(droid.boundCircle.x, droid.boundCircle.y, zerlin.lightsaber.airbornSaber.x, zerlin.lightsaber.airbornSaber.y, zerlin.lightsaber.airbornSaber.radius)) {
+          droid.explode();
         }
       }
     }
@@ -500,17 +506,17 @@ class CollisionManager {
     }
   }
 
-  airbornSaberOnDroid() {
-    var saberArm = this.sceneManager.Zerlin.lightsaber;
-    if (saberArm.throwing) {
-      for (var i = this.sceneManager.droids.length - 1; i >= 0; i--) {
-        var droid = this.sceneManager.droids[i];
-        if (collidePointWithCircle(droid.boundCircle.x, droid.boundCircle.y, saberArm.airbornSaber.x, saberArm.airbornSaber.y, saberArm.airbornSaber.radius)) {
-          droid.explode();
-        }
-      }
-    }
-  }
+  // airbornSaberOnDroid() {
+  //   var saberArm = this.sceneManager.Zerlin.lightsaber;
+  //   if (saberArm.throwing) {
+  //     for (var i = this.sceneManager.droids.length - 1; i >= 0; i--) {
+  //       var droid = this.sceneManager.droids[i];
+  //       if (collidePointWithCircle(droid.boundCircle.x, droid.boundCircle.y, saberArm.airbornSaber.x, saberArm.airbornSaber.y, saberArm.airbornSaber.radius)) {
+  //         droid.explode();
+  //       }
+  //     }
+  //   }
+  // }
 
   bombOnPlatform() {
     if (this.sceneManager.boss) {

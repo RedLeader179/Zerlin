@@ -384,7 +384,7 @@ class SceneManager2 {
     this.Zerlin.reset();
     this.wonLevel = false;
 
-    this.initiallyPaused = true;
+    this.initiallyPaused = false;
     this.sceneEntities = [];
     if (this.levelNumber == 3) {
       this.sceneEntities.push(new ParallaxSnowBackground(this.game, this, 300));
