@@ -334,13 +334,13 @@ Constants = {
       '               d                                s         d       s         f b         =                                          ', //from ground can force jump to here.
       '                                                                             d                               ---                   ',
       '                                               f b                          f d        d                              X            ', //halfway of camera height.
-      '                     S    d       d                                                                         ==                     ',
+      '                          d       d                                                                         ==                     ',
       '                                            --------                          d                                                    ',
-      '                                   S                                                                                               ',
-      '    ===           -----                               H                   ---                       H F          --                ',
+      '                                   S                                                 T                                             ',
+      '                  -----                               H                   ---                       H F          --                ',
       '                                       ----                                                                                        ',
-      '  T       C------                             I           -----       ---            -                      ---       --           ', //from ground level, can reg. jump to here.
-      '                                 -----             ----                        --                   - -                            ',
+      '          C------                             I           -----       ---            -                      ---       --           ', //from ground level, can reg. jump to here.
+      '                                 -----             ----                        --           S       - -                            ',
       '                                                                            -                                                      ',
       '------------           -- -- ----            --------   --     --- ---------  -- ---- ---------------------------------------------'
     ],
