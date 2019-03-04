@@ -50,6 +50,7 @@ class SceneManager2 {
 
   init() {
     this.buildLevels();
+    document.getElementById("formOverlay").style.display = "none";
     this.startOpeningScene();
     /* skip intro stuff and go strait to the level */
     // this.startLevelScene();
@@ -62,7 +63,7 @@ class SceneManager2 {
       new ParallaxScrollBackground(this.game, this, '../img/backgroundTrees3.png', 1, 2500),
       new ParallaxFloatingBackground(this.game, this, '../img/backgroundStars.png', 1, 1400),
       new ParallaxScrollBackground(this.game, this, '../img/backgroundTrees2.png', 1, 1000),
-      new ParallaxScrollBackground(this.game, this, '../img/backgroundTrees1.png', 1, 600)
+      new ParallaxScrollBackground(this.game, this, '../img/backgroundTrees1.png', 1, 600),
     ];
     var LEVEL_ONE_TILES = {
       centerTile: '../img/forest_center_tile.png',
@@ -70,7 +71,7 @@ class SceneManager2 {
       rightTile: '../img/forest_right_tile.png',
       leftRightTile: '../img/forest_both_rounded_tile.png'
     };
-
+    
     var CITY_LEVEL_BACKGROUNDS = [
       new ParallaxScrollBackground(this.game, this, '../img/city_background.png', 1, 5200),
       new ParallaxScrollBackground(this.game, this, '../img/city_buildings_back.png', 1, 2500),
@@ -87,10 +88,41 @@ class SceneManager2 {
       leftRightTile: '../img/city_tile_left_right.png'
     };
 
+    var LEVEL_THREE_BACKGROUNDS = [
+      new ParallaxScrollBackground(this.game, this, '../img/snow level 0.png', 1, 6000),
+      new ParallaxScrollBackground(this.game, this, '../img/snow level 1.png', 1, 4500),
+      new ParallaxScrollBackground(this.game, this, '../img/snow level 2.png', 1, 3000),
+      new ParallaxScrollBackground(this.game, this, '../img/snow level 3.png', 1, 1500),
+      new ParallaxSnowBackground(this.game, this, 2300),
+      new ParallaxSnowBackground(this.game, this, 2200),
+      new ParallaxSnowBackground(this.game, this, 2100),
+      new ParallaxSnowBackground(this.game, this, 1800),
+      new ParallaxScrollBackground(this.game, this, '../img/snow level 4.png', 1, 1000),
+      new ParallaxSnowBackground(this.game, this, 1500),
+      new ParallaxSnowBackground(this.game, this, 1300),
+      new ParallaxSnowBackground(this.game, this, 1100),
+      new ParallaxSnowBackground(this.game, this, 1000),
+      new ParallaxScrollBackground(this.game, this, '../img/snow level 5.png', 1, 500),
+      new ParallaxSnowBackground(this.game, this, 800),
+      new ParallaxSnowBackground(this.game, this, 700),
+      new ParallaxScrollBackground(this.game, this, '../img/snow level 6.png', 1, 250),
+      new ParallaxSnowBackground(this.game, this, 600),
+      new ParallaxSnowBackground(this.game, this, 500),
+      new ParallaxSnowBackground(this.game, this, 400)
+    ];
+    var LEVEL_THREE_TILES = {
+      centerTile: '../img/ice_tile_center.png',
+      leftTile: '../img/ice_tile_left.png',
+      rightTile: '../img/ice_tile_right.png',
+      leftRightTile: '../img/ice_tile_left_right.png'
+    };
+
     this.levels = [];
     this.level = null;
     this.levelBackgrounds = [];
+    this.levels.push(new Level(this.game, this, lvlConst.MIKE_LEVEL_ONE, LEVEL_ONE_BACKGROUNDS, LEVEL_ONE_TILES));
     this.levels.push(new Level(this.game, this, lvlConst.CITY_LEVEL, CITY_LEVEL_BACKGROUNDS, CITY_LEVEL_TILES));
+    this.levels.push(new Level(this.game, this, lvlConst.MIKE_LEVEL_ONE, LEVEL_THREE_BACKGROUNDS, LEVEL_THREE_TILES));
   }
 
   setCheckPoint(checkPoint) {
@@ -350,9 +382,15 @@ class SceneManager2 {
     this.addEntity(new HealthStatusBar(this.game, this, 25, 25)); //put these in scene manager??
     this.addEntity(new ForceStatusBar(this.game, this, 50, 50));
     this.Zerlin.reset();
+    this.wonLevel = false;
 
     this.initiallyPaused = false;
     this.sceneEntities = [];
+    if (this.levelNumber == 3) {
+      this.sceneEntities.push(new ParallaxSnowBackground(this.game, this, 300));
+      this.sceneEntities.push(new ParallaxSnowBackground(this.game, this, 200));
+      this.sceneEntities.push(new ParallaxSnowBackground(this.game, this, 100));
+    }
     this.startedFinalOverlay = false;
     this.startNewScene = false;
 

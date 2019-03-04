@@ -154,6 +154,47 @@ class HomingLaserDeflectionPowerUp extends AbstractPowerUp {
   }
 }
 
+
+class SplitLaserPowerUp extends AbstractPowerUp {
+  constructor(game, x, y) {
+    super(game, x, y);
+    this.animation = new Animation(this.game.assetManager.getAsset('../img/powerup_coin.png'), 0, 0, 126, 126, 0.1, 8, true, false, puc.COIN_IMAGE_SCALE);
+
+    /* bounding circle */
+    this.radius = (this.animation.frameWidth / 2) * this.animation.scale;
+    this.boundCircle = {
+      radius: this.radius,
+      x: this.x + this.radius,
+      y: this.y + this.radius
+    };
+  }
+
+  effect() {
+    this.game.sceneManager.Zerlin.lightsaber.splitLasers = true;
+  }
+}
+
+
+
+class TinyModePowerUp extends AbstractPowerUp {
+  constructor(game, x, y) {
+    super(game, x, y);
+    this.animation = new Animation(this.game.assetManager.getAsset('../img/powerup_coin_T.png'), 0, 0, 126, 126, 0.1, 8, true, false, puc.COIN_IMAGE_SCALE);
+
+    /* bounding circle */
+    this.radius = (this.animation.frameWidth / 2) * this.animation.scale;
+    this.boundCircle = {
+      radius: this.radius,
+      x: this.x + this.radius,
+      y: this.y + this.radius
+    };
+  }
+
+  effect() {
+    this.game.sceneManager.Zerlin.shrink();
+  }
+}
+
 //MultiplyLaserDeflectionPowerUp
 //will create multiple lasers that will go at different angles for each
 //laser deflected

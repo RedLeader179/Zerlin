@@ -19,11 +19,15 @@ class Boss extends Entity {
 		this.hits = 0;
 		this.beamCannon = new BeamCannon(game, this);
 		this.shooting = false;
+		this.attackModeTimer = 0;
 		this.secondsBeforeFire = bc.B_SHOOT_INTERVAL;
+		this.secondsBeforeDropBomb = bc.BOMB_DROP_INTERVAL;
 		this.jetPackSoundOn = false;
 		this.beamDamageTimer = 0;
 		this.sceneManager = this.game.sceneManager;
 		this.alive = true;
+		this.beamMode = true;
+		this.bombs = [];
 
 		/* Boss Health Stats */
 		this.maxHealth = bc.B_MAX_HEALTH;
@@ -79,19 +83,38 @@ class Boss extends Entity {
 			}
 		}
 
-		this.secondsBeforeFire -= this.game.clockTick;
-		if (this.secondsBeforeFire <= 0 && !this.shooting) {
-			this.shoot();
+
+
+		this.attackModeTimer += this.game.clockTick;
+		if (this.beamMode && this.attackModeTimer > bc.BEAM_MODE_DURATION) {
+			this.beamMode = false;
+			this.attackModeTimer = 0;
+		} else if (!this.beamMode && this.attackModeTimer > bc.BOMB_MODE_DURATION) {
+			this.beamMode = true;
+			this.attackModeTimer = 0;
 		}
-		if (this.shooting) {
-			this.shootingTime -= this.game.clockTick;
-			if (this.shootingTime <= 0) {
-				this.shooting = false;
-				if (this.beamCannon.on) {
-					this.beamCannon.turnOff();
-					// reset damage timer for every shoot
-					this.secondsBeforeFire = bc.B_SHOOT_INTERVAL;
+
+		if (this.beamMode) {
+			this.secondsBeforeFire -= this.game.clockTick;
+			if (this.secondsBeforeFire <= 0 && !this.shooting) {
+				this.shoot();
+			}
+			if (this.shooting) {
+				this.shootingTime -= this.game.clockTick;
+				if (this.shootingTime <= 0) {
+					this.shooting = false;
+					if (this.beamCannon.on) {
+						this.beamCannon.turnOff();
+						// reset damage timer for every shoot
+						this.secondsBeforeFire = bc.B_SHOOT_INTERVAL;
+					}
 				}
+			}
+		} else { // bomb mode
+			this.secondsBeforeDropBomb -= this.game.clockTick;
+			if (this.secondsBeforeDropBomb <= 0) {
+				this.dropBomb();
+				this.secondsBeforeDropBomb = bc.BOMB_DROP_INTERVAL;
 			}
 		}
 
@@ -102,6 +125,12 @@ class Boss extends Entity {
 
 		this.beamCannon.update();
 		super.update();
+		for (let i = this.bombs.length - 1; i >= 0; i--) {
+			this.bombs[i].update();
+			if (this.bombs[i].removeFromWorld) {
+				this.bombs.splice(i, 1);
+			}
+		};
 	}
 
 	draw() {
@@ -131,6 +160,9 @@ class Boss extends Entity {
 				this.ctx.strokeRect(this.boundingbox.x - this.sceneManager.camera.x, this.boundingbox.y, this.boundingbox.width, this.boundingbox.height);
 			}
 		}
+		this.bombs.forEach(function(bomb) {
+			bomb.draw();
+		});
 	}
 
 	die() {
@@ -140,9 +172,9 @@ class Boss extends Entity {
 			this.shooting = false;
 			this.beamCannon.turnOff();
 			this.sceneManager.addEntity(new DroidExplosion(this.game, 
-																										this.x + (this.animation.scale * this.animation.frameWidth / 2), 
-																										this.y + (this.animation.scale * this.animation.frameHeight / 2),
-																										7, .5, .2));
+									this.x + (this.animation.scale * this.animation.frameWidth / 2), 
+									this.y + (this.animation.scale * this.animation.frameHeight / 2),
+									7, .5, .2));
 			this.removeFromWorld = true;
 		}
 	}
@@ -164,6 +196,10 @@ class Boss extends Entity {
 		this.secondsBeforeFire = bc.B_SHOOT_INTERVAL;
 		this.shootingTime = bc.B_SHOOT_DURATION;
 		this.beamCannon.turnOn();
+	}
+
+	dropBomb() {
+		this.bombs.push(new Bomb(this.game, this.x, this.y, this.deltaX, this.deltaY)); 
 	}
 
 	setXY(x, y) {
@@ -366,7 +402,7 @@ class BeamCannon extends Entity {
 			// rotate beam counterclockwise
 			this.beamAngleDelta += bc.BEAM_ANGLE_ACCELERATION_RADIANS * this.game.clockTick;
 		}
-		this.beamAngleDelta *= .97; // zero in on target by reducing speed of beam rotation
+		this.beamAngleDelta *= .92; // zero in on target by reducing speed of beam rotation
 		this.beamAngle += this.beamAngleDelta * this.game.clockTick;
 	}
 
@@ -488,5 +524,44 @@ class Beam {
 		}
 
 		ctx.restore();
+	}
+}
+
+
+class Bomb extends Entity {
+
+	constructor(game, startX, startY, deltaX, deltaY) {
+		super(game, startX, startY, deltaX, deltaY);
+		this.camera = this.game.sceneManager.camera;
+		this.animation = new Animation(this.game.assetManager.getAsset("../img/bomb.png"), 
+			0, 0, 204, 192, bc.BOMB_FRAME_DURATION, bc.FRAMES, false, false, bc.BOMB_SCALE);
+		this.boundingCircle = new BoundingCircle(this.x + (this.animation.frameWidth / 2 * bc.BOMB_SCALE), (this.y + this.animation.frameWidth / 2 * bc.BOMB_SCALE), this.animation.frameWidth / 2 * bc.BOMB_SCALE);
+	}
+
+	update() {
+		this.deltaY += zc.GRAVITATIONAL_ACCELERATION * this.game.clockTick;
+
+		this.x += this.deltaX * this.game.clockTick;
+		this.y += this.deltaY * this.game.clockTick;
+		this.boundingCircle.translateCoordinates(this.deltaX * this.game.clockTick, this.deltaY * this.game.clockTick);
+	}
+
+	draw() {
+		this.animation.drawFrame(this.game.clockTick, this.game.ctx, this.x - this.camera.x, this.y);
+
+		// draw bounding circle
+		
+		// this.game.ctx.beginPath();
+		// this.game.ctx.strokeStyle = "black";
+		// this.game.ctx.arc(this.boundingCircle.x - this.camera.x,
+		// 	this.boundingCircle.y, this.boundingCircle.radius, 0, Math.PI * 2, false);
+		// this.game.ctx.stroke();
+		// this.game.ctx.closePath();
+	}
+
+	explode() {
+		this.removeFromWorld = true;
+		this.game.sceneManager.addEntity(new DamagingExplosion(this.game, this.boundingCircle.x, this.boundingCircle.y));
+
 	}
 }

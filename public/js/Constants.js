@@ -14,17 +14,18 @@ Constants = {
     CROUCH: 'KeyX',
     JUMP: 'KeyW',
     JUMP_FORCE: 'Space',
-    SLASH: 'leftClick',
+    SLASH: 'KeyF',
     ROLL: 'KeyS',
-    PAUSE: 'Enter'
+    PAUSE: 'Enter',
+    THROW_SABER: 'KeyR'
   },
 
   DroidBasicConstants: {
     BASIC_DROID_SHOOT_INTERVAL: 2, //default 2
-    BASIC_DROID_X_MOVEMENT_SPEED: 150,
+    BASIC_DROID_X_MOVEMENT_SPEED: 350,
     BASIC_DROID_Y_MOVEMENT_SPEED: 100,
-    BASIC_DROID_X_ACCELERATION: 60,
-    BASIC_DROID_Y_ACCELERATION: 60,
+    BASIC_DROID_X_ACCELERATION: 400,
+    BASIC_DROID_Y_ACCELERATION: 100,
     BASIC_DROID_ORBITAL_X_OFFSET: 200,
     BASIC_DROID_ORBITAL_Y_OFFSET: -200,
     BASIC_DROID_SCALE: 0.65,
@@ -88,6 +89,7 @@ Constants = {
     Z_FORCE_REGEN_PER_SECOND: 0.5,
     Z_FORCE_JUMP_FORCE_COST: 3,
     Z_SOMERSAULT_FORCE_COST: 3,
+    Z_SABER_THROW_FORCE_COST: 4,
     /* Zerlin damage */
     Z_SLASH_DAMAGE: 10,
     Z_BOSS_BEAM_DAMAGE: 1,
@@ -140,7 +142,7 @@ Constants = {
     Z_DEATH_FRAMES: 30,
 
 
-    Z_WALKING_SPEED: 280,
+    Z_WALKING_SPEED: 240,
     Z_SOMERSAULT_SPEED: 450,
     FORCE_JUMP_DELTA_Y: -950,
     JUMP_DELTA_Y: -600,
@@ -163,7 +165,20 @@ Constants = {
     LS_RIGHT_X_AXIS: 10,
     LS_LEFT_X_AXIS: 10,
     LS_UP_Y_AXIS: 159,
-    LS_DOWN_Y_AXIS: 63
+    LS_DOWN_Y_AXIS: 63,
+
+    LS_THROW_IMAGE_WIDTH: 144,
+    LS_THROW_IMAGE_HEIGHT: 48,
+    LS_THROW_RIGHT_X_AXIS: 9,
+    LS_THROW_RIGHT_Y_AXIS: 13,
+
+    LS_AIRBORN_WIDTH: 234,
+    LS_AIRBORN_HEIGHT: 234,
+    LS_AIRBORN_FRAME_DURATION: .07,
+    LS_AIRBORN_FRAMES: 4,
+    SABER_THROW_INITIAL_SPEED: 1000,
+    SABER_THROW_ACCELERATION: 800,
+    AIRBORN_SABER_DAMAGE: 3
   },
 
   DroidUtilConstants: {
@@ -190,7 +205,7 @@ Constants = {
     LEVEL_TRANSITION_TIME: 7,
     LEVEL_TRANSITION_OVERLAY_TIME: 3,
     LEVEL_COMPLETE_OVERLAY_TIME: 10,
-    NUM_LEVELS: 1,
+    NUM_LEVELS: 3,
     CREDITS: "The End",
     PAUSE_TIME_AFTER_START_LEVEL: 1.2,
 
@@ -237,7 +252,7 @@ Constants = {
     B_ACCELERATION: 300,
     B_FALLING_REACTION_TIME: .85,
     B_RECOVERY_PERIOD: 2,
-    B_BEAM_EXPLOSION_THRESHHOLD: 10,
+    B_BEAM_EXPLOSION_THRESHHOLD: 1,
     BC_WIDTH: 198,
     BC_HEIGHT: 108,
     BC_X_AXIS: 38,
@@ -251,7 +266,16 @@ Constants = {
     BEAM_ANGLE_ACCELERATION_RADIANS: Math.PI,
     MICRO_BEAM_COUNT: 5,
     MUZZLE_WIDTH: 13,
-    MAX_BEAM_LENGTH: 5000
+    MAX_BEAM_LENGTH: 5000,
+
+    BOMB_FRAMES: 25,
+    BOMB_FRAME_DURATION: .1,
+    BOMB_SCALE: .35,
+    BOMB_DROP_INTERVAL: .5,
+    BOMB_DAMAGE: 5, 
+
+    BEAM_MODE_DURATION: 15,
+    BOMB_MODE_DURATION: 5
   },
 
   StatusBarConstants: {
@@ -310,13 +334,13 @@ Constants = {
       '               d                                s         d       s         f b         =                                          ', //from ground can force jump to here.
       '                                                                             d                               ---                   ',
       '                                               f b                          f d        d                              X            ', //halfway of camera height.
-      '                          d       d                                        d b           s                  ==                     ',
-      '                                           --------                          d                                                     ',
-      '                                                                                                                                   ',
+      '                          d       d                                                                         ==                     ',
+      '                                            --------                          d                                                    ',
+      '                                   S                                                 T                                             ',
       '                  -----                               H                   ---                       H F          --                ',
       '                                       ----                                                                                        ',
       '          C------                             I           -----       ---            -                      ---       --           ', //from ground level, can reg. jump to here.
-      '                                 -----             ----                        --                   - -                            ',
+      '                                 -----             ----                        --           S       - -                            ',
       '                                                                            -                                                      ',
       '------------           -- -- ----            --------   --     --- ---------  -- ---- ---------------------------------------------'
     ],
@@ -376,7 +400,15 @@ Constants = {
     DRAW_OUTLINES: false,
     FLOATING_MAGNITUDE: 12,
     INVINCIBILITY_SCALE: 2.5,
-    INVINCIBILITY_TIME: 10
+    INVINCIBILITY_TIME: 10,
+    COIN_IMAGE_SCALE: .5,
+    SPLIT_SHOT_TIME: 7,
+    SPLIT_LASER_AMOUNT: 4,
+    SPLIT_LASER_ARC_WIDTH: Math.PI / 9,
+
+    TINY_MODE_TIME: 20,
+    SHRINKING_TIME: 1.5,
+    TINY_SCALE: .2
   },
 
   CheckPointConstants: {

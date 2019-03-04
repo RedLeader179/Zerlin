@@ -120,6 +120,13 @@ class DroidLaser extends Entity {
 		this.tailY = startY;
 		this.angle = this.findAngleRadians(this.x, this.y, this.tailX, this.tailY);
 	}
+
+	static angleConstructor(game, startX, startY, speed, angle, length, width, color, deflectedColor) {
+		var targetX = startX + 100 * Math.cos(angle);
+		var targetY = startY + 100 * Math.sin(angle);
+		return new DroidLaser(game, startX, startY, speed, targetX, targetY, length, width, color, deflectedColor);
+	}
+
 	update() {
 		// keep track of previous position for collision detection
 		this.prevX = this.x;
@@ -254,4 +261,29 @@ class DroidExplosion extends Entity {
 			super.draw(this.game.ctx);
 		}
 	}
+}
+
+
+class DamagingExplosion extends DroidExplosion {
+
+	constructor(game, x, y) {
+		super(game, x, y, 2, null, .025);
+		this.boundingCircle = new BoundingCircle(x, y, this.animation.frameWidth * this.animation.scale / 2);
+		this.damageDone = false; // can only inflict 1 damage
+	}
+
+	draw() {
+		super.draw();
+
+		// draw bounding circle
+		
+		// this.game.ctx.beginPath();
+		// this.game.ctx.strokeStyle = "black";
+		// this.game.ctx.arc(this.boundingCircle.x - this.sceneManager.camera.x,
+		// 	this.boundingCircle.y, this.boundingCircle.radius, 0, Math.PI * 2, false);
+		// this.game.ctx.stroke();
+		// this.game.ctx.closePath();
+	}
+
+
 }

@@ -78,6 +78,9 @@ class AssetManager {
   AM.queueDownload("../img/saber up left.png");
   AM.queueDownload("../img/saber down.png");
   AM.queueDownload("../img/saber down left.png");
+  AM.queueDownload("../img/throwing arm.png");
+  AM.queueDownload("../img/throwing arm left.png");
+  AM.queueDownload("../img/airborn saber.png");
 
 
 
@@ -89,6 +92,8 @@ class AssetManager {
   AM.queueDownload("../img/beam cannon.png");
   AM.queueDownload("../img/beam cannon left.png");
   AM.queueDownload("../img/boss_helmet.png");
+  AM.queueDownload("../img/bomb.png");
+  
   // Droid boss
   AM.queueDownload("../img/leggy_droid.png");
   AM.queueDownload("../img/boss_status_bar_icon.png");
@@ -100,6 +105,8 @@ class AssetManager {
   AM.queueDownload('../img/powerup_health.png');
   AM.queueDownload('../img/powerup_force.png');
   AM.queueDownload('../img/powerup_invincibility.png');
+  AM.queueDownload('../img/powerup_coin.png');
+  AM.queueDownload('../img/powerup_coin_T.png');
 
 
   /********** Droid assets ******************/
@@ -146,6 +153,15 @@ class AssetManager {
   AM.queueDownload("../img/city_clouds_center.png");
 
   //Hoth snow
+  AM.queueDownload('../img/snow layer.png');
+  AM.queueDownload('../img/snow level 0.png');
+  AM.queueDownload('../img/snow level 1.png');
+  AM.queueDownload('../img/snow level 2.png');
+  AM.queueDownload('../img/snow level 3.png');
+  AM.queueDownload('../img/snow level 4.png');
+  AM.queueDownload('../img/snow level 5.png');
+  AM.queueDownload('../img/snow level 6.png');
+
 
 
   /********** Tile assets ******************/  //tiles are 100x100
@@ -166,8 +182,6 @@ class AssetManager {
   AM.queueDownload("../img/ice_tile_left_right.png");
   AM.queueDownload("../img/ice_tile_left.png");
   AM.queueDownload("../img/ice_tile_right.png");
-
-
   /********** SceneManager assets ******************/
   //music menu
   AM.queueDownload('../img/music_menu.png');
