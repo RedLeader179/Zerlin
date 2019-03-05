@@ -73,6 +73,8 @@ class Level {
   _parseTiles() {
     var rows = this.levelLayout.length;
     var rowHeight = this.camera.height / rows;
+    this.length = this.levelLayout[0].length * this.tileWidth;
+    console.log("length - 7: " + this.getLengthAtI(7));
 
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < this.levelLayout[i].length; j++) {
@@ -185,6 +187,10 @@ class Level {
         tile.draw();
       }
     });
+  }
+  // method that will return the length of the level minus the offset of i.
+  getLengthAtI(i) {
+    return (this.levelLayout[0].length - i) * this.tileWidth;
   }
 
 }

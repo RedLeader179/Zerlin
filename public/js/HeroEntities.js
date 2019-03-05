@@ -348,20 +348,10 @@ class Zerlin extends Entity {
 
 
   shrink() {
-<<<<<<< HEAD
-    if (this.tiny) {
-      this.tinyTimer = 0;
-    } else {
-      this.tiny = true;
-      this.tinyTimer = 0;
-    }
-    
-=======
     if (!this.tiny) {
       this.tiny = true;
       this.tinyTimer = 0;
     }
->>>>>>> 7ad976c9683c3b982512cee0bc6fc966f0b8d274
   }
 
   adjustTinyScale() {

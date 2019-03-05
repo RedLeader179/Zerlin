@@ -503,7 +503,7 @@ class SceneManager2 {
 
 
   if (this.boss && !this.boss.alive || (this.boss == null && this.level.unspawnedBoss == null 
-        && this.droids.length == 0 && this.level.unspawnedDroids.length == 0) && !this.wonLevel) {
+        && this.droids.length == 0 && this.Zerlin.x >= this.level.getLengthAtI(5)) && !this.wonLevel) {
           //also need to check if zerlin is near the end of the level when there is no boss.
 		this.wonLevel = true;
 		this.boss = null;
@@ -516,6 +516,7 @@ class SceneManager2 {
 		}
 	}
 	if (this.wonLevel) {
+    console.log("won level");
     this.newLevel = true;
 		this.timeSinceBossDeath += this.game.clockTick;
 		if (this.timeSinceBossDeath > smc.LEVEL_COMPLETE_OVERLAY_TIME) {
