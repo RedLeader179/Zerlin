@@ -51,9 +51,9 @@ class SceneManager2 {
   init() {
     this.buildLevels();
     document.getElementById("formOverlay").style.display = "none";
-    // this.startOpeningScene();
+    this.startOpeningScene();
     /* skip intro stuff and go strait to the level */
-    this.startLevelScene();
+    // this.startLevelScene();
     // document.getElementById("formOverlay").style.display = "none"; // hide login if not hid in css (curently is)
   }
 
