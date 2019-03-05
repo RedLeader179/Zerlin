@@ -101,6 +101,7 @@ class GameEngine {
     }
 
     this.ctx.canvas.addEventListener("keydown", (e) => {
+      e.preventDefault();
       if (that.keys[e.code]) {
         return;
       } // prevent repeating calls when key is held down
@@ -112,7 +113,6 @@ class GameEngine {
         }
       }
       that.keys[e.code] = true;
-      e.preventDefault();
     }, false);
 
     this.ctx.canvas.addEventListener("keyup", function(e) {
