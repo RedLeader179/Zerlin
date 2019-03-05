@@ -18,10 +18,14 @@ b  =  slow burst droid
 f  =  fast burst droid
 m  =  multi-shot droid
 n  =  sniper droid
+
 H  =  health powerup
 F  =  force powerup
 I  =  invincibility powerup
-*  = leggy droid boss
+S  =  split-shot powerup
+T  =  tiny mode powerup
+
+*  =  leggy droid boss
 X  =  Boss
 */
 
@@ -478,7 +482,7 @@ class ParallaxSnowBackground extends Entity {
     this.imageDistanceFromX = 0;
     this.scale = 10 * Math.pow(Math.E, -this.distanceFromCamera * .001);
     this.deltaY = 120000 / this.distanceFromCamera + SNOW_SPEED;
-    console.log(this.scale);
+    //console.log(this.scale);
   }
 
   instantiate(game, camera) {

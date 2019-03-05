@@ -51,9 +51,9 @@ class SceneManager2 {
   init() {
     this.buildLevels();
     document.getElementById("formOverlay").style.display = "none";
-    this.startOpeningScene();
+    //this.startOpeningScene();
     /* skip intro stuff and go strait to the level */
-    // this.startLevelScene();
+     this.startLevelScene();
     // document.getElementById("formOverlay").style.display = "none"; // hide login if not hid in css (curently is)
   }
 
@@ -150,6 +150,26 @@ class SceneManager2 {
 
   addPowerup(powerup) {
     this.powerups.push(powerup);
+  }
+  addActivePowerup(powerup) {
+    if (this.activePowerups.length == 0) {
+      this.activePowerups.push(new PowerupStatusBar(this.game, this, 0, 0, powerup));
+    } else {
+      var powerupExists = false;
+      var pStatusBar;
+      for (var i = 0; i < this.activePowerups.length; i++) {
+        var activePowerup = this.activePowerups[i].getPowerup();
+        if (powerup.constructor.name === activePowerup.constructor.name) {
+          powerupExists = true;
+          pStatusBar = this.activePowerups[i];
+        }
+      }
+      if (powerupExists) {
+        pStatusBar.reset();
+      } else {
+        this.activePowerups.push(new PowerupStatusBar(this.game, this, 0, 0, powerup));
+      }
+    }
   }
 
   pause() { // todo: pause music as well
@@ -375,6 +395,7 @@ class SceneManager2 {
     this.beams = [];
     this.powerups = [];
     this.otherEntities = [];
+    this.activePowerups = [];
     this.boss = null;
     this.bossMusicSwitched = false;
     this.bossHealthBar = null;
@@ -436,6 +457,12 @@ class SceneManager2 {
         this.powerups[i].update();
         if (this.powerups[i].removeFromWorld) {
           this.powerups.splice(i, 1);
+        }
+      }
+      for (var i = this.activePowerups.length - 1; i >= 0; i--) {
+        this.activePowerups[i].update(i);
+        if (this.activePowerups[i].removeFromWorld) {
+          this.activePowerups.splice(i, 1);
         }
       }
       for (var i = this.otherEntities.length - 1; i >= 0; i--) {
@@ -531,6 +558,9 @@ class SceneManager2 {
     }
     for (var i = 0; i < this.powerups.length; i++) {
       this.powerups[i].draw(this.ctx);
+    }
+    for (var i = 0; i < this.activePowerups.length; i++) {
+      this.activePowerups[i].draw();
     }
     for (var i = 0; i < this.otherEntities.length; i++) {
       this.otherEntities[i].draw(this.ctx);

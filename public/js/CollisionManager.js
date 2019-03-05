@@ -209,10 +209,11 @@ class CollisionManager {
           zerlin.boundingbox.x, zerlin.boundingbox.y, zerlin.boundingbox.width, zerlin.boundingbox.height)) {
 
         //play power up pickup sound
-
+        this.sceneManager.addActivePowerup(powerup);
         // call the powerup effect.
         powerup.effect();
         powerup.playSound();
+
         powerup.removeFromWorld = true;
       }
 

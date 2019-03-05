@@ -291,7 +291,14 @@ Constants = {
     FORCE_BAR_HAS_CRITICAL_STATE: false,
 
     BOSS_BAR_LENGTH: 0.5,
-    BOSS_BAR_HAS_CRITICAL_STATE: false
+    BOSS_BAR_HAS_CRITICAL_STATE: false,
+
+    POWERUP_START_X: 375,
+    POWERUP_Y: 10,
+    POWERUP_BAR_Y: 50,
+    POWERUP_PAD_X: 80,
+    POWERUP_LINE_LENGTH: 30,
+    POWERUP_LENGTH: 50,
 
 
   },
@@ -305,6 +312,30 @@ Constants = {
     DRAW_BOXES: false,
     TILE_ACCELERATION: 200,
     TILE_INITIAL_VELOCITY: 200,
+
+    /*
+    Assets:
+    //powerups are capital
+
+    -  =  tile
+    =  =  moving tile
+    ~  =  falling tile
+    d  =  basic droid
+    s  =  scatter shot droid
+    b  =  slow burst droid
+    f  =  fast burst droid
+    m  =  multi-shot droid
+    n  =  sniper droid
+
+    H  =  health powerup
+    F  =  force powerup
+    I  =  invincibility powerup
+    S  =  split-shot powerup
+    T  =  tiny mode powerup
+
+    *  =  leggy droid boss
+    X  =  Boss
+    */
 
     LEVEL_ONE_TILE_LAYOUT: [
       '                                 ',
@@ -336,14 +367,13 @@ Constants = {
       '                                               f b                          f d        d                              X            ', //halfway of camera height.
       '                          d       d                                                                         ==                     ',
       '                                            --------                          d                                                    ',
-      '                                   S                                                 T                                             ',
+      '                                   S                                   C             T                                             ',
       '                  -----                               H                   ---                       H F          --                ',
       '                                       ----                                                                                        ',
-      '          C------                             I           -----       ---            -                      ---       --           ', //from ground level, can reg. jump to here.
+      '           ------                             I           -----       ---            -                      ---       --           ', //from ground level, can reg. jump to here.
       '                                 -----             ----                        --           S       - -                            ',
       '                                                                            -                                                      ',
-      '------------           -- -- ----            --------   --     --- ---------  -- ---- ---------------------------------------------'
-    ],
+      '------------           -- -- ----            --------   --     --- ---------  -- ---- ---------------------------------------------'],
     //   ^      ^- just on screen on start camera location.
     //   |-> Zerlin spawn point.
     //can jump 1 column
@@ -395,18 +425,22 @@ Constants = {
   PowerUpConstants: {
     HEALTH_SCALE: 3,
     RECOVER_HEALTH_AMOUNT: 20,
+
     RECOVER_FORCE_AMOUNT: 20,
     FORCE_SCALE: 3,
     DRAW_OUTLINES: false,
     FLOATING_MAGNITUDE: 12,
+
     INVINCIBILITY_SCALE: 2.5,
     INVINCIBILITY_TIME: 10,
+
     COIN_IMAGE_SCALE: .5,
+
     SPLIT_SHOT_TIME: 7,
     SPLIT_LASER_AMOUNT: 4,
     SPLIT_LASER_ARC_WIDTH: Math.PI / 9,
 
-    TINY_MODE_TIME: 20,
+    TINY_MODE_TIME: 10,
     SHRINKING_TIME: 1.5,
     TINY_SCALE: .2
   },

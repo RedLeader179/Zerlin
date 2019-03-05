@@ -125,9 +125,6 @@ class AbstractStatusBar extends Entity {
         ctx.closePath();
 
       }
-
-
-
       //draw the text of the status bar current/maxSize
       if (this.displayText) {
         ctx.fillText(`${this.current} / ${this.maxSize}`, this.x + this.maxLength / 2,
@@ -136,8 +133,6 @@ class AbstractStatusBar extends Entity {
 
       ctx.restore();
     }
-
-
 
   }
 
@@ -305,5 +300,63 @@ class DroidBossHealthStatusBar extends AbstractStatusBar {
       this.game.ctx.drawImage(this.image, this.x - 65, this.y - 30,
         50, 50);
     }
+  }
+}
+
+/*
+* Powerups status bar, will call powerup deactivate when 
+* In order to use properly, powerup needs to have the time field which holds the max powerup time.
+*/
+    
+class PowerupStatusBar extends Entity {
+  constructor(game, sceneManager, x, y, powerup) {
+    super(game, x, y);
+    this.sceneManager = sceneManager;
+    this.powerup = powerup; //powerup to call deactivate on
+
+    this.maxPowerupTime = this.powerup.time;
+    this.currentPowerupTime = this.powerup.time;
+
+    this.powerup.animation.scale = powerup.smallScale;
+    this.y = sbc.POWERUP_Y;
+
+    this.color = 'green';
+  }
+  update(i) {
+    super.update();
+    this.currentPowerupTime -= this.game.clockTick;
+    if (this.currentPowerupTime <= 0) {
+      this.removeFromWorld = true;
+    }
+    this.x = sbc.POWERUP_START_X + (i * sbc.POWERUP_PAD_X);
+
+  }
+  draw() {
+    super.draw();
+    var animation = this.powerup.animation;
+    var ctx = this.game.ctx;
+    if (animation != null) {
+      ctx.save();
+
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = this.color;
+      ctx.lineCap = "round";
+      if (this.currentPowerupTime > 0) {
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y+sbc.POWERUP_BAR_Y);
+        ctx.lineTo(this.x + ((sbc.POWERUP_LENGTH / this.maxPowerupTime) * this.currentPowerupTime), 
+            this.y + sbc.POWERUP_BAR_Y);
+        ctx.stroke();
+        ctx.closePath();
+      }
+      ctx.restore();
+      animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+    }
+  }
+  reset() {
+    this.currentPowerupTime = this.maxPowerupTime;
+  }
+  getPowerup() {
+    return this.powerup;
   }
 }
