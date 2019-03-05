@@ -46,6 +46,7 @@ class SceneManager2 {
       this.game.assetManager.getAsset('../img/music_menu_xmusic.png'),
       this.game.assetManager.getAsset('../img/music_menu_xfx.png')
     ]);
+    this.godMode = false;
   }
 
   init() {
@@ -630,6 +631,17 @@ class SceneManager2 {
   //________________________________________________________
   saveProgress() {
 
+  }
+
+  toggleGodMode() {
+    if (this.godMode) {
+      this.godMode = false;
+      this.Zerlin.godMode = false;
+    } else {
+      this.godMode = true;
+      this.Zerlin.godMode = true;
+    }
+    this.Zerlin.setHealth();
   }
 }
 

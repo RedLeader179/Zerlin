@@ -22,7 +22,7 @@ Constants = {
 
   DroidBasicConstants: {
     BASIC_DROID_SHOOT_INTERVAL: 1, //default 2
-    BASIC_DROID_X_MOVEMENT_SPEED: 250,
+    BASIC_DROID_X_MOVEMENT_SPEED: 225,
     BASIC_DROID_Y_MOVEMENT_SPEED: 100,
     BASIC_DROID_X_ACCELERATION: 400,
     BASIC_DROID_Y_ACCELERATION: 100,
@@ -281,7 +281,7 @@ Constants = {
   StatusBarConstants: {
     STATUS_BAR_LENGTH: 0.25, // width of the canvas to use when drawing
     STATUS_BAR_WIDTH: 20,
-    STATUS_BAR_DISPLAY_TEXT: false,
+    STATUS_BAR_DISPLAY_TEXT: true,
 
     //when the current is less than or equal to the maxSize * CriticalAmount
     //then start alerting the user by using some graphics.
@@ -354,24 +354,24 @@ Constants = {
     //I think becuase of the powerup scale, they need to be 2 row higher than where you want it.
     //can modify Z_SPAWN_X to make zerlin spawn later in the level.
     MIKE_LEVEL_ONE: [
-      '                                                                                                S                             ',
+      '                          b      s                 d       d                   f d                     S    d      d          ',
+      '                    d                d              d      dds                   d                          f     f  d        ',
+      '                           d         d            d  b      db                    d                        b        d s       ',
+      '                     d                s             s                             s                                 I s       ',
+      '                                      d                                                     ------------            b d   d   ',
+      '              d                                                                                                      b        ',
+      '                                                                                        =      f        d            fd       ', //from ground can force jump to here.
+      '                                                                                                s      d    ---               ',
+      '                                                                                               d s                            ', //halfway of camera height.
+      '                                                                                    H F                     ==                ',
       '                                                                                                                              ',
-      '                     d                                                                                                        ',
-      '                                                                                                                              ',
-      '                                                                                           -------                        d   ',
-      '                                                                                                                              ',
-      '                                                                                        =                                     ', //from ground can force jump to here.
-      '                                                                                                            ---               ',
-      '                                                                                                                              ', //halfway of camera height.
-      '                                                                                                            ==                ',
-      '                                                                                                                              ',
-      '                                            --------        C                                                                 ',
-      '                  -----                                                   ---                   H F              --           ',
+      '                                            --------                                                                          ',
+      '                  -----                                                   ---       ---                          --           ',
       '                                       ----                                                                                   ',
-      '           ------                             I           -----       ---     ----                          ---       --      ', //from ground level, can reg. jump to here.
-      '                                 -----             ----                                         - -                           ',
+      '           ------                             I         H -----     C ---     ----                          ---       --      ', //from ground level, can reg. jump to here.
+      '                               S -----             ----                                        ---                            ',
       '                                                                                                                              ',
-      '------------           -- -- ----            --------   --     --- ---             -------------------------------------------'],
+      '------------           -- -- ----            --------   --     --- ---             -----------     ---------------------------'],
     //   ^      ^- just on screen on start camera location.
     //   |-> Zerlin spawn point.
     //can jump 1 column
@@ -397,7 +397,7 @@ Constants = {
       '~~~~ ~-               --   -~   --           --                                                                 ~~-~~              -                                                       f------------------~-~~-  --   --     --                                                '
     ],
 
-    LEVEL_THREE_TILE_LAYOUT: [
+    BOSS_TEST_LAYOUT: [
       '                 ',
       '           d     ',
       '  d   X          ',
@@ -434,7 +434,7 @@ Constants = {
 
     COIN_IMAGE_SCALE: .5,
 
-    SPLIT_SHOT_TIME: 7,
+    SPLIT_SHOT_TIME: 10,
     SPLIT_LASER_AMOUNT: 4,
     SPLIT_LASER_ARC_WIDTH: Math.PI / 9,
 
