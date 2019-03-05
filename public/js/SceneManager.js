@@ -501,7 +501,9 @@ class SceneManager2 {
       // this.gameEngine.startInput();
     }
 
-	if (this.boss && !this.boss.alive) {
+
+  if (this.boss && !this.boss.alive || (this.boss == null && this.level.unspawnedBoss == null 
+        && this.droids.length == 0 && this.level.unspawnedDroids.length == 0) && !this.wonLevel) {
 		this.wonLevel = true;
 		this.boss = null;
 		this.saveProgress();
@@ -513,6 +515,7 @@ class SceneManager2 {
 		}
 	}
 	if (this.wonLevel) {
+    this.newLevel = true;
 		this.timeSinceBossDeath += this.game.clockTick;
 		if (this.timeSinceBossDeath > smc.LEVEL_COMPLETE_OVERLAY_TIME) {
 			this.levelNumber++;

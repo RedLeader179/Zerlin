@@ -364,7 +364,7 @@ Constants = {
       '                             d                  f                            n                                                     ',
       '               d                                s         d       s         f b         =                                          ', //from ground can force jump to here.
       '                                                                             d                               ---                   ',
-      '                                               f b                          f d        d                              X            ', //halfway of camera height.
+      '                                               f b                          f d        d                                           ', //halfway of camera height.
       '                          d       d                                                                         ==                     ',
       '                                            --------                          d                                                    ',
       '                                   S                                   C             T                                             ',
