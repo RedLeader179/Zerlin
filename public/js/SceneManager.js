@@ -51,9 +51,9 @@ class SceneManager2 {
   init() {
     this.buildLevels();
     document.getElementById("formOverlay").style.display = "none";
-    this.startOpeningScene();
+    // this.startOpeningScene();
     /* skip intro stuff and go strait to the level */
-    // this.startLevelScene();
+    this.startLevelScene();
     // document.getElementById("formOverlay").style.display = "none"; // hide login if not hid in css (curently is)
   }
 
@@ -384,7 +384,7 @@ class SceneManager2 {
     this.Zerlin.reset();
     this.wonLevel = false;
 
-    this.initiallyPaused = false;
+    this.initiallyPaused = true;
     this.sceneEntities = [];
     if (this.levelNumber == 3) {
       this.sceneEntities.push(new ParallaxSnowBackground(this.game, this, 300));

@@ -144,13 +144,22 @@ class InvincibilityPowerUp extends AbstractPowerUp {
  * This power up will make the deflected laser automatically
  * go to the nearest droid
  */
-class HomingLaserDeflectionPowerUp extends AbstractPowerUp {
+class HomingLaserPowerUp extends AbstractPowerUp {
   constructor(game, x, y) {
     super(game, x, y);
+    this.animation = new Animation(this.game.assetManager.getAsset('../img/powerup_laser.png'), 0, 0, 165, 159, 0.15, 12, true, false, puc.LASER_IMAGE_SCALE);
+
+    /* bounding circle */
+    this.radius = (this.animation.frameWidth / 2) * this.animation.scale;
+    this.boundCircle = {
+      radius: this.radius,
+      x: this.x + this.radius,
+      y: this.y + this.radius
+    };
   }
 
   effect() {
-
+    this.game.sceneManager.Zerlin.lightsaber.homingLasers = true;
   }
 }
 

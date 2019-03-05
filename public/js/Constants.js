@@ -330,15 +330,15 @@ Constants = {
       '                                                                    s                        m  d     n                            ',
       '                                        d                                                         f                           I    ',
       '                                  s            d                            s              -   m                                   ',
-      '                             d                  f                            n                                                     ',
-      '               d                                s         d       s         f b         =                                          ', //from ground can force jump to here.
-      '                                                                             d                               ---                   ',
-      '                                               f b                          f d        d                              X            ', //halfway of camera height.
-      '                          d       d                                                                         ==                     ',
-      '                                            --------                          d                                                    ',
+      '       d                     d                  f                            n                                                     ',
+      '           f   s                                s         d       s         f b         =                                          ', //from ground can force jump to here.
+      '    b                                                                        d                               ---                   ',
+      '        d                                      f b                          f d        d                              X            ', //halfway of camera height.
+      '                    s     d       d                                                                         ==                     ',
+      '     m                                      --------                          d                                                    ',
       '                                   S                                                 T                                             ',
       '                  -----                               H                   ---                       H F          --                ',
-      '                                       ----                                                                                        ',
+      '   W                                   ----                                                                                        ',
       '          C------                             I           -----       ---            -                      ---       --           ', //from ground level, can reg. jump to here.
       '                                 -----             ----                        --           S       - -                            ',
       '                                                                            -                                                      ',
@@ -402,13 +402,16 @@ Constants = {
     INVINCIBILITY_SCALE: 2.5,
     INVINCIBILITY_TIME: 10,
     COIN_IMAGE_SCALE: .5,
-    SPLIT_SHOT_TIME: 7,
+    LASER_IMAGE_SCALE: .5,
+    SPLIT_SHOT_TIME: 10,
     SPLIT_LASER_AMOUNT: 4,
     SPLIT_LASER_ARC_WIDTH: Math.PI / 9,
 
     TINY_MODE_TIME: 20,
     SHRINKING_TIME: 1.5,
-    TINY_SCALE: .2
+    TINY_SCALE: .175,
+
+    HOMING_LASER_TIME: 10
   },
 
   CheckPointConstants: {
