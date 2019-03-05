@@ -504,6 +504,7 @@ class SceneManager2 {
 
   if (this.boss && !this.boss.alive || (this.boss == null && this.level.unspawnedBoss == null 
         && this.droids.length == 0 && this.level.unspawnedDroids.length == 0) && !this.wonLevel) {
+          //also need to check if zerlin is near the end of the level when there is no boss.
 		this.wonLevel = true;
 		this.boss = null;
 		this.saveProgress();
@@ -528,6 +529,7 @@ class SceneManager2 {
 	}
     if (!this.startedFinalOverlay && !this.Zerlin.alive &&
       this.Zerlin.timeOfDeath + this.Zerlin.deathAnimation.totalTime < this.levelSceneTimer) {
+      this.canPause = false;
       this.startedFinalOverlay = true;
       this.sceneEntities.push(new Overlay(this.game, false, smc.LEVEL_TRANSITION_OVERLAY_TIME));
       this.sceneEntities.push(new GameOverTextScreen(this.game));
@@ -536,7 +538,8 @@ class SceneManager2 {
       this.game.audio.playBackgroundSong();
       this.startNewScene = true;
     }
-    if (this.stopLevelTime < this.levelSceneTimer && this.startNewScene) {
+    if (this.stopLevelTime < this.levelSceneTimer && this.startNewScene ||
+        (!this.canPause && this.game.keys['Enter'])) {
       this.game.audio.endAllSoundFX();
       this.startLevelTransitionScene();
       this.startNewScene = false;

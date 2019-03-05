@@ -320,7 +320,7 @@ class PowerupStatusBar extends Entity {
     this.powerup.animation.scale = powerup.smallScale;
     this.y = sbc.POWERUP_Y;
 
-    this.color = 'green';
+    this.color = 'rgb(57, 255, 20)';
   }
   update(i) {
     super.update();
