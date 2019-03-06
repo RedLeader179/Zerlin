@@ -131,10 +131,11 @@ class Level {
           this.unspawnedPowerups.push(new SplitLaserPowerUp(this.game, j * this.tileWidth, i * this.game.surfaceHeight / rows));
         } else if (this.levelLayout[i][j] === 'T') { // tiny mode powerup
           this.unspawnedPowerups.push(new TinyModePowerUp(this.game, j * this.tileWidth, i * this.game.surfaceHeight / rows));
+        } else if (this.levelLayout[i][j] === 'W') { // homing laser power up
+          this.unspawnedPowerups.push(new HomingLaserPowerUp(this.game, j * this.tileWidth, i * rowHeight));
         } else if (this.levelLayout[i][j] === 'C') { //checkpoint
           this.sceneManager.addEntity(new CheckPoint(this.game, j * this.tileWidth, i * rowHeight));
         }
-
       }
     }
   }

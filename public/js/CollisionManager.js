@@ -160,10 +160,12 @@ class CollisionManager {
           var collision = this.isCollidedWithSaber(laser);
           if (collision.collided) {
 
-            if (!this.sceneManager.Zerlin.lightsaber.splitLasers) {
-              this.deflectLaser(laser, collision.intersection);
-            } else {
+            if (this.sceneManager.Zerlin.lightsaber.splitLasers) {
               this.deflectLaserSplit(laser, collision.intersection);
+            } else if (this.sceneManager.Zerlin.lightsaber.homingLasers) {
+              this.deflectLaserHoming(laser, collision.intersection);
+            } else {
+              this.deflectLaser(laser, collision.intersection);
             }
 
             if (laser.poisoned) {
@@ -636,6 +638,17 @@ class CollisionManager {
     laser.x = laser.tailX + laser.deltaX / deltaMagnitude * laser.length;
     laser.y = laser.tailY + laser.deltaY / deltaMagnitude * laser.length;
     // laser.angle = this.findAngle(this.x, this.y, this.tailX, this.tailY);
+  }
+
+  deflectLaserHoming(laser, collisionPt) {
+    laser.isDeflected = true;
+
+    var zerlin = this.sceneManager.Zerlin;
+    var coreAngle = 2 * zerlin.lightsaber.getSaberAngle() - laser.angle;
+    var newLaser = new HomingLaser(this.game, laser.x, laser.y, laser.speed, coreAngle, laser.length, laser.width, laser.color, laser.deflectedColor);
+    newLaser.isDeflected = true;
+    this.sceneManager.lasers.push(newLaser);
+    laser.removeFromWorld = true;
   }
 
 

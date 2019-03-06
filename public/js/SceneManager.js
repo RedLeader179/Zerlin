@@ -335,7 +335,7 @@ class SceneManager2 {
     this.levelTransitionTimer = 0;
     this.update = this.levelTransitionUpdate;
     this.draw = this.levelTransitionDraw;
-    this.canPause = false;
+    this.canPause = true;
 
     this.initiallyPaused = false;
     this.sceneEntities = [];
@@ -503,32 +503,32 @@ class SceneManager2 {
     }
 
 
-  if (this.boss && !this.boss.alive || (this.boss == null && this.level.unspawnedBoss == null 
-        && this.droids.length == 0 && this.Zerlin.x >= this.level.getLengthAtI(5)) && !this.wonLevel) {
-          //also need to check if zerlin is near the end of the level when there is no boss.
-    console.log("level won");
-		this.wonLevel = true;
-		this.boss = null;
-		this.saveProgress();
-		this.startedFinalOverlay = true;
-		this.timeSinceBossDeath = 0;
-		this.sceneEntities.push(new Overlay(this.game, false, smc.LEVEL_COMPLETE_OVERLAY_TIME));
-		for (var i = this.droids.length - 1; i >= 0; i--) {
-			this.droids[i].explode();
-		}
-	}
-	if (this.wonLevel) {
-    this.newLevel = true;
-		this.timeSinceBossDeath += this.game.clockTick;
-		if (this.timeSinceBossDeath > smc.LEVEL_COMPLETE_OVERLAY_TIME) {
-			this.levelNumber++;
-			if (this.levelNumber > smc.NUM_LEVELS) {
-				this.startCreditsScene();
-			} else {
-				this.startLevelTransitionScene();
-			}
-		}
-	}
+    if (this.boss && !this.boss.alive || (this.boss == null && this.level.unspawnedBoss == null 
+          && this.droids.length == 0 && this.Zerlin.x >= this.level.getLengthAtI(5)) && !this.wonLevel) {
+            //also need to check if zerlin is near the end of the level when there is no boss.
+      console.log("level won");
+  		this.wonLevel = true;
+  		this.boss = null;
+  		this.saveProgress();
+  		this.startedFinalOverlay = true;
+  		this.timeSinceBossDeath = 0;
+  		this.sceneEntities.push(new Overlay(this.game, false, smc.LEVEL_COMPLETE_OVERLAY_TIME));
+  		for (var i = this.droids.length - 1; i >= 0; i--) {
+  			this.droids[i].explode();
+  		}
+  	}
+  	if (this.wonLevel) {
+      this.newLevel = true;
+  		this.timeSinceBossDeath += this.game.clockTick;
+  		if (this.timeSinceBossDeath > smc.LEVEL_COMPLETE_OVERLAY_TIME) {
+  			this.levelNumber++;
+  			if (this.levelNumber > smc.NUM_LEVELS) {
+  				this.startCreditsScene();
+  			} else {
+  				this.startLevelTransitionScene();
+  			}
+  		}
+  	}
     if (!this.startedFinalOverlay && !this.Zerlin.alive &&
       this.Zerlin.timeOfDeath + this.Zerlin.deathAnimation.totalTime < this.levelSceneTimer) {
       this.canPause = false;
