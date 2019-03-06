@@ -160,11 +160,15 @@ class CollisionManager {
           var collision = this.isCollidedWithSaber(laser);
           if (collision.collided) {
 
-            if (!this.sceneManager.Zerlin.lightsaber.splitLasers) {
-              this.deflectLaser(laser, collision.intersection);
-            } else {
+            if (this.sceneManager.Zerlin.lightsaber.splitLasers && this.sceneManager.Zerlin.lightsaber.homingLasers) {
+              this.deflectLaserSplitAndHoming(laser, collision.intersection);
+            } else if (this.sceneManager.Zerlin.lightsaber.splitLasers) {
               this.deflectLaserSplit(laser, collision.intersection);
-            }
+            } else if (this.sceneManager.Zerlin.lightsaber.homingLasers) {
+              this.deflectLaserHoming(laser, collision.intersection);
+            } else {
+              this.deflectLaser(laser, collision.intersection);
+            } 
 
             if (laser.poisoned) {
               this.game.audio.playSoundFx(this.game.audio.saberDeflectLaser);
@@ -506,18 +510,6 @@ class CollisionManager {
     }
   }
 
-  // airbornSaberOnDroid() {
-  //   var saberArm = this.sceneManager.Zerlin.lightsaber;
-  //   if (saberArm.throwing) {
-  //     for (var i = this.sceneManager.droids.length - 1; i >= 0; i--) {
-  //       var droid = this.sceneManager.droids[i];
-  //       if (collidePointWithCircle(droid.boundCircle.x, droid.boundCircle.y, saberArm.airbornSaber.x, saberArm.airbornSaber.y, saberArm.airbornSaber.radius)) {
-  //         droid.explode();
-  //       }
-  //     }
-  //   }
-  // }
-
   bombOnPlatform() {
     if (this.sceneManager.boss) {
       let bombs = this.sceneManager.boss.bombs;
@@ -638,19 +630,31 @@ class CollisionManager {
     // laser.angle = this.findAngle(this.x, this.y, this.tailX, this.tailY);
   }
 
-
   deflectLaserSplit(laser, collisionPt) {
     laser.isDeflected = true;
 
     var zerlin = this.sceneManager.Zerlin;
     var coreAngle = 2 * zerlin.lightsaber.getSaberAngle() - laser.angle;
-    // var deltaX = Math.cos(laser.angle) * laser.speed + zerlin.deltaX;
-    // var deltaY = Math.sin(laser.angle) * laser.speed + zerlin.deltaY;
-    // laser.slope = laser.deltaY / laser.deltaX;
 
     var individualAngle = coreAngle - puc.SPLIT_LASER_ARC_WIDTH / 2;
     for (let i = 0; i < puc.SPLIT_LASER_AMOUNT; i++) {
       let newLaser = DroidLaser.angleConstructor(this.game, laser.x, laser.y, laser.speed, individualAngle, laser.length, laser.width, laser.color, laser.deflectedColor);
+      newLaser.isDeflected = true;
+      this.sceneManager.lasers.push(newLaser);
+      individualAngle += puc.SPLIT_LASER_ARC_WIDTH / (puc.SPLIT_LASER_AMOUNT - 1);
+    }
+    laser.removeFromWorld = true;
+  }
+
+  deflectLaserSplitAndHoming(laser, collisionPt) {
+    laser.isDeflected = true;
+
+    var zerlin = this.sceneManager.Zerlin;
+    var coreAngle = 2 * zerlin.lightsaber.getSaberAngle() - laser.angle;
+
+    var individualAngle = coreAngle - puc.SPLIT_LASER_ARC_WIDTH / 2;
+    for (let i = 0; i < puc.SPLIT_LASER_AMOUNT; i++) {
+      let newLaser = new HomingLaser(this.game, laser.x, laser.y, laser.speed, individualAngle, laser.length, laser.width, laser.color, laser.deflectedColor);
       newLaser.isDeflected = true;
       this.sceneManager.lasers.push(newLaser);
       individualAngle += puc.SPLIT_LASER_ARC_WIDTH / (puc.SPLIT_LASER_AMOUNT - 1);

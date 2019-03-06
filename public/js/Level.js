@@ -24,6 +24,9 @@ F  =  force powerup
 I  =  invincibility powerup
 S  =  split-shot powerup
 T  =  tiny mode powerup
+W  =  homing laser power up
+
+C  =  checkpoint
 
 *  =  leggy droid boss
 X  =  Boss

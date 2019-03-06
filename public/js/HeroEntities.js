@@ -140,7 +140,7 @@ class Zerlin extends Entity {
             this.startSomersault();
           }
 
-        } else if (this.game.keys[kc.JUMP_FORCE] && !this.falling) {
+        } else if (this.game.keys[kc.JUMP_FORCE] && this.game.keys[kc.JUMP] && !this.falling) {
           //check if zerlin has enough force for force jump
           this.tile = null;
           this.falling = true;

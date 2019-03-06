@@ -13,11 +13,10 @@ Constants = {
     MOVE_LEFT: 'KeyA',
     CROUCH: 'KeyX',
     JUMP: 'KeyW',
-    JUMP_FORCE: 'Space',
-    SLASH: 'KeyF',
+    JUMP_FORCE: 'ShiftLeft',
+    SLASH: 'Space',
     ROLL: 'KeyS',
-    PAUSE: 'Enter',
-    THROW_SABER: 'KeyR'
+    PAUSE: 'Enter'
   },
 
   DroidBasicConstants: {
@@ -413,7 +412,7 @@ Constants = {
       '                                       m                 f                                   b                                                                                                              s                           ----                                      ',
       '           s         ~                                                     ~         s                                                        ===                          -                     m       f                                                                        ',
       '                                    F                          -~                 *                                                                                  m                      -                            ~~                 ~--~    ==                            ',
-      '                ~~                           ~  ~ ~~    H        -~    ~~                                  m                        d       --           b                     ~~~--~--  H      ---           b                                        ~~--~~                     ',
+      '               ~~~                           ~  ~ ~~    H        -~    ~~                                  m                        d       --           b                     ~~~--~--  H      ---           b                                        ~~--~~                     ',
       '                          d         === ==                  -~            ~-~~  --~---~--          ~~-~              b           -----~-~-                             ~~~~~~                                ---         -~        ===                             I      ~~~---~ ', //from ground level, can reg. jump to here. well higher now
       '    ~                                                 ==  =                                ~~~~ --                                        I ----             ---~~-~~                =======          ~~--~          ~~                 F                                         ',
       '        --~~       --             ~     d                        ~~~  =  =        H   F                =====  ~~         ~-~-----                ~~ --~--~-                  =                      n                         --     ----~~ -  ~~~---~~~~------------~~~-----     ',
