@@ -18,10 +18,14 @@ b  =  slow burst droid
 f  =  fast burst droid
 m  =  multi-shot droid
 n  =  sniper droid
+
 H  =  health powerup
 F  =  force powerup
 I  =  invincibility powerup
-*  = leggy droid boss
+S  =  split-shot powerup
+T  =  tiny mode powerup
+
+*  =  leggy droid boss
 X  =  Boss
 */
 
@@ -69,6 +73,7 @@ class Level {
   _parseTiles() {
     var rows = this.levelLayout.length;
     var rowHeight = this.camera.height / rows;
+    this.length = this.levelLayout[0].length * this.tileWidth;
 
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < this.levelLayout[i].length; j++) {
@@ -182,6 +187,10 @@ class Level {
         tile.draw();
       }
     });
+  }
+  // method that will return the length of the level minus the offset of i.
+  getLengthAtI(i) {
+    return (this.levelLayout[0].length - i) * this.tileWidth;
   }
 
 }
@@ -479,7 +488,7 @@ class ParallaxSnowBackground extends Entity {
     this.imageDistanceFromX = 0;
     this.scale = 10 * Math.pow(Math.E, -this.distanceFromCamera * .001);
     this.deltaY = 120000 / this.distanceFromCamera + SNOW_SPEED;
-    console.log(this.scale);
+    //console.log(this.scale);
   }
 
   instantiate(game, camera) {

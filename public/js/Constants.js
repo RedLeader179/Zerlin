@@ -21,8 +21,8 @@ Constants = {
   },
 
   DroidBasicConstants: {
-    BASIC_DROID_SHOOT_INTERVAL: 2, //default 2
-    BASIC_DROID_X_MOVEMENT_SPEED: 350,
+    BASIC_DROID_SHOOT_INTERVAL: 1, //default 2
+    BASIC_DROID_X_MOVEMENT_SPEED: 225,
     BASIC_DROID_Y_MOVEMENT_SPEED: 100,
     BASIC_DROID_X_ACCELERATION: 400,
     BASIC_DROID_Y_ACCELERATION: 100,
@@ -39,7 +39,7 @@ Constants = {
     BASIC_DROID_LASER_WIDTH: 10,
 
     /* This is actually spray droid? leggy droid constants */
-    LEGGY_DROID_SHOOT_INTERVAL: 4,
+    LEGGY_DROID_SHOOT_INTERVAL: 2,
     LEGGY_DROID_LASER_SPEED: 350,
     LEGGY_DROID_LASER_LENGTH: 25,
     LEGGY_DROID_LASER_WIDTH: 12,
@@ -49,7 +49,7 @@ Constants = {
     SPRAY_LASER_WIDTH_RADIANS: Math.PI / 6,
 
     /* beam droid constants */
-    BEAM_DROID_SHOOT_INTERVAL: 6,
+    BEAM_DROID_SHOOT_INTERVAL: 4,
     BEAM_DROID_SHOOT_DURATION: 2,
     BEAM_DROID_LASER_WIDTH: 16,
     BEAM_HP_PER_SECOND: 3,
@@ -60,14 +60,14 @@ Constants = {
     SLOWBURST_DROID_LASER_SPEED: 350,
     SLOWBURST_DROID_BURSTS: 4,
     // (how many shots are SKIPPED) + BURST_DROID_BURSTS in overall interval
-    SLOWBURST_DROID_SHOOTS_PER_CYCLE: 20,
+    SLOWBURST_DROID_SHOOTS_PER_CYCLE: 10,
 
     /* fast burst laser constants */
     FASTBURST_DROID_SHOOT_INTERVAL: .1,
     FASTBURST_DROID_LASER_SPEED: 550,
     FASTBURST_DROID_BURSTS: 3,
     // (how many shots are SKIPPED) + BURST_DROID_BURSTS in overall interval
-    FASTBURST_DROID_SHOOTS_PER_CYCLE: 80,
+    FASTBURST_DROID_SHOOTS_PER_CYCLE: 20,
 
     /* Sniper droid laser constants */
     SNIPER_DROID_LASER_SPEED: 850,
@@ -77,7 +77,7 @@ Constants = {
 
     /* multi-shot laser constants */
     MULTISHOT_DROID_SHOOT_INTERVAL: 2,
-    MULTISHOT_WIDTH: 35
+    MULTISHOT_WIDTH: 20
   },
 
   ZerlinConstants: {
@@ -85,7 +85,7 @@ Constants = {
 
     /* Zerlin health and force stats*/
     Z_MAX_HEALTH: 30, //was 20
-    Z_MAX_FORCE: 10,
+    Z_MAX_FORCE: 15,
     Z_FORCE_REGEN_PER_SECOND: 0.5,
     Z_FORCE_JUMP_FORCE_COST: 3,
     Z_SOMERSAULT_FORCE_COST: 3,
@@ -94,11 +94,11 @@ Constants = {
     Z_SLASH_DAMAGE: 10,
     Z_BOSS_BEAM_DAMAGE: 1,
 
-    Z_SCALE: 0.45, //was .55
+    Z_SCALE: 0.50, //was .55
 
     DRAW_COLLISION_BOUNDRIES: false,
 
-    Z_SPAWN_X: 0, //modify this to spawn zerlin later in the level.
+    Z_SPAWN_X: 7500, //modify this to spawn zerlin later in the level.
     //about 100 for 1 tile/column.
 
     Z_WIDTH: 114,
@@ -109,7 +109,7 @@ Constants = {
     Z_HORIZANTAL_POSITION: 2 - PHI,
     Z_FEET_ABOVE_FRAME: 10,
 
-    Z_WALKING_FRAME_SPEED: .1,
+    Z_WALKING_FRAME_SPEED: .12,
     Z_WALKING_FRAMES: 6,
     Z_STANDING_FRAME_SPEED: .55,
     Z_STANDING_FRAMES: 2,
@@ -125,7 +125,7 @@ Constants = {
 
     Z_SLASH_WIDTH: 558,
     Z_SLASH_HEIGHT: 390,
-    Z_SLASH_FRAME_SPEED: .04,
+    Z_SLASH_FRAME_SPEED: .03,
     Z_SLASH_FRAMES: 20,
     Z_ARM_SOCKET_X_SLASH_FRAME: 69,
     Z_ARM_SOCKET_Y_SLASH_FRAME: 230,
@@ -142,8 +142,8 @@ Constants = {
     Z_DEATH_FRAMES: 30,
 
 
-    Z_WALKING_SPEED: 240,
-    Z_SOMERSAULT_SPEED: 450,
+    Z_WALKING_SPEED: 200,
+    Z_SOMERSAULT_SPEED: 400,
     FORCE_JUMP_DELTA_Y: -950,
     JUMP_DELTA_Y: -600,
     GRAVITATIONAL_ACCELERATION: 1000,
@@ -291,9 +291,14 @@ Constants = {
     FORCE_BAR_HAS_CRITICAL_STATE: false,
 
     BOSS_BAR_LENGTH: 0.5,
-    BOSS_BAR_HAS_CRITICAL_STATE: false
+    BOSS_BAR_HAS_CRITICAL_STATE: false,
 
-
+    POWERUP_START_X: 375,
+    POWERUP_Y: 10,
+    POWERUP_BAR_Y: 50,
+    POWERUP_PAD_X: 80,
+    POWERUP_LINE_LENGTH: 30,
+    POWERUP_LENGTH: 40,
   },
 
   CameraConstants: {
@@ -305,6 +310,53 @@ Constants = {
     DRAW_BOXES: false,
     TILE_ACCELERATION: 200,
     TILE_INITIAL_VELOCITY: 200,
+
+    /*
+    Assets:
+    //powerups are capital
+
+    -  =  tile
+    =  =  moving tile
+    ~  =  falling tile
+    d  =  basic droid
+    s  =  scatter shot droid
+    b  =  slow burst droid
+    f  =  fast burst droid
+    m  =  multi-shot droid
+    n  =  sniper droid
+
+    H  =  health powerup
+    F  =  force powerup
+    I  =  invincibility powerup
+    S  =  split-shot powerup
+    T  =  tiny mode powerup
+
+    *  =  leggy droid boss
+    X  =  Boss
+    */
+
+    MIKE_LEVEL_TWO: [
+      
+      '                                                                                                    ',
+      '                                                                                                    ',
+      '                                     ------                                                         ',
+      '                                                                                                    ',
+      '                                                                                                    ',
+      '                                ~~~                                                                 ',
+      '                                                                                                    ', //from ground can force jump to here.
+      '                                                                                                    ',
+      '                                                                                                    ', //halfway of camera height.
+      '                                                                                                    ',
+      '                          ~~~                                                                       ',
+      '                                                                -----                               ',
+      '                                                                                                    ',
+      '                                            ~~ ~ ~~ ~~~ ~~~~~~~                                     ',
+      '                                                                                                    ', //from ground level, can reg. jump to here.
+      '             ==  ==            --                                                                   ',
+      '                                                                                                    ',
+      '------------        ---- -----    ---------                                                         '],
+      //   ^      ^- just on screen on start camera location.
+      //   |-> Zerlin spawn point.
 
     LEVEL_ONE_TILE_LAYOUT: [
       '                                 ',
@@ -325,51 +377,50 @@ Constants = {
     //I think becuase of the powerup scale, they need to be 2 row higher than where you want it.
     //can modify Z_SPAWN_X to make zerlin spawn later in the level.
     MIKE_LEVEL_ONE: [
-      '                                                                                          I     d  n                               ',
-      '                                    d                                                              f                               ',
-      '                                                                    s                        m  d     n                            ',
-      '                                        d                                                         f                           I    ',
-      '                                  s            d                            s              -   m                                   ',
-      '                             d                  f                            n                                                     ',
-      '             d                                  s         d       s         f b         =                                          ', //from ground can force jump to here.
-      '                                                                             d                               ---                   ',
-      '                                               f b                          f d        d                              X            ', //halfway of camera height.
-      '                    s     d       d                                                                         ==                     ',
-      '                                            --------                          d    W                                               ',
-      '                                   S                                                 T                                             ',
-      '                  -----                               H                   ---                       H F          --                ',
-      '                                       ----                                                                                        ',
-      '          C------                             I           -----       ---            -                      ---       --           ', //from ground level, can reg. jump to here.
-      '                                 -----             ----                        --           S       - -                            ',
-      '                                                                            -                                                      ',
-      '------------           -- -- ----            --------   --     --- ---------  -- ---- ---------------------------------------------'
-    ],
+      '                          b      s                 d       d                   f d                     S    d      d          ',
+      '                    d                d              d      dds                   d                          f     f  d        ',
+      '                           d         d            d  b      db                    d                        b        d s       ',
+      '                     d                s             s                             s                                 I s       ',
+      '                                      d                                                     ------------            b d   d   ',
+      '              d                                                                                                      b        ',
+      '                                                                                        =      f        d            fd       ', //from ground can force jump to here.
+      '                                                                                                s      d    ---               ',
+      '                                                                                               d s                            ', //halfway of camera height.
+      '                                                                                    H F                     ==                ',
+      '                                                                                                                              ',
+      '                                            --------                                                                          ',
+      '                  -----                                                   ---       ---    W                     --           ',
+      '                                       ----                                                                                   ',
+      '           ------                             I         H -----     C ---     ----                          ---       --      ', //from ground level, can reg. jump to here.
+      '                               S -----             ----                                        ---                            ',
+      '                                                                                                                              ',
+      '------------           -- -- ----            --------   --     --- ---             -----------     ---------------------------'],
     //   ^      ^- just on screen on start camera location.
     //   |-> Zerlin spawn point.
     //can jump 1 column
     //can roll 2 columns
     CITY_LEVEL: [                                                                                                                                                                                                                                                          // level length
       '                    b                                                                                                                                                     n                          d                                                                                                      ',
-      '                                                                                                                                                                                                              d                                                          s',
-      '                                                                                                                                                                                                         m                                    *                            ',
-      '                                                                                                                                                                                                                                                                           ',
-      '                                                                                                                                                                                                                                                                   f       ',
-      '                                                                                                                                                                m                                                                                                          ',
-      '                                                                                                                                                                            I                                                                          I                    ', //from ground can force jump to here.
-      '                                                                                            f                                                                                                                                                                               ',
-      '                                                                                                                                                                                                                                                        ~-~                    ', //halfway of camera height.
-      '                                                                            H                                                                                                                                                                                          *        ',
-      '                                       m                 f                                   b                                                                                                              s                           ----                                    ',
-      '           s         ~                                                     ~         s                                                        ===                          -                     m       f                                                                     ',
+      '                                                                                                                                                                                                              d                                                          s        ',
+      '                                                                                                                                                                                                         m                                    *                                   ',
+      '                                                                                                                                                                                                                                                                                  ',
+      '                                                                                                                                                                                                                                                                   f              ',
+      '                                                                                                                                                                m                                                                                                                 ',
+      '                                                                                                                                                                            I                                                                          I                          ', //from ground can force jump to here.
+      '                                                                                            f                                                                                                                                                                                     ',
+      '                                                                                                                                                                                                                                                        ~-~                       ', //halfway of camera height.
+      '                                                                            H                                                                                                                                                                                          *          ',
+      '                                       m                 f                                   b                                                                                                              s                           ----                                      ',
+      '           s         ~                                                     ~         s                                                        ===                          -                     m       f                                                                        ',
       '                                    F                          -~                 *                                                                                  m                      -                            ~~                 ~--~    ==                            ',
-      '                ~~                           ~  ~ ~~    H        -~    ~~                                  m                        d       --           b                     ~~~--~--  H      ---           b                                        ~~--~~                              ',
-      '                          d         === ==                  -~            ~-~~  --~---~--          ~~-~              b           -----~-~-                             ~~~~~~                                ---         -~        ===                             I      ~~~---~   ', //from ground level, can reg. jump to here. well higher now
-      '    ~                                                 ==  =                                ~~~~ --                                        I ----             ---~~-~~                =======          ~~--~          ~~                 F                                          ~~ ',
+      '                ~~                           ~  ~ ~~    H        -~    ~~                                  m                        d       --           b                     ~~~--~--  H      ---           b                                        ~~--~~                     ',
+      '                          d         === ==                  -~            ~-~~  --~---~--          ~~-~              b           -----~-~-                             ~~~~~~                                ---         -~        ===                             I      ~~~---~ ', //from ground level, can reg. jump to here. well higher now
+      '    ~                                                 ==  =                                ~~~~ --                                        I ----             ---~~-~~                =======          ~~--~          ~~                 F                                         ',
       '        --~~       --             ~     d                        ~~~  =  =        H   F                =====  ~~         ~-~-----                ~~ --~--~-                  =                      n                         --     ----~~ -  ~~~---~~~~------------~~~-----     ',
       '~~~~ ~-               --   -~   --           --                                                                 ~~-~~              -                                                       f------------------~-~~-  --   --     --                                                '
     ],
 
-    LEVEL_THREE_TILE_LAYOUT: [
+    BOSS_TEST_LAYOUT: [
       '                 ',
       '           d     ',
       '  d   X          ',
@@ -395,14 +446,18 @@ Constants = {
   PowerUpConstants: {
     HEALTH_SCALE: 3,
     RECOVER_HEALTH_AMOUNT: 20,
+
     RECOVER_FORCE_AMOUNT: 20,
     FORCE_SCALE: 3,
     DRAW_OUTLINES: false,
     FLOATING_MAGNITUDE: 12,
+
     INVINCIBILITY_SCALE: 2.5,
     INVINCIBILITY_TIME: 10,
+
     COIN_IMAGE_SCALE: .5,
     LASER_IMAGE_SCALE: .5,
+
     SPLIT_SHOT_TIME: 10,
     SPLIT_LASER_AMOUNT: 4,
     SPLIT_LASER_ARC_WIDTH: Math.PI / 9,
