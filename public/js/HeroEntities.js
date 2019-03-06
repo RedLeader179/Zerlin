@@ -14,6 +14,7 @@ class Zerlin extends Entity {
     // NOTE: this.x is CENTER of Zerlin, not left side of image. this.y is feet.
     super(game, game.surfaceWidth * camConst.ZERLIN_POSITION_ON_SCREEN + zc.Z_SPAWN_X, 0, 0, 0);
     this.sceneManager = sceneManager;
+    this.godMode = this.sceneManager.godMode;
     this.assetManager = game.assetManager;
     this.camera = camera;
     this.ctx = game.ctx;
@@ -40,9 +41,9 @@ class Zerlin extends Entity {
     this.faceRight();
 
     /* Zerlin Status' */
-    this.maxHealth = zc.Z_MAX_HEALTH;
+    this.maxHealth = this.godMode ? 999999: zc.Z_MAX_HEALTH ;
     this.currentHealth = this.maxHealth;
-    this.maxForce = zc.Z_MAX_FORCE;
+    this.maxForce = this.godMode ? 999999: zc.Z_MAX_FORCE;
     this.currentForce = this.maxForce;
 
     this.scale = zc.Z_SCALE;
@@ -59,6 +60,13 @@ class Zerlin extends Entity {
     this.poisoned = false;
     this.poisonedCounter = 0;
     this.poisonedMaxTime = Constants.DroidBossConstants.POISON_LASER_DURATION;
+  }
+
+  setHealth() {
+    this.maxHealth = this.godMode ? 999999: zc.Z_MAX_HEALTH ;
+    this.currentHealth = this.maxHealth;
+    this.maxForce = this.godMode ? 999999: zc.Z_MAX_FORCE;
+    this.currentForce = this.maxForce;
   }
 
   update() {
@@ -338,6 +346,17 @@ class Zerlin extends Entity {
 
   }
 
+  enableInvincibility() {
+    // if (this.invincible) { //if already invincible reset the timer.
+    //   this.iSeconds = Constants.PowerUpConstants.INVINCIBILITY_TIME;
+    // } else {
+    //   this.invincible = true;
+    // }
+    this.iSeconds = Constants.PowerUpConstants.INVINCIBILITY_TIME;
+    this.invincible = true;
+  }
+
+
   shrink() {
     if (!this.tiny) {
       this.tiny = true;
@@ -383,6 +402,8 @@ class Zerlin extends Entity {
       }
     }
   }
+
+  
 
   isTileBelow(tile) {
     return (this.boundingbox.left < tile.boundingBox.right) &&
@@ -774,6 +795,16 @@ class Lightsaber extends Entity {
     if (this.airbornSaber) {
       this.airbornSaber.draw();
     }
+  }
+
+  enableSplitLasers() {
+    // if (this.splitLasers) { //if splitshot is already active, reset the timer
+    //   this.splitShotTimer = puc.SPLIT_SHOT_TIME;
+    // } else {
+    //   this.splitLasers = true;
+    // }
+    this.splitShotTimer = puc.SPLIT_SHOT_TIME;
+    this.splitLasers = true;
   }
 
   saberSlope() {

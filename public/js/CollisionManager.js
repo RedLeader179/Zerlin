@@ -209,10 +209,11 @@ class CollisionManager {
           zerlin.boundingbox.x, zerlin.boundingbox.y, zerlin.boundingbox.width, zerlin.boundingbox.height)) {
 
         //play power up pickup sound
-
+        this.sceneManager.addActivePowerup(powerup);
         // call the powerup effect.
         powerup.effect();
         powerup.playSound();
+
         powerup.removeFromWorld = true;
       }
 
@@ -489,7 +490,6 @@ class CollisionManager {
         if (collidePointWithCircle(bossCenterX, bossCenterY, zerlin.lightsaber.airbornSaber.x, zerlin.lightsaber.airbornSaber.y, zerlin.lightsaber.airbornSaber.radius)) {
           this.sceneManager.boss.currentHealth -= zc.AIRBORN_SABER_DAMAGE;
           this.sceneManager.addEntity(new DroidExplosion(this.game, bossCenterX, bossCenterY, .7, .2));
-          console.log("hihihi");
         }
       }
     }

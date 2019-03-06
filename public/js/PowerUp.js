@@ -17,6 +17,10 @@ class AbstractPowerUp extends Entity {
     this.animation = null;
     this.randomYIntercept = Math.random() * Math.PI * 2;
     this.aliveTime = 0;
+
+    this.time = 0; //active time of powerup
+    this.smallScale = 0; //scale of powerup to be placed in powerupStatusBar.
+    
   }
   update() {
     super.update();
@@ -24,6 +28,8 @@ class AbstractPowerUp extends Entity {
     this.y = this.startY + puc.FLOATING_MAGNITUDE * Math.sin(3 * (this.aliveTime + this.randomYIntercept));
     this.boundCircle.y = this.y + this.radius;
   }
+
+  
 
   draw() {
     var camera = this.sceneManager.camera;
@@ -49,8 +55,12 @@ class AbstractPowerUp extends Entity {
       super.draw();
     }
   }
+  
   effect() {
     throw new Error("Can't instantiate AbstractPowerUp");
+  }
+  deactivate() {
+
   }
   playSound() {
     this.game.audio.playSoundFx(this.game.audio.item, 'itemPowerup');
@@ -133,10 +143,14 @@ class InvincibilityPowerUp extends AbstractPowerUp {
       x: this.x + this.radius,
       y: this.y + this.radius
     };
+
+    this.time = puc.INVINCIBILITY_TIME;
+    this.smallScale = 1.5;
   }
 
   effect() {
-    this.game.sceneManager.Zerlin.invincible = true;
+    //this.sceneManager.Zerlin.invincible = true;
+    this.sceneManager.Zerlin.enableInvincibility();
   }
 }
 
@@ -167,10 +181,14 @@ class SplitLaserPowerUp extends AbstractPowerUp {
       x: this.x + this.radius,
       y: this.y + this.radius
     };
+
+    this.time = puc.SPLIT_SHOT_TIME;
+    this.smallScale = 0.30;
   }
 
   effect() {
-    this.game.sceneManager.Zerlin.lightsaber.splitLasers = true;
+    //this.game.sceneManager.Zerlin.lightsaber.splitLasers = true;
+    this.sceneManager.Zerlin.lightsaber.enableSplitLasers();
   }
 }
 
@@ -188,6 +206,8 @@ class TinyModePowerUp extends AbstractPowerUp {
       x: this.x + this.radius,
       y: this.y + this.radius
     };
+    this.time = puc.TINY_MODE_TIME;
+    this.smallScale = 0.30;
   }
 
   effect() {
