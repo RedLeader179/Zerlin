@@ -339,6 +339,7 @@ class Zerlin extends Entity {
 
   }
 
+
   shrink() {
     this.tiny = true;
     this.tinyTimer = 0;
@@ -660,7 +661,6 @@ class Lightsaber extends Entity {
     this.splitLasers = false;
     this.splitShotTimer = puc.SPLIT_SHOT_TIME;
     this.homingLasers = false;
-    this.homingLaserTimer = puc.HOMING_LASER_TIME;
     this.setUpSaberImages();
     this.faceRightUpSaber();
     this.updateCollisionLine();
@@ -682,7 +682,6 @@ class Lightsaber extends Entity {
       this.homingLaserTimer -= this.game.clockTick;
       if (this.homingLaserTimer <= 0) {
         this.homingLasers = false;
-        this.homingLaserTimer = puc.HOMING_LASER_TIME;
       }
     }
 
@@ -787,6 +786,12 @@ class Lightsaber extends Entity {
 
   saberSlope() {
     return (this.bladeCollar.y - this.bladeTip.y) / (this.bladeCollar.x - this.bladeTip.x);
+  }
+
+
+  enableHomingLasers() {
+    this.homingLasers = true;
+    this.homingLaserTimer = puc.HOMING_LASER_TIME;
   }
 
   getSaberAngle() {

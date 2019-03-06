@@ -411,7 +411,8 @@ Constants = {
     SHRINKING_TIME: 1.5,
     TINY_SCALE: .175,
 
-    HOMING_LASER_TIME: 10
+    HOMING_LASER_TIME: 10,
+    HOMING_LASER_STATUS_BAR_SCALE: .2,
   },
 
   CheckPointConstants: {

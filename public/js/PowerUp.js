@@ -156,10 +156,12 @@ class HomingLaserPowerUp extends AbstractPowerUp {
       x: this.x + this.radius,
       y: this.y + this.radius
     };
+    this.time = puc.HOMING_LASER_TIME;
+    this.smallScale = puc.HOMING_LASER_STATUS_BAR_SCALE;
   }
 
   effect() {
-    this.game.sceneManager.Zerlin.lightsaber.homingLasers = true;
+    this.game.sceneManager.Zerlin.lightsaber.enableHomingLasers();
   }
 }
 
