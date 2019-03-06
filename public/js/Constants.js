@@ -195,11 +195,14 @@ Constants = {
   },
 
   SceneManagerConstants: {
+    OPENING_SEQUENCE_1_TIME: 14,
     OPENING_OVERLAY_TIME: 5,
-    OPENING_SCENE_STOP_CAMERA_PAN: 7,
+    OPENING_SCENE_CAMERA_PAN_TIME: 7,
     OPENING_SCENE_FIRST_FADE_OUT_TIME: 10,
     OPENING_MESSAGE: "There is a tremor in the Force on the Dagobah System.\nLegions of mining droids have been unleashed\non the peaceful planet. It's rich core\nof kyber is frail, and the droids are rapidly\ndestroying Dagobah's biosphere.\n\nA lone Jedi dispatched in the outer rim has\nfelt it. A lone warrior against evil...",
-    OPENING_MESSAGE_TIME: 10,
+    OPENING_MESSAGE_TIME: 13,
+    OPENING_TITLE_TIME: 8,
+    OPENING_SEQUENCE_4_TIME: 10,
     LEVEL_ONE_TEXT: "Here begins a new journey...",
     LEVEL_TRANSITION_TIME: 7,
     LEVEL_TRANSITION_OVERLAY_TIME: 3,

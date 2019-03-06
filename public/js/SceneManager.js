@@ -52,9 +52,9 @@ class SceneManager2 {
   init() {
     this.buildLevels();
     document.getElementById("formOverlay").style.display = "none";
-    //this.startOpeningScene();
+    this.startOpeningScene();
     /* skip intro stuff and go strait to the level */
-     this.startLevelScene();
+     // this.startLevelScene();
     // document.getElementById("formOverlay").style.display = "none"; // hide login if not hid in css (curently is)
   }
 
@@ -226,7 +226,7 @@ class SceneManager2 {
   startOpeningScene() {
     // empty this.sceneEntities array
     // load sceneEntities for openeing scene animation
-    this.openingSceneTimer = 0;
+    this.sequence = 1;
     this.update = this.openingSceneUpdate;
     this.draw = this.openingSceneDraw;
     this.sceneEntities = [];
@@ -242,6 +242,14 @@ class SceneManager2 {
       new Animation(this.game.assetManager.getAsset('../img/zerlin at fire.png'), 0, 0, 600, 600, .125, 6, true, false, .5),
       1, 800, 470, 450));
     this.sceneEntities.push(new Overlay(this.game, true, smc.OPENING_OVERLAY_TIME));
+    this.game.audio.playSoundFx(this.game.audio.campFire);
+
+    this.seq1EndTime = smc.OPENING_SEQUENCE_1_TIME;
+    this.seq2EndTime = this.seq1EndTime + smc.OPENING_MESSAGE_TIME;
+    this.seq3EndTime = this.seq2EndTime + smc.OPENING_TITLE_TIME;
+    this.seq4EndTime = this.seq3EndTime + smc.OPENING_SEQUENCE_4_TIME;
+    this.openingSceneTimer = 0;
+
 
     // start opening scene music
 
@@ -298,21 +306,83 @@ class SceneManager2 {
     // }
 
     // to auto play intro scene bit as steven had it and then go to the level
-    if (this.openingSceneTimer < smc.OPENING_SCENE_STOP_CAMERA_PAN) {
-      this.camera.y = -Math.pow(this.openingSceneTimer - smc.OPENING_SCENE_STOP_CAMERA_PAN, 2) * 280;
-    } else if (!this.seq1FadeOut && this.openingSceneTimer > smc.OPENING_SCENE_FIRST_FADE_OUT_TIME) {
-      this.seq1FadeOut = true;
+
+    // sequence 1: Camera panning down on Zerlin sitting by the fire
+    if (this.openingSceneTimer < smc.OPENING_SCENE_CAMERA_PAN_TIME) {
+      this.camera.y = -Math.pow(this.openingSceneTimer - smc.OPENING_SCENE_CAMERA_PAN_TIME, 2) * 280;
+    } else if (!this.seq1FadingOut && this.openingSceneTimer > this.seq1EndTime - smc.OPENING_OVERLAY_TIME) {
+      this.seq1FadingOut = true;
       this.sceneEntities.push(new Overlay(this.game, false, smc.OPENING_OVERLAY_TIME));
-    } else if (!this.seq2 && this.openingSceneTimer > smc.OPENING_OVERLAY_TIME + smc.OPENING_SCENE_FIRST_FADE_OUT_TIME) {
-      this.seq2 = true;
-      this.sceneEntities.push(new TextScreen(this.game, smc.OPENING_MESSAGE));
+
+    // sequence 2: opening message
+    } else if (this.sequence == 1 && this.openingSceneTimer > this.seq1EndTime) {
+      this.game.audio.campFire.stop();
+      this.sequence = 2;
+      this.sceneEntities.pop(); // remove previous overlay
+      this.sceneEntities.push(new TextScreen(this.game, smc.OPENING_MESSAGE, "white", smc.OPENING_MESSAGE_TIME));
       this.sceneEntities.push(new Overlay(this.game, true, smc.OPENING_OVERLAY_TIME));
-    } else if (!this.seq2FadeOut && this.openingSceneTimer > smc.OPENING_OVERLAY_TIME + smc.OPENING_SCENE_FIRST_FADE_OUT_TIME + smc.OPENING_MESSAGE_TIME) {
-      this.seq2FadeOut = true;
+    } else if (!this.seq2FadingOut && this.openingSceneTimer > this.seq2EndTime - smc.OPENING_OVERLAY_TIME) {
+      this.seq2FadingOut = true;
       this.sceneEntities.push(new Overlay(this.game, false, smc.OPENING_OVERLAY_TIME));
-    } else if (this.openingSceneTimer > smc.OPENING_OVERLAY_TIME + smc.OPENING_SCENE_FIRST_FADE_OUT_TIME + smc.OPENING_MESSAGE_TIME + smc.OPENING_OVERLAY_TIME) {
-      this.startLevelScene();
-    }
+
+    // sequence 3: Title
+    } else if (this.sequence == 2 && this.openingSceneTimer > this.seq2EndTime) {
+      this.sceneEntities.pop(); // remove previous overlay
+      this.sequence = 3;
+      this.sceneEntities.push(new TextScreen(this.game, "", "white"));
+      this.sceneEntities.push(new ParallaxAnimatedBackground(this.game, this,
+        new Animation(this.game.assetManager.getAsset('../img/title.png'), 0, 0, 1026, 342, .145, 66, false, false, .5),
+        1, 200, (this.game.surfaceWidth - 1026 * .5) / 2, (this.game.surfaceHeight - 342 * .5) / 2));
+      this.sceneEntities.push(new Overlay(this.game, true, smc.OPENING_OVERLAY_TIME * .8));
+    } else if (!this.seq3FadingOut && this.openingSceneTimer > this.seq3EndTime - smc.OPENING_OVERLAY_TIME) {
+      this.seq3FadingOut = true;
+      this.sceneEntities.push(new Overlay(this.game, false, smc.OPENING_OVERLAY_TIME * .8));
+
+    // sequence 4: Zerlin takes off in rocket
+    } else if (this.sequence == 3 && this.openingSceneTimer > this.seq3EndTime) {
+      this.sceneEntities.pop(); // remove previous overlay
+      this.sceneEntities.pop(); // remove title
+      this.sceneEntities.pop(); // remove title background
+      this.sceneEntities.pop(); // remove Zerlin by fire
+      this.sequence = 4;
+      // this.sceneEntities.pop(); // remove previous title animation
+      this.camera.x = 1400;
+      this.sceneEntities.push(new ParallaxAnimatedBackground(this.game, this,
+        new Animation(this.game.assetManager.getAsset('../img/ship take off.png'), 0, 0, 600, 600, .18, 33, false, false, 1.5),
+        1, 800, 470, -150));
+      this.sceneEntities.push(new Overlay(this.game, true, smc.OPENING_OVERLAY_TIME));
+    } else if (this.sequence == 4) {
+
+      if (!this.playTakeOffSound && this.openingSceneTimer > this.seq3EndTime + .5) {
+        this.playTakeOffSound = true;
+        this.game.audio.playSoundFx(this.game.audio.shipTakeOff);
+      }
+
+      this.seq4CameraPanTimer += this.game.clockTick;
+      if (!this.startSeq4CameraPan && this.openingSceneTimer > this.seq4EndTime - smc.OPENING_SCENE_CAMERA_PAN_TIME) {
+        this.startSeq4CameraPan = true;
+        this.seq4CameraPanTimer = 0;
+      } else if (this.startSeq4CameraPan && this.openingSceneTimer <= this.seq4EndTime) {
+        this.camera.y = -Math.pow(this.seq4CameraPanTimer, 2) * 280;
+      }
+
+      if (!this.addedTwinkleStar && this.seq4CameraPanTimer > 4.7) {
+        this.addedTwinkleStar = true;
+        this.sceneEntities.push(new ParallaxAnimatedBackground(this.game, this,
+          new Animation(this.game.assetManager.getAsset('../img/twinkling star.png'), 0, 0, 64, 64, .05, 14, false, false, .9),
+          1, 99999999, 964, 95));
+      }
+
+      if (!this.seq4FadingOut && this.openingSceneTimer > this.seq4EndTime - smc.OPENING_OVERLAY_TIME) {
+        this.seq4FadingOut = true;
+        this.sceneEntities.push(new Overlay(this.game, false, smc.OPENING_OVERLAY_TIME));
+      }
+
+      // transition to level 
+      if (this.openingSceneTimer > this.seq4EndTime) {
+        this.startLevelTransitionScene();
+      }
+    }  
 
 
     for (let i = this.sceneEntities.length - 1; i >= 0; i--) {
@@ -335,7 +405,7 @@ class SceneManager2 {
     this.levelTransitionTimer = 0;
     this.update = this.levelTransitionUpdate;
     this.draw = this.levelTransitionDraw;
-    this.canPause = true;
+    this.canPause = false;
 
     this.initiallyPaused = false;
     this.sceneEntities = [];
@@ -673,17 +743,22 @@ class PauseScreen {
 
 
 class TextScreen {
-  constructor(game, message, color) {
+  constructor(game, message, color, duration) {
     this.game = game;
     this.message = message;
+    this.duration = duration? duration : 10000 /* arbitrarily long */;
     this.font = '30px';
     this.linePieces = message.split("\n");
     this.lines = this.linePieces.length;
     this.color = color ? color : "white";
+    this.timer = 0;
   }
 
   update() {
-
+    this.timer += this.game.clockTick;
+    if (this.timer > this.duration) {
+      this.removeFromWorld = true;
+    }
   }
 
   draw() {
