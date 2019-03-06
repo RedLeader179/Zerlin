@@ -123,7 +123,7 @@ class SceneManager2 {
     this.levelBackgrounds = [];
     this.levels.push(new Level(this.game, this, lvlConst.MIKE_LEVEL_ONE, LEVEL_ONE_BACKGROUNDS, LEVEL_ONE_TILES));
     this.levels.push(new Level(this.game, this, lvlConst.CITY_LEVEL, CITY_LEVEL_BACKGROUNDS, CITY_LEVEL_TILES));
-    this.levels.push(new Level(this.game, this, lvlConst.MIKE_LEVEL_ONE, LEVEL_THREE_BACKGROUNDS, LEVEL_THREE_TILES));
+    this.levels.push(new Level(this.game, this, lvlConst.MIKE_LEVEL_TWO, LEVEL_THREE_BACKGROUNDS, LEVEL_THREE_TILES));
   }
 
   setCheckPoint(checkPoint) {

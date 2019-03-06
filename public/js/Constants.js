@@ -281,7 +281,7 @@ Constants = {
   StatusBarConstants: {
     STATUS_BAR_LENGTH: 0.25, // width of the canvas to use when drawing
     STATUS_BAR_WIDTH: 20,
-    STATUS_BAR_DISPLAY_TEXT: true,
+    STATUS_BAR_DISPLAY_TEXT: false,
 
     //when the current is less than or equal to the maxSize * CriticalAmount
     //then start alerting the user by using some graphics.
@@ -334,6 +334,29 @@ Constants = {
     *  =  leggy droid boss
     X  =  Boss
     */
+
+    MIKE_LEVEL_TWO: [
+      
+      '                                                                                                    ',
+      '                                                                                                    ',
+      '                                     ------                                                         ',
+      '                                                                                                    ',
+      '                                                                                                    ',
+      '                                ~~~                                                                 ',
+      '                                                                                                    ', //from ground can force jump to here.
+      '                                                                                                    ',
+      '                                                                                                    ', //halfway of camera height.
+      '                                                                                                    ',
+      '                          ~~~                                                                       ',
+      '                                                                -----                               ',
+      '                                                                                                    ',
+      '                                            ~~ ~ ~~ ~~~ ~~~~~~~                                     ',
+      '                                                                                                    ', //from ground level, can reg. jump to here.
+      '             ==  ==            --                                                                   ',
+      '                                                                                                    ',
+      '------------        ---- -----    ---------                                                         '],
+      //   ^      ^- just on screen on start camera location.
+      //   |-> Zerlin spawn point.
 
     LEVEL_ONE_TILE_LAYOUT: [
       '                                 ',
