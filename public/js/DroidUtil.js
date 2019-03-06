@@ -91,7 +91,7 @@ class DroidLaser extends Entity {
 		this.deflectedColor = deflectedColor;
 		this.secondaryColor = "white";
 		this.isDeflected = false;
-    this.poisoned = false;
+    	this.poisoned = false;
 
 		var distFromStartToTarget = distance({
 			x: targetX,
@@ -223,7 +223,65 @@ class DroidLaser extends Entity {
 
 
 
+class HomingLaser extends DroidLaser {
+	constructor(game, startX, startY, speed, angle, length, width, color, deflectedColor) {
+		var targetX = startX + 100 * Math.cos(angle);
+		var targetY = startY + 100 * Math.sin(angle);
+		super(game, startX, startY, speed, targetX, targetY, length, width, color, deflectedColor);
+		this.targetDroid = this.findTargetDroid();
+		if (this.targetDroid) {
+			this.wasBoundToDroid = true;
+			this.targetDroid.laser = this; // droid class does not need to know about its laser within the class (laser secretly attaches itself to droid)
+		}
+	}
 
+	update() {
+		if (this.targetDroid) {
+			var angle = this.getAngleToDroid(this.targetDroid);
+			this.deltaX = this.speed * -Math.cos(angle);
+			this.deltaY = this.speed * -Math.sin(angle);
+			if (this.targetDroid.removeFromWorld) {
+				this.targetDroid = null;
+			}
+		}
+
+		super.update();
+		if (this.targetDroid) {
+			this.tailX = this.x - Math.cos(angle) * this.length;
+			this.tailY = this.y - Math.sin(angle) * this.length;
+
+			if (this.removeFromWorld) {
+				this.targetDroid.laser = null;
+			}
+		}
+
+	}
+
+	findTargetDroid() {
+		var droids = this.sceneManager.droids;
+		var minAngleFromDeflectedPath = Math.PI;
+		var droidAtMinAngleFromDeflectedPath;
+		for (let i = 0; i < droids.length; i++) {
+			if (!droids[i].laser) {
+				let angleFromDeflectedPath = Math.abs(this.getAngleToDroid(droids[i]));
+				if (angleFromDeflectedPath < minAngleFromDeflectedPath) {
+					minAngleFromDeflectedPath = angleFromDeflectedPath;
+					droidAtMinAngleFromDeflectedPath = droids[i];
+				}
+			}
+		}
+		return droidAtMinAngleFromDeflectedPath;
+	}
+
+	getAngleToDroid(droid) {
+		var angle = Math.atan2(this.y - droid.boundCircle.y, this.x - droid.boundCircle.x);
+		if (angle > Math.PI) {
+			angle -= Math.PI * 2; // return angle with absolute value < Math.PI
+		}
+		// console.log(angle * 180 / Math.PI);
+		return angle;
+	}
+}
 
 /**
  * this class will just play the droid explosion animation

@@ -107,6 +107,7 @@ class AssetManager {
   AM.queueDownload('../img/powerup_invincibility.png');
   AM.queueDownload('../img/powerup_coin.png');
   AM.queueDownload('../img/powerup_coin_T.png');
+  AM.queueDownload('../img/powerup_laser.png');
 
 
   /********** Droid assets ******************/

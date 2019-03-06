@@ -630,6 +630,17 @@ class CollisionManager {
     // laser.angle = this.findAngle(this.x, this.y, this.tailX, this.tailY);
   }
 
+  deflectLaserHoming(laser, collisionPt) {
+    laser.isDeflected = true;
+
+    var zerlin = this.sceneManager.Zerlin;
+    var coreAngle = 2 * zerlin.lightsaber.getSaberAngle() - laser.angle;
+    var newLaser = new HomingLaser(this.game, laser.x, laser.y, laser.speed, coreAngle, laser.length, laser.width, laser.color, laser.deflectedColor);
+    newLaser.isDeflected = true;
+    this.sceneManager.lasers.push(newLaser);
+    laser.removeFromWorld = true;
+  }
+
   deflectLaserSplit(laser, collisionPt) {
     laser.isDeflected = true;
 

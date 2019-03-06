@@ -105,6 +105,7 @@ class Zerlin extends Entity {
 
 
 
+
       //move zerlin around
       if (this.game.mouse.x + this.camera.x < this.x && this.facingRight) {
         this.faceLeft();
@@ -347,15 +348,9 @@ class Zerlin extends Entity {
   }
 
   enableInvincibility() {
-    // if (this.invincible) { //if already invincible reset the timer.
-    //   this.iSeconds = Constants.PowerUpConstants.INVINCIBILITY_TIME;
-    // } else {
-    //   this.invincible = true;
-    // }
     this.iSeconds = Constants.PowerUpConstants.INVINCIBILITY_TIME;
     this.invincible = true;
   }
-
 
   shrink() {
     if (!this.tiny) {
@@ -681,6 +676,7 @@ class Lightsaber extends Entity {
     this.deflectingBeamSoundOn = false;
     this.splitLasers = false;
     this.splitShotTimer = puc.SPLIT_SHOT_TIME;
+    this.homingLasers = false;
     this.setUpSaberImages();
     this.faceRightUpSaber();
     this.updateCollisionLine();
@@ -690,7 +686,6 @@ class Lightsaber extends Entity {
     this.x = this.Zerlin.x;
     this.y = this.Zerlin.y - (zc.Z_HEIGHT - this.Zerlin.armSocketY) * this.Zerlin.scale;
 
-      //check basic status
     if (this.splitLasers) {
       this.splitShotTimer -= this.game.clockTick;
       if (this.splitShotTimer <= 0) {
@@ -698,6 +693,14 @@ class Lightsaber extends Entity {
         this.splitShotTimer = puc.SPLIT_SHOT_TIME;
       }
     }
+
+    if (this.homingLasers) {
+      this.homingLaserTimer -= this.game.clockTick;
+      if (this.homingLaserTimer <= 0) {
+        this.homingLasers = false;
+      }
+    }
+
 
     // rotate
     if (this.game.mouse) {
@@ -809,6 +812,12 @@ class Lightsaber extends Entity {
 
   saberSlope() {
     return (this.bladeCollar.y - this.bladeTip.y) / (this.bladeCollar.x - this.bladeTip.x);
+  }
+
+
+  enableHomingLasers() {
+    this.homingLasers = true;
+    this.homingLaserTimer = puc.HOMING_LASER_TIME;
   }
 
   getSaberAngle() {

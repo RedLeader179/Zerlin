@@ -97,7 +97,7 @@ Constants = {
 
     DRAW_COLLISION_BOUNDRIES: false,
 
-    Z_SPAWN_X: 0, //modify this to spawn zerlin later in the level.
+    Z_SPAWN_X: 7500, //modify this to spawn zerlin later in the level.
     //about 100 for 1 tile/column.
 
     Z_WIDTH: 114,
@@ -388,7 +388,7 @@ Constants = {
       '                                                                                    H F                     ==                ',
       '                                                                                                                              ',
       '                                            --------                                                                          ',
-      '                  -----                                                   ---       ---                          --           ',
+      '                  -----                                                   ---       ---    W                     --           ',
       '                                       ----                                                                                   ',
       '           ------                             I         H -----     C ---     ----                          ---       --      ', //from ground level, can reg. jump to here.
       '                               S -----             ----                                        ---                            ',
@@ -455,14 +455,18 @@ Constants = {
     INVINCIBILITY_TIME: 10,
 
     COIN_IMAGE_SCALE: .5,
+    LASER_IMAGE_SCALE: .5,
 
     SPLIT_SHOT_TIME: 10,
     SPLIT_LASER_AMOUNT: 4,
     SPLIT_LASER_ARC_WIDTH: Math.PI / 9,
 
-    TINY_MODE_TIME: 10,
+    TINY_MODE_TIME: 20,
     SHRINKING_TIME: 1.5,
-    TINY_SCALE: .2
+    TINY_SCALE: .175,
+
+    HOMING_LASER_TIME: 10,
+    HOMING_LASER_STATUS_BAR_SCALE: .2,
   },
 
   CheckPointConstants: {
