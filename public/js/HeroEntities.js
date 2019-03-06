@@ -347,11 +347,13 @@ class Zerlin extends Entity {
   }
 
   enableInvincibility() {
-    if (this.invincible) { //if already invincible reset the timer.
-      this.iSeconds = Constants.PowerUpConstants.INVINCIBILITY_TIME;
-    } else {
-      this.invincible = true;
-    }
+    // if (this.invincible) { //if already invincible reset the timer.
+    //   this.iSeconds = Constants.PowerUpConstants.INVINCIBILITY_TIME;
+    // } else {
+    //   this.invincible = true;
+    // }
+    this.iSeconds = Constants.PowerUpConstants.INVINCIBILITY_TIME;
+    this.invincible = true;
   }
 
 
@@ -796,11 +798,13 @@ class Lightsaber extends Entity {
   }
 
   enableSplitLasers() {
-    if (this.splitLasers) { //if splitshot is already active, reset the timer
-      this.splitShotTimer = puc.SPLIT_SHOT_TIME;
-    } else {
-      this.splitLasers = true;
-    }
+    // if (this.splitLasers) { //if splitshot is already active, reset the timer
+    //   this.splitShotTimer = puc.SPLIT_SHOT_TIME;
+    // } else {
+    //   this.splitLasers = true;
+    // }
+    this.splitShotTimer = puc.SPLIT_SHOT_TIME;
+    this.splitLasers = true;
   }
 
   saberSlope() {
