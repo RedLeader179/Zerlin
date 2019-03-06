@@ -76,8 +76,8 @@ class SceneManager2 {
     var CITY_LEVEL_BACKGROUNDS = [
       new ParallaxScrollBackground(this.game, this, '../img/city_background.png', 1, 5200),
       new ParallaxScrollBackground(this.game, this, '../img/city_buildings_back.png', 1, 2500),
-      new ParallaxScrollBackground(this.game, this, '../img/city_buildings_middle.png', 1, 1000),
-      new ParallaxScrollBackground(this.game, this, '../img/city_buildings_foreground.png', 1, 1400),
+      new ParallaxScrollBackground(this.game, this, '../img/city_buildings_middle.png', 1, 1400),
+      new ParallaxScrollBackground(this.game, this, '../img/city_buildings_foreground.png', 1, 1000),
       new ParallaxFloatingBackground(this.game, this, '../img/city_clouds_left.png', 1, 800),
       new ParallaxFloatingBackground(this.game, this, '../img/city_clouds2.png', 1, 12000),
       new ParallaxFloatingBackground(this.game, this, '../img/city_clouds_center.png', 1, 600)
