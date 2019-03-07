@@ -13,10 +13,10 @@ const cpc = Constants.CheckPointConstants;
 
 class CheckPoint extends Entity {
     constructor(game, x, y) {
-        super(game, x, y);
-
-        this.boundingBox = new BoundingBox(this.x, this.y, cpc.WIDTH, cpc.HEIGHT);
-        this.color = 'rgb(57, 255, 20)';
+        // y value is where it rests on platform
+        super(game, x, y - 186);
+        this.animation = new Animation(game.assetManager.getAsset("../img/checkpoint.png"), 0, 0, 64, 188, .1, 8, true, false, 1);
+        this.boundingBox = new BoundingBox(this.x, this.y, this.animation.frameWidth, this.animation.frameHeight);
     }
 
     update() {
@@ -24,16 +24,11 @@ class CheckPoint extends Entity {
     }
 
     draw() {
-        super.draw();
-        var cameraX = this.game.sceneManager.camera.x;
-        var ctx = this.game.ctx;
-        ctx.save();
-        
-        ctx.globalAlpha = 0.5;
-        ctx.fillStyle = this.color;
-        ctx.fillRect(this.boundingBox.x - cameraX, this.boundingBox.y, this.boundingBox.width, this.boundingBox.height); 
-
-        ctx.restore();
+        var camera = this.game.sceneManager.camera;
+        if (camera.isInView(this, this.boundingBox.width, this.boundingBox.height)) {
+            this.animation.drawFrame(this.game.clockTick, this.game.ctx, this.x - camera.x, this.y);
+            super.draw();
+        }
     }
 
     playSound() {

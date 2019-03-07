@@ -274,6 +274,7 @@ class SceneManager2 {
 
   openingSceneUpdate() {
     if (!this.canPause && this.game.keys['Enter']) {
+      this.game.audio.campFire.stop();
       this.startLevelTransitionScene(); //for going strait into the lvl
       document.getElementById("formOverlay").style.display = "none";
     }

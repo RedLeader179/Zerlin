@@ -390,9 +390,9 @@ Constants = {
       '                                            --------                                                                          ',
       '                  -----                                                   ---       ---    W                     --           ',
       '                                       ----                                                                                   ',
-      '           ------                             I         H -----     C ---     ----                          ---       --      ', //from ground level, can reg. jump to here.
+      '           ------                             I         H -----       ---     ----                          ---       --      ', //from ground level, can reg. jump to here.
       '                               S -----             ----                                        ---                            ',
-      '                                                                                                                              ',
+      '                                                                    C                                                         ',
       '------------           -- -- ----            --------   --     --- ---             -----------     ---------------------------'],
     //   ^      ^- just on screen on start camera location.
     //   |-> Zerlin spawn point.

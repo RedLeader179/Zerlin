@@ -137,7 +137,7 @@ class Level {
         } else if (this.levelLayout[i][j] === 'W') { // homing laser power up
           this.unspawnedPowerups.push(new HomingLaserPowerUp(this.game, j * this.tileWidth, i * rowHeight));
         } else if (this.levelLayout[i][j] === 'C') { //checkpoint
-          this.sceneManager.addEntity(new CheckPoint(this.game, j * this.tileWidth, i * rowHeight));
+          this.sceneManager.addEntity(new CheckPoint(this.game, j * this.tileWidth, (i + 1) * rowHeight));
         }
       }
     }
