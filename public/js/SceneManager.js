@@ -58,9 +58,9 @@ class SceneManager2 {
   init() {
     this.buildLevels();
     document.getElementById("formOverlay").style.display = "none";
-    //this.startOpeningScene();
+    this.startOpeningScene();
     /* skip intro stuff and go strait to the level */
-     this.startLevelScene();
+     //this.startLevelScene();
     // document.getElementById("formOverlay").style.display = "none"; // hide login if not hid in css (curently is)
   }
 
@@ -127,9 +127,10 @@ class SceneManager2 {
     this.levels = [];
     this.level = null;
     this.levelBackgrounds = [];
+    //this.levels.push(new Level(this.game, this, lvlConst.BOSS_TEST_LAYOUT, LEVEL_ONE_BACKGROUNDS, LEVEL_ONE_TILES));
     this.levels.push(new Level(this.game, this, lvlConst.MIKE_LEVEL_ONE, LEVEL_ONE_BACKGROUNDS, LEVEL_ONE_TILES));
     this.levels.push(new Level(this.game, this, lvlConst.CITY_LEVEL, CITY_LEVEL_BACKGROUNDS, CITY_LEVEL_TILES));
-    this.levels.push(new Level(this.game, this, lvlConst.MIKE_LEVEL_TWO, LEVEL_THREE_BACKGROUNDS, LEVEL_THREE_TILES));
+    this.levels.push(new Level(this.game, this, lvlConst.MIKE_LEVEL_THREE, LEVEL_THREE_BACKGROUNDS, LEVEL_THREE_TILES));
   }
 
   setCheckPoint(checkPoint) {
@@ -341,7 +342,7 @@ class SceneManager2 {
     this.levelTransitionTimer = 0;
     this.update = this.levelTransitionUpdate;
     this.draw = this.levelTransitionDraw;
-    this.canPause = true;
+    this.canPause = false;
 
     this.initiallyPaused = false;
     this.sceneEntities = [];
