@@ -240,7 +240,7 @@ Constants = {
 
   BossConstants: {
     B_MAX_HEALTH: 250, // was 150
-    BEAM_HP_PER_SECOND: .2, //was .5
+    BEAM_HP_PER_SECOND: 2, //was .5
 
     B_SCALE: .6,
     B_DRAW_COLLISION_BOUNDRIES: false,
@@ -268,7 +268,6 @@ Constants = {
     BC_MUZZLE_RIGHT_Y: 81,
     BC_MUZZLE_LEFT_Y: 27,
     BEAM_DROID_LASER_WIDTH: 26,
-    BEAM_HP_PER_SECOND: .3,
     BEAM_ANGLE_ACCELERATION_RADIANS: Math.PI,
     MICRO_BEAM_COUNT: 5,
     MUZZLE_WIDTH: 13,
@@ -341,6 +340,16 @@ Constants = {
     *  =  leggy droid boss
     X  =  Boss
     */
+   BOSS_TEST_LAYOUT: [
+    '                 ',
+    '                 ',
+    '                 ',
+    '            X    ',
+    '                 ',
+    '    -----        ',
+    '                 ',
+    '-----------------'
+  ],
 
     MIKE_LEVEL_THREE: [
       
@@ -429,16 +438,7 @@ Constants = {
 
 
 
-    BOSS_TEST_LAYOUT: [
-      '                 ',
-      '           d     ',
-      '  d   *          ',
-      '          --     ',
-      '       d       - ',
-      '---              ',
-      '   --            ',
-      '-----------------'
-    ],
+    
     MOVING_TILE_TESTER_LAYOUT: [
       '                 ',
       '                 ',

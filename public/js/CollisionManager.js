@@ -362,7 +362,8 @@ class CollisionManager {
             beam.isSizzling = true;
 
             if (!this.sceneManager.Zerlin.invincible) {
-              this.sceneManager.Zerlin.currentHealth -= this.game.clockTick * dbConst.BEAM_HP_PER_SECOND;
+              this.sceneManager.Zerlin.currentHealth -= this.game.clockTick * bc.BEAM_HP_PER_SECOND;
+              console.log(this.sceneManager.Zerlin.currentHealth);
               // console.log(this.sceneManager.Zerlin.hits);
             }
 
