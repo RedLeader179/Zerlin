@@ -25,7 +25,7 @@ class CollisionManager {
     this.droidOnSaber();
     this.laserOnDroid();
     this.laserOnSaber();
-    this.laserOnZerlin();
+    // this.laserOnZerlin();
     this.ZerlinOnPowerup();
     this.ZerlinOnPlatform();
     this.ZerlinOnEdgeOfMap();

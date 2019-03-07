@@ -89,6 +89,7 @@ Constants = {
     Z_FORCE_JUMP_FORCE_COST: 3,
     Z_SOMERSAULT_FORCE_COST: 3,
     Z_SABER_THROW_FORCE_COST: 4,
+    Z_LIGHTNING_FORCE_COST: 0,
     /* Zerlin damage */
     Z_SLASH_DAMAGE: 10,
     Z_BOSS_BEAM_DAMAGE: 1,
@@ -170,6 +171,8 @@ Constants = {
     LS_THROW_IMAGE_HEIGHT: 48,
     LS_THROW_RIGHT_X_AXIS: 9,
     LS_THROW_RIGHT_Y_AXIS: 13,
+    THROW_ARM_IMAGE_FINGER_X: 132,
+    THROW_ARM_IMAGE_FINGER_Y: 9,
 
     LS_AIRBORN_WIDTH: 234,
     LS_AIRBORN_HEIGHT: 234,
@@ -383,8 +386,8 @@ Constants = {
       '                                      d                                                     ------------            b d   d   ',
       '              d                                                                                                      b        ',
       '                                                                                        =      f        d            fd       ', //from ground can force jump to here.
-      '                                                                                                s      d    ---               ',
-      '                                                                                               d s                            ', //halfway of camera height.
+      '  d                                                                                             s      d    ---               ',
+      '  dd                                                                                           d s                            ', //halfway of camera height.
       '                                                                                    H F                     ==                ',
       '                                                                                                                              ',
       '                                            --------                                                                          ',
@@ -469,6 +472,15 @@ Constants = {
 
     HOMING_LASER_TIME: 10,
     HOMING_LASER_STATUS_BAR_SCALE: .2,
+  },
+
+  LightningConstants: {
+    ARC_CAPTURE_RANGE: Math.PI / 9,
+    SEGMENT_GENERATION_TIME: .0025,
+    WIDTH: 4,
+    MAX_SEGMENT_LENGTH: 50,
+    FADE_TIME: 1.5,
+    MAX_SEGMENT_ARC_RANGE: Math.PI * .8
   },
 
   CheckPointConstants: {

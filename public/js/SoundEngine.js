@@ -355,6 +355,13 @@ class SoundEngine {
       loop: false,
       volume: .4
     });
+    this.lightning = new Howl({
+      src: [
+        "sound/lightning1.wav"
+      ],
+      loop: false,
+      volume: .2
+    });
 
 
     /***** set the default sound volumes *****/ //make into constants ?
@@ -374,7 +381,8 @@ class SoundEngine {
     this.soundFXArray = [this.lightsaber, this.item, this.hero,
       this.enemy, this.beam, this.saberHum, this.wound, this.sizzle,
       this.sizzle2, this.sizzle2, this.jetPack, this.deflectBeam,
-      this.droidBossMechanical, this.saberDeflectLaser, this.poisonShot
+      this.droidBossMechanical, this.saberDeflectLaser, this.poisonShot,
+      this.lightning
     ];
     this.soundFxMuted = false;
   }
