@@ -271,7 +271,7 @@ Constants = {
     BOMB_FRAME_DURATION: .1,
     BOMB_SCALE: .35,
     BOMB_DROP_INTERVAL: .5,
-    BOMB_DAMAGE: 5, 
+    BOMB_DAMAGE: 5,
 
     BEAM_MODE_DURATION: 15,
     BOMB_MODE_DURATION: 5
@@ -335,7 +335,7 @@ Constants = {
     */
 
     MIKE_LEVEL_TWO: [
-      
+
       '                                                                                                    ',
       '                                                                                                    ',
       '                                     ------                                                         ',
@@ -344,7 +344,7 @@ Constants = {
       '                                ~~~                                                                 ',
       '                                                                                                    ', //from ground can force jump to here.
       '                                                                                                    ',
-      '                                                                                                    ', //halfway of camera height.
+      '                                                                    X                               ', //halfway of camera height.
       '                                                                                                    ',
       '                          ~~~                                                                       ',
       '                                                                -----                               ',
@@ -398,26 +398,28 @@ Constants = {
     //   |-> Zerlin spawn point.
     //can jump 1 column
     //can roll 2 columns
-    CITY_LEVEL: [                                                                                                                                                                                                                                                          // level length
-      '                    b                                                                                                                                                     n                          d                                                                                                      ',
-      '                                                                                                                                                                                                              d                                                          s        ',
-      '                                                                                                                                                                                                         m                                    *                                   ',
-      '                                                                                                                                                                                                                                                                                  ',
-      '                                                                                                                                                                                                                                                                   f              ',
-      '                                                                                                                                                                m                                                                                                                 ',
-      '                                                                                                                                                                            I                                                                          I                          ', //from ground can force jump to here.
-      '                                                                                            f                                                                                                                                                                                     ',
-      '                                                                                                                                                                                                                                                        ~-~                       ', //halfway of camera height.
-      '                                                                            H                                                                                                                                                                                          *          ',
-      '                                       m                 f                                   b                                                                                                              s                           ----                                      ',
-      '           s         ~                                                     ~         s                                                        ===                          -                     m       f                                                                        ',
-      '                                    F                          -~                 *                                                                                  m                      -                            ~~                 ~--~    ==                            ',
-      '               ~~~                           ~  ~ ~~    H        -~    ~~                                  m                        d       --           b                     ~~~--~--  H      ---           b                                        ~~--~~                     ',
-      '                          d         === ==                  -~            ~-~~  --~---~--          ~~-~              b           -----~-~-                             ~~~~~~                                ---         -~        ===                             I      ~~~---~ ', //from ground level, can reg. jump to here. well higher now
-      '    ~                                                 ==  =                                ~~~~ --                                        I ----             ---~~-~~                =======          ~~--~          ~~                 F                                         ',
-      '        --~~       --             ~     d                        ~~~  =  =        H   F                =====  ~~         ~-~-----                ~~ --~--~-                  =                      n                         --     ----~~ -  ~~~---~~~~------------~~~-----     ',
-      '~~~~ ~-               --   -~   --           --                                                                 ~~-~~              -                                                       f------------------~-~~-  --   --     --                                                '
-    ],
+    CITY_LEVEL: [
+          '                                                                                                                               ',
+          '                               d                                 b                                                             ',
+          '                                                                                   n                                           ',
+          '                                                                                                              m                ',
+          '                                             f                                                                                 ',
+          '                                                                                                     I                         ',
+          '                              s                                                                                                ',
+          '                                     ~  ~~~                                                                                    ', //from ground can force jump to here.
+          '                                                                                      m             ~~                         ',
+          '                                                    n                                         --~~                             ', //halfway of camera height.
+          '                d                    b s                m                          ~~~~---~~          n                        ',
+          'd                     f                                         f         ~~~                d                                 ',
+          '                         H                                                   W          n                                      ',
+          '                                                == C                ~~~~~                       T                              ',
+          '                s        ~~~       I   d   = ==        ~~~~--~~--           ~--~ === =   ----                                  ',
+          '  ~                                                                                             ==                             ', //from ground level, can reg. jump to here.
+          '          ~~~~~~~                 ~~~--~---        ~~~  H     F                            S                    ----~--        ',
+          '                   ------- == ===                               -------~~~~-                                                   ',
+          '~~~-----                                                                               ----------~--~------~---~         ~-----'],
+
+
 
     BOSS_TEST_LAYOUT: [
       '                 ',

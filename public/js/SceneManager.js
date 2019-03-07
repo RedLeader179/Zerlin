@@ -5,21 +5,27 @@ Joshua Atherton, Michael Josten, Steven Golob
 */
 
 /*
-Assets:
-//powerups are capital
-
--  =  tile
-=  =  moving tile
-d  =  basic droid
-s  =  scatter shot droid
-b  =  slow burst droid
-f  =  fast burst droid
-m  =  multi-shot droid
-n  =  sniper droid
-H  =  health powerup
-F  =  force powerup
-I  =  invincibility powerup
-X = boss
+// -  =  tile
+// =  =  moving tile
+// ~  =  falling tile
+// d  =  basic droid
+// s  =  scatter shot droid
+// b  =  slow burst droid
+// f  =  fast burst droid
+// m  =  multi-shot droid
+// n  =  sniper droid
+//
+// H  =  health powerup
+// F  =  force powerup
+// I  =  invincibility powerup
+// S  =  split-shot powerup
+// T  =  tiny mode powerup
+// W  =  homing laser power up
+//
+// C  =  checkpoint
+//
+// *  =  leggy droid boss
+// X  =  Boss
 */
 
 const smc = Constants.SceneManagerConstants;
@@ -72,7 +78,7 @@ class SceneManager2 {
       rightTile: '../img/forest_right_tile.png',
       leftRightTile: '../img/forest_both_rounded_tile.png'
     };
-    
+
     var CITY_LEVEL_BACKGROUNDS = [
       new ParallaxScrollBackground(this.game, this, '../img/city_background.png', 1, 5200),
       new ParallaxScrollBackground(this.game, this, '../img/city_buildings_back.png', 1, 2500),
@@ -503,7 +509,7 @@ class SceneManager2 {
     }
 
 
-    if (this.boss && !this.boss.alive || (this.boss == null && this.level.unspawnedBoss == null 
+    if (this.boss && !this.boss.alive || (this.boss == null && this.level.unspawnedBoss == null
           && this.droids.length == 0 && this.Zerlin.x >= this.level.getLengthAtI(5)) && !this.wonLevel) {
             //also need to check if zerlin is near the end of the level when there is no boss.
       console.log("level won");
