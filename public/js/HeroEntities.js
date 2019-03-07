@@ -14,6 +14,7 @@ class Zerlin extends Entity {
     // NOTE: this.x is CENTER of Zerlin, not left side of image. this.y is feet.
     super(game, game.surfaceWidth * camConst.ZERLIN_POSITION_ON_SCREEN + zc.Z_SPAWN_X, 0, 0, 0);
     this.sceneManager = sceneManager;
+    this.godMode = this.sceneManager.godMode;
     this.assetManager = game.assetManager;
     this.camera = camera;
     this.ctx = game.ctx;
@@ -40,9 +41,9 @@ class Zerlin extends Entity {
     this.faceRight();
 
     /* Zerlin Status' */
-    this.maxHealth = zc.Z_MAX_HEALTH;
+    this.maxHealth = this.godMode ? 999999: zc.Z_MAX_HEALTH ;
     this.currentHealth = this.maxHealth;
-    this.maxForce = zc.Z_MAX_FORCE;
+    this.maxForce = this.godMode ? 999999: zc.Z_MAX_FORCE;
     this.currentForce = this.maxForce;
 
     this.scale = zc.Z_SCALE;
@@ -59,6 +60,13 @@ class Zerlin extends Entity {
     this.poisoned = false;
     this.poisonedCounter = 0;
     this.poisonedMaxTime = Constants.DroidBossConstants.POISON_LASER_DURATION;
+  }
+
+  setHealth() {
+    this.maxHealth = this.godMode ? 999999: zc.Z_MAX_HEALTH ;
+    this.currentHealth = this.maxHealth;
+    this.maxForce = this.godMode ? 999999: zc.Z_MAX_FORCE;
+    this.currentForce = this.maxForce;
   }
 
   update() {
@@ -97,6 +105,7 @@ class Zerlin extends Entity {
 
 
 
+
       //move zerlin around
       if (this.game.mouse.x + this.camera.x < this.x && this.facingRight) {
         this.faceLeft();
@@ -132,7 +141,7 @@ class Zerlin extends Entity {
             this.startSomersault();
           }
 
-        } else if (this.game.keys[kc.JUMP_FORCE] && !this.falling) {
+        } else if (this.game.keys[kc.JUMP_FORCE] && this.game.keys[kc.JUMP] && !this.falling) {
           //check if zerlin has enough force for force jump
           this.tile = null;
           this.falling = true;
@@ -338,6 +347,11 @@ class Zerlin extends Entity {
 
   }
 
+  enableInvincibility() {
+    this.iSeconds = Constants.PowerUpConstants.INVINCIBILITY_TIME;
+    this.invincible = true;
+  }
+
   shrink() {
     if (!this.tiny) {
       this.tiny = true;
@@ -383,6 +397,8 @@ class Zerlin extends Entity {
       }
     }
   }
+
+  
 
   isTileBelow(tile) {
     return (this.boundingbox.left < tile.boundingBox.right) &&
@@ -660,6 +676,7 @@ class Lightsaber extends Entity {
     this.deflectingBeamSoundOn = false;
     this.splitLasers = false;
     this.splitShotTimer = puc.SPLIT_SHOT_TIME;
+    this.homingLasers = false;
     this.setUpSaberImages();
     this.faceRightUpSaber();
     this.updateCollisionLine();
@@ -669,7 +686,6 @@ class Lightsaber extends Entity {
     this.x = this.Zerlin.x;
     this.y = this.Zerlin.y - (zc.Z_HEIGHT - this.Zerlin.armSocketY) * this.Zerlin.scale;
 
-      //check basic status
     if (this.splitLasers) {
       this.splitShotTimer -= this.game.clockTick;
       if (this.splitShotTimer <= 0) {
@@ -677,6 +693,14 @@ class Lightsaber extends Entity {
         this.splitShotTimer = puc.SPLIT_SHOT_TIME;
       }
     }
+
+    if (this.homingLasers) {
+      this.homingLaserTimer -= this.game.clockTick;
+      if (this.homingLaserTimer <= 0) {
+        this.homingLasers = false;
+      }
+    }
+
 
     // rotate
     if (this.game.mouse) {
@@ -776,8 +800,24 @@ class Lightsaber extends Entity {
     }
   }
 
+  enableSplitLasers() {
+    // if (this.splitLasers) { //if splitshot is already active, reset the timer
+    //   this.splitShotTimer = puc.SPLIT_SHOT_TIME;
+    // } else {
+    //   this.splitLasers = true;
+    // }
+    this.splitShotTimer = puc.SPLIT_SHOT_TIME;
+    this.splitLasers = true;
+  }
+
   saberSlope() {
     return (this.bladeCollar.y - this.bladeTip.y) / (this.bladeCollar.x - this.bladeTip.x);
+  }
+
+
+  enableHomingLasers() {
+    this.homingLasers = true;
+    this.homingLaserTimer = puc.HOMING_LASER_TIME;
   }
 
   getSaberAngle() {

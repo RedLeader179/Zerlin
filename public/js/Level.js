@@ -18,10 +18,17 @@ b  =  slow burst droid
 f  =  fast burst droid
 m  =  multi-shot droid
 n  =  sniper droid
+
 H  =  health powerup
 F  =  force powerup
 I  =  invincibility powerup
-*  = leggy droid boss
+S  =  split-shot powerup
+T  =  tiny mode powerup
+W  =  homing laser power up
+
+C  =  checkpoint
+
+*  =  leggy droid boss
 X  =  Boss
 */
 
@@ -69,6 +76,7 @@ class Level {
   _parseTiles() {
     var rows = this.levelLayout.length;
     var rowHeight = this.camera.height / rows;
+    this.length = this.levelLayout[0].length * this.tileWidth;
 
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < this.levelLayout[i].length; j++) {
@@ -126,10 +134,11 @@ class Level {
           this.unspawnedPowerups.push(new SplitLaserPowerUp(this.game, j * this.tileWidth, i * this.game.surfaceHeight / rows));
         } else if (this.levelLayout[i][j] === 'T') { // tiny mode powerup
           this.unspawnedPowerups.push(new TinyModePowerUp(this.game, j * this.tileWidth, i * this.game.surfaceHeight / rows));
+        } else if (this.levelLayout[i][j] === 'W') { // homing laser power up
+          this.unspawnedPowerups.push(new HomingLaserPowerUp(this.game, j * this.tileWidth, i * rowHeight));
         } else if (this.levelLayout[i][j] === 'C') { //checkpoint
           this.sceneManager.addEntity(new CheckPoint(this.game, j * this.tileWidth, i * rowHeight));
         }
-
       }
     }
   }
@@ -181,6 +190,10 @@ class Level {
         tile.draw();
       }
     });
+  }
+  // method that will return the length of the level minus the offset of i.
+  getLengthAtI(i) {
+    return (this.levelLayout[0].length - i) * this.tileWidth;
   }
 
 }
@@ -478,7 +491,7 @@ class ParallaxSnowBackground extends Entity {
     this.imageDistanceFromX = 0;
     this.scale = 10 * Math.pow(Math.E, -this.distanceFromCamera * .001);
     this.deltaY = 120000 / this.distanceFromCamera + SNOW_SPEED;
-    console.log(this.scale);
+    //console.log(this.scale);
   }
 
   instantiate(game, camera) {

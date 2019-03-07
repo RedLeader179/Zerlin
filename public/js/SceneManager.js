@@ -5,21 +5,27 @@ Joshua Atherton, Michael Josten, Steven Golob
 */
 
 /*
-Assets:
-//powerups are capital
-
--  =  tile
-=  =  moving tile
-d  =  basic droid
-s  =  scatter shot droid
-b  =  slow burst droid
-f  =  fast burst droid
-m  =  multi-shot droid
-n  =  sniper droid
-H  =  health powerup
-F  =  force powerup
-I  =  invincibility powerup
-X = boss
+// -  =  tile
+// =  =  moving tile
+// ~  =  falling tile
+// d  =  basic droid
+// s  =  scatter shot droid
+// b  =  slow burst droid
+// f  =  fast burst droid
+// m  =  multi-shot droid
+// n  =  sniper droid
+//
+// H  =  health powerup
+// F  =  force powerup
+// I  =  invincibility powerup
+// S  =  split-shot powerup
+// T  =  tiny mode powerup
+// W  =  homing laser power up
+//
+// C  =  checkpoint
+//
+// *  =  leggy droid boss
+// X  =  Boss
 */
 
 const smc = Constants.SceneManagerConstants;
@@ -46,14 +52,15 @@ class SceneManager2 {
       this.game.assetManager.getAsset('../img/music_menu_xmusic.png'),
       this.game.assetManager.getAsset('../img/music_menu_xfx.png')
     ]);
+    this.godMode = false;
   }
 
   init() {
     this.buildLevels();
     document.getElementById("formOverlay").style.display = "none";
-    this.startOpeningScene();
+    //this.startOpeningScene();
     /* skip intro stuff and go strait to the level */
-    // this.startLevelScene();
+     this.startLevelScene();
     // document.getElementById("formOverlay").style.display = "none"; // hide login if not hid in css (curently is)
   }
 
@@ -71,12 +78,12 @@ class SceneManager2 {
       rightTile: '../img/forest_right_tile.png',
       leftRightTile: '../img/forest_both_rounded_tile.png'
     };
-    
+
     var CITY_LEVEL_BACKGROUNDS = [
       new ParallaxScrollBackground(this.game, this, '../img/city_background.png', 1, 5200),
       new ParallaxScrollBackground(this.game, this, '../img/city_buildings_back.png', 1, 2500),
-      new ParallaxScrollBackground(this.game, this, '../img/city_buildings_middle.png', 1, 1000),
-      new ParallaxScrollBackground(this.game, this, '../img/city_buildings_foreground.png', 1, 1400),
+      new ParallaxScrollBackground(this.game, this, '../img/city_buildings_middle.png', 1, 1400),
+      new ParallaxScrollBackground(this.game, this, '../img/city_buildings_foreground.png', 1, 1000),
       new ParallaxFloatingBackground(this.game, this, '../img/city_clouds_left.png', 1, 800),
       new ParallaxFloatingBackground(this.game, this, '../img/city_clouds2.png', 1, 12000),
       new ParallaxFloatingBackground(this.game, this, '../img/city_clouds_center.png', 1, 600)
@@ -122,7 +129,7 @@ class SceneManager2 {
     this.levelBackgrounds = [];
     this.levels.push(new Level(this.game, this, lvlConst.MIKE_LEVEL_ONE, LEVEL_ONE_BACKGROUNDS, LEVEL_ONE_TILES));
     this.levels.push(new Level(this.game, this, lvlConst.CITY_LEVEL, CITY_LEVEL_BACKGROUNDS, CITY_LEVEL_TILES));
-    this.levels.push(new Level(this.game, this, lvlConst.MIKE_LEVEL_ONE, LEVEL_THREE_BACKGROUNDS, LEVEL_THREE_TILES));
+    this.levels.push(new Level(this.game, this, lvlConst.MIKE_LEVEL_TWO, LEVEL_THREE_BACKGROUNDS, LEVEL_THREE_TILES));
   }
 
   setCheckPoint(checkPoint) {
@@ -150,6 +157,26 @@ class SceneManager2 {
 
   addPowerup(powerup) {
     this.powerups.push(powerup);
+  }
+  addActivePowerup(powerup) {
+    if (this.activePowerups.length == 0) {
+      this.activePowerups.push(new PowerupStatusBar(this.game, this, 0, 0, powerup));
+    } else {
+      var powerupExists = false;
+      var pStatusBar;
+      for (var i = 0; i < this.activePowerups.length; i++) {
+        var activePowerup = this.activePowerups[i].getPowerup();
+        if (powerup.constructor.name === activePowerup.constructor.name) {
+          powerupExists = true;
+          pStatusBar = this.activePowerups[i];
+        }
+      }
+      if (powerupExists) {
+        pStatusBar.reset();
+      } else {
+        this.activePowerups.push(new PowerupStatusBar(this.game, this, 0, 0, powerup));
+      }
+    }
   }
 
   pause() { // todo: pause music as well
@@ -314,7 +341,7 @@ class SceneManager2 {
     this.levelTransitionTimer = 0;
     this.update = this.levelTransitionUpdate;
     this.draw = this.levelTransitionDraw;
-    this.canPause = false;
+    this.canPause = true;
 
     this.initiallyPaused = false;
     this.sceneEntities = [];
@@ -375,6 +402,7 @@ class SceneManager2 {
     this.beams = [];
     this.powerups = [];
     this.otherEntities = [];
+    this.activePowerups = [];
     this.boss = null;
     this.bossMusicSwitched = false;
     this.bossHealthBar = null;
@@ -438,6 +466,12 @@ class SceneManager2 {
           this.powerups.splice(i, 1);
         }
       }
+      for (var i = this.activePowerups.length - 1; i >= 0; i--) {
+        this.activePowerups[i].update(i);
+        if (this.activePowerups[i].removeFromWorld) {
+          this.activePowerups.splice(i, 1);
+        }
+      }
       for (var i = this.otherEntities.length - 1; i >= 0; i--) {
         this.otherEntities[i].update();
         if (this.otherEntities[i].removeFromWorld) {
@@ -474,30 +508,36 @@ class SceneManager2 {
       // this.gameEngine.startInput();
     }
 
-	if (this.boss && !this.boss.alive) {
-		this.wonLevel = true;
-		this.boss = null;
-		this.saveProgress();
-		this.startedFinalOverlay = true;
-		this.timeSinceBossDeath = 0;
-		this.sceneEntities.push(new Overlay(this.game, false, smc.LEVEL_COMPLETE_OVERLAY_TIME));
-		for (var i = this.droids.length - 1; i >= 0; i--) {
-			this.droids[i].explode();
-		}
-	}
-	if (this.wonLevel) {
-		this.timeSinceBossDeath += this.game.clockTick;
-		if (this.timeSinceBossDeath > smc.LEVEL_COMPLETE_OVERLAY_TIME) {
-			this.levelNumber++;
-			if (this.levelNumber > smc.NUM_LEVELS) {
-				this.startCreditsScene();
-			} else {
-				this.startLevelTransitionScene();
-			}
-		}
-	}
+
+    if (this.boss && !this.boss.alive || (this.boss == null && this.level.unspawnedBoss == null
+          && this.droids.length == 0 && this.Zerlin.x >= this.level.getLengthAtI(5)) && !this.wonLevel) {
+            //also need to check if zerlin is near the end of the level when there is no boss.
+      console.log("level won");
+  		this.wonLevel = true;
+  		this.boss = null;
+  		this.saveProgress();
+  		this.startedFinalOverlay = true;
+  		this.timeSinceBossDeath = 0;
+  		this.sceneEntities.push(new Overlay(this.game, false, smc.LEVEL_COMPLETE_OVERLAY_TIME));
+  		for (var i = this.droids.length - 1; i >= 0; i--) {
+  			this.droids[i].explode();
+  		}
+  	}
+  	if (this.wonLevel) {
+      this.newLevel = true;
+  		this.timeSinceBossDeath += this.game.clockTick;
+  		if (this.timeSinceBossDeath > smc.LEVEL_COMPLETE_OVERLAY_TIME) {
+  			this.levelNumber++;
+  			if (this.levelNumber > smc.NUM_LEVELS) {
+  				this.startCreditsScene();
+  			} else {
+  				this.startLevelTransitionScene();
+  			}
+  		}
+  	}
     if (!this.startedFinalOverlay && !this.Zerlin.alive &&
       this.Zerlin.timeOfDeath + this.Zerlin.deathAnimation.totalTime < this.levelSceneTimer) {
+      this.canPause = false;
       this.startedFinalOverlay = true;
       this.sceneEntities.push(new Overlay(this.game, false, smc.LEVEL_TRANSITION_OVERLAY_TIME));
       this.sceneEntities.push(new GameOverTextScreen(this.game));
@@ -506,7 +546,8 @@ class SceneManager2 {
       this.game.audio.playBackgroundSong();
       this.startNewScene = true;
     }
-    if (this.stopLevelTime < this.levelSceneTimer && this.startNewScene) {
+    if (this.stopLevelTime < this.levelSceneTimer && this.startNewScene ||
+        (!this.canPause && this.game.keys['Enter'])) {
       this.game.audio.endAllSoundFX();
       this.startLevelTransitionScene();
       this.startNewScene = false;
@@ -531,6 +572,9 @@ class SceneManager2 {
     }
     for (var i = 0; i < this.powerups.length; i++) {
       this.powerups[i].draw(this.ctx);
+    }
+    for (var i = 0; i < this.activePowerups.length; i++) {
+      this.activePowerups[i].draw();
     }
     for (var i = 0; i < this.otherEntities.length; i++) {
       this.otherEntities[i].draw(this.ctx);
@@ -593,6 +637,17 @@ class SceneManager2 {
   //________________________________________________________
   saveProgress() {
 
+  }
+
+  toggleGodMode() {
+    if (this.godMode) {
+      this.godMode = false;
+      this.Zerlin.godMode = false;
+    } else {
+      this.godMode = true;
+      this.Zerlin.godMode = true;
+    }
+    this.Zerlin.setHealth();
   }
 }
 

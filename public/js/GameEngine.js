@@ -30,7 +30,7 @@ class GameEngine {
       y: 100
     };
     this.click = null;
-    this.keys = {};
+    this.keys = {};    
   }
 
   init(ctx) {
@@ -39,10 +39,14 @@ class GameEngine {
     this.surfaceHeight = this.ctx.canvas.height;
     this.timer = new Timer(this);
     this.sceneManager = new SceneManager2(this);
-
     this.audio = new SoundEngine(this);
     this.startInput();
     this.sceneManager.init();
+
+    var godModeButton = document.getElementById("godMode");
+    godModeButton.addEventListener('click', event => {
+      this.sceneManager.toggleGodMode();
+    });
     console.log('game initialized');
   }
 
@@ -74,14 +78,6 @@ class GameEngine {
     this.ctx.save();
     this.sceneManager.draw();
 
-
-    // if (this.gameOver) {
-    //     this.ctx.textAlign = 'center';
-    //     this.ctx.font = '70px serif';
-    //     this.ctx.fillText('GAME OVER', this.camera.width / 2, this.camera.height / 2);
-    // }
-
-
     this.ctx.restore();
   }
 
@@ -101,6 +97,7 @@ class GameEngine {
     }
 
     this.ctx.canvas.addEventListener("keydown", (e) => {
+      e.preventDefault();
       if (that.keys[e.code]) {
         return;
       } // prevent repeating calls when key is held down
@@ -112,7 +109,6 @@ class GameEngine {
         }
       }
       that.keys[e.code] = true;
-      e.preventDefault();
     }, false);
 
     this.ctx.canvas.addEventListener("keyup", function(e) {
@@ -156,14 +152,6 @@ class GameEngine {
   }
 
 }
-
-
-
-
-
-
-
-
 
 class Timer {
   constructor() {
