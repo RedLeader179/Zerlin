@@ -262,8 +262,18 @@ class FallingTile extends Tile {
       this.falling = true;
       this.y += 10 * this.game.clockTick;
       this.boundingBox.updateCoordinates(this.x, this.y);
+      this.surface = {
+        p1: {
+          x: this.x,
+          y: this.y
+        },
+        p2: {
+          x: this.width + this.x,
+          y: this.y
+        }
+      };
     }
-    if (this.y > 700) {
+    if (this.y > this.game.surfaceHeight) {
       this.removeFromWorld = true;
       // console.log("removed from world");
     }

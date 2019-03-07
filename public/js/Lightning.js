@@ -18,6 +18,11 @@ class Lightning extends Entity {
 		this.power = power;
 		this.angle = Math.atan2(target.y - startY, target.x + this.camera.x - startX);
 		this.target = this.findEnemyInPath();
+		if (this.target) {
+			this.hadTarget = true;
+			this.target.lightning = this;
+		}
+
 		this.segments = [];
 		this.segmentGenerationTimer = ltng.SEGMENT_GENERATION_TIME;
 		this.opacity = 1;
@@ -30,17 +35,20 @@ class Lightning extends Entity {
 		while (!this.reachedEnd && this.segmentGenerationTimer >= ltng.SEGMENT_GENERATION_TIME) {
 			this.segmentGenerationTimer -= ltng.SEGMENT_GENERATION_TIME;
 			this.addSegment();
-			this.checkIfReachedEnd();
+			this.checkLightningCollision();
 		}
 		if (this.reachedEnd) {
 			this.opacity -= this.game.clockTick / ltng.FADE_TIME;
 		}
 		if (this.opacity < 0) {
 			this.removeFromWorld = true;
+			if (this.target) this.target.lightning = null;
 		}
 	}
 
 	draw() {
+		var originalAlpha = this.game.ctx.globalAlpha;
+      	this.game.ctx.globalAlpha = 1;
 		var width = this.reachedEnd? ltng.WIDTH * 2 * this.opacity : ltng.WIDTH;
 		// width *= this.power;
 		var cameraX = this.camera.x;
@@ -75,26 +83,38 @@ class Lightning extends Entity {
 		}
 
 		ctx.restore();
+      	this.game.ctx.globalAlpha = originalAlpha;
 	}
 	
 	findEnemyInPath() {
 		var droids = this.sceneManager.droids;
 		// var targets = [];
-		// if (this.sceneManager.boss && ) {
-
-		// } 
-		var minDistance = 99999999;
-		var target;
-		for (let i = 0; i < droids.length; i++) {
-			let d = distance(this, droids[i].boundCircle);
-			if (d < minDistance && this.isInRange(droids[i].boundCircle)) {
-				minDistance = d;
-				target = droids[i];
+		if ((this.sceneManager.boss && this.isInRange({x: this.sceneManager.boss.boundingbox.width / 2 + this.sceneManager.boss.boundingbox.x, 
+		                                               y: this.sceneManager.boss.boundingbox.height / 2 + this.sceneManager.boss.boundingbox.y}))) {
+			target = this.sceneManager.boss;
+		} else {
+			var minDistance = 99999999;
+			var target;
+			for (let i = 0; i < droids.length; i++) {
+				let d = distance(this, droids[i].boundCircle);
+				if (!droids[i].lightning && d < minDistance && this.isInRange(droids[i].boundCircle)) {
+					minDistance = d;
+					target = droids[i];
+				}
 			}
 		}
 		return target;
 
 	}	
+
+	XYofTarget() {
+		if (this.target && this.target instanceof AbstractDroid) {
+			return this.target.boundCircle;
+		} else if (this.target && this.target instanceof Boss) {
+			return {x: this.sceneManager.boss.boundingbox.width / 2 + this.sceneManager.boss.boundingbox.x, 
+		            y: this.sceneManager.boss.boundingbox.height / 2 + this.sceneManager.boss.boundingbox.y};
+		}
+	}
 
 	isInRange(droid) {
 		var angleToDroid = Math.atan2(droid.y - this.y, droid.x - this.x);
@@ -106,11 +126,12 @@ class Lightning extends Entity {
 		let startY = this.segments.length > 0? this.segments[this.segments.length - 1].p2.y : this.y;
 
 		if (this.target) {
-			let distanceToTarget = distance({x: startX, y: startY}, this.target.boundCircle);
+			var target = this.XYofTarget(this.target);
+			let distanceToTarget = distance({x: startX, y: startY}, target);
 			var length = distanceToTarget > ltng.MAX_SEGMENT_LENGTH? Math.random() * ltng.MAX_SEGMENT_LENGTH : distanceToTarget;
 			let arcRangeOfNextSegment = this.getArcRangeForSegment(distanceToTarget);
 
-			var angle = Math.atan2(this.target.boundCircle.y - startY, this.target.boundCircle.x - startX) + (Math.random() - .5) * arcRangeOfNextSegment;
+			var angle = Math.atan2(target.y - startY, target.x - startX) + (Math.random() - .5) * arcRangeOfNextSegment;
 
 
 		} else {
@@ -135,11 +156,20 @@ class Lightning extends Entity {
 		}
 	}
 
-	checkIfReachedEnd() {
+	checkLightningCollision() {
 		if (this.target) {
-			if (collideLineWithCircle2(this.segments[this.segments.length - 1], this.target.boundCircle)) {
-				this.reachedEnd = true;
-				this.target.explode();
+			if (this.target instanceof AbstractDroid) {
+				if (collideLineWithCircle2(this.segments[this.segments.length - 1], this.XYofTarget(this.target))) {
+					this.reachedEnd = true;
+					this.target.explode();
+				}
+			} else if (this.target instanceof Boss) {
+				if (collideLineWithRectangle2(this.segments[this.segments.length - 1], this.target.boundingbox)) {
+					this.reachedEnd = true;
+					let xy = this.XYofTarget(this.target);
+              		this.sceneManager.addEntity(new DroidExplosion(this.game, xy.x, xy.y, .7, .2));
+					this.target.currentHealth -= ltng.BOSS_DAMAGE;
+				}
 			}
 		} else { // check if off camera 
 			if (this.segments.length > 0 && distance(this.segments[this.segments.length - 1].p2, this) > 1300) {

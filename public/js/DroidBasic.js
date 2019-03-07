@@ -73,7 +73,7 @@ class BasicDroid extends AbstractDroid {
     if (this.secondsBeforeFire <= 0 && (!this.fire)) {
       this.secondsBeforeFire = this.shootInterval;
       this.fire = true;
-      // this.shoot();
+      this.shoot();
     }
 
     super.update();

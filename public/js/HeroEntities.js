@@ -713,6 +713,7 @@ class Lightsaber extends Entity {
         this.holdingShiftClick = true;
         this.holdingClick = false;
         this.powerTimer += this.game.clockTick;
+        this.shocking = true;
         this.setSaberThrow();
       } else {
         if (!this.game.keys['ShiftLeft'] && !this.throwing) { // keep throwing arm if holding shift after lightning
@@ -720,8 +721,8 @@ class Lightsaber extends Entity {
         }
         if (this.holdingShiftClick && !this.game.keys['leftClick'] && !this.Zerlin.isInManeuver()) { // just released click from shift click
           if (this.Zerlin.currentForce >= zc.Z_LIGHTNING_FORCE_COST) {
-            console.log(this.powerTimer);
-            this.shock(); 
+            // console.log(this.powerTimer);
+            this.shock();
           }
         }
         else if (this.game.keys['leftClick']) {
@@ -746,40 +747,41 @@ class Lightsaber extends Entity {
         } else if (this.game.mouse.x + this.camera.x > this.Zerlin.x && !this.facingRight) {
           this.faceRightThrowing();
         }
-      }
-      else if (this.game.mouse.x + this.camera.x < this.Zerlin.x && this.facingRight) {
-        this.saberUp = !this.saberUp;
-        if (this.throwing) {
-          this.faceLeftThrowing();
-        }
-        else if (this.inClickPosition) {
-          this.faceLeftUpSaber();
-        } else {
-          this.faceLeftDownSaber();
-        }
-      } else if (this.game.mouse.x + this.camera.x > this.Zerlin.x && !this.facingRight) {
-        this.saberUp = !this.saberUp;
-        if (this.throwing) {
-          this.faceRightThrowing();
-        }
-        else if (this.inClickPosition) {
-          this.faceRightDownSaber();
-        } else {
-          this.faceRightUpSaber();
-        }
-      } else if (!this.throwing && this.game.rightClickDown && !this.inClickPosition) {
-        this.inClickPosition = true;
-        if (this.game.mouse.x + this.camera.x < this.Zerlin.x) {
-          this.faceLeftUpSaber();
-        } else {
-          this.faceRightDownSaber();
-        }
-      } else if (!this.throwing && !this.game.rightClickDown && this.inClickPosition) {
-        this.inClickPosition = false;
-        if (this.game.mouse.x + this.camera.x < this.Zerlin.x) {
-          this.faceLeftDownSaber();
-        } else {
-          this.faceRightUpSaber();
+      } else {
+        if (this.game.mouse.x + this.camera.x < this.Zerlin.x && this.facingRight) {
+          this.saberUp = !this.saberUp;
+          if (this.throwing) {
+            this.faceLeftThrowing();
+          }
+          else if (this.inClickPosition) {
+            this.faceLeftUpSaber();
+          } else {
+            this.faceLeftDownSaber();
+          }
+        } else if (this.game.mouse.x + this.camera.x > this.Zerlin.x && !this.facingRight) {
+          this.saberUp = !this.saberUp;
+          if (this.throwing) {
+            this.faceRightThrowing();
+          }
+          else if (this.inClickPosition) {
+            this.faceRightDownSaber();
+          } else {
+            this.faceRightUpSaber();
+          }
+        } else if (!this.throwing && this.game.rightClickDown && !this.inClickPosition) {
+          this.inClickPosition = true;
+          if (this.game.mouse.x + this.camera.x < this.Zerlin.x) {
+            this.faceLeftUpSaber();
+          } else {
+            this.faceRightDownSaber();
+          }
+        } else if (!this.throwing && !this.game.rightClickDown && this.inClickPosition) {
+          this.inClickPosition = false;
+          if (this.game.mouse.x + this.camera.x < this.Zerlin.x) {
+            this.faceLeftDownSaber();
+          } else {
+            this.faceRightUpSaber();
+          }
         }
       }
     }
@@ -923,10 +925,11 @@ class Lightsaber extends Entity {
   }
 
   shock() {
-    // for (let i = 0; i <= Math.floor(this.powerTimer); i++) {
+    for (let i = 0; i <= Math.floor(this.powerTimer); i++) {
       this.Zerlin.currentForce -= zc.Z_LIGHTNING_FORCE_COST;
       this.lightning.push(new Lightning(this.game, this.x + Math.cos(this.angle) * this.throwArmLength, this.y + Math.sin(this.angle) * this.throwArmLength, this.game.mouse, this.powerTimer)); 
-    // }
+      if (this.Zerlin.currentForce < zc.Z_LIGHTNING_FORCE_COST) break;
+    }
   }
 
   faceRightUpSaber() {
@@ -941,6 +944,7 @@ class Lightsaber extends Entity {
     this.tipXfromSocket = zc.LS_UP_TIP_X - zc.LS_RIGHT_X_AXIS;
     this.tipYfromSocket = zc.LS_UP_TIP_Y - zc.LS_UP_Y_AXIS;
 
+    this.shocking = false;
     this.facingRight = true;
     this.saberUp = true;
   }
@@ -957,6 +961,7 @@ class Lightsaber extends Entity {
     this.tipXfromSocket = zc.LS_UP_TIP_X - zc.LS_RIGHT_X_AXIS;
     this.tipYfromSocket = zc.LS_UP_Y_AXIS - zc.LS_UP_TIP_Y;
 
+    this.shocking = false;
     this.facingRight = false;
     this.saberUp = true;
   }
@@ -973,6 +978,7 @@ class Lightsaber extends Entity {
     this.tipXfromSocket = zc.LS_DOWN_TIP_X - zc.LS_RIGHT_X_AXIS;
     this.tipYfromSocket = zc.LS_DOWN_TIP_Y - zc.LS_DOWN_Y_AXIS;
 
+    this.shocking = false;
     this.facingRight = true;
     this.saberUp = false;
   }
@@ -989,6 +995,7 @@ class Lightsaber extends Entity {
     this.tipXfromSocket = zc.LS_DOWN_TIP_X - zc.LS_LEFT_X_AXIS;
     this.tipYfromSocket = zc.LS_DOWN_Y_AXIS - zc.LS_DOWN_TIP_Y;
 
+    this.shocking = false;
     this.facingRight = false;
     this.saberUp = false;
   }

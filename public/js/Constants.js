@@ -98,7 +98,7 @@ Constants = {
 
     DRAW_COLLISION_BOUNDRIES: false,
 
-    Z_SPAWN_X: 0, //modify this to spawn zerlin later in the level.
+    Z_SPAWN_X: 4800, //modify this to spawn zerlin later in the level.
     //about 100 for 1 tile/column.
 
     Z_WIDTH: 114,
@@ -265,7 +265,7 @@ Constants = {
     BC_MUZZLE_LEFT_Y: 27,
     BEAM_DROID_LASER_WIDTH: 26,
     BEAM_HP_PER_SECOND: .3,
-    BEAM_ANGLE_ACCELERATION_RADIANS: Math.PI,
+    BEAM_ANGLE_ACCELERATION_RADIANS: Math.PI * 2,
     MICRO_BEAM_COUNT: 5,
     MUZZLE_WIDTH: 13,
     MAX_BEAM_LENGTH: 5000,
@@ -426,10 +426,10 @@ Constants = {
 
     BOSS_TEST_LAYOUT: [
       '                 ',
-      '           d     ',
-      '  d   X          ',
-      '          --     ',
-      '       d       - ',
+      '                 ',
+      '       X         ',
+      '                 ',
+      '               - ',
       '---              ',
       '   --            ',
       '-----------------'
@@ -475,12 +475,13 @@ Constants = {
   },
 
   LightningConstants: {
-    ARC_CAPTURE_RANGE: Math.PI / 9,
+    ARC_CAPTURE_RANGE: Math.PI / 3,
     SEGMENT_GENERATION_TIME: .0025,
     WIDTH: 4,
     MAX_SEGMENT_LENGTH: 50,
     FADE_TIME: 1.5,
-    MAX_SEGMENT_ARC_RANGE: Math.PI * .8
+    MAX_SEGMENT_ARC_RANGE: Math.PI * .8,
+    BOSS_DAMAGE: 10
   },
 
   CheckPointConstants: {

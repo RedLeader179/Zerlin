@@ -360,7 +360,7 @@ class SoundEngine {
         "sound/lightning1.wav"
       ],
       loop: false,
-      volume: .2
+      volume: .1
     });
 
 

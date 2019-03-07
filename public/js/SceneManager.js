@@ -341,7 +341,7 @@ class SceneManager2 {
     this.levelTransitionTimer = 0;
     this.update = this.levelTransitionUpdate;
     this.draw = this.levelTransitionDraw;
-    this.canPause = true;
+    this.canPause = false;
 
     this.initiallyPaused = false;
     this.sceneEntities = [];
