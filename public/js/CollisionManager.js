@@ -129,7 +129,11 @@ class CollisionManager {
       for (var i = this.sceneManager.droids.length - 1; i >= 0; i--) {
         var droid = this.sceneManager.droids[i];
         if (collidePointWithCircle(droid.boundCircle.x, droid.boundCircle.y, zerlin.lightsaber.airbornSaber.x, zerlin.lightsaber.airbornSaber.y, zerlin.lightsaber.airbornSaber.radius)) {
-          droid.explode();
+          if (this.sceneManager.droids[i] instanceof LeggyDroidBoss) {
+            this.sceneManager.droids[i].hitWithLaser();
+          } else {
+            droid.explode();
+          }
         }
       }
     }
