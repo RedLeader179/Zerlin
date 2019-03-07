@@ -527,7 +527,7 @@ class CollisionManager {
 
   bombExplosionOnZerlin() {
     var zerlin = this.sceneManager.Zerlin;
-    if (!zerlin.boundingbox.hidden) {
+    if (!zerlin.boundingbox.hidden && !zerlin.invincible) {
       for (let i = 0; i < this.sceneManager.otherEntities.length; i++) {
         if (this.sceneManager.otherEntities[i] instanceof DamagingExplosion && !this.sceneManager.otherEntities[i].damageDone) {
           if (collideCircleWithRectangle2(this.sceneManager.otherEntities[i].boundingCircle, zerlin.boundingbox)) {
