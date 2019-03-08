@@ -44,7 +44,7 @@ class SceneManager2 {
     this.Zerlin = new Zerlin(this.game, this.camera, this);
     this.boss = null;
     this.collisionManager = new CollisionManager(this.game, this);
-    this.levelNumber = 1;
+    this.levelNumber = 2;
     this.canPause = false;
     this.pauseScreen = new PauseScreen(this.game);
     this.musicMenu = new MusicMenu(this.game, 1050, 50, [
@@ -385,11 +385,11 @@ class SceneManager2 {
         this.sceneEntities.push(new Overlay(this.game, false, smc.OPENING_OVERLAY_TIME));
       }
 
-      // transition to level 
+      // transition to level
       if (this.openingSceneTimer > this.seq4EndTime) {
         this.startLevelTransitionScene();
       }
-    }  
+    }
 
 
     for (let i = this.sceneEntities.length - 1; i >= 0; i--) {

@@ -225,7 +225,7 @@ Constants = {
   DroidBossConstants: {
     DROID_BOSS_MAX_HEATH: 150,
     POISON_LASER_DURATION: 5,
-    POISION_LASER_DAMAGE_PER_TICK: .3,
+    POISION_LASER_DAMAGE_PER_TICK: .8,
     POISON_LASER_LENGTH: 38,
     POISON_LASER_WIDTH: 18,
     POISON_LASER_SPEED: 650,
@@ -355,7 +355,7 @@ Constants = {
   ],
 
     MIKE_LEVEL_THREE: [
-      
+
       '            m                   mn        T      d  I                           m   f                    b          b f d d  f m   b                        I       ',
       '             f       m         n          nf      ds     dbfsmn                df  fs    ddddf  f       dn        d              dd f                               ',
       '             ms     d  b             ------       f          dbf               s   m           m m     d        d                           C H                     ',
@@ -441,7 +441,7 @@ Constants = {
 
 
 
-    
+
     MOVING_TILE_TESTER_LAYOUT: [
       '                 ',
       '                 ',

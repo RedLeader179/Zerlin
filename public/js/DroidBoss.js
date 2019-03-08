@@ -37,7 +37,7 @@ class LeggyDroidBoss extends BasicDroid {
       this.healthStatusBar = new DroidBossHealthStatusBar(this.game,
           this.game.surfaceWidth * 0.25,
           680,  this);
-      console.log('spawned bar');
+      // console.log('spawned bar');
       this.game.sceneManager.bossHealthBar = this.healthStatusBar;
       this.spawned = true;
       this.game.audio.playSoundFx(this.game.audio.droidBossMechanical);
@@ -89,10 +89,9 @@ class LeggyDroidBoss extends BasicDroid {
     this.game.audio.playSoundFx(this.game.audio.enemy, 'rubbleExplosion');
     // this.game.audio.playSoundFx(this.game.audio.enemy, 'largeExplosion');
 
-    // class DroidExplosion extends Entity {
-    // 	constructor(game, x, y,
-              //    scale, explosionVolume, speed) {
-    //second explosions
+    // constructor(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale) {
+    // this.animation = new Animation(spritesheet, 0, 0, 64, 64,
+		// 		this.speed, 15, false, false, this.scale);
     setTimeout( () => {
       this.sceneManager.addEntity(
         new DroidExplosion(
