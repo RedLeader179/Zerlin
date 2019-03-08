@@ -44,7 +44,7 @@ class SceneManager2 {
     this.Zerlin = new Zerlin(this.game, this.camera, this);
     this.boss = null;
     this.collisionManager = new CollisionManager(this.game, this);
-    this.levelNumber = 2;
+    this.levelNumber = 1;
     this.canPause = false;
     this.pauseScreen = new PauseScreen(this.game);
     this.musicMenu = new MusicMenu(this.game, 1050, 50, [
