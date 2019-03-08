@@ -242,7 +242,7 @@ Constants = {
   },
 
   BossConstants: {
-    B_MAX_HEALTH: 250, // was 150
+    B_MAX_HEALTH: 200, // was 150
     BEAM_HP_PER_SECOND: 2, //was .5
 
     B_SCALE: .6,
