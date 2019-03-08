@@ -199,7 +199,37 @@ Constants = {
     OPENING_OVERLAY_TIME: 5,
     OPENING_SCENE_CAMERA_PAN_TIME: 7,
     OPENING_SCENE_FIRST_FADE_OUT_TIME: 10,
-    OPENING_MESSAGE: "There is a tremor in the Force on the Dagobah System.\nLegions of mining droids have been unleashed\non the peaceful planet. It's rich core\nof kyber is frail, and the droids are rapidly\ndestroying Dagobah's biosphere.\n\nA lone Jedi dispatched in the outer rim has\nfelt it. A lone warrior against evil...",
+    OPENING_MESSAGE:
+      `There is a tremor in the Force on the Dagobah System.
+      Legions of mining droids have been unleashed
+      on the peaceful planet. It's rich core
+      of kyber is frail, and the droids are rapidly
+      destroying Dagobah's biosphere.
+
+      A lone Jedi dispatched in the outer rim has
+      felt it. A lone warrior against unknown evil...`,
+    LEVEL_TWO_MESSAGE:
+      `Zerlin has spent months hunting and destroying
+      the treacherous droid set to destroy Dagobah but
+      droids keep being sent from unknown sources.
+      After searching the wreckage for clues the sender
+      has made a mistake. This droid has a identifiable symbol.
+      While he doesn’t know who is sending these droids
+      he knows someone on Coruscant who will.
+
+      But he isn’t the only one hunting now.
+      Droids have secretly stowed away on his ship...`,
+    LEVEL_THREE_MESSAGE:
+      `Having talked to his contact on Coruscant
+      Zerlin has found out the mysterious force
+      sending the droids to destroy Dagobah.
+      A half droid half mandalorian bounty hunter by the
+      name of Chettark. Who was last seen on the ice
+      world of Hoth.
+
+      Unknown to Zerlin Chetark is preparing for his arrival.
+      Captured or dead, Chettark didn’t care.
+      A Jedi would fetch a lot of credits on the black market.`,
     OPENING_MESSAGE_TIME: 13,
     OPENING_TITLE_TIME: 8,
     OPENING_SEQUENCE_4_TIME: 10,
@@ -225,7 +255,7 @@ Constants = {
   DroidBossConstants: {
     DROID_BOSS_MAX_HEATH: 150,
     POISON_LASER_DURATION: 5,
-    POISION_LASER_DAMAGE_PER_TICK: .8,
+    POISION_LASER_DAMAGE_PER_TICK: .75,
     POISON_LASER_LENGTH: 38,
     POISON_LASER_WIDTH: 18,
     POISON_LASER_SPEED: 650,

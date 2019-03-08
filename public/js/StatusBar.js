@@ -75,7 +75,7 @@ class AbstractStatusBar extends Entity {
 
     if (!this.hidden) { //if not hidden
       var colorForeground = this.foregroundColor;
-      if (this.game.sceneManager.Zerlin.poisoned) {
+      if (this instanceof HealthStatusBar && this.game.sceneManager.Zerlin.poisoned) {
         colorForeground = 'rgba(107,142,35)';
       }
       var colorBackground = this.backgroundColor;
