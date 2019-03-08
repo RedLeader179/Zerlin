@@ -84,7 +84,7 @@ Constants = {
 
     /* Zerlin health and force stats*/
     Z_MAX_HEALTH: 30, //was 20
-    Z_MAX_FORCE: 14,
+    Z_MAX_FORCE: 15,
     Z_FORCE_REGEN_PER_SECOND: 0.5,
     Z_FORCE_JUMP_FORCE_COST: 3,
     Z_SOMERSAULT_FORCE_COST: 3,
