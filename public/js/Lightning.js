@@ -23,15 +23,15 @@ class LightningOrb extends Entity {
 		this.powerTimer += this.game.clockTick;
 		this.x = this.arm.x + Math.cos(this.arm.angle) * this.arm.throwArmLength;
 		this.y = this.arm.y + Math.sin(this.arm.angle) * this.arm.throwArmLength;
-		
+
 		this.radius += this.game.clockTick * ltng.ORB_GROW_RATE;
 	}
 
 	draw() {
 		// orb draw radius 'pulses' around core radius.
 		// orb pulses faster as it grows
-		var drawRadius = this.radius + zc.Z_SCALE * ltng.ORB_PULSATION_MAGNITUDE * (Math.sin(4 * this.powerTimer * this.powerTimer) + 1); 
-		
+		var drawRadius = this.radius + zc.Z_SCALE * ltng.ORB_PULSATION_MAGNITUDE * (Math.sin(4 * this.powerTimer * this.powerTimer) + 1);
+
 		this.game.ctx.strokeStyle = "blue";
 		this.ctx.beginPath();
 		this.ctx.arc(this.x - this.camera.x, this.y, drawRadius * 2, 0, Math.PI * 2, false);
@@ -135,11 +135,11 @@ class LightningBolt extends Entity {
 		ctx.restore();
 		this.game.ctx.globalAlpha = originalAlpha;
 	}
-	
+
 	findEnemyInPath() {
 		var droids = this.sceneManager.droids;
 		// var targets = [];
-		if ((this.sceneManager.boss && this.isInRange({x: this.sceneManager.boss.boundingbox.width / 2 + this.sceneManager.boss.boundingbox.x, 
+		if ((this.sceneManager.boss && this.isInRange({x: this.sceneManager.boss.boundingbox.width / 2 + this.sceneManager.boss.boundingbox.x,
 													   y: this.sceneManager.boss.boundingbox.height / 2 + this.sceneManager.boss.boundingbox.y}))) {
 			target = this.sceneManager.boss;
 		} else {
@@ -155,13 +155,13 @@ class LightningBolt extends Entity {
 		}
 		return target;
 
-	}	
+	}
 
 	XYofTarget() {
 		if (this.target && this.target instanceof AbstractDroid) {
 			return this.target.boundCircle;
 		} else if (this.target && this.target instanceof Boss) {
-			return {x: this.sceneManager.boss.boundingbox.width / 2 + this.sceneManager.boss.boundingbox.x, 
+			return {x: this.sceneManager.boss.boundingbox.width / 2 + this.sceneManager.boss.boundingbox.x,
 					y: this.sceneManager.boss.boundingbox.height / 2 + this.sceneManager.boss.boundingbox.y};
 		}
 	}
@@ -191,8 +191,8 @@ class LightningBolt extends Entity {
 	getArcRangeForSegment(distanceToTarget) {
 		var exponentFactor = .01;
 		if (distanceToTarget > ltng.MAX_SEGMENT_LENGTH) {
-			/*             
-				             -.01(x - N) 
+			/*
+				             -.01(x - N)
 				arcRange = -e            + pi,     N = (.01 * maxSegmentLen + ln(pi)) / .01
 			*/
 			return -Math.pow(Math.E, -exponentFactor * (distanceToTarget - (exponentFactor * ltng.MAX_SEGMENT_LENGTH + Math.log(ltng.MAX_SEGMENT_ARC_RANGE)) / exponentFactor)) + ltng.MAX_SEGMENT_ARC_RANGE;
@@ -206,7 +206,11 @@ class LightningBolt extends Entity {
 			if (this.target instanceof AbstractDroid) {
 				if (collideLineWithCircle2(this.segments[this.segments.length - 1], this.XYofTarget(this.target))) {
 					this.reachedEnd = true;
-					this.target.explode();
+					if (this.target instanceof LeggyDroidBoss) {
+						this.target.hitWithLightning();
+					} else {
+						this.target.explode();
+					}
 				}
 			} else if (this.target instanceof Boss) {
 				if (collideLineWithRectangle2(this.segments[this.segments.length - 1], this.target.boundingbox)) {
@@ -216,7 +220,7 @@ class LightningBolt extends Entity {
 					this.target.currentHealth -= ltng.BOSS_DAMAGE;
 				}
 			}
-		} else { // check if off camera 
+		} else { // check if off camera
 			if (this.segments.length > 0 && distance(this.segments[this.segments.length - 1].p2, this) > 1300) {
 				this.reachedEnd = true;
 			}

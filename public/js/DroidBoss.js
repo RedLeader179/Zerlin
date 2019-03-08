@@ -26,6 +26,10 @@ class LeggyDroidBoss extends BasicDroid {
     // this.game.audio.playSoundFx(this.game.audio.saberDeflectLaser);
   }
 
+  hitWithLightning() {
+    this.currentHealth -= Constants.LightningConstants.BOSS_DAMAGE;
+  }
+
   hitWithSaber() {
     this.currentHealth -= Constants.DroidBossConstants.HIT_WITH_SABER_DAMAGE;
     //todo: play soundFx
