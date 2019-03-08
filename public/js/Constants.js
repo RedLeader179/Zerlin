@@ -89,6 +89,7 @@ Constants = {
     Z_FORCE_JUMP_FORCE_COST: 3,
     Z_SOMERSAULT_FORCE_COST: 3,
     Z_SABER_THROW_FORCE_COST: 4,
+    Z_LIGHTNING_FORCE_COST: 5,
     /* Zerlin damage */
     Z_SLASH_DAMAGE: 25,
     Z_BOSS_BEAM_DAMAGE: 0.5,
@@ -170,6 +171,8 @@ Constants = {
     LS_THROW_IMAGE_HEIGHT: 48,
     LS_THROW_RIGHT_X_AXIS: 9,
     LS_THROW_RIGHT_Y_AXIS: 13,
+    THROW_ARM_IMAGE_FINGER_X: 132,
+    THROW_ARM_IMAGE_FINGER_Y: 9,
 
     LS_AIRBORN_WIDTH: 234,
     LS_AIRBORN_HEIGHT: 234,
@@ -306,7 +309,8 @@ Constants = {
     BC_MUZZLE_RIGHT_Y: 81,
     BC_MUZZLE_LEFT_Y: 27,
     BEAM_DROID_LASER_WIDTH: 26,
-    BEAM_ANGLE_ACCELERATION_RADIANS: Math.PI,
+    BEAM_HP_PER_SECOND: .3,
+    BEAM_ANGLE_ACCELERATION_RADIANS: Math.PI * 2,
     MICRO_BEAM_COUNT: 5,
     MUZZLE_WIDTH: 13,
     MAX_BEAM_LENGTH: 5000,
@@ -476,6 +480,16 @@ Constants = {
 
 
 
+    BOSS_TEST_LAYOUT: [
+      '                 ',
+      '                 ',
+      '       X         ',
+      '                 ',
+      '               - ',
+      '---              ',
+      '   --            ',
+      '-----------------'
+    ],
 
     MOVING_TILE_TESTER_LAYOUT: [
       '                 ',
@@ -515,6 +529,19 @@ Constants = {
 
     HOMING_LASER_TIME: 10,
     HOMING_LASER_STATUS_BAR_SCALE: .2,
+  },
+
+  LightningConstants: {
+    ARC_CAPTURE_RANGE: Math.PI / 3,
+    SEGMENT_GENERATION_TIME: .005,
+    WIDTH: 4,
+    MAX_SEGMENT_LENGTH: 50,
+    FADE_TIME: 1.5,
+    MAX_SEGMENT_ARC_RANGE: Math.PI * .8,
+    BOSS_DAMAGE: 10,
+    ORB_INITIAL_RADIUS: 8,
+    ORB_GROW_RATE: 5,
+    ORB_PULSATION_MAGNITUDE: 2
   },
 
   CheckPointConstants: {

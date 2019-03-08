@@ -157,7 +157,7 @@ class CollisionManager {
   }
 
   laserOnSaber() {
-    if (!this.sceneManager.Zerlin.lightsaber.hidden && !this.sceneManager.Zerlin.lightsaber.throwing) {
+    if (!this.sceneManager.Zerlin.lightsaber.hidden && !this.sceneManager.Zerlin.lightsaber.throwing && !this.sceneManager.Zerlin.lightsaber.shocking) {
       for (var i = this.sceneManager.lasers.length - 1; i >= 0; i--) {
         var laser = this.sceneManager.lasers[i];
         if (!laser.isDeflected) {
@@ -286,7 +286,8 @@ class CollisionManager {
 
   beamOnSaber() {
     this.sceneManager.Zerlin.lightsaber.deflectingBeam = false;
-    if (this.sceneManager.boss && this.sceneManager.boss.beamCannon.beam && !this.sceneManager.Zerlin.lightsaber.hidden && !this.sceneManager.Zerlin.lightsaber.throwing) {
+    if (this.sceneManager.boss && this.sceneManager.boss.beamCannon.beam && !this.sceneManager.Zerlin.lightsaber.hidden 
+      && !this.sceneManager.Zerlin.lightsaber.throwing && !this.sceneManager.Zerlin.lightsaber.shocking) {
       var zerlin = this.sceneManager.Zerlin;
       var lightsaber = zerlin.lightsaber;
       var beamSegments = this.sceneManager.boss.beamCannon.beam.segments;
@@ -974,6 +975,10 @@ var collideLineWithRectangle = function(x1, y1, x2, y2, rx, ry, rw, rh) {
     top: top,
     bottom: bottom
   };
+}
+
+var collideLineWithRectangle2 = function(line, rect) {
+  return collideLineWithRectangle(line.p1.x, line.p1.y, line.p2.x, line.p2.y, rect.x, rect.y, rect.width, rect.height).collides;
 }
 
 

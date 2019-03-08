@@ -87,6 +87,8 @@ class LeggyDroidBoss extends BasicDroid {
 		this.removeFromWorld = true;
 
     this.game.audio.playSoundFx(this.game.audio.enemy, 'rubbleExplosion');
+    this.game.audio.droidBossMechanical.stop();
+
     // this.game.audio.playSoundFx(this.game.audio.enemy, 'largeExplosion');
 
     // constructor(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale) {
