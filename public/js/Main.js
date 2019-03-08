@@ -94,12 +94,11 @@ class AssetManager {
   AM.queueDownload("../img/beam cannon left.png");
   AM.queueDownload("../img/boss_helmet.png");
   AM.queueDownload("../img/bomb.png");
-  
+
   // Droid boss
   AM.queueDownload("../img/leggy_droid.png");
   AM.queueDownload("../img/boss_status_bar_icon.png");
-
-
+  AM.queueDownload("../img/explosion_josh.png");
 
 
   /********** Powerup assets ******************/
@@ -169,7 +168,7 @@ class AssetManager {
 
   /********** Tile assets ******************/  //tiles are 100x100
   //forest
-  AM.queueDownload("../img/forest_left_tile.png"); 
+  AM.queueDownload("../img/forest_left_tile.png");
   AM.queueDownload("../img/forest_center_tile.png");
   AM.queueDownload("../img/forest_right_tile.png");
   AM.queueDownload("../img/forest_both_rounded_tile.png");
