@@ -72,6 +72,11 @@ class Zerlin extends Entity {
   update() {
     // check basic movement
     if (this.alive) {
+      if(this.godMode) {
+        if (this.y >= 700) {
+          this.deltaY -= 120;
+        }
+      }
 
       if (this.poisoned) {
         this.currentHealth -= Constants.DroidBossConstants.POISION_LASER_DAMAGE_PER_TICK * this.game.clockTick;
