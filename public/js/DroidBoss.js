@@ -160,8 +160,9 @@ class LeggyDroidBoss extends BasicDroid {
       Constants.DroidBossConstants.POISON_LASER_SPEED,
       this.sceneManager.Zerlin.x,
       this.sceneManager.Zerlin.boundingbox.y + this.sceneManager.Zerlin.boundingbox.height / 2,
-      Constants.DroidBossConstants.POISON_LASER_LENGTH, Constants.DroidBossConstants.POISON_LASER_WIDTH, "#33cc33", "#ffff00");
+      Constants.DroidBossConstants.POISON_LASER_LENGTH, Constants.DroidBossConstants.POISON_LASER_WIDTH, "#4e4f51", "#ffff00");
     laser.poisoned = true;
+    laser.secondaryColor = 'rgba(107,142,35)';
     this.sceneManager.addLaser(laser);
     this.game.audio.playSoundFx(this.game.audio.poisonShot);
     this.fire = false;
