@@ -331,6 +331,22 @@ class SoundEngine {
       volume: .8
     });
 
+    this.campFire = new Howl({
+      src: [
+        "sound/camp fire.wav"
+      ],
+      loop: true,
+      volume: .1
+    });
+
+    this.shipTakeOff = new Howl({
+      src: [
+        "sound/ship taking off.wav"
+      ],
+      loop: false,
+      volume: .8
+    });
+
     /* boss droid sounds */
     this.droidBossMechanical = new Howl({
       src: [
@@ -381,8 +397,8 @@ class SoundEngine {
     this.soundFXArray = [this.lightsaber, this.item, this.hero,
       this.enemy, this.beam, this.saberHum, this.wound, this.sizzle,
       this.sizzle2, this.sizzle2, this.jetPack, this.deflectBeam,
-      this.droidBossMechanical, this.saberDeflectLaser, this.poisonShot,
-      this.lightning
+      this.droidBossMechanical, this.saberDeflectLaser, this.poisonShot, 
+      this.shipTakeOff, this.campFire, this.lightning
     ];
     this.soundFxMuted = false;
   }

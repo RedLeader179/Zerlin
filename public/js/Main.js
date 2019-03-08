@@ -74,6 +74,7 @@ class AssetManager {
   AM.queueDownload("../img/Zerlin crouch left.png");
   AM.queueDownload("../img/Zerlin death.png");
   AM.queueDownload("../img/zerlin at fire.png");
+  AM.queueDownload("../img/ship take off.png");
   AM.queueDownload("../img/saber up.png");
   AM.queueDownload("../img/saber up left.png");
   AM.queueDownload("../img/saber down.png");
@@ -133,6 +134,7 @@ class AssetManager {
   AM.queueDownload('../img/opening oasis 3.png');
   AM.queueDownload('../img/opening oasis 2.png');
   AM.queueDownload('../img/opening oasis 1.png');
+  AM.queueDownload('../img/twinkling star.png');
 
   // forest
   AM.queueDownload("../img/backgroundStars.png");
@@ -188,6 +190,8 @@ class AssetManager {
   AM.queueDownload('../img/music_menu.png');
   AM.queueDownload('../img/music_menu_xfx.png');
   AM.queueDownload('../img/music_menu_xmusic.png');
+
+  AM.queueDownload('../img/title.png');
 
 
 

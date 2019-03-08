@@ -1,6 +1,9 @@
 
 /* One bad ass mother */
 // implement a poison shot
+
+var dbConst = Constants.DroidBossConstants;
+
 class LeggyDroidBoss extends BasicDroid {
   constructor(game, spritesheet, startX, startY, frames, frameSpeed) {
     super(game, spritesheet, startX, startY, frames, frameSpeed, 315, 620, .5, 200);
@@ -84,6 +87,8 @@ class LeggyDroidBoss extends BasicDroid {
 		this.removeFromWorld = true;
 
     this.game.audio.playSoundFx(this.game.audio.enemy, 'rubbleExplosion');
+    this.game.audio.droidBossMechanical.stop();
+
     // this.game.audio.playSoundFx(this.game.audio.enemy, 'largeExplosion');
 
     // class DroidExplosion extends Entity {
@@ -264,5 +269,60 @@ class LeggyDroidBoss extends BasicDroid {
     this.sceneManager.addLaser(laser4);
     this.game.audio.playSoundFx(this.game.audio.enemy, 'retroBlasterShot');
     this.fire = false;
+  }
+  /*
+   * calculate movement so that it will try to fly around the location of the
+   * target.
+   */
+  calcMovement() {
+    this.targetOrbitalPointLeft.x = this.sceneManager.Zerlin.x - dbConst.DROID_BOSS_ORBITAL_X_OFFSET;
+    //add 200 so that the droids uses up all the canvas becuase when targeting Zerlin,
+    //doesn't use all of the canvas
+    this.targetOrbitalPointRight.x = this.sceneManager.Zerlin.x + dbConst.DROID_BOSS_ORBITAL_X_OFFSET + 200;
+
+    //if the droid is to the left of targetRight and right of targetLeft
+    if (this.x <= this.targetOrbitalPointRight.x && this.x >= this.targetOrbitalPointLeft.x) {
+      //if the droid is moving right, then increase x velocity
+      if (this.deltaX >= 0) {
+        if (this.deltaX < dbConst.DROID_BOSS_X_MOVEMENT_SPEED)
+          this.deltaX += dbConst.DROID_BOSS_X_ACCELERATION * this.game.clockTick;
+      }
+      //if the droid is moving left, then decrease x velocity
+      if (this.deltaX < 0) {
+        if (this.deltaX >= (-dbConst.DROID_BOSS_X_MOVEMENT_SPEED))
+          this.deltaX -= dbConst.DROID_BOSS_X_ACCELERATION * this.game.clockTick;
+      }
+    }
+
+    //if the droid is to the left of targetLeft, then increase X velocity
+    if (this.x < this.targetOrbitalPointLeft.x) {
+      if (this.deltaX < dbConst.DROID_BOSS_X_MOVEMENT_SPEED)
+        this.deltaX += dbConst.DROID_BOSS_X_ACCELERATION * this.game.clockTick;
+    }
+    //if the droid is to the right of targetRight, then decrease X velocity
+    if (this.x > this.targetOrbitalPointRight.x) {
+      if (this.deltaX >= (-dbConst.DROID_BOSS_X_MOVEMENT_SPEED))
+        this.deltaX -= dbConst.DROID_BOSS_X_ACCELERATION * this.game.clockTick;
+    }
+
+
+    //if droid is above the target point, then increase deltaY(down)
+    if (this.y < this.targetOrbitalPointRight.y) {
+      if (this.deltaY <= dbConst.DROID_BOSS_Y_MOVEMENT_SPEED)
+        this.deltaY += dbConst.DROID_BOSS_Y_ACCELERATION * this.game.clockTick;
+    }
+    //if the droid is below the target point, then decrease the deltaY(up)
+    else if (this.y >= this.targetOrbitalPointRight.y) {
+      if (this.deltaY >= (-dbConst.DROID_BOSS_Y_MOVEMENT_SPEED))
+        this.deltaY -= dbConst.DROID_BOSS_Y_ACCELERATION * this.game.clockTick;
+    }
+
+    //after calculating change in x and y then increment x and y by delta x and delta y
+    // this.x += this.game.clockTick * (Math.random() * this.deltaX);
+    // this.y += this.game.clockTick * (Math.random() * this.deltaY);
+    this.x += this.game.clockTick * this.deltaX;
+    this.y += this.game.clockTick * this.deltaY;
+
+    this.boundCircle.translateCoordinates(this.game.clockTick * this.deltaX, this.game.clockTick * this.deltaY);
   }
 }
