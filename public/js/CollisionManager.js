@@ -172,7 +172,7 @@ class CollisionManager {
               this.deflectLaserHoming(laser, collision.intersection);
             } else {
               this.deflectLaser(laser, collision.intersection);
-            } 
+            }
 
             if (laser.poisoned) {
               this.game.audio.playSoundFx(this.game.audio.saberDeflectLaser);
@@ -204,7 +204,7 @@ class CollisionManager {
           //then maybe make zerlin invincible for a few ticks
           // console.log(zerlin.hits);
           laser.removeFromWorld = true;
-        }  
+        }
       }
     }
   }
@@ -363,7 +363,7 @@ class CollisionManager {
 
             if (!this.sceneManager.Zerlin.invincible) {
               this.sceneManager.Zerlin.currentHealth -= this.game.clockTick * bc.BEAM_HP_PER_SECOND;
-              console.log(this.sceneManager.Zerlin.currentHealth);
+              // console.log(this.sceneManager.Zerlin.currentHealth);
               // console.log(this.sceneManager.Zerlin.hits);
             }
 

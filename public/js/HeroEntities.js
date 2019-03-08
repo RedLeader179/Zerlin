@@ -56,7 +56,7 @@ class Zerlin extends Entity {
     this.iSeconds = Constants.PowerUpConstants.INVINCIBILITY_TIME; //invincibility seconds
     this.iColor = 'rgba(14, 61, 220, 1)';
 
-    /* poisioned */
+    /* poisoned */
     this.poisoned = false;
     this.poisonedCounter = 0;
     this.poisonedMaxTime = Constants.DroidBossConstants.POISON_LASER_DURATION;
@@ -72,6 +72,11 @@ class Zerlin extends Entity {
   update() {
     // check basic movement
     if (this.alive) {
+      if(this.godMode) {
+        if (this.y >= 700) {
+          this.deltaY -= 120;
+        }
+      }
 
       if (this.poisoned) {
         this.currentHealth -= Constants.DroidBossConstants.POISION_LASER_DAMAGE_PER_TICK * this.game.clockTick;
@@ -216,7 +221,7 @@ class Zerlin extends Entity {
       }
       if (this.tile) {
         this.deltaX += this.tile.deltaX;
-        if (this.tile.falling) { 
+        if (this.tile.falling) {
           // console.log("on falling tile");
           this.setXY(this.x, this.tile.boundingBox.top + zConst.Z_FEET_ABOVE_FRAME * zConst.Z_SCALE);
         }
@@ -398,7 +403,7 @@ class Zerlin extends Entity {
     }
   }
 
-  
+
 
   isTileBelow(tile) {
     return (this.boundingbox.left < tile.boundingBox.right) &&
@@ -709,7 +714,7 @@ class Lightsaber extends Entity {
       // change sprite on any of these conditions
       if (!this.throwing && this.game.click && !this.Zerlin.isInManeuver()) {
         if (this.Zerlin.currentForce >= zc.Z_SABER_THROW_FORCE_COST) {
-          this.throw(); 
+          this.throw();
         }
       }
 
@@ -984,11 +989,11 @@ class AirbornSaber extends Entity {
     this.width = zc.LS_AIRBORN_WIDTH * this.arm.Zerlin.scale;
     this.height = zc.LS_AIRBORN_HEIGHT * this.arm.Zerlin.scale;
     this.radius = this.width / 2;
-    this.animation = new Animation(this.game.assetManager.getAsset("../img/airborn saber.png"), 0, 0, 
+    this.animation = new Animation(this.game.assetManager.getAsset("../img/airborn saber.png"), 0, 0,
       zc.LS_AIRBORN_WIDTH, zc.LS_AIRBORN_HEIGHT, zc.LS_AIRBORN_FRAME_DURATION, zc.LS_AIRBORN_FRAMES, true, false, this.arm.Zerlin.scale);
     this.maxDistanceFromArm = 0;
   }
-  
+
 
   update() {
     this.throwTimer += this.game.clockTick;
@@ -1000,12 +1005,12 @@ class AirbornSaber extends Entity {
       this.accelerationY = zc.SABER_THROW_ACCELERATION * Math.sin(this.angleFromArm);
       this.deltaX += this.accelerationX * this.game.clockTick;
       this.deltaY += this.accelerationY * this.game.clockTick;
-      this.checkIfReachedPinnacle(); 
+      this.checkIfReachedPinnacle();
     } else {
       this.deltaX = 300 * Math.cos(this.angleFromArm) * zc.SABER_THROW_ACCELERATION / this.distanceFromArm;
       this.deltaY = 300 * Math.sin(this.angleFromArm) * zc.SABER_THROW_ACCELERATION / this.distanceFromArm;
     }
-    
+
     this.x += this.deltaX * this.game.clockTick;
     this.y += this.deltaY * this.game.clockTick;
   }
