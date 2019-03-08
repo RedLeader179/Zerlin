@@ -84,12 +84,12 @@ Constants = {
 
     /* Zerlin health and force stats*/
     Z_MAX_HEALTH: 30, //was 20
-    Z_MAX_FORCE: 15,
+    Z_MAX_FORCE: 10,
     Z_FORCE_REGEN_PER_SECOND: 0.5,
     Z_FORCE_JUMP_FORCE_COST: 3,
     Z_SOMERSAULT_FORCE_COST: 3,
     Z_SABER_THROW_FORCE_COST: 4,
-    Z_LIGHTNING_FORCE_COST: 0,
+    Z_LIGHTNING_FORCE_COST: 2,
     /* Zerlin damage */
     Z_SLASH_DAMAGE: 25,
     Z_BOSS_BEAM_DAMAGE: 0.5,
@@ -98,7 +98,7 @@ Constants = {
 
     DRAW_COLLISION_BOUNDRIES: false,
 
-    Z_SPAWN_X: 4800, //modify this to spawn zerlin later in the level.
+    Z_SPAWN_X: 0, //modify this to spawn zerlin later in the level.
     //about 100 for 1 tile/column.
 
     Z_WIDTH: 114,
@@ -407,8 +407,8 @@ Constants = {
       '                                      d                                                     ------------            b d   d   ',
       '              d                                                                                                      b        ',
       '                                                                                        =      f        d            fd       ', //from ground can force jump to here.
-      '  d                                                                                             s      d    ---               ',
-      '  dd                                                                                           d s                            ', //halfway of camera height.
+      '                                                                                                s      d    ---               ',
+      '                                                                                               d s                            ', //halfway of camera height.
       '                                                                                    H F                     ==                ',
       '                                                                                                                              ',
       '                                            --------                                                                          ',
@@ -416,7 +416,7 @@ Constants = {
       '                                       ----                                                                                   ',
       '           ------                             I         H -----     C ---     ----                          ---       --      ', //from ground level, can reg. jump to here.
       '                               S -----             ----                                        ---                            ',
-      '                                                                                                                              ',
+      'FFFFFFFFFFFF                                                                                                                  ',
       '------------           -- -- ----            --------   --     --- ---             -----------     ---------------------------'],
     //   ^      ^- just on screen on start camera location.
     //   |-> Zerlin spawn point.
@@ -503,7 +503,10 @@ Constants = {
     MAX_SEGMENT_LENGTH: 50,
     FADE_TIME: 1.5,
     MAX_SEGMENT_ARC_RANGE: Math.PI * .8,
-    BOSS_DAMAGE: 10
+    BOSS_DAMAGE: 10,
+    ORB_INITIAL_RADIUS: 8,
+    ORB_GROW_RATE: 5,
+    ORB_PULSATION_MAGNITUDE: 2
   },
 
   CheckPointConstants: {

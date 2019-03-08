@@ -679,6 +679,7 @@ class Lightsaber extends Entity {
     this.throwArmLength = (zc.THROW_ARM_IMAGE_FINGER_X - zc.LS_THROW_RIGHT_X_AXIS) * zc.Z_SCALE;
     this.homingLasers = false;
     this.lightning = [];
+    this.orb = null;
     this.setUpSaberImages();
     this.faceRightUpSaber();
     this.updateCollisionLine();
@@ -710,20 +711,24 @@ class Lightsaber extends Entity {
 
       //  handle attacks 
       if (this.game.keys['leftClick'] && this.game.keys['ShiftLeft']) {
+        if (this.orb === null) {
+          this.orb = new LightningOrb(this);
+        }
         this.holdingShiftClick = true;
         this.holdingClick = false;
-        this.powerTimer += this.game.clockTick;
         this.shocking = true;
         this.setSaberThrow();
       } else {
         if (!this.game.keys['ShiftLeft'] && !this.throwing) { // keep throwing arm if holding shift after lightning
           this.setSaberRegular();
+          this.orb = null;
         }
-        if (this.holdingShiftClick && !this.game.keys['leftClick'] && !this.Zerlin.isInManeuver()) { // just released click from shift click
-          if (this.Zerlin.currentForce >= zc.Z_LIGHTNING_FORCE_COST) {
-            // console.log(this.powerTimer);
-            this.shock();
+
+        if (this.holdingShiftClick && !this.game.keys['leftClick']) { // just released click from shift click
+          if (!this.Zerlin.isInManeuver()) {
+            this.shock(); 
           }
+          this.orb = null;
         }
         else if (this.game.keys['leftClick']) {
           this.holdingClick = true;
@@ -736,7 +741,6 @@ class Lightsaber extends Entity {
           this.holdingClick = false;
         }
         this.holdingShiftClick = false;
-        this.powerTimer = 0;
         
       }
 
@@ -803,6 +807,9 @@ class Lightsaber extends Entity {
       this.airbornSaber.update();
     }
 
+    if (this.orb) {
+      this.orb.update();
+    }
     for (let i = this.lightning.length - 1; i >= 0; i--) {
       this.lightning[i].update();
       if (this.lightning[i].removeFromWorld) {
@@ -814,6 +821,9 @@ class Lightsaber extends Entity {
   draw() {
     for (let i = 0; i < this.lightning.length; i++) {
       this.lightning[i].draw();
+    }
+    if (this.orb) {
+      this.orb.draw();
     }
     if (!this.hidden) {
       this.ctx.save();
@@ -925,11 +935,12 @@ class Lightsaber extends Entity {
   }
 
   shock() {
-    for (let i = 0; i <= Math.floor(this.powerTimer); i++) {
+    while (this.orb && this.orb.powerTimer > 0 && this.Zerlin.currentForce >= zc.Z_LIGHTNING_FORCE_COST) {
       this.Zerlin.currentForce -= zc.Z_LIGHTNING_FORCE_COST;
-      this.lightning.push(new Lightning(this.game, this.x + Math.cos(this.angle) * this.throwArmLength, this.y + Math.sin(this.angle) * this.throwArmLength, this.game.mouse, this.powerTimer)); 
-      if (this.Zerlin.currentForce < zc.Z_LIGHTNING_FORCE_COST) break;
+      this.lightning.push(new LightningBolt(this.game, this.x + Math.cos(this.angle) * this.throwArmLength, this.y + Math.sin(this.angle) * this.throwArmLength, this.game.mouse, 1)); 
+      this.orb.powerTimer -= 1;
     }
+    this.orb = null;
   }
 
   faceRightUpSaber() {

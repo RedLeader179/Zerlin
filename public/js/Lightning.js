@@ -8,8 +8,60 @@ Joshua Atherton, Michael Josten, Steven Golob
 
 const ltng = Constants.LightningConstants;
 
+class LightningOrb extends Entity {
 
-class Lightning extends Entity {
+	constructor(ZerlinsArm) {
+		super(ZerlinsArm.game);
+		this.ctx = this.game.ctx;
+		this.arm = ZerlinsArm;
+		this.camera = ZerlinsArm.camera;
+		this.radius = ltng.ORB_INITIAL_RADIUS * zc.Z_SCALE;
+		this.powerTimer = 0;
+	}
+
+	update() {
+		this.powerTimer += this.game.clockTick;
+		this.x = this.arm.x + Math.cos(this.arm.angle) * this.arm.throwArmLength;
+		this.y = this.arm.y + Math.sin(this.arm.angle) * this.arm.throwArmLength;
+		
+		this.radius += this.game.clockTick * ltng.ORB_GROW_RATE;
+	}
+
+	draw() {
+		// orb draw radius 'pulses' around core radius.
+		// orb pulses faster as it grows
+		var drawRadius = this.radius + zc.Z_SCALE * ltng.ORB_PULSATION_MAGNITUDE * (Math.sin(4 * this.powerTimer * this.powerTimer) + 1); 
+		
+		this.game.ctx.strokeStyle = "blue";
+		this.ctx.beginPath();
+		this.ctx.arc(this.x - this.camera.x, this.y, drawRadius * 2, 0, Math.PI * 2, false);
+        this.ctx.stroke();
+		this.ctx.closePath();
+
+		this.game.ctx.fillStyle = "blue";
+		this.ctx.beginPath();
+		this.ctx.arc(this.x - this.camera.x, this.y, drawRadius * 1.5, 0, Math.PI * 2, false);
+        this.ctx.fill();
+		this.ctx.closePath();
+
+		this.game.ctx.fillStyle = "#3d8edb";
+		this.ctx.beginPath();
+		this.ctx.arc(this.x - this.camera.x, this.y, drawRadius * 1.3, 0, Math.PI * 2, false);
+        this.ctx.fill();
+		this.ctx.closePath();
+
+		this.game.ctx.fillStyle = "white";
+		this.ctx.beginPath();
+		this.ctx.arc(this.x - this.camera.x, this.y, drawRadius, 0, Math.PI * 2, false);
+        this.ctx.fill();
+		this.ctx.closePath();
+	}
+}
+
+
+
+
+class LightningBolt extends Entity {
 
 	constructor(game, startX, startY, target, power) {
 		super(game, startX, startY);
@@ -57,8 +109,7 @@ class Lightning extends Entity {
 
 		for (let i = 0; i < this.segments.length; i++) {
 			let segment = this.segments[i];
-
-			//Outer Layer of beam
+			//Outer Layer
 			ctx.lineWidth = width * 2;
 			ctx.strokeStyle = "blue";
 			ctx.lineCap = "round";
@@ -70,8 +121,7 @@ class Lightning extends Entity {
 
 		for (let i = 0; i < this.segments.length; i++) {
 			let segment = this.segments[i];
-
-			//inner layer of beam.
+			//inner layer
 			ctx.lineWidth = width;
 			ctx.strokeStyle = "white";
 			ctx.lineCap = "round";
@@ -130,15 +180,11 @@ class Lightning extends Entity {
 			let distanceToTarget = distance({x: startX, y: startY}, target);
 			var length = distanceToTarget > ltng.MAX_SEGMENT_LENGTH? Math.random() * ltng.MAX_SEGMENT_LENGTH : distanceToTarget;
 			let arcRangeOfNextSegment = this.getArcRangeForSegment(distanceToTarget);
-
 			var angle = Math.atan2(target.y - startY, target.x - startX) + (Math.random() - .5) * arcRangeOfNextSegment;
-
-
 		} else {
 			var length = Math.random() * ltng.MAX_SEGMENT_LENGTH;
 			var angle = this.angle + (Math.random() - .5) * ltng.MAX_SEGMENT_ARC_RANGE;
 		}
-
 		this.segments.push({p1: {x: startX, y: startY}, p2: {x: startX + Math.cos(angle) * length, y: startY + Math.sin(angle) * length}});
 	}
 
@@ -146,10 +192,9 @@ class Lightning extends Entity {
 		var exponentFactor = .01;
 		if (distanceToTarget > ltng.MAX_SEGMENT_LENGTH) {
 			/*             
-			                 -.01(x - (.01*segLen + ln(pi)) / .01) 
-			    arcRange = -e                                      + pi
+			                 -.01(x - N) 
+			    arcRange = -e            + pi,     N = (.01 * maxSegmentLen + ln(pi)) / .01
 			*/
-
 			return -Math.pow(Math.E, -exponentFactor * (distanceToTarget - (exponentFactor * ltng.MAX_SEGMENT_LENGTH + Math.log(ltng.MAX_SEGMENT_ARC_RANGE)) / exponentFactor)) + ltng.MAX_SEGMENT_ARC_RANGE;
 		} else { // close enough, now make bolt go directly to target
 			return 0;
