@@ -238,7 +238,12 @@ Constants = {
     LEVEL_TRANSITION_OVERLAY_TIME: 3,
     LEVEL_COMPLETE_OVERLAY_TIME: 10,
     NUM_LEVELS: 3,
-    CREDITS: "The End",
+    CREDITS:
+      `Zerlin has eliminated the threat to Dagobah and
+      restored balance to the force.
+
+      Guess it’s back to chasing jedi booty…
+      and pulling girls with fancy lightsaber tricks.`,
     PAUSE_TIME_AFTER_START_LEVEL: 1.2,
 
     GAME_FONT: 'VT323'
