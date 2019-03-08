@@ -36,15 +36,15 @@ class Boss extends Entity {
 		this.faceLeft();
 		this.createAnimations();
 		var targetOrbitalX = (this.game.surfaceWidth / 2) + dbc.BASIC_DROID_ORBITAL_X_OFFSET;
-	    var targetOrbitalY = (this.game.surfaceHeight / 2) + dbc.BASIC_DROID_ORBITAL_Y_OFFSET;
-	    this.targetOrbitalPointLeft = {
-	      x: targetOrbitalX
-	    };
+		var targetOrbitalY = (this.game.surfaceHeight / 2) + dbc.BASIC_DROID_ORBITAL_Y_OFFSET;
+		this.targetOrbitalPointLeft = {
+			x: targetOrbitalX
+		};
 
-	    targetOrbitalX = (this.game.surfaceWidth / 2) + dbc.BASIC_DROID_ORBITAL_X_OFFSET;
-	    this.targetOrbitalPointRight = {
-	      x: targetOrbitalX
-	    };
+		targetOrbitalX = (this.game.surfaceWidth / 2) + dbc.BASIC_DROID_ORBITAL_X_OFFSET;
+		this.targetOrbitalPointRight = {
+			x: targetOrbitalX
+		};
 	}
 
 	update() {
@@ -168,10 +168,10 @@ class Boss extends Entity {
 	}
 
 	calcMovement() {
-    this.targetOrbitalPointLeft.x = this.sceneManager.Zerlin.x - dbc.BASIC_DROID_ORBITAL_X_OFFSET;
-    //add 200 so that the droids uses up all the canvas becuase when targeting Zerlin,
-    //doesn't use all of the canvas
-    this.targetOrbitalPointRight.x = this.sceneManager.Zerlin.x + dbc.BASIC_DROID_ORBITAL_X_OFFSET + 200;
+	this.targetOrbitalPointLeft.x = this.sceneManager.Zerlin.x - dbc.BASIC_DROID_ORBITAL_X_OFFSET;
+	//add 200 so that the droids uses up all the canvas becuase when targeting Zerlin,
+	//doesn't use all of the canvas
+	this.targetOrbitalPointRight.x = this.sceneManager.Zerlin.x + dbc.BASIC_DROID_ORBITAL_X_OFFSET + 200;
 
 	if (this.y > (this.sceneManager.camera.height - bc.B_HOVERING_HEIGHT)) {
 		this.deltaY -= bc.B_ACCELERATION * this.game.clockTick;
@@ -182,39 +182,39 @@ class Boss extends Entity {
 		this.deltaY *= .99;
 	}
 
-    //if the droid is to the left of targetRight and right of targetLeft
-    if (this.x <= this.targetOrbitalPointRight.x && this.x >= this.targetOrbitalPointLeft.x) {
-      //if the droid is moving right, then increase x velocity
-      if (this.deltaX >= 0) {
-        if (this.deltaX < dbc.BASIC_DROID_X_MOVEMENT_SPEED)
-          this.deltaX += dbc.BASIC_DROID_X_ACCELERATION * this.game.clockTick;
-      }
-      //if the droid is moving left, then decrease x velocity
-      if (this.deltaX < 0) {
-        if (this.deltaX >= (-dbc.BASIC_DROID_X_MOVEMENT_SPEED))
-          this.deltaX -= dbc.BASIC_DROID_X_ACCELERATION * this.game.clockTick;
-      }
-    }
+	//if the droid is to the left of targetRight and right of targetLeft
+	if (this.x <= this.targetOrbitalPointRight.x && this.x >= this.targetOrbitalPointLeft.x) {
+		//if the droid is moving right, then increase x velocity
+		if (this.deltaX >= 0) {
+		if (this.deltaX < dbc.BASIC_DROID_X_MOVEMENT_SPEED)
+			this.deltaX += dbc.BASIC_DROID_X_ACCELERATION * this.game.clockTick;
+		}
+		//if the droid is moving left, then decrease x velocity
+		if (this.deltaX < 0) {
+		if (this.deltaX >= (-dbc.BASIC_DROID_X_MOVEMENT_SPEED))
+			this.deltaX -= dbc.BASIC_DROID_X_ACCELERATION * this.game.clockTick;
+		}
+	}
 
-    //if the droid is to the left of targetLeft, then increase X velocity
-    if (this.x < this.targetOrbitalPointLeft.x) {
-      if (this.deltaX < dbc.BASIC_DROID_X_MOVEMENT_SPEED)
-        this.deltaX += dbc.BASIC_DROID_X_ACCELERATION * this.game.clockTick;
-    }
-    //if the droid is to the right of targetRight, then decrease X velocity
-    if (this.x > this.targetOrbitalPointRight.x) {
-      if (this.deltaX >= (-dbc.BASIC_DROID_X_MOVEMENT_SPEED))
-        this.deltaX -= dbc.BASIC_DROID_X_ACCELERATION * this.game.clockTick;
-    }
+	//if the droid is to the left of targetLeft, then increase X velocity
+	if (this.x < this.targetOrbitalPointLeft.x) {
+		if (this.deltaX < dbc.BASIC_DROID_X_MOVEMENT_SPEED)
+		this.deltaX += dbc.BASIC_DROID_X_ACCELERATION * this.game.clockTick;
+	}
+	//if the droid is to the right of targetRight, then decrease X velocity
+	if (this.x > this.targetOrbitalPointRight.x) {
+		if (this.deltaX >= (-dbc.BASIC_DROID_X_MOVEMENT_SPEED))
+		this.deltaX -= dbc.BASIC_DROID_X_ACCELERATION * this.game.clockTick;
+	}
 
-    //after calculating change in x and y then increment x and y by delta x and delta y
-    // this.x += this.game.clockTick * (Math.random() * this.deltaX);
-    // this.y += this.game.clockTick * (Math.random() * this.deltaY);
-    this.x += this.game.clockTick * this.deltaX;
-    this.y += this.game.clockTick * this.deltaY;
+	//after calculating change in x and y then increment x and y by delta x and delta y
+	// this.x += this.game.clockTick * (Math.random() * this.deltaX);
+	// this.y += this.game.clockTick * (Math.random() * this.deltaY);
+	this.x += this.game.clockTick * this.deltaX;
+	this.y += this.game.clockTick * this.deltaY;
 
-    this.boundingbox.translateCoordinates(this.game.clockTick * this.deltaX, this.game.clockTick * this.deltaY);
-  }
+	this.boundingbox.translateCoordinates(this.game.clockTick * this.deltaX, this.game.clockTick * this.deltaY);
+	}
 
 	die() {
 		this.alive = false;

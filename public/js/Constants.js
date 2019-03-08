@@ -84,12 +84,12 @@ Constants = {
 
     /* Zerlin health and force stats*/
     Z_MAX_HEALTH: 30, //was 20
-    Z_MAX_FORCE: 10,
+    Z_MAX_FORCE: 14,
     Z_FORCE_REGEN_PER_SECOND: 0.5,
     Z_FORCE_JUMP_FORCE_COST: 3,
     Z_SOMERSAULT_FORCE_COST: 3,
     Z_SABER_THROW_FORCE_COST: 4,
-    Z_LIGHTNING_FORCE_COST: 2,
+    Z_LIGHTNING_FORCE_COST: 5,
     /* Zerlin damage */
     Z_SLASH_DAMAGE: 25,
     Z_BOSS_BEAM_DAMAGE: 0.5,
@@ -416,7 +416,7 @@ Constants = {
       '                                       ----                                                                                   ',
       '           ------                             I         H -----     C ---     ----                          ---       --      ', //from ground level, can reg. jump to here.
       '                               S -----             ----                                        ---                            ',
-      'FFFFFFFFFFFF                                                                                                                  ',
+      '                                                                                                                              ',
       '------------           -- -- ----            --------   --     --- ---             -----------     ---------------------------'],
     //   ^      ^- just on screen on start camera location.
     //   |-> Zerlin spawn point.

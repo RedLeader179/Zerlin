@@ -937,8 +937,8 @@ class Lightsaber extends Entity {
   shock() {
     while (this.orb && this.orb.powerTimer > 0 && this.Zerlin.currentForce >= zc.Z_LIGHTNING_FORCE_COST) {
       this.Zerlin.currentForce -= zc.Z_LIGHTNING_FORCE_COST;
-      this.lightning.push(new LightningBolt(this.game, this.x + Math.cos(this.angle) * this.throwArmLength, this.y + Math.sin(this.angle) * this.throwArmLength, this.game.mouse, 1)); 
       this.orb.powerTimer -= 1;
+      this.lightning.push(new LightningBolt(this.game, this.x + Math.cos(this.angle) * this.throwArmLength, this.y + Math.sin(this.angle) * this.throwArmLength, this.game.mouse, 1)); 
     }
     this.orb = null;
   }

@@ -35,25 +35,25 @@ class LightningOrb extends Entity {
 		this.game.ctx.strokeStyle = "blue";
 		this.ctx.beginPath();
 		this.ctx.arc(this.x - this.camera.x, this.y, drawRadius * 2, 0, Math.PI * 2, false);
-        this.ctx.stroke();
+		this.ctx.stroke();
 		this.ctx.closePath();
 
 		this.game.ctx.fillStyle = "blue";
 		this.ctx.beginPath();
 		this.ctx.arc(this.x - this.camera.x, this.y, drawRadius * 1.5, 0, Math.PI * 2, false);
-        this.ctx.fill();
+		this.ctx.fill();
 		this.ctx.closePath();
 
 		this.game.ctx.fillStyle = "#3d8edb";
 		this.ctx.beginPath();
 		this.ctx.arc(this.x - this.camera.x, this.y, drawRadius * 1.3, 0, Math.PI * 2, false);
-        this.ctx.fill();
+		this.ctx.fill();
 		this.ctx.closePath();
 
 		this.game.ctx.fillStyle = "white";
 		this.ctx.beginPath();
 		this.ctx.arc(this.x - this.camera.x, this.y, drawRadius, 0, Math.PI * 2, false);
-        this.ctx.fill();
+		this.ctx.fill();
 		this.ctx.closePath();
 	}
 }
@@ -79,7 +79,7 @@ class LightningBolt extends Entity {
 		this.segmentGenerationTimer = ltng.SEGMENT_GENERATION_TIME;
 		this.opacity = 1;
 		this.reachedEnd = false;
-        this.game.audio.playSoundFx(this.game.audio.lightning);
+		this.game.audio.playSoundFx(this.game.audio.lightning);
 	}
 
 	update() {
@@ -100,7 +100,7 @@ class LightningBolt extends Entity {
 
 	draw() {
 		var originalAlpha = this.game.ctx.globalAlpha;
-      	this.game.ctx.globalAlpha = 1;
+		this.game.ctx.globalAlpha = 1;
 		var width = this.reachedEnd? ltng.WIDTH * 2 * this.opacity : ltng.WIDTH;
 		// width *= this.power;
 		var cameraX = this.camera.x;
@@ -133,14 +133,14 @@ class LightningBolt extends Entity {
 		}
 
 		ctx.restore();
-      	this.game.ctx.globalAlpha = originalAlpha;
+		this.game.ctx.globalAlpha = originalAlpha;
 	}
 	
 	findEnemyInPath() {
 		var droids = this.sceneManager.droids;
 		// var targets = [];
 		if ((this.sceneManager.boss && this.isInRange({x: this.sceneManager.boss.boundingbox.width / 2 + this.sceneManager.boss.boundingbox.x, 
-		                                               y: this.sceneManager.boss.boundingbox.height / 2 + this.sceneManager.boss.boundingbox.y}))) {
+													   y: this.sceneManager.boss.boundingbox.height / 2 + this.sceneManager.boss.boundingbox.y}))) {
 			target = this.sceneManager.boss;
 		} else {
 			var minDistance = 99999999;
@@ -162,7 +162,7 @@ class LightningBolt extends Entity {
 			return this.target.boundCircle;
 		} else if (this.target && this.target instanceof Boss) {
 			return {x: this.sceneManager.boss.boundingbox.width / 2 + this.sceneManager.boss.boundingbox.x, 
-		            y: this.sceneManager.boss.boundingbox.height / 2 + this.sceneManager.boss.boundingbox.y};
+					y: this.sceneManager.boss.boundingbox.height / 2 + this.sceneManager.boss.boundingbox.y};
 		}
 	}
 
@@ -192,8 +192,8 @@ class LightningBolt extends Entity {
 		var exponentFactor = .01;
 		if (distanceToTarget > ltng.MAX_SEGMENT_LENGTH) {
 			/*             
-			                 -.01(x - N) 
-			    arcRange = -e            + pi,     N = (.01 * maxSegmentLen + ln(pi)) / .01
+				             -.01(x - N) 
+				arcRange = -e            + pi,     N = (.01 * maxSegmentLen + ln(pi)) / .01
 			*/
 			return -Math.pow(Math.E, -exponentFactor * (distanceToTarget - (exponentFactor * ltng.MAX_SEGMENT_LENGTH + Math.log(ltng.MAX_SEGMENT_ARC_RANGE)) / exponentFactor)) + ltng.MAX_SEGMENT_ARC_RANGE;
 		} else { // close enough, now make bolt go directly to target
@@ -212,7 +212,7 @@ class LightningBolt extends Entity {
 				if (collideLineWithRectangle2(this.segments[this.segments.length - 1], this.target.boundingbox)) {
 					this.reachedEnd = true;
 					let xy = this.XYofTarget(this.target);
-              		this.sceneManager.addEntity(new DroidExplosion(this.game, xy.x, xy.y, .7, .2));
+					this.sceneManager.addEntity(new DroidExplosion(this.game, xy.x, xy.y, .7, .2));
 					this.target.currentHealth -= ltng.BOSS_DAMAGE;
 				}
 			}
