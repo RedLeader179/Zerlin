@@ -533,7 +533,7 @@ Constants = {
 
   LightningConstants: {
     ARC_CAPTURE_RANGE: Math.PI / 3,
-    SEGMENT_GENERATION_TIME: .0025,
+    SEGMENT_GENERATION_TIME: .005,
     WIDTH: 4,
     MAX_SEGMENT_LENGTH: 50,
     FADE_TIME: 1.5,
