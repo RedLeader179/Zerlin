@@ -129,7 +129,11 @@ class CollisionManager {
       for (var i = this.sceneManager.droids.length - 1; i >= 0; i--) {
         var droid = this.sceneManager.droids[i];
         if (collidePointWithCircle(droid.boundCircle.x, droid.boundCircle.y, zerlin.lightsaber.airbornSaber.x, zerlin.lightsaber.airbornSaber.y, zerlin.lightsaber.airbornSaber.radius)) {
-          droid.explode();
+          if (this.sceneManager.droids[i] instanceof LeggyDroidBoss) {
+            this.sceneManager.droids[i].hitWithLaser();
+          } else {
+            droid.explode();
+          }
         }
       }
     }
@@ -358,7 +362,8 @@ class CollisionManager {
             beam.isSizzling = true;
 
             if (!this.sceneManager.Zerlin.invincible) {
-              this.sceneManager.Zerlin.currentHealth -= this.game.clockTick * dbConst.BEAM_HP_PER_SECOND;
+              this.sceneManager.Zerlin.currentHealth -= this.game.clockTick * bc.BEAM_HP_PER_SECOND;
+              console.log(this.sceneManager.Zerlin.currentHealth);
               // console.log(this.sceneManager.Zerlin.hits);
             }
 
@@ -527,7 +532,7 @@ class CollisionManager {
 
   bombExplosionOnZerlin() {
     var zerlin = this.sceneManager.Zerlin;
-    if (!zerlin.boundingbox.hidden) {
+    if (!zerlin.boundingbox.hidden && !zerlin.invincible) {
       for (let i = 0; i < this.sceneManager.otherEntities.length; i++) {
         if (this.sceneManager.otherEntities[i] instanceof DamagingExplosion && !this.sceneManager.otherEntities[i].damageDone) {
           if (collideCircleWithRectangle2(this.sceneManager.otherEntities[i].boundingCircle, zerlin.boundingbox)) {

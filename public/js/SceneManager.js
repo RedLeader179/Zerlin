@@ -5,21 +5,27 @@ Joshua Atherton, Michael Josten, Steven Golob
 */
 
 /*
-Assets:
-//powerups are capital
-
--  =  tile
-=  =  moving tile
-d  =  basic droid
-s  =  scatter shot droid
-b  =  slow burst droid
-f  =  fast burst droid
-m  =  multi-shot droid
-n  =  sniper droid
-H  =  health powerup
-F  =  force powerup
-I  =  invincibility powerup
-X = boss
+// -  =  tile
+// =  =  moving tile
+// ~  =  falling tile
+// d  =  basic droid
+// s  =  scatter shot droid
+// b  =  slow burst droid
+// f  =  fast burst droid
+// m  =  multi-shot droid
+// n  =  sniper droid
+//
+// H  =  health powerup
+// F  =  force powerup
+// I  =  invincibility powerup
+// S  =  split-shot powerup
+// T  =  tiny mode powerup
+// W  =  homing laser power up
+//
+// C  =  checkpoint
+//
+// *  =  leggy droid boss
+// X  =  Boss
 */
 
 const smc = Constants.SceneManagerConstants;
@@ -54,7 +60,7 @@ class SceneManager2 {
     document.getElementById("formOverlay").style.display = "none";
     this.startOpeningScene();
     /* skip intro stuff and go strait to the level */
-     // this.startLevelScene();
+     //this.startLevelScene();
     // document.getElementById("formOverlay").style.display = "none"; // hide login if not hid in css (curently is)
   }
 
@@ -72,7 +78,7 @@ class SceneManager2 {
       rightTile: '../img/forest_right_tile.png',
       leftRightTile: '../img/forest_both_rounded_tile.png'
     };
-    
+
     var CITY_LEVEL_BACKGROUNDS = [
       new ParallaxScrollBackground(this.game, this, '../img/city_background.png', 1, 5200),
       new ParallaxScrollBackground(this.game, this, '../img/city_buildings_back.png', 1, 2500),
@@ -121,9 +127,10 @@ class SceneManager2 {
     this.levels = [];
     this.level = null;
     this.levelBackgrounds = [];
+    //this.levels.push(new Level(this.game, this, lvlConst.BOSS_TEST_LAYOUT, LEVEL_ONE_BACKGROUNDS, LEVEL_ONE_TILES));
     this.levels.push(new Level(this.game, this, lvlConst.MIKE_LEVEL_ONE, LEVEL_ONE_BACKGROUNDS, LEVEL_ONE_TILES));
     this.levels.push(new Level(this.game, this, lvlConst.CITY_LEVEL, CITY_LEVEL_BACKGROUNDS, CITY_LEVEL_TILES));
-    this.levels.push(new Level(this.game, this, lvlConst.MIKE_LEVEL_TWO, LEVEL_THREE_BACKGROUNDS, LEVEL_THREE_TILES));
+    this.levels.push(new Level(this.game, this, lvlConst.MIKE_LEVEL_THREE, LEVEL_THREE_BACKGROUNDS, LEVEL_THREE_TILES));
   }
 
   setCheckPoint(checkPoint) {
@@ -573,7 +580,7 @@ class SceneManager2 {
     }
 
 
-    if (this.boss && !this.boss.alive || (this.boss == null && this.level.unspawnedBoss == null 
+    if (this.boss && !this.boss.alive || (this.boss == null && this.level.unspawnedBoss == null
           && this.droids.length == 0 && this.Zerlin.x >= this.level.getLengthAtI(5)) && !this.wonLevel) {
             //also need to check if zerlin is near the end of the level when there is no boss.
       console.log("level won");
