@@ -296,9 +296,9 @@ class DroidExplosion extends Entity {
 		this.scale = scale? scale * duc.EXPLOSION_SCALE : duc.EXPLOSION_SCALE;
 		this.volume = explosionVolume? explosionVolume : .15;
 		this.speed = speed? speed : duc.EXPLOSION_FRAME_SPEED;
-		var spritesheet = this.game.assetManager.getAsset("../img/Explosion.png");
+		var spritesheet = this.game.assetManager.getAsset("../img/explosion_josh.png");
 		this.animation = new Animation(spritesheet, 0, 0, 64, 64,
-				this.speed, 15, false, false, this.scale);
+				this.speed, 21, false, false, this.scale);
 
 		this.x = x - this.animation.frameWidth * this.scale / 2;
 		this.y = y - this.animation.frameHeight * this.scale / 2;
@@ -334,7 +334,7 @@ class DamagingExplosion extends DroidExplosion {
 		super.draw();
 
 		// draw bounding circle
-		
+
 		// this.game.ctx.beginPath();
 		// this.game.ctx.strokeStyle = "black";
 		// this.game.ctx.arc(this.boundingCircle.x - this.sceneManager.camera.x,

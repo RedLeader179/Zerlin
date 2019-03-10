@@ -74,6 +74,7 @@ class AssetManager {
   AM.queueDownload("../img/Zerlin crouch left.png");
   AM.queueDownload("../img/Zerlin death.png");
   AM.queueDownload("../img/zerlin at fire.png");
+  AM.queueDownload("../img/ship take off.png");
   AM.queueDownload("../img/saber up.png");
   AM.queueDownload("../img/saber up left.png");
   AM.queueDownload("../img/saber down.png");
@@ -93,12 +94,11 @@ class AssetManager {
   AM.queueDownload("../img/beam cannon left.png");
   AM.queueDownload("../img/boss_helmet.png");
   AM.queueDownload("../img/bomb.png");
-  
+
   // Droid boss
   AM.queueDownload("../img/leggy_droid.png");
   AM.queueDownload("../img/boss_status_bar_icon.png");
-
-
+  AM.queueDownload("../img/explosion_josh.png");
 
 
   /********** Powerup assets ******************/
@@ -134,6 +134,7 @@ class AssetManager {
   AM.queueDownload('../img/opening oasis 3.png');
   AM.queueDownload('../img/opening oasis 2.png');
   AM.queueDownload('../img/opening oasis 1.png');
+  AM.queueDownload('../img/twinkling star.png');
 
   // forest
   AM.queueDownload("../img/backgroundStars.png");
@@ -168,7 +169,7 @@ class AssetManager {
 
   /********** Tile assets ******************/  //tiles are 100x100
   //forest
-  AM.queueDownload("../img/forest_left_tile.png"); 
+  AM.queueDownload("../img/forest_left_tile.png");
   AM.queueDownload("../img/forest_center_tile.png");
   AM.queueDownload("../img/forest_right_tile.png");
   AM.queueDownload("../img/forest_both_rounded_tile.png");
@@ -189,6 +190,8 @@ class AssetManager {
   AM.queueDownload('../img/music_menu.png');
   AM.queueDownload('../img/music_menu_xfx.png');
   AM.queueDownload('../img/music_menu_xmusic.png');
+
+  AM.queueDownload('../img/title.png');
 
 
 

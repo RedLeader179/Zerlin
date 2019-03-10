@@ -1,6 +1,9 @@
 
 /* One bad ass mother */
 // implement a poison shot
+
+var dbConst = Constants.DroidBossConstants;
+
 class LeggyDroidBoss extends BasicDroid {
   constructor(game, spritesheet, startX, startY, frames, frameSpeed) {
     super(game, spritesheet, startX, startY, frames, frameSpeed, 315, 620, .5, 200);
@@ -23,6 +26,10 @@ class LeggyDroidBoss extends BasicDroid {
     // this.game.audio.playSoundFx(this.game.audio.saberDeflectLaser);
   }
 
+  hitWithLightning() {
+    this.currentHealth -= Constants.LightningConstants.BOSS_DAMAGE;
+  }
+
   hitWithSaber() {
     this.currentHealth -= Constants.DroidBossConstants.HIT_WITH_SABER_DAMAGE;
     //todo: play soundFx
@@ -34,7 +41,7 @@ class LeggyDroidBoss extends BasicDroid {
       this.healthStatusBar = new DroidBossHealthStatusBar(this.game,
           this.game.surfaceWidth * 0.25,
           680,  this);
-      console.log('spawned bar');
+      // console.log('spawned bar');
       this.game.sceneManager.bossHealthBar = this.healthStatusBar;
       this.spawned = true;
       this.game.audio.playSoundFx(this.game.audio.droidBossMechanical);
@@ -84,12 +91,13 @@ class LeggyDroidBoss extends BasicDroid {
 		this.removeFromWorld = true;
 
     this.game.audio.playSoundFx(this.game.audio.enemy, 'rubbleExplosion');
+    this.game.audio.droidBossMechanical.stop();
+
     // this.game.audio.playSoundFx(this.game.audio.enemy, 'largeExplosion');
 
-    // class DroidExplosion extends Entity {
-    // 	constructor(game, x, y,
-              //    scale, explosionVolume, speed) {
-    //second explosions
+    // constructor(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, scale) {
+    // this.animation = new Animation(spritesheet, 0, 0, 64, 64,
+		// 		this.speed, 15, false, false, this.scale);
     setTimeout( () => {
       this.sceneManager.addEntity(
         new DroidExplosion(
@@ -158,8 +166,9 @@ class LeggyDroidBoss extends BasicDroid {
       Constants.DroidBossConstants.POISON_LASER_SPEED,
       this.sceneManager.Zerlin.x,
       this.sceneManager.Zerlin.boundingbox.y + this.sceneManager.Zerlin.boundingbox.height / 2,
-      Constants.DroidBossConstants.POISON_LASER_LENGTH, Constants.DroidBossConstants.POISON_LASER_WIDTH, "#33cc33", "#ffff00");
+      Constants.DroidBossConstants.POISON_LASER_LENGTH, Constants.DroidBossConstants.POISON_LASER_WIDTH, "#4e4f51", "#ffff00");
     laser.poisoned = true;
+    laser.secondaryColor = 'rgba(107,142,35)';
     this.sceneManager.addLaser(laser);
     this.game.audio.playSoundFx(this.game.audio.poisonShot);
     this.fire = false;
@@ -264,5 +273,60 @@ class LeggyDroidBoss extends BasicDroid {
     this.sceneManager.addLaser(laser4);
     this.game.audio.playSoundFx(this.game.audio.enemy, 'retroBlasterShot');
     this.fire = false;
+  }
+  /*
+   * calculate movement so that it will try to fly around the location of the
+   * target.
+   */
+  calcMovement() {
+    this.targetOrbitalPointLeft.x = this.sceneManager.Zerlin.x - dbConst.DROID_BOSS_ORBITAL_X_OFFSET;
+    //add 200 so that the droids uses up all the canvas becuase when targeting Zerlin,
+    //doesn't use all of the canvas
+    this.targetOrbitalPointRight.x = this.sceneManager.Zerlin.x + dbConst.DROID_BOSS_ORBITAL_X_OFFSET + 200;
+
+    //if the droid is to the left of targetRight and right of targetLeft
+    if (this.x <= this.targetOrbitalPointRight.x && this.x >= this.targetOrbitalPointLeft.x) {
+      //if the droid is moving right, then increase x velocity
+      if (this.deltaX >= 0) {
+        if (this.deltaX < dbConst.DROID_BOSS_X_MOVEMENT_SPEED)
+          this.deltaX += dbConst.DROID_BOSS_X_ACCELERATION * this.game.clockTick;
+      }
+      //if the droid is moving left, then decrease x velocity
+      if (this.deltaX < 0) {
+        if (this.deltaX >= (-dbConst.DROID_BOSS_X_MOVEMENT_SPEED))
+          this.deltaX -= dbConst.DROID_BOSS_X_ACCELERATION * this.game.clockTick;
+      }
+    }
+
+    //if the droid is to the left of targetLeft, then increase X velocity
+    if (this.x < this.targetOrbitalPointLeft.x) {
+      if (this.deltaX < dbConst.DROID_BOSS_X_MOVEMENT_SPEED)
+        this.deltaX += dbConst.DROID_BOSS_X_ACCELERATION * this.game.clockTick;
+    }
+    //if the droid is to the right of targetRight, then decrease X velocity
+    if (this.x > this.targetOrbitalPointRight.x) {
+      if (this.deltaX >= (-dbConst.DROID_BOSS_X_MOVEMENT_SPEED))
+        this.deltaX -= dbConst.DROID_BOSS_X_ACCELERATION * this.game.clockTick;
+    }
+
+
+    //if droid is above the target point, then increase deltaY(down)
+    if (this.y < this.targetOrbitalPointRight.y) {
+      if (this.deltaY <= dbConst.DROID_BOSS_Y_MOVEMENT_SPEED)
+        this.deltaY += dbConst.DROID_BOSS_Y_ACCELERATION * this.game.clockTick;
+    }
+    //if the droid is below the target point, then decrease the deltaY(up)
+    else if (this.y >= this.targetOrbitalPointRight.y) {
+      if (this.deltaY >= (-dbConst.DROID_BOSS_Y_MOVEMENT_SPEED))
+        this.deltaY -= dbConst.DROID_BOSS_Y_ACCELERATION * this.game.clockTick;
+    }
+
+    //after calculating change in x and y then increment x and y by delta x and delta y
+    // this.x += this.game.clockTick * (Math.random() * this.deltaX);
+    // this.y += this.game.clockTick * (Math.random() * this.deltaY);
+    this.x += this.game.clockTick * this.deltaX;
+    this.y += this.game.clockTick * this.deltaY;
+
+    this.boundCircle.translateCoordinates(this.game.clockTick * this.deltaX, this.game.clockTick * this.deltaY);
   }
 }

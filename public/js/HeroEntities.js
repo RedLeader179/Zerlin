@@ -56,7 +56,7 @@ class Zerlin extends Entity {
     this.iSeconds = Constants.PowerUpConstants.INVINCIBILITY_TIME; //invincibility seconds
     this.iColor = 'rgba(14, 61, 220, 1)';
 
-    /* poisioned */
+    /* poisoned */
     this.poisoned = false;
     this.poisonedCounter = 0;
     this.poisonedMaxTime = Constants.DroidBossConstants.POISON_LASER_DURATION;
@@ -72,6 +72,11 @@ class Zerlin extends Entity {
   update() {
     // check basic movement
     if (this.alive) {
+      if(this.godMode) {
+        if (this.y >= 700) {
+          this.deltaY -= 120;
+        }
+      }
 
       if (this.poisoned) {
         this.currentHealth -= Constants.DroidBossConstants.POISION_LASER_DAMAGE_PER_TICK * this.game.clockTick;
@@ -216,7 +221,7 @@ class Zerlin extends Entity {
       }
       if (this.tile) {
         this.deltaX += this.tile.deltaX;
-        if (this.tile.falling) { 
+        if (this.tile.falling) {
           // console.log("on falling tile");
           this.setXY(this.x, this.tile.boundingBox.top + zConst.Z_FEET_ABOVE_FRAME * zConst.Z_SCALE);
         }
@@ -398,7 +403,7 @@ class Zerlin extends Entity {
     }
   }
 
-  
+
 
   isTileBelow(tile) {
     return (this.boundingbox.left < tile.boundingBox.right) &&
@@ -676,7 +681,10 @@ class Lightsaber extends Entity {
     this.deflectingBeamSoundOn = false;
     this.splitLasers = false;
     this.splitShotTimer = puc.SPLIT_SHOT_TIME;
+    this.throwArmLength = (zc.THROW_ARM_IMAGE_FINGER_X - zc.LS_THROW_RIGHT_X_AXIS) * zc.Z_SCALE;
     this.homingLasers = false;
+    this.lightning = [];
+    this.orb = null;
     this.setUpSaberImages();
     this.faceRightUpSaber();
     this.updateCollisionLine();
@@ -705,47 +713,92 @@ class Lightsaber extends Entity {
     // rotate
     if (this.game.mouse) {
       this.angle = Math.atan2(this.game.mouse.y - this.y, this.game.mouse.x + this.camera.x - this.x);
+        //  handle attacks
+        if (this.game.keys['leftClick'] && this.game.keys['ShiftLeft']) {
+          if (this.orb === null) {
+            this.orb = new LightningOrb(this);
+          }
+          this.holdingShiftClick = true;
+          this.holdingClick = false;
+          this.shocking = true;
+          this.setSaberThrow();
+          } else {
+            if (!this.game.keys['ShiftLeft'] && !this.throwing) { // keep throwing arm if holding shift after lightning
+              this.setSaberRegular();
+              this.orb = null;
+              
+          // change sprite on any of these conditions
+          if (!this.throwing && this.game.click && !this.Zerlin.isInManeuver()) {
+            if (this.Zerlin.currentForce >= zc.Z_SABER_THROW_FORCE_COST) {
+              this.throw();
+            }
+          }
 
-      // change sprite on any of these conditions
-      if (!this.throwing && this.game.click && !this.Zerlin.isInManeuver()) {
-        if (this.Zerlin.currentForce >= zc.Z_SABER_THROW_FORCE_COST) {
-          this.throw(); 
+
         }
+
+        if (this.holdingShiftClick && !this.game.keys['leftClick']) { // just released click from shift click
+          if (!this.Zerlin.isInManeuver()) {
+            this.shock();
+          }
+          this.orb = null;
+        }
+        else if (this.game.keys['leftClick']) {
+          this.holdingClick = true;
+        } else {
+          if (this.holdingClick && !this.throwing && !this.Zerlin.isInManeuver()) { // just released left click
+            if (this.Zerlin.currentForce >= zc.Z_SABER_THROW_FORCE_COST) {
+              this.throw();
+            }
+          }
+          this.holdingClick = false;
+        }
+        this.holdingShiftClick = false;
+
       }
 
-      if (this.game.mouse.x + this.camera.x < this.Zerlin.x && this.facingRight) {
-        this.saberUp = !this.saberUp;
-        if (this.throwing) {
+
+      if (this.holdingShiftClick) {
+        if (this.game.mouse.x + this.camera.x < this.Zerlin.x && this.facingRight) {
           this.faceLeftThrowing();
-        }
-        else if (this.inClickPosition) {
-          this.faceLeftUpSaber();
-        } else {
-          this.faceLeftDownSaber();
-        }
-      } else if (this.game.mouse.x + this.camera.x > this.Zerlin.x && !this.facingRight) {
-        this.saberUp = !this.saberUp;
-        if (this.throwing) {
+        } else if (this.game.mouse.x + this.camera.x > this.Zerlin.x && !this.facingRight) {
           this.faceRightThrowing();
         }
-        else if (this.inClickPosition) {
-          this.faceRightDownSaber();
-        } else {
-          this.faceRightUpSaber();
-        }
-      } else if (!this.throwing && this.game.rightClickDown && !this.inClickPosition) {
-        this.inClickPosition = true;
-        if (this.game.mouse.x + this.camera.x < this.Zerlin.x) {
-          this.faceLeftUpSaber();
-        } else {
-          this.faceRightDownSaber();
-        }
-      } else if (!this.throwing && !this.game.rightClickDown && this.inClickPosition) {
-        this.inClickPosition = false;
-        if (this.game.mouse.x + this.camera.x < this.Zerlin.x) {
-          this.faceLeftDownSaber();
-        } else {
-          this.faceRightUpSaber();
+      } else {
+        if (this.game.mouse.x + this.camera.x < this.Zerlin.x && this.facingRight) {
+          this.saberUp = !this.saberUp;
+          if (this.throwing) {
+            this.faceLeftThrowing();
+          }
+          else if (this.inClickPosition) {
+            this.faceLeftUpSaber();
+          } else {
+            this.faceLeftDownSaber();
+          }
+        } else if (this.game.mouse.x + this.camera.x > this.Zerlin.x && !this.facingRight) {
+          this.saberUp = !this.saberUp;
+          if (this.throwing) {
+            this.faceRightThrowing();
+          }
+          else if (this.inClickPosition) {
+            this.faceRightDownSaber();
+          } else {
+            this.faceRightUpSaber();
+          }
+        } else if (!this.throwing && this.game.rightClickDown && !this.inClickPosition) {
+          this.inClickPosition = true;
+          if (this.game.mouse.x + this.camera.x < this.Zerlin.x) {
+            this.faceLeftUpSaber();
+          } else {
+            this.faceRightDownSaber();
+          }
+        } else if (!this.throwing && !this.game.rightClickDown && this.inClickPosition) {
+          this.inClickPosition = false;
+          if (this.game.mouse.x + this.camera.x < this.Zerlin.x) {
+            this.faceLeftDownSaber();
+          } else {
+            this.faceRightUpSaber();
+          }
         }
       }
     }
@@ -766,9 +819,25 @@ class Lightsaber extends Entity {
     if (this.airbornSaber) {
       this.airbornSaber.update();
     }
+
+    if (this.orb) {
+      this.orb.update();
+    }
+    for (let i = this.lightning.length - 1; i >= 0; i--) {
+      this.lightning[i].update();
+      if (this.lightning[i].removeFromWorld) {
+        this.lightning.splice(i, 1);
+      }
+    }
   }
 
   draw() {
+    for (let i = 0; i < this.lightning.length; i++) {
+      this.lightning[i].draw();
+    }
+    if (this.orb) {
+      this.orb.draw();
+    }
     if (!this.hidden) {
       this.ctx.save();
       this.ctx.translate(this.x - this.camera.x, this.y);
@@ -800,12 +869,31 @@ class Lightsaber extends Entity {
     }
   }
 
+  setSaberRegular() {
+    if (this.facingRight) {
+      if (this.inClickPosition) {
+        this.faceRightDownSaber();
+      } else {
+        this.faceRightUpSaber();
+      }
+    } else {
+      if (this.inClickPosition) {
+        this.faceLeftUpSaber();
+      } else {
+        this.faceLeftDownSaber();
+      }
+    }
+  }
+
+  setSaberThrow() {
+    if (this.facingRight) {
+      this.faceRightThrowing();
+    } else {
+      this.faceLeftThrowing();
+    }
+  }
+
   enableSplitLasers() {
-    // if (this.splitLasers) { //if splitshot is already active, reset the timer
-    //   this.splitShotTimer = puc.SPLIT_SHOT_TIME;
-    // } else {
-    //   this.splitLasers = true;
-    // }
     this.splitShotTimer = puc.SPLIT_SHOT_TIME;
     this.splitLasers = true;
   }
@@ -813,7 +901,6 @@ class Lightsaber extends Entity {
   saberSlope() {
     return (this.bladeCollar.y - this.bladeTip.y) / (this.bladeCollar.x - this.bladeTip.x);
   }
-
 
   enableHomingLasers() {
     this.homingLasers = true;
@@ -851,30 +938,22 @@ class Lightsaber extends Entity {
     this.Zerlin.currentForce -= zc.Z_SABER_THROW_FORCE_COST;
     this.throwing = true;
     this.airbornSaber = new AirbornSaber(this.game, this, Math.cos(this.angle) * zc.SABER_THROW_INITIAL_SPEED, Math.sin(this.angle) * zc.SABER_THROW_INITIAL_SPEED);
-    if (this.facingRight) {
-      this.faceRightThrowing();
-    } else {
-      this.faceLeftThrowing();
-    }
+    this.setSaberThrow();
   }
 
   catch() {
     this.throwing = false;
     this.airbornSaber = null;
-    // readjust
-    if (this.facingRight) {
-      if (this.inClickPosition) {
-        this.faceRightDownSaber();
-      } else {
-        this.faceRightUpSaber();
-      }
-    } else {
-      if (this.inClickPosition) {
-        this.faceLeftUpSaber();
-      } else {
-        this.faceLeftDownSaber();
-      }
+    this.setSaberRegular();
+  }
+
+  shock() {
+    while (this.orb && this.orb.powerTimer > 0 && this.Zerlin.currentForce >= zc.Z_LIGHTNING_FORCE_COST) {
+      this.Zerlin.currentForce -= zc.Z_LIGHTNING_FORCE_COST;
+      this.orb.powerTimer -= 1;
+      this.lightning.push(new LightningBolt(this.game, this.x + Math.cos(this.angle) * this.throwArmLength, this.y + Math.sin(this.angle) * this.throwArmLength, this.game.mouse, 1));
     }
+    this.orb = null;
   }
 
   faceRightUpSaber() {
@@ -889,6 +968,7 @@ class Lightsaber extends Entity {
     this.tipXfromSocket = zc.LS_UP_TIP_X - zc.LS_RIGHT_X_AXIS;
     this.tipYfromSocket = zc.LS_UP_TIP_Y - zc.LS_UP_Y_AXIS;
 
+    this.shocking = false;
     this.facingRight = true;
     this.saberUp = true;
   }
@@ -905,6 +985,7 @@ class Lightsaber extends Entity {
     this.tipXfromSocket = zc.LS_UP_TIP_X - zc.LS_RIGHT_X_AXIS;
     this.tipYfromSocket = zc.LS_UP_Y_AXIS - zc.LS_UP_TIP_Y;
 
+    this.shocking = false;
     this.facingRight = false;
     this.saberUp = true;
   }
@@ -921,6 +1002,7 @@ class Lightsaber extends Entity {
     this.tipXfromSocket = zc.LS_DOWN_TIP_X - zc.LS_RIGHT_X_AXIS;
     this.tipYfromSocket = zc.LS_DOWN_TIP_Y - zc.LS_DOWN_Y_AXIS;
 
+    this.shocking = false;
     this.facingRight = true;
     this.saberUp = false;
   }
@@ -937,6 +1019,7 @@ class Lightsaber extends Entity {
     this.tipXfromSocket = zc.LS_DOWN_TIP_X - zc.LS_LEFT_X_AXIS;
     this.tipYfromSocket = zc.LS_DOWN_Y_AXIS - zc.LS_DOWN_TIP_Y;
 
+    this.shocking = false;
     this.facingRight = false;
     this.saberUp = false;
   }
@@ -984,11 +1067,11 @@ class AirbornSaber extends Entity {
     this.width = zc.LS_AIRBORN_WIDTH * this.arm.Zerlin.scale;
     this.height = zc.LS_AIRBORN_HEIGHT * this.arm.Zerlin.scale;
     this.radius = this.width / 2;
-    this.animation = new Animation(this.game.assetManager.getAsset("../img/airborn saber.png"), 0, 0, 
+    this.animation = new Animation(this.game.assetManager.getAsset("../img/airborn saber.png"), 0, 0,
       zc.LS_AIRBORN_WIDTH, zc.LS_AIRBORN_HEIGHT, zc.LS_AIRBORN_FRAME_DURATION, zc.LS_AIRBORN_FRAMES, true, false, this.arm.Zerlin.scale);
     this.maxDistanceFromArm = 0;
   }
-  
+
 
   update() {
     this.throwTimer += this.game.clockTick;
@@ -1000,12 +1083,12 @@ class AirbornSaber extends Entity {
       this.accelerationY = zc.SABER_THROW_ACCELERATION * Math.sin(this.angleFromArm);
       this.deltaX += this.accelerationX * this.game.clockTick;
       this.deltaY += this.accelerationY * this.game.clockTick;
-      this.checkIfReachedPinnacle(); 
+      this.checkIfReachedPinnacle();
     } else {
       this.deltaX = 300 * Math.cos(this.angleFromArm) * zc.SABER_THROW_ACCELERATION / this.distanceFromArm;
       this.deltaY = 300 * Math.sin(this.angleFromArm) * zc.SABER_THROW_ACCELERATION / this.distanceFromArm;
     }
-    
+
     this.x += this.deltaX * this.game.clockTick;
     this.y += this.deltaY * this.game.clockTick;
   }

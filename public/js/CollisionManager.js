@@ -129,7 +129,11 @@ class CollisionManager {
       for (var i = this.sceneManager.droids.length - 1; i >= 0; i--) {
         var droid = this.sceneManager.droids[i];
         if (collidePointWithCircle(droid.boundCircle.x, droid.boundCircle.y, zerlin.lightsaber.airbornSaber.x, zerlin.lightsaber.airbornSaber.y, zerlin.lightsaber.airbornSaber.radius)) {
-          droid.explode();
+          if (this.sceneManager.droids[i] instanceof LeggyDroidBoss) {
+            this.sceneManager.droids[i].hitWithLaser();
+          } else {
+            droid.explode();
+          }
         }
       }
     }
@@ -153,7 +157,7 @@ class CollisionManager {
   }
 
   laserOnSaber() {
-    if (!this.sceneManager.Zerlin.lightsaber.hidden && !this.sceneManager.Zerlin.lightsaber.throwing) {
+    if (!this.sceneManager.Zerlin.lightsaber.hidden && !this.sceneManager.Zerlin.lightsaber.throwing && !this.sceneManager.Zerlin.lightsaber.shocking) {
       for (var i = this.sceneManager.lasers.length - 1; i >= 0; i--) {
         var laser = this.sceneManager.lasers[i];
         if (!laser.isDeflected) {
@@ -168,7 +172,7 @@ class CollisionManager {
               this.deflectLaserHoming(laser, collision.intersection);
             } else {
               this.deflectLaser(laser, collision.intersection);
-            } 
+            }
 
             if (laser.poisoned) {
               this.game.audio.playSoundFx(this.game.audio.saberDeflectLaser);
@@ -200,7 +204,7 @@ class CollisionManager {
           //then maybe make zerlin invincible for a few ticks
           // console.log(zerlin.hits);
           laser.removeFromWorld = true;
-        }  
+        }
       }
     }
   }
@@ -282,7 +286,8 @@ class CollisionManager {
 
   beamOnSaber() {
     this.sceneManager.Zerlin.lightsaber.deflectingBeam = false;
-    if (this.sceneManager.boss && this.sceneManager.boss.beamCannon.beam && !this.sceneManager.Zerlin.lightsaber.hidden && !this.sceneManager.Zerlin.lightsaber.throwing) {
+    if (this.sceneManager.boss && this.sceneManager.boss.beamCannon.beam && !this.sceneManager.Zerlin.lightsaber.hidden 
+      && !this.sceneManager.Zerlin.lightsaber.throwing && !this.sceneManager.Zerlin.lightsaber.shocking) {
       var zerlin = this.sceneManager.Zerlin;
       var lightsaber = zerlin.lightsaber;
       var beamSegments = this.sceneManager.boss.beamCannon.beam.segments;
@@ -358,7 +363,8 @@ class CollisionManager {
             beam.isSizzling = true;
 
             if (!this.sceneManager.Zerlin.invincible) {
-              this.sceneManager.Zerlin.currentHealth -= this.game.clockTick * dbConst.BEAM_HP_PER_SECOND;
+              this.sceneManager.Zerlin.currentHealth -= this.game.clockTick * bc.BEAM_HP_PER_SECOND;
+              // console.log(this.sceneManager.Zerlin.currentHealth);
               // console.log(this.sceneManager.Zerlin.hits);
             }
 
@@ -527,7 +533,7 @@ class CollisionManager {
 
   bombExplosionOnZerlin() {
     var zerlin = this.sceneManager.Zerlin;
-    if (!zerlin.boundingbox.hidden) {
+    if (!zerlin.boundingbox.hidden && !zerlin.invincible) {
       for (let i = 0; i < this.sceneManager.otherEntities.length; i++) {
         if (this.sceneManager.otherEntities[i] instanceof DamagingExplosion && !this.sceneManager.otherEntities[i].damageDone) {
           if (collideCircleWithRectangle2(this.sceneManager.otherEntities[i].boundingCircle, zerlin.boundingbox)) {
@@ -969,6 +975,10 @@ var collideLineWithRectangle = function(x1, y1, x2, y2, rx, ry, rw, rh) {
     top: top,
     bottom: bottom
   };
+}
+
+var collideLineWithRectangle2 = function(line, rect) {
+  return collideLineWithRectangle(line.p1.x, line.p1.y, line.p2.x, line.p2.y, rect.x, rect.y, rect.width, rect.height).collides;
 }
 
 

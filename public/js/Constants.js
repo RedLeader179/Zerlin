@@ -89,9 +89,10 @@ Constants = {
     Z_FORCE_JUMP_FORCE_COST: 3,
     Z_SOMERSAULT_FORCE_COST: 3,
     Z_SABER_THROW_FORCE_COST: 4,
+    Z_LIGHTNING_FORCE_COST: 5,
     /* Zerlin damage */
-    Z_SLASH_DAMAGE: 10,
-    Z_BOSS_BEAM_DAMAGE: 1,
+    Z_SLASH_DAMAGE: 25,
+    Z_BOSS_BEAM_DAMAGE: 0.5,
 
     Z_SCALE: 0.50, //was .55
 
@@ -170,6 +171,8 @@ Constants = {
     LS_THROW_IMAGE_HEIGHT: 48,
     LS_THROW_RIGHT_X_AXIS: 9,
     LS_THROW_RIGHT_Y_AXIS: 13,
+    THROW_ARM_IMAGE_FINGER_X: 132,
+    THROW_ARM_IMAGE_FINGER_Y: 9,
 
     LS_AIRBORN_WIDTH: 234,
     LS_AIRBORN_HEIGHT: 234,
@@ -195,17 +198,55 @@ Constants = {
   },
 
   SceneManagerConstants: {
+    OPENING_SEQUENCE_1_TIME: 14,
     OPENING_OVERLAY_TIME: 5,
-    OPENING_SCENE_STOP_CAMERA_PAN: 7,
+    OPENING_SCENE_CAMERA_PAN_TIME: 7,
     OPENING_SCENE_FIRST_FADE_OUT_TIME: 10,
-    OPENING_MESSAGE: "There is a tremor in the Force on the Dagobah System.\nLegions of mining droids have been unleashed\non the peaceful planet. It's rich core\nof kyber is frail, and the droids are rapidly\ndestroying Dagobah's biosphere.\n\nA lone Jedi dispatched in the outer rim has\nfelt it. A lone warrior against evil...",
-    OPENING_MESSAGE_TIME: 10,
+    OPENING_MESSAGE:
+      `There is a tremor in the Force on the Dagobah System.
+      Legions of mining droids have been unleashed
+      on the peaceful planet. It's rich core
+      of kyber is frail, and the droids are rapidly
+      destroying Dagobah's biosphere.
+
+      A lone Jedi dispatched in the outer rim has
+      felt it. A lone warrior against unknown evil...`,
+    LEVEL_TWO_MESSAGE:
+      `Zerlin has spent months hunting and destroying
+      the treacherous droid set to destroy Dagobah but
+      droids keep being sent from unknown sources.
+      After searching the wreckage for clues the sender
+      has made a mistake. This droid has a identifiable symbol.
+      While he doesn’t know who is sending these droids
+      he knows someone on Coruscant who will.
+
+      But he isn’t the only one hunting now.
+      Droids have secretly stowed away on his ship...`,
+    LEVEL_THREE_MESSAGE:
+      `Having talked to his contact on Coruscant
+      Zerlin has found out the mysterious force
+      sending the droids to destroy Dagobah.
+      A half droid half mandalorian bounty hunter by the
+      name of Chettark. Who was last seen on the ice
+      world of Hoth.
+
+      Unknown to Zerlin Chetark is preparing for his arrival.
+      Captured or dead, Chettark didn’t care.
+      A Jedi would fetch a lot of credits on the black market.`,
+    OPENING_MESSAGE_TIME: 13,
+    OPENING_TITLE_TIME: 8,
+    OPENING_SEQUENCE_4_TIME: 10,
     LEVEL_ONE_TEXT: "Here begins a new journey...",
     LEVEL_TRANSITION_TIME: 7,
     LEVEL_TRANSITION_OVERLAY_TIME: 3,
     LEVEL_COMPLETE_OVERLAY_TIME: 10,
     NUM_LEVELS: 3,
-    CREDITS: "The End",
+    CREDITS:
+      `Zerlin has eliminated the threat to Dagobah and
+      restored balance to the force.
+
+      Guess it’s back to chasing jedi booty…
+      and pulling girls with fancy lightsaber tricks.`,
     PAUSE_TIME_AFTER_START_LEVEL: 1.2,
 
     GAME_FONT: 'VT323'
@@ -220,20 +261,27 @@ Constants = {
   },
 
   DroidBossConstants: {
-    DROID_BOSS_MAX_HEATH: 100,
+    DROID_BOSS_MAX_HEATH: 150,
     POISON_LASER_DURATION: 5,
-    POISION_LASER_DAMAGE_PER_TICK: .3,
+    POISION_LASER_DAMAGE_PER_TICK: .75,
     POISON_LASER_LENGTH: 38,
     POISON_LASER_WIDTH: 18,
     POISON_LASER_SPEED: 650,
-    DROID_BOSS_SHOOT_INTERVAL: .8,
+    DROID_BOSS_SHOOT_INTERVAL: .5,
     HIT_WITH_SABER_DAMAGE: 10,
-    HIT_WITH_LASER_DAMAGE: 2
+    HIT_WITH_LASER_DAMAGE: 2,
+
+    DROID_BOSS_ORBITAL_X_OFFSET: 200,
+    DROID_BOSS_ORBITAL_Y_OFFSET: -200,
+    DROID_BOSS_X_MOVEMENT_SPEED: 100,
+    DROID_BOSS_X_ACCELERATION: 200,
+    DROID_BOSS_Y_MOVEMENT_SPEED: 50,
+    DROID_BOSS_Y_ACCELERATION: 50,
   },
 
   BossConstants: {
-    B_MAX_HEALTH: 150, // was 150
-    BEAM_HP_PER_SECOND: .2, //was .5
+    B_MAX_HEALTH: 200, // was 150
+    BEAM_HP_PER_SECOND: 2, //was .5
 
     B_SCALE: .6,
     B_DRAW_COLLISION_BOUNDRIES: false,
@@ -262,7 +310,7 @@ Constants = {
     BC_MUZZLE_LEFT_Y: 27,
     BEAM_DROID_LASER_WIDTH: 26,
     BEAM_HP_PER_SECOND: .3,
-    BEAM_ANGLE_ACCELERATION_RADIANS: Math.PI,
+    BEAM_ANGLE_ACCELERATION_RADIANS: Math.PI * 2,
     MICRO_BEAM_COUNT: 5,
     MUZZLE_WIDTH: 13,
     MAX_BEAM_LENGTH: 5000,
@@ -329,31 +377,42 @@ Constants = {
     I  =  invincibility powerup
     S  =  split-shot powerup
     T  =  tiny mode powerup
+    W  =  Homing laser powerup
 
     *  =  leggy droid boss
     X  =  Boss
     */
+   BOSS_TEST_LAYOUT: [
+    '                 ',
+    '                 ',
+    '                 ',
+    '            X    ',
+    '                 ',
+    '    -----        ',
+    '                 ',
+    '-----------------'
+  ],
 
-    MIKE_LEVEL_TWO: [
+    MIKE_LEVEL_THREE: [
 
-      '                                                                                                    ',
-      '                                                                                                    ',
-      '                                     ------                                                         ',
-      '                                                                                                    ',
-      '                                                                                                    ',
-      '                                ~~~                                                                 ',
-      '                                                                                                    ', //from ground can force jump to here.
-      '                                                                                                    ',
-      '                                                                    X                               ', //halfway of camera height.
-      '                                                                                                    ',
-      '                          ~~~                                                                       ',
-      '                                                                -----                               ',
-      '                                                                                                    ',
-      '                                            ~~ ~ ~~ ~~~ ~~~~~~~                                     ',
-      '                                                                                                    ', //from ground level, can reg. jump to here.
-      '             ==  ==            --                                                                   ',
-      '                                                                                                    ',
-      '------------        ---- -----    ---------                                                         '],
+      '            m                   mn        T      d  I                           m   f                    b          b f d d  f m   b                        I       ',
+      '             f       m         n          nf      ds     dbfsmn                df  fs    ddddf  f       dn        d              dd f                               ',
+      '             ms     d  b             ------       f          dbf               s   m           m m     d        d                           C H                     ',
+      '             mb      d f                d s                                                     s b   f       d                                                     ',
+      '                                         dm                                                      d                                                            d     ',
+      '                                ~~~        d                                                                                          ---------                d    ',
+      '                                                    -                       H                                                       ~                       =       ', //from ground can force jump to here.
+      '                                                                                                                                  ~                             d   ',
+      '                                                                                                                           S    ~                               d   ', //halfway of camera height.
+      '                                                                            -                                                 ~                                     ',
+      '                          ~~~                                         C                                                   = =                                       ',
+      '                                                                -----                                                  ~                                     X      ',
+      '                                                                                                ----------           ~                                              ',
+      '                                            ~~ ~ ~~ ~~~ ~~~ ~~~      ----                                          ~                                  --      --    ',
+      '      W                            S                                                                             ~                                                 H', //from ground level, can reg. jump to here.
+      '             ==  ==            --                                         - --~~----------------    H   F      ~                                                    ',
+      '                                                                                           W                ~~                                                      ',
+      '------------        ---- -----    --- -- ---                                     --- --- -- ---   ---------                                    ---------------------'],
       //   ^      ^- just on screen on start camera location.
       //   |-> Zerlin spawn point.
 
@@ -400,25 +459,24 @@ Constants = {
     //can roll 2 columns
     CITY_LEVEL: [
           '                                                                                                                               ',
-          '                               d                                 b                                                             ',
+          '                s              d                                 b                                                             ',
           '                                                                                   n                                           ',
-          '                                                                                                              m                ',
+          '                d                                              m                                              m                ',
           '                                             f                                                                                 ',
           '                                                                                                     I                         ',
           '                              s                                                                                                ',
           '                                     ~  ~~~                                                                                    ', //from ground can force jump to here.
           '                                                                                      m             ~~                         ',
-          '                                                    n                                         --~~                             ', //halfway of camera height.
-          '                d                    b s                m                          ~~~~---~~          n                        ',
-          'd                     f                                         f         ~~~                d                                 ',
-          '                         H                                                   W          n                                      ',
-          '                                                == C                ~~~~~                       T                              ',
-          '                s        ~~~       I   d   = ==        ~~~~--~~--           ~--~ === =   ----                                  ',
+          '                                                                                              --~~                             ', //halfway of camera height.
+          '                                     b s                                           ~~~~---~~          n                        ',
+          '                      f  H                                      f         ~~~W               d                                 ',
+          '                                                                                        n                              *       ',
+          '                                   I            == C               ~~~~~                       T                               ',
+          '                         ~~~           d   = ==       ~~~~--~~--           ~--~ === =   ----                                   ',
           '  ~                                                                                             ==                             ', //from ground level, can reg. jump to here.
-          '          ~~~~~~~                 ~~~--~---        ~~~  H     F                            S                    ----~--        ',
-          '                   ------- == ===                               -------~~~~-                                                   ',
-          '~~~-----                                                                               ----------~--~------~---~         ~-----'],
-
+          '         ~~~~~~~                 ~~~--~---        ~~~  H     F                            S                    ----~--         ',
+          '                 ------- == ===                                 -------~~~~-                                                   ',
+          '~~~-----                                                                               ----------~--~------~---~      ~--------'],
 
     MOVING_TILE_TESTER_LAYOUT: [
       '                 ',
@@ -435,7 +493,7 @@ Constants = {
 
   PowerUpConstants: {
     HEALTH_SCALE: 3,
-    RECOVER_HEALTH_AMOUNT: 20,
+    RECOVER_HEALTH_AMOUNT: 30,
 
     RECOVER_FORCE_AMOUNT: 20,
     FORCE_SCALE: 3,
@@ -452,12 +510,25 @@ Constants = {
     SPLIT_LASER_AMOUNT: 4,
     SPLIT_LASER_ARC_WIDTH: Math.PI / 9,
 
-    TINY_MODE_TIME: 20,
+    TINY_MODE_TIME: 15,
     SHRINKING_TIME: 1.5,
     TINY_SCALE: .175,
 
     HOMING_LASER_TIME: 10,
     HOMING_LASER_STATUS_BAR_SCALE: .2,
+  },
+
+  LightningConstants: {
+    ARC_CAPTURE_RANGE: Math.PI / 3,
+    SEGMENT_GENERATION_TIME: .005,
+    WIDTH: 4,
+    MAX_SEGMENT_LENGTH: 50,
+    FADE_TIME: 1.5,
+    MAX_SEGMENT_ARC_RANGE: Math.PI * .8,
+    BOSS_DAMAGE: 10,
+    ORB_INITIAL_RADIUS: 8,
+    ORB_GROW_RATE: 5,
+    ORB_PULSATION_MAGNITUDE: 2
   },
 
   CheckPointConstants: {

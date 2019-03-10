@@ -75,6 +75,9 @@ class AbstractStatusBar extends Entity {
 
     if (!this.hidden) { //if not hidden
       var colorForeground = this.foregroundColor;
+      if (this instanceof HealthStatusBar && this.game.sceneManager.Zerlin.poisoned) {
+        colorForeground = 'rgba(107,142,35)';
+      }
       var colorBackground = this.backgroundColor;
       if (this.hasCriticalState && this.current <= sbc.STATUS_BAR_CRITICAL_AMOUNT * this.maxSize) {
         //paint the critical state
@@ -304,10 +307,10 @@ class DroidBossHealthStatusBar extends AbstractStatusBar {
 }
 
 /*
-* Powerups status bar, will call powerup deactivate when 
+* Powerups status bar, will call powerup deactivate when
 * In order to use properly, powerup needs to have the time field which holds the max powerup time.
 */
-    
+
 class PowerupStatusBar extends Entity {
   constructor(game, sceneManager, x, y, powerup) {
     super(game, x, y);
@@ -344,7 +347,7 @@ class PowerupStatusBar extends Entity {
       if (this.currentPowerupTime > 0) {
         ctx.beginPath();
         ctx.moveTo(this.x, this.y+sbc.POWERUP_BAR_Y);
-        ctx.lineTo(this.x + ((sbc.POWERUP_LENGTH / this.maxPowerupTime) * this.currentPowerupTime), 
+        ctx.lineTo(this.x + ((sbc.POWERUP_LENGTH / this.maxPowerupTime) * this.currentPowerupTime),
             this.y + sbc.POWERUP_BAR_Y);
         ctx.stroke();
         ctx.closePath();
