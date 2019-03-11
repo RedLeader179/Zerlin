@@ -408,8 +408,8 @@ class Zerlin extends Entity {
   isTileBelow(tile) {
     return (this.boundingbox.left < tile.boundingBox.right) &&
       (this.boundingbox.right > tile.boundingBox.left) &&
-      (this.boundingbox.bottom + 10 > tile.boundingBox.top) &&
-      (this.boundingbox.bottom - 10 < tile.boundingBox.top);
+      (this.boundingbox.bottom + 20 > tile.boundingBox.top) &&
+      (this.boundingbox.bottom - 20 < tile.boundingBox.top);
   }
 
   isInManeuver() {
@@ -693,6 +693,8 @@ class Lightsaber extends Entity {
   update() {
     this.x = this.Zerlin.x;
     this.y = this.Zerlin.y - (zc.Z_HEIGHT - this.Zerlin.armSocketY) * this.Zerlin.scale;
+
+    this.throwArmLength = (zc.THROW_ARM_IMAGE_FINGER_X - zc.LS_THROW_RIGHT_X_AXIS) * this.Zerlin.scale;
 
     if (this.splitLasers) {
       this.splitShotTimer -= this.game.clockTick;

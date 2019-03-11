@@ -142,9 +142,11 @@ class AssetManager {
   AM.queueDownload("../img/backgroundTrees2.png");
   AM.queueDownload("../img/backgroundTrees3.png");
   AM.queueDownload("../img/backgroundTrees4.png");
-  AM.queueDownload("../img/god light.png");
-  AM.queueDownload("../img/god light (1).png");
-  AM.queueDownload("../img/god light (2).png");
+  AM.queueDownload("../img/god light new 1.png");
+  AM.queueDownload("../img/god light new 2.png");
+  AM.queueDownload("../img/god light new 3.png");
+  AM.queueDownload("../img/dagobah bat.png");
+  AM.queueDownload("../img/dagobah bat left.png");
 
   //city
   AM.queueDownload("../img/city_background.png");
@@ -154,6 +156,12 @@ class AssetManager {
   AM.queueDownload("../img/city_clouds_left.png");
   AM.queueDownload("../img/city_clouds2.png");
   AM.queueDownload("../img/city_clouds_center.png");
+  AM.queueDownload("../img/highway layer 1.png");
+  AM.queueDownload("../img/highway layer 2.png");
+  AM.queueDownload("../img/highway layer 3.png");
+  AM.queueDownload("../img/highway layer 1 right.png");
+  AM.queueDownload("../img/highway layer 2 right.png");
+  AM.queueDownload("../img/highway layer 3 right.png");
 
   //Hoth snow
   AM.queueDownload('../img/snow layer.png');
