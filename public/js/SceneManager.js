@@ -59,9 +59,9 @@ class SceneManager2 {
   init() {
     this.buildLevels();
     document.getElementById("formOverlay").style.display = "none";
-    // this.startOpeningScene();
+    this.startOpeningScene();
     /* skip intro stuff and go strait to the level */
-     this.startLevelScene();
+     // this.startLevelScene();
     // document.getElementById("formOverlay").style.display = "none"; // hide login if not hid in css (curently is)
   }
 
@@ -366,7 +366,7 @@ class SceneManager2 {
       // this.sceneEntities.pop(); // remove previous title animation
       this.camera.x = 1400;
       this.sceneEntities.push(new ParallaxAnimatedBackground(this.game, this,
-        new Animation(this.game.assetManager.getAsset('../img/ship take off.png'), 0, 0, 600, 600, .18, 33, false, false, 1.5),
+        new Animation(this.game.assetManager.getAsset('../img/ship take off.png'), 0, 0, 600, 600, .18, 38, false, false, 1.5),
         1, 800, 470, -150));
       this.sceneEntities.push(new Overlay(this.game, true, smc.OPENING_OVERLAY_TIME));
     } else if (this.sequence == 4) {
