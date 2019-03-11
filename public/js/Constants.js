@@ -89,7 +89,7 @@ Constants = {
     Z_FORCE_JUMP_FORCE_COST: 3,
     Z_SOMERSAULT_FORCE_COST: 3,
     Z_SABER_THROW_FORCE_COST: 4,
-    Z_LIGHTNING_FORCE_COST: 0,
+    Z_LIGHTNING_FORCE_COST: 5,
     /* Zerlin damage */
     Z_SLASH_DAMAGE: 25,
     Z_BOSS_BEAM_DAMAGE: 0.5,
@@ -98,7 +98,7 @@ Constants = {
 
     DRAW_COLLISION_BOUNDRIES: false,
 
-    Z_SPAWN_X: 12000, //modify this to spawn zerlin later in the level.
+    Z_SPAWN_X: 0, //modify this to spawn zerlin later in the level.
     //about 100 for 1 tile/column.
 
     Z_WIDTH: 114,
@@ -225,11 +225,11 @@ resistance than he had expected...`,
 
 The Jedi Council has uncovered the source of the droids. They are 
 being sent by a Mandalorian named Chettark, a bounty hunter who resides on 
-the Planet Hoth. He is in league with the Intergalactic Mining Federation, and 
+the Planet Hoth. He is in league with the Trade Federation, and 
 has been preparing an invasion army to use on defenseless planets with 
 kyber deposits.
 
-The council has assigned Zerlin to find him, and stop him at all costs.`,
+The Council has assigned Zerlin to find him, and stop him at all costs.`,
     OPENING_MESSAGE_TIME: 13,
     OPENING_TITLE_TIME: 8,
     OPENING_SEQUENCE_4_TIME: 10,
@@ -242,13 +242,13 @@ The council has assigned Zerlin to find him, and stop him at all costs.`,
       `Zerlin has eliminated the threat to Dagobah and 
 has restored balance to the force. 
 
-The Intergalactic Mining Federation's henchman has been destroyed, 
+The Trade Federation's henchman has been destroyed, 
 and peace can now prosper in the Galaxy.
 
 The End`,
     PAUSE_TIME_AFTER_START_LEVEL: 1.2,
 
-    GAME_FONT: 'VT323',
+    GAME_FONT: 'VT323'
   },
 
   CollisionManagerConstants: {

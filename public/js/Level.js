@@ -625,12 +625,12 @@ class ParallaxHoverHighwayBackground extends ParallaxScrollBackground {
 }
 
 class ParallaxBirdBackground extends Entity {
-  constructor(game, scenemanager, animation, clockwise, startX, distanceFromCamera) {
+  constructor(game, scenemanager, spriteSheet, scale, clockwise, startX, distanceFromCamera) {
     super(game, scenemanager, 0, 0, 0);
     this.camera = scenemanager.camera;
     this.distanceFromCamera = distanceFromCamera;
     this.clockwise = clockwise;
-    this.animation = animation;
+    this.animation = new Animation(game.assetManager.getAsset(spriteSheet), 0, 0, 200, 200, .05, 5, true, false, scale);
     this.arcCenter = {x: 0, y: -1100};
     this.angle = Math.random() * Math.PI * 2;
     this.pathRadius = 1500;
