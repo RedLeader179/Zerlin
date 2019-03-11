@@ -219,14 +219,15 @@ is often lost in the endless beuarocracy.
 
 Zerlin has set course for Coruscant in order to resolve the matter 
 with aggressive negotiations, but upon arrival, has encountered more 
-resistance than he bargained for...`,
+resistance than he had expected...`,
     LEVEL_THREE_MESSAGE:
       `Coruscant has successfully been secured.
 
 The Jedi Council has uncovered the source of the droids. They are 
-being sent by a Mandalorian, who is the leader of the Intergalactic Mining 
-Syndicate. He is in league with the Trade Federation, and has been
-preparing an invasion army to use on defenseless planets with kyber deposits.
+being sent by a Mandalorian named Chettark, a bounty hunter who resides on 
+the Planet Hoth. He is in league with the Intergalactic Mining Federation, and 
+has been preparing an invasion army to use on defenseless planets with 
+kyber deposits.
 
 The council has assigned Zerlin to find him, and stop him at all costs.`,
     OPENING_MESSAGE_TIME: 13,
@@ -238,11 +239,13 @@ The council has assigned Zerlin to find him, and stop him at all costs.`,
     LEVEL_COMPLETE_OVERLAY_TIME: 10,
     NUM_LEVELS: 3,
     CREDITS:
-      `Zerlin has eliminated the threat to Dagobah and
-      restored balance to the force.
+      `Zerlin has eliminated the threat to Dagobah and 
+has restored balance to the force. 
 
-      Guess it’s back to chasing jedi booty…
-      and pulling girls with fancy lightsaber tricks.`,
+The Intergalactic Mining Federation's henchman has been destroyed, 
+and peace can now prosper in the Galaxy.
+
+The End`,
     PAUSE_TIME_AFTER_START_LEVEL: 1.2,
 
     GAME_FONT: 'VT323',
