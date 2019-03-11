@@ -204,35 +204,32 @@ Constants = {
     OPENING_SCENE_FIRST_FADE_OUT_TIME: 10,
     OPENING_MESSAGE:
       `There is a tremor in the Force on the Dagobah System.
-      Legions of mining droids have been unleashed
-      on the peaceful planet. It's rich core
-      of kyber is frail, and the droids are rapidly
-      destroying Dagobah's biosphere.
+Legions of mining droids have been unleashed
+on the peaceful planet. It's rich core
+of kyber is frail, and the droids are rapidly
+destroying Dagobah's biosphere.
 
-      A lone Jedi dispatched in the outer rim has
-      felt it. A lone warrior against unknown evil...`,
+A lone Jedi dispatched in the outer rim has
+felt it. A lone warrior against unknown evil...`,
     LEVEL_TWO_MESSAGE:
-      `Zerlin has spent months hunting and destroying
-      the treacherous droid set to destroy Dagobah but
-      droids keep being sent from unknown sources.
-      After searching the wreckage for clues the sender
-      has made a mistake. This droid has a identifiable symbol.
-      While he doesn’t know who is sending these droids
-      he knows someone on Coruscant who will.
+      `After clearing out many of the droids across the highlands of Dagobah, 
+the Jedi Coucil has placed a movement in the Galactic Senate of the Republic to protect the
+planet from nefarious mining enterprises. Although, such a diplomatic solution
+is often lost in the endless beuarocracy.
 
-      But he isn’t the only one hunting now.
-      Droids have secretly stowed away on his ship...`,
+Zerlin has set course for Coruscant in order to resolve the matter 
+with aggressive negotiations, but upon arrival, has encountered more 
+resistance than he had expected...`,
     LEVEL_THREE_MESSAGE:
-      `Having talked to his contact on Coruscant
-      Zerlin has found out the mysterious force
-      sending the droids to destroy Dagobah.
-      A half droid half mandalorian bounty hunter by the
-      name of Chettark. Who was last seen on the ice
-      world of Hoth.
+      `Coruscant has successfully been secured.
 
-      Unknown to Zerlin Chetark is preparing for his arrival.
-      Captured or dead, Chettark didn’t care.
-      A Jedi would fetch a lot of credits on the black market.`,
+The Jedi Council has uncovered the source of the droids. They are 
+being sent by a Mandalorian named Chettark, a bounty hunter who resides on 
+the Planet Hoth. He is in league with the Trade Federation, and 
+has been preparing an invasion army to use on defenseless planets with 
+kyber deposits.
+
+The Council has assigned Zerlin to find him, and stop him at all costs.`,
     OPENING_MESSAGE_TIME: 13,
     OPENING_TITLE_TIME: 8,
     OPENING_SEQUENCE_4_TIME: 10,
@@ -242,11 +239,13 @@ Constants = {
     LEVEL_COMPLETE_OVERLAY_TIME: 10,
     NUM_LEVELS: 3,
     CREDITS:
-      `Zerlin has eliminated the threat to Dagobah and
-      restored balance to the force.
+      `Zerlin has eliminated the threat to Dagobah and 
+has restored balance to the force. 
 
-      Guess it’s back to chasing jedi booty…
-      and pulling girls with fancy lightsaber tricks.`,
+The Trade Federation's henchman has been destroyed, 
+and peace can now prosper in the Galaxy.
+
+The End`,
     PAUSE_TIME_AFTER_START_LEVEL: 1.2,
 
     GAME_FONT: 'VT323'
@@ -357,6 +356,9 @@ Constants = {
     DRAW_BOXES: false,
     TILE_ACCELERATION: 200,
     TILE_INITIAL_VELOCITY: 200,
+    MAX_GOD_LIGHT_OPACITY: .45,
+    GOD_LIGHT_INTERVAL: 16,
+    HIGHWAY_SPEED: 1000,
 
     /*
     Assets:
@@ -397,22 +399,23 @@ Constants = {
 
       '            m                   mn        T      d  I                           m   f                    b          b f d d  f m   b                        I       ',
       '             f       m         n          nf      ds     dbfsmn                df  fs    ddddf  f       dn        d              dd f                               ',
-      '             ms     d  b             ------       f          dbf               s   m           m m     d        d                           C H                     ',
+      '             ms     d  b             ------       f          dbf               s   m           m m     d        d                             H                     ',
       '             mb      d f                d s                                                     s b   f       d                                                     ',
-      '                                         dm                                                      d                                                            d     ',
+      '                                         dm                                                      d                                          C                 d     ',
       '                                ~~~        d                                                                                          ---------                d    ',
       '                                                    -                       H                                                       ~                       =       ', //from ground can force jump to here.
       '                                                                                                                                  ~                             d   ',
       '                                                                                                                           S    ~                               d   ', //halfway of camera height.
       '                                                                            -                                                 ~                                     ',
-      '                          ~~~                                         C                                                   = =                                       ',
+      '                          ~~~                                                                                             = =                                       ',
       '                                                                -----                                                  ~                                     X      ',
-      '                                                                                                ----------           ~                                              ',
+      '                                                                      C                         ----------           ~                                              ',
       '                                            ~~ ~ ~~ ~~~ ~~~ ~~~      ----                                          ~                                  --      --    ',
       '      W                            S                                                                             ~                                                 H', //from ground level, can reg. jump to here.
       '             ==  ==            --                                         - --~~----------------    H   F      ~                                                    ',
       '                                                                                           W                ~~                                                      ',
-      '------------        ---- -----    --- -- ---                                     --- --- -- ---   ---------                                    ---------------------'],
+      '------------        ---- -----    --- -- ---                                     --- --- -- ---   ---------                                    ---------------------',
+      ''],
       //   ^      ^- just on screen on start camera location.
       //   |-> Zerlin spawn point.
 
@@ -449,9 +452,9 @@ Constants = {
       '                                            --------                                                                          ',
       '                  -----                                                   ---       ---    W                     --           ',
       '                                       ----                                                                                   ',
-      '           ------                             I         H -----     C ---     ----                          ---       --      ', //from ground level, can reg. jump to here.
+      '           ------                             I         H -----       ---     ----                          ---       --      ', //from ground level, can reg. jump to here.
       '                               S -----             ----                                        ---                            ',
-      '                                                                                                                              ',
+      '                                                                    C                                                         ',
       '------------           -- -- ----            --------   --     --- ---             -----------     ---------------------------'],
     //   ^      ^- just on screen on start camera location.
     //   |-> Zerlin spawn point.
@@ -471,25 +474,13 @@ Constants = {
           '                                     b s                                           ~~~~---~~          n                        ',
           '                      f  H                                      f         ~~~W               d                                 ',
           '                                                                                        n                              *       ',
-          '                                   I            == C               ~~~~~                       T                               ',
+          '                                   I            ==        C        ~~~~~                       T                               ',
           '                         ~~~           d   = ==       ~~~~--~~--           ~--~ === =   ----                                   ',
           '  ~                                                                                             ==                             ', //from ground level, can reg. jump to here.
           '         ~~~~~~~                 ~~~--~---        ~~~  H     F                            S                    ----~--         ',
           '                 ------- == ===                                 -------~~~~-                                                   ',
-          '~~~-----                                                                               ----------~--~------~---~      ~--------'],
-
-
-
-    BOSS_TEST_LAYOUT: [
-      '                 ',
-      '                 ',
-      '       X         ',
-      '                 ',
-      '               - ',
-      '---              ',
-      '   --            ',
-      '-----------------'
-    ],
+          '~~~-----                                                                               ----------~--~------~---~      ~--------',
+          ''],
 
     MOVING_TILE_TESTER_LAYOUT: [
       '                 ',
@@ -523,7 +514,7 @@ Constants = {
     SPLIT_LASER_AMOUNT: 4,
     SPLIT_LASER_ARC_WIDTH: Math.PI / 9,
 
-    TINY_MODE_TIME: 15,
+    TINY_MODE_TIME: 17,
     SHRINKING_TIME: 1.5,
     TINY_SCALE: .175,
 
@@ -532,7 +523,7 @@ Constants = {
   },
 
   LightningConstants: {
-    ARC_CAPTURE_RANGE: Math.PI / 3,
+    ARC_CAPTURE_RANGE: Math.PI / 6,
     SEGMENT_GENERATION_TIME: .005,
     WIDTH: 4,
     MAX_SEGMENT_LENGTH: 50,

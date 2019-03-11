@@ -22,7 +22,7 @@ class Camera {
     if (this.sceneManager.Zerlin.x - cc.ZERLIN_POSITION_ON_SCREEN * this.width >= 0 &&
         this.sceneManager.Zerlin.x <= this.sceneManager.level.getLengthAtI(7)) {
       this.x = this.sceneManager.Zerlin.x - cc.ZERLIN_POSITION_ON_SCREEN * this.width;
-    } else if (this.x < 0) {
+    } else if (this.sceneManager.Zerlin.x - cc.ZERLIN_POSITION_ON_SCREEN * this.width < 0) {
       this.x = 0;
     // } else if (this.x > this.sceneManager.level.getLengthAtI(7)) {
     //   console.log("edge of screen: " + this.x);

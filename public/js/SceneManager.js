@@ -45,6 +45,7 @@ class SceneManager2 {
     this.boss = null;
     this.collisionManager = new CollisionManager(this.game, this);
     this.levelNumber = 1;
+    this.newLevel = true;
     this.canPause = false;
     this.pauseScreen = new PauseScreen(this.game);
     this.musicMenu = new MusicMenu(this.game, 1050, 50, [
@@ -67,9 +68,15 @@ class SceneManager2 {
   buildLevels() {
     var LEVEL_ONE_BACKGROUNDS = [
       new ParallaxScrollBackground(this.game, this, '../img/backgroundTrees4.png', 1, 5200),
+      new ParallaxGodLightBackground(this.game, this, '../img/god light new 3.png', 4500),
       new ParallaxScrollBackground(this.game, this, '../img/backgroundTrees3.png', 1, 2500),
+      new ParallaxBirdBackground(this.game, this, '../img/dagobah bat.png', .45, false, 200, 500),
+      new ParallaxBirdBackground(this.game, this, '../img/dagobah bat left.png', .8, true, 1300, 500),
+      new ParallaxBirdBackground(this.game, this, '../img/dagobah bat.png', .3, false, 2300, 500),
+      new ParallaxGodLightBackground(this.game, this, '../img/god light new 2.png', 1900),
       new ParallaxFloatingBackground(this.game, this, '../img/backgroundStars.png', 1, 1400),
       new ParallaxScrollBackground(this.game, this, '../img/backgroundTrees2.png', 1, 1000),
+      new ParallaxGodLightBackground(this.game, this, '../img/god light new 1.png', 800),
       new ParallaxScrollBackground(this.game, this, '../img/backgroundTrees1.png', 1, 600),
     ];
     var LEVEL_ONE_TILES = {
@@ -82,8 +89,14 @@ class SceneManager2 {
     var CITY_LEVEL_BACKGROUNDS = [
       new ParallaxScrollBackground(this.game, this, '../img/city_background.png', 1, 5200),
       new ParallaxScrollBackground(this.game, this, '../img/city_buildings_back.png', 1, 2500),
+      new ParallaxHoverHighwayBackground(this.game, this, '../img/highway layer 2.png', 4000, false),
+      new ParallaxHoverHighwayBackground(this.game, this, '../img/highway layer 2 right.png', 4000, true),
       new ParallaxScrollBackground(this.game, this, '../img/city_buildings_middle.png', 1, 1400),
+      new ParallaxHoverHighwayBackground(this.game, this, '../img/highway layer 1.png', 1000, false),
+      new ParallaxHoverHighwayBackground(this.game, this, '../img/highway layer 1 right.png', 1000, true),
       new ParallaxScrollBackground(this.game, this, '../img/city_buildings_foreground.png', 1, 1000),
+      new ParallaxHoverHighwayBackground(this.game, this, '../img/highway layer 3.png', 350, false),
+      new ParallaxHoverHighwayBackground(this.game, this, '../img/highway layer 3 right.png', 350, true),
       new ParallaxFloatingBackground(this.game, this, '../img/city_clouds_left.png', 1, 800),
       new ParallaxFloatingBackground(this.game, this, '../img/city_clouds2.png', 1, 12000),
       new ParallaxFloatingBackground(this.game, this, '../img/city_clouds_center.png', 1, 600)
@@ -151,9 +164,6 @@ class SceneManager2 {
     // console.log('added laser');
     this.lasers.push(laser);
     // this.otherEntities.push(laser);
-  }
-  addBeam(beam) {
-    this.beams.push(beam);
   }
 
   addPowerup(powerup) {
@@ -283,6 +293,7 @@ class SceneManager2 {
 
   openingSceneUpdate() {
     if (!this.canPause && this.game.keys['Enter']) {
+      this.game.audio.campFire.stop();
       this.startLevelTransitionScene(); //for going strait into the lvl
       document.getElementById("formOverlay").style.display = "none";
     }
@@ -355,7 +366,7 @@ class SceneManager2 {
       // this.sceneEntities.pop(); // remove previous title animation
       this.camera.x = 1400;
       this.sceneEntities.push(new ParallaxAnimatedBackground(this.game, this,
-        new Animation(this.game.assetManager.getAsset('../img/ship take off.png'), 0, 0, 600, 600, .18, 33, false, false, 1.5),
+        new Animation(this.game.assetManager.getAsset('../img/ship take off.png'), 0, 0, 600, 600, .18, 38, false, false, 1.5),
         1, 800, 470, -150));
       this.sceneEntities.push(new Overlay(this.game, true, smc.OPENING_OVERLAY_TIME));
     } else if (this.sequence == 4) {
@@ -478,12 +489,11 @@ class SceneManager2 {
     // load game engine with tiles for current level
     this.level = this.levels[this.levelNumber - 1];
     if (this.newLevel) {
-      this.checkPoint = new CheckPoint(this.game, 0, 0);
+      this.checkPoint = new CheckPoint(this.game, this.camera.width * cc.ZERLIN_POSITION_ON_SCREEN, 0);
     }
     this.newLevel = false; //if this is set to true when the next level is loaded, then reset the checkpoint.
     this.droids = [];
     this.lasers = [];
-    this.beams = [];
     this.powerups = [];
     this.otherEntities = [];
     this.activePowerups = [];

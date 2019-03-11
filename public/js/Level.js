@@ -137,7 +137,7 @@ class Level {
         } else if (this.levelLayout[i][j] === 'W') { // homing laser power up
           this.unspawnedPowerups.push(new HomingLaserPowerUp(this.game, j * this.tileWidth, i * rowHeight));
         } else if (this.levelLayout[i][j] === 'C') { //checkpoint
-          this.sceneManager.addEntity(new CheckPoint(this.game, j * this.tileWidth, i * rowHeight));
+          this.sceneManager.addEntity(new CheckPoint(this.game, j * this.tileWidth, (i + 1) * rowHeight));
         }
       }
     }
@@ -357,9 +357,10 @@ class ParallaxScrollBackground extends Entity {
     this.y = this.startY + this.camera.y - (this.camera.y * 100 / this.distanceFromCamera);
 
     // x moves slower than camera, so update how far image is drawn from x to "keep up" with camera.
-    if (this.imageDistanceFromX + (2 * this.imageWidth) + this.x < this.camera.x + this.camera.width) {
+    while (this.imageDistanceFromX + (2 * this.imageWidth) + this.x < this.camera.x + this.camera.width) {
       this.imageDistanceFromX = this.imageDistanceFromX + this.imageWidth;
-    } else if (this.imageDistanceFromX + this.x > this.camera.x) {
+    }
+    while (this.imageDistanceFromX + this.x > this.camera.x) {
       this.imageDistanceFromX = this.imageDistanceFromX - this.imageWidth;
     }
   }
@@ -561,4 +562,99 @@ class ParallaxSnowBackground extends Entity {
 
   }
 
+}
+
+
+
+
+
+class ParallaxGodLightBackground extends ParallaxScrollBackground {
+  constructor(game, sceneManager, backgroundImage, distanceFromCamera) {
+    super(game, sceneManager, backgroundImage, 1, distanceFromCamera, 0, 0);
+    this.opacity = 0;
+    this.timer = 0;
+  }
+
+  update() {
+    super.update();
+    this.timer += this.game.clockTick;
+    this.opacity = (lc.MAX_GOD_LIGHT_OPACITY + .4) * (Math.sin(2 * this.timer * Math.PI / lc.GOD_LIGHT_INTERVAL) + 1) / 2 - .4;
+
+  }
+
+  draw() {
+    var originalAlpha = this.ctx.globalAlpha;
+    this.ctx.globalAlpha = this.opacity > 0? this.opacity : 0;
+    super.draw();
+    this.ctx.globalAlpha = originalAlpha;
+  }
+}
+
+
+
+
+
+class ParallaxHoverHighwayBackground extends ParallaxScrollBackground {
+  constructor(game, sceneManager, backgroundImage, distanceFromCamera, movingRight) {
+    super(game, sceneManager, backgroundImage, 1, distanceFromCamera, 0, 0);
+    this.movingRight = movingRight;
+    this.timer = 0;
+  }
+
+  update() {
+    super.update();
+    this.timer += this.game.clockTick;
+    if (this.movingRight) {
+      this.x += this.timer * lc.HIGHWAY_SPEED * 100 / this.distanceFromCamera;
+    } else {
+      this.x -= this.timer * lc.HIGHWAY_SPEED * 100 / this.distanceFromCamera;
+    }
+    // x moves slower than camera, so update how far image is drawn from x to "keep up" with camera.
+    while (this.imageDistanceFromX + (2 * this.imageWidth) + this.x < this.camera.x + this.camera.width) {
+      this.imageDistanceFromX = this.imageDistanceFromX + this.imageWidth;
+    }
+    while (this.imageDistanceFromX + this.x > this.camera.x) {
+      this.imageDistanceFromX = this.imageDistanceFromX - this.imageWidth;
+    }
+
+  }
+
+  draw() {
+    super.draw();
+  }
+}
+
+class ParallaxBirdBackground extends Entity {
+  constructor(game, scenemanager, spriteSheet, scale, clockwise, startX, distanceFromCamera) {
+    super(game, scenemanager, 0, 0, 0);
+    this.camera = scenemanager.camera;
+    this.distanceFromCamera = distanceFromCamera;
+    this.clockwise = clockwise;
+    this.animation = new Animation(game.assetManager.getAsset(spriteSheet), 0, 0, 200, 200, .05, 5, true, false, scale);
+    this.arcCenter = {x: 0, y: -1100};
+    this.angle = Math.random() * Math.PI * 2;
+    this.pathRadius = 1500;
+    this.startX = startX;
+  }
+
+  update() {
+    this.arcCenter.x = this.startX + this.camera.x - (this.camera.x * 100 / this.distanceFromCamera);
+    if (this.clockwise) {
+      this.angle += this.game.clockTick * .3;
+    } else {
+      this.angle -= this.game.clockTick * .3;
+    }
+    if (this.angle >= Math.PI * 2) {
+      this.angle -= Math.PI * 2;
+    }
+
+    this.x = this.arcCenter.x + Math.cos(this.angle) * this.pathRadius;
+    this.y = this.arcCenter.y + Math.sin(this.angle) * this.pathRadius;
+  }
+
+  draw() {
+    if (this.camera.isInView(this, this.animation.frameWidth * this.animation.scale, this.animation.frameHeight * this.animation.scale)) { 
+      this.animation.drawFrame(this.game.clockTick, this.game.ctx, this.x - this.camera.x, this.y - this.camera.y);
+    }
+  }
 }

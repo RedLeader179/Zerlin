@@ -358,17 +358,16 @@ class Zerlin extends Entity {
   }
 
   shrink() {
-    if (!this.tiny) {
-      this.tiny = true;
-      this.tinyTimer = 0;
-    }
+    this.startShrinkScale = this.scale;
+    this.tiny = true;
+    this.tinyTimer = 0;
   }
 
   adjustTinyScale() {
     this.updateBoundingBox();
     this.tinyTimer += this.game.clockTick;
     if (this.tinyTimer <= puc.SHRINKING_TIME) {
-      this.scale -= (zc.Z_SCALE - puc.TINY_SCALE) / puc.SHRINKING_TIME * this.game.clockTick;
+      this.scale -= (this.startShrinkScale - puc.TINY_SCALE) / puc.SHRINKING_TIME * this.game.clockTick;
     } else if (this.tinyTimer > puc.SHRINKING_TIME && this.tinyTimer <= puc.TINY_MODE_TIME - puc.SHRINKING_TIME) {
       this.scale = puc.TINY_SCALE;
     } else if (this.tinyTimer > puc.TINY_MODE_TIME - puc.SHRINKING_TIME && this.tinyTimer <= puc.TINY_MODE_TIME) {
@@ -408,8 +407,8 @@ class Zerlin extends Entity {
   isTileBelow(tile) {
     return (this.boundingbox.left < tile.boundingBox.right) &&
       (this.boundingbox.right > tile.boundingBox.left) &&
-      (this.boundingbox.bottom + 10 > tile.boundingBox.top) &&
-      (this.boundingbox.bottom - 10 < tile.boundingBox.top);
+      (this.boundingbox.bottom + 20 > tile.boundingBox.top) &&
+      (this.boundingbox.bottom - 20 < tile.boundingBox.top);
   }
 
   isInManeuver() {
@@ -693,6 +692,8 @@ class Lightsaber extends Entity {
   update() {
     this.x = this.Zerlin.x;
     this.y = this.Zerlin.y - (zc.Z_HEIGHT - this.Zerlin.armSocketY) * this.Zerlin.scale;
+
+    this.throwArmLength = (zc.THROW_ARM_IMAGE_FINGER_X - zc.LS_THROW_RIGHT_X_AXIS) * this.Zerlin.scale;
 
     if (this.splitLasers) {
       this.splitShotTimer -= this.game.clockTick;
