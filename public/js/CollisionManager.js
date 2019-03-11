@@ -130,7 +130,7 @@ class CollisionManager {
         var droid = this.sceneManager.droids[i];
         if (collidePointWithCircle(droid.boundCircle.x, droid.boundCircle.y, zerlin.lightsaber.airbornSaber.x, zerlin.lightsaber.airbornSaber.y, zerlin.lightsaber.airbornSaber.radius)) {
           if (this.sceneManager.droids[i] instanceof LeggyDroidBoss) {
-            this.sceneManager.droids[i].hitWithLaser();
+            this.sceneManager.droids[i].hitWithSaber();
           } else {
             droid.explode();
           }
@@ -286,7 +286,7 @@ class CollisionManager {
 
   beamOnSaber() {
     this.sceneManager.Zerlin.lightsaber.deflectingBeam = false;
-    if (this.sceneManager.boss && this.sceneManager.boss.beamCannon.beam && !this.sceneManager.Zerlin.lightsaber.hidden 
+    if (this.sceneManager.boss && this.sceneManager.boss.beamCannon.beam && !this.sceneManager.Zerlin.lightsaber.hidden
       && !this.sceneManager.Zerlin.lightsaber.throwing && !this.sceneManager.Zerlin.lightsaber.shocking) {
       var zerlin = this.sceneManager.Zerlin;
       var lightsaber = zerlin.lightsaber;

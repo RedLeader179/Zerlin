@@ -87,3 +87,11 @@ body h2 {
 .form button:hover,.form button:active,.form button:focus {
   background: #43A047;
 }
+
+
+.cheat_buttons {
+  font-family: 'VT323', monospace;
+  float: right;
+  padding-top: 20px;
+
+}

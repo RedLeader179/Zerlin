@@ -27,10 +27,23 @@ class LeggyDroidBoss extends BasicDroid {
   }
 
   hitWithLightning() {
+    let hit = new DroidExplosion(
+            this.game,
+            this.x + (this.animation.scale * this.animation.frameWidth / 2),
+            this.y + (this.animation.scale * this.animation.frameHeight / 2),
+            .5, .2, .03);
+    this.sceneManager.addEntity(hit);
     this.currentHealth -= Constants.LightningConstants.BOSS_DAMAGE;
   }
 
   hitWithSaber() {
+    // constructor(game, x, y, scale, explosionVolume, speed) {
+    let hit = new DroidExplosion(
+            this.game,
+            this.x + (this.animation.scale * this.animation.frameWidth / 2),
+            this.y + (this.animation.scale * this.animation.frameHeight / 2),
+            .5, .2, .03);
+    this.sceneManager.addEntity(hit);
     this.currentHealth -= Constants.DroidBossConstants.HIT_WITH_SABER_DAMAGE;
     //todo: play soundFx
     // console.log('leggy hit with saber', this.currentHealth);

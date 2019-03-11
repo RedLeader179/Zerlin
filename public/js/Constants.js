@@ -98,7 +98,7 @@ Constants = {
 
     DRAW_COLLISION_BOUNDRIES: false,
 
-    Z_SPAWN_X: 0, //modify this to spawn zerlin later in the level.
+    Z_SPAWN_X: 0, //modify this to spawn zerlin later in the level. // get to end of lvls 11000
     //about 100 for 1 tile/column.
 
     Z_WIDTH: 114,
@@ -268,7 +268,7 @@ Constants = {
     POISON_LASER_WIDTH: 18,
     POISON_LASER_SPEED: 650,
     DROID_BOSS_SHOOT_INTERVAL: .5,
-    HIT_WITH_SABER_DAMAGE: 10,
+    HIT_WITH_SABER_DAMAGE: 4,
     HIT_WITH_LASER_DAMAGE: 2,
 
     DROID_BOSS_ORBITAL_X_OFFSET: 200,
