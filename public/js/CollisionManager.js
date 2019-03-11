@@ -258,6 +258,9 @@ class CollisionManager {
     var zerlin = this.sceneManager.Zerlin;
     if (zerlin.y > 2 * this.sceneManager.camera.height) {
       if (zerlin.alive) {
+        this.sceneManager.droids = [];
+        this.sceneManager.lasers = [];
+        this.sceneManager.powerups = [];
         this.sceneManager.level.set();
         console.log(this.sceneManager.checkPoint.boundingBox.x);
         zerlin.setXY(this.sceneManager.checkPoint.boundingBox.x, 0);

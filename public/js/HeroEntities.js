@@ -358,17 +358,16 @@ class Zerlin extends Entity {
   }
 
   shrink() {
-    if (!this.tiny) {
-      this.tiny = true;
-      this.tinyTimer = 0;
-    }
+    this.startShrinkScale = this.scale;
+    this.tiny = true;
+    this.tinyTimer = 0;
   }
 
   adjustTinyScale() {
     this.updateBoundingBox();
     this.tinyTimer += this.game.clockTick;
     if (this.tinyTimer <= puc.SHRINKING_TIME) {
-      this.scale -= (zc.Z_SCALE - puc.TINY_SCALE) / puc.SHRINKING_TIME * this.game.clockTick;
+      this.scale -= (this.startShrinkScale - puc.TINY_SCALE) / puc.SHRINKING_TIME * this.game.clockTick;
     } else if (this.tinyTimer > puc.SHRINKING_TIME && this.tinyTimer <= puc.TINY_MODE_TIME - puc.SHRINKING_TIME) {
       this.scale = puc.TINY_SCALE;
     } else if (this.tinyTimer > puc.TINY_MODE_TIME - puc.SHRINKING_TIME && this.tinyTimer <= puc.TINY_MODE_TIME) {

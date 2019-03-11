@@ -165,9 +165,6 @@ class SceneManager2 {
     this.lasers.push(laser);
     // this.otherEntities.push(laser);
   }
-  addBeam(beam) {
-    this.beams.push(beam);
-  }
 
   addPowerup(powerup) {
     this.powerups.push(powerup);
@@ -497,7 +494,6 @@ class SceneManager2 {
     this.newLevel = false; //if this is set to true when the next level is loaded, then reset the checkpoint.
     this.droids = [];
     this.lasers = [];
-    this.beams = [];
     this.powerups = [];
     this.otherEntities = [];
     this.activePowerups = [];

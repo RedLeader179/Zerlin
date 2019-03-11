@@ -447,7 +447,7 @@ The council has assigned Zerlin to find him, and stop him at all costs.`,
       '                                                                                    H F                     ==                ',
       '                                                                                                                              ',
       '                                            --------                                                                          ',
-      '  T               -----                                                   ---       ---    W                     --           ',
+      '                  -----                                                   ---       ---    W                     --           ',
       '                                       ----                                                                                   ',
       '           ------                             I         H -----       ---     ----                          ---       --      ', //from ground level, can reg. jump to here.
       '                               S -----             ----                                        ---                            ',
