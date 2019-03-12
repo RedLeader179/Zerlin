@@ -61,7 +61,7 @@ class SceneManager2 {
     document.getElementById("formOverlay").style.display = "none";
     this.startOpeningScene();
     /* skip intro stuff and go strait to the level */
-     // this.startLevelScene();
+    //this.startLevelScene();
     // document.getElementById("formOverlay").style.display = "none"; // hide login if not hid in css (curently is)
   }
 
@@ -760,13 +760,114 @@ class PauseScreen {
   }
 
   draw() {
+    var ctx = this.game.ctx;
     this.overlay.draw();
-    this.game.ctx.save();
-    this.game.ctx.fillStyle = "white";
-    this.game.ctx.textAlign = "center";
-    this.game.ctx.font = "70px " + smc.GAME_FONT;
-    this.game.ctx.fillText("Paused", this.game.surfaceWidth / 2, 200);
-    this.game.ctx.restore();
+    ctx.save();
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.font = "70px " + smc.GAME_FONT;
+    ctx.fillText("Paused", this.game.surfaceWidth / 2, 200);
+
+    //draw each powerup on the right
+    //draw each control on the left
+
+    //draw jump control
+    var image = this.game.assetManager.getAsset('../img/jump.png');
+    ctx.drawImage(image, 50, 10, 35, 35 * image.height/image.width);
+    ctx.textAlign = "left";
+    ctx.font = "22px " + smc.GAME_FONT;
+    ctx.fillText("Regular Jump: W", 100, 40);
+    ctx.fillText("Force Jump: Shift + W", 100, 70)
+
+    //draw roll control
+    image = this.game.assetManager.getAsset('../img/roll.png');
+    ctx.drawImage(image, 40, 125, 50, 50 * image.height/image.width);
+    ctx.fillText("Left Roll: A + S", 100, 140);
+    ctx.fillText("Right Roll: D + S", 100, 170);
+
+    //draw slash control
+    image = this.game.assetManager.getAsset('../img/slash.png');
+    ctx.drawImage(image, 40, 200, 50, 50 * image.height/image.width);
+    ctx.fillText("Slash: Spacebar", 100, 250);
+
+    //draw crouch control
+    image = this.game.assetManager.getAsset('../img/crouch.png');
+    ctx.drawImage(image, 40, 300, 40, 40 * image.height/image.width);
+    ctx.fillText("Crouch: X", 100, 340);
+
+    //draw flip lightsaber control
+    image = this.game.assetManager.getAsset('../img/flip_saber.png');
+    ctx.drawImage(image, 35, 390, 50, 50 * image.height/image.width);
+    ctx.fillText("Flip Saber: Right Click", 100, 410);
+
+    //draw throw saber control
+    image = this.game.assetManager.getAsset('../img/saber_throw.png');
+    ctx.drawImage(image, 35, 470, 50, 50 * image.height/image.width);
+    ctx.fillText("Throw Saber: Left Click", 100, 495);
+
+    //draw lightning control
+    image = this.game.assetManager.getAsset('../img/lightning.png');
+    ctx.drawImage(image, 35, 530, 50, 50 * image.height/image.width);
+    ctx.fillText("Force Lightning: Shift + LeftClick", 100, 550);
+    ctx.fillText("(Hold to Charge)", 100, 570);
+
+    /* Middle Column */
+    var middleWidth = this.game.surfaceWidth/2;
+    ctx.textAlign = "center";
+    //draw pause and skip scene control
+    ctx.fillText("Pause/Unpause: Enter", middleWidth, 250);
+    ctx.fillText("Skip Scene: Enter", middleWidth, 300);
+
+    /****** Draw Powerup Description ******/
+    ctx.textAlign = "left";
+
+    //draw the Health powerup
+    var spritesheet = this.game.assetManager.getAsset('../img/powerup_health.png');
+    var animation = new Animation(spritesheet, 0, 0, 32, 32, 0.1, 5, true, false, 3);
+    animation.drawFrame(this.game.clockTick, ctx, 700, 10);
+    ctx.fillText("Health: Fully Heals Zerlin", 800, 60);
+
+    //draw the force powerup
+    spritesheet = this.game.assetManager.getAsset('../img/powerup_force.png');
+    animation = new Animation(spritesheet, 0, 0, 32, 32, 0.1, 9, true, false, 3);
+    animation.drawFrame(this.game.clockTick, ctx, 700, 110);
+    ctx.fillText("Force: Fully Recover Force Power", 800, 160);
+
+    //draw the invincibility powerup
+    spritesheet = this.game.assetManager.getAsset('../img/powerup_invincibility.png');
+    animation = new Animation(spritesheet, 0, 0, 32, 32, 0.1, 9, true, false, 2.5);
+    animation.drawFrame(this.game.clockTick, ctx, 705, 210);
+    ctx.fillText("Invincibility", 800, 255);
+
+    //draw the split shot powerup
+    spritesheet = this.game.assetManager.getAsset('../img/powerup_coin.png');
+    animation = new Animation(spritesheet, 0, 0, 126, 126, 0.1, 8, true, false, 0.5)
+    animation.drawFrame(this.game.clockTick, ctx, 715, 310);
+    ctx.fillText("Split-Shot: Increase Deflected Lasers", 800, 345)
+
+    //draw the tiny mode powerup
+    spritesheet = this.game.assetManager.getAsset('../img/powerup_coin_T.png');
+    animation = new Animation(spritesheet, 0, 0, 126, 126, 0.1, 8, true, false, 0.5)
+    animation.drawFrame(this.game.clockTick, ctx, 715, 400);
+    ctx.fillText("Tiny Mode", 800, 435);
+
+    //draw the homing shot powerup
+    spritesheet = this.game.assetManager.getAsset('../img/powerup_laser.png');
+    animation = new Animation(spritesheet,  0, 0, 165, 159, 0.15, 12, true, false, 0.35);
+    animation.drawFrame(this.game.clockTick, ctx, 715, 500);
+    ctx.fillText("Homing Deflection:", 800, 525);
+    ctx.fillText("Deflected Lasers Seek Nearby Droids", 800, 550);
+
+    //draw the checkpoint
+    spritesheet = this.game.assetManager.getAsset('../img/checkpoint.png');
+    animation = new Animation(spritesheet, 0, 0, 64, 188, .1, 8, true, false, 0.5);
+    animation.drawFrame(this.game.clockTick, ctx, 730, 580);
+    ctx.fillText("Checkpoint", 800, 635);
+
+    
+
+
+    ctx.restore();
   }
 }
 
