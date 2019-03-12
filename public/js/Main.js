@@ -201,6 +201,18 @@ class AssetManager {
 
   AM.queueDownload('../img/title.png');
 
+  /********** Pause Screen Assets ******************/
+  //zerlin control icons
+  AM.queueDownload('../img/roll.png');
+  AM.queueDownload('../img/slash.png');
+  AM.queueDownload('../img/saber_throw.png');
+  AM.queueDownload('../img/jump.png');
+  AM.queueDownload('../img/crouch.png');
+  AM.queueDownload('../img/lightning.png');
+  AM.queueDownload('../img/flip_saber.png');
+  //powerup icons
+  //droid icons?
+
 
 
 
