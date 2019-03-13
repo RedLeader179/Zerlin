@@ -830,12 +830,27 @@ class Lightsaber extends Entity {
         this.lightning.splice(i, 1);
       }
     }
+    // if (this.glow) {
+    //   this.glow.radius -= this.game.clockTick * 10;
+    //   if (this.glow.radius <= 0) {
+    //     this.glow = null;
+    //   }
+    // }
   }
 
   draw() {
+
     for (let i = 0; i < this.lightning.length; i++) {
       this.lightning[i].draw();
     }
+    // if (this.glow) {
+    //   this.game.ctx.beginPath();
+    //   this.game.ctx.fillStyle = "#00ae69";
+    //   this.game.ctx.arc(this.glow.x - this.camera.x,
+    //     this.glow.y, this.glow.radius * 1.3, 0, Math.PI * 2, false);
+    //   this.game.ctx.fill();
+    //   this.game.ctx.closePath();
+    // }
     if (this.orb) {
       this.orb.draw();
     }
@@ -868,6 +883,29 @@ class Lightsaber extends Entity {
     if (this.airbornSaber) {
       this.airbornSaber.draw();
     }
+    // if (this.glow) {
+    //     // this.game.ctx.beginPath();
+    //     // this.game.ctx.fillStyle = "#00ae69";
+    //     // this.game.ctx.arc(this.glow.x - this.camera.x,
+    //     //   this.glow.y, this.glow.radius * 1.3, 0, Math.PI * 2, false);
+    //     // this.game.ctx.fill();
+    //     // this.game.ctx.closePath();
+    //     this.game.ctx.beginPath();
+    //     this.game.ctx.fillStyle = "white";
+    //     this.game.ctx.arc(this.glow.x + this.x - this.camera.x,
+    //       this.glow.y + this.y, this.glow.radius, 0, Math.PI * 2, false);
+    //     this.game.ctx.fill();
+    //     this.game.ctx.closePath();
+    //     this.game.ctx.restore();
+    // }
+  }
+
+  spark(point) {
+    this.sceneManager.otherEntities.push(new Spark(this.game, this.sceneManager, point));
+    this.sceneManager.otherEntities.push(new Spark(this.game, this.sceneManager, point));
+    this.sceneManager.otherEntities.push(new Spark(this.game, this.sceneManager, point));
+    // this.glow = new BoundingCircle(point.x - this.x, point.y - this.y, zc.SABER_GLOW_RADIUS);
+    // this.glow.angle = Math.atan2(this.glow.y, this.glow.y) - this.angle;
   }
 
   setSaberRegular() {

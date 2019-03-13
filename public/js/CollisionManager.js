@@ -23,7 +23,7 @@ class CollisionManager {
   handleCollisions() {
     // this.droidOnDroid();
     this.droidOnSaber();
-    this.laserOnDroid();
+    // this.laserOnDroid();
     this.laserOnSaber();
     this.laserOnZerlin();
     this.ZerlinOnPowerup();
@@ -163,7 +163,7 @@ class CollisionManager {
         if (!laser.isDeflected) {
           var collision = this.isCollidedWithSaber(laser);
           if (collision.collided) {
-
+            this.sceneManager.Zerlin.lightsaber.spark(collision.intersection);
             if (this.sceneManager.Zerlin.lightsaber.splitLasers && this.sceneManager.Zerlin.lightsaber.homingLasers) {
               this.deflectLaserSplitAndHoming(laser, collision.intersection);
             } else if (this.sceneManager.Zerlin.lightsaber.splitLasers) {

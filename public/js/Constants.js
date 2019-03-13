@@ -19,6 +19,12 @@ Constants = {
     PAUSE: 'Enter'
   },
 
+  SparkConstants: {
+    WIDTH: 3,
+    MAX_TIME_ALIVE: .4,
+    MAX_VELOCITY: 500
+  },
+
   DroidBasicConstants: {
     BASIC_DROID_SHOOT_INTERVAL: 1, //default 2
     BASIC_DROID_X_MOVEMENT_SPEED: 225,
@@ -148,6 +154,7 @@ Constants = {
     JUMP_DELTA_Y: -600,
     GRAVITATIONAL_ACCELERATION: 1000,
 
+    SABER_GLOW_RADIUS: 13,
     LS_UP_IMAGE_WIDTH: 126,
     LS_UP_IMAGE_HEIGHT: 228,
     LS_DOWN_IMAGE_WIDTH: 126,
@@ -445,7 +452,7 @@ The End`,
       '                                      d                                                     ------------            b d   d   ',
       '              d                                                                                                      b        ',
       '                                                                                        =      f        d            fd       ', //from ground can force jump to here.
-      '                                                                                                s      d    ---               ',
+      '   dddd                                                                                          s      d    ---               ',
       '                                                                                               d s                            ', //halfway of camera height.
       '                                                                                    H F                     ==                ',
       '                                                                                                                              ',
