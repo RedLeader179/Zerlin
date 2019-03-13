@@ -17,17 +17,17 @@ class Spark extends Entity {
 			this.removeFromWorld = true;
 		}
 
-        this.deltaY += zc.GRAVITATIONAL_ACCELERATION / 3 * this.game.clockTick;
+		this.deltaY += zc.GRAVITATIONAL_ACCELERATION / 3 * this.game.clockTick;
 
 		this.x += this.deltaX * this.game.clockTick;
 		this.y += this.deltaY * this.game.clockTick;
 	}
 
 	draw() {
-      this.ctx.fillStyle = "yellow";
-      this.ctx.fillRect(this.x - this.camera.x, this.y, spk.WIDTH, spk.WIDTH);
-      this.ctx.fillStyle = "white";
-      this.ctx.fillRect(this.x - this.camera.x + spk.WIDTH / 4, this.y + spk.WIDTH / 4, spk.WIDTH / 2, spk.WIDTH / 2);
+		this.ctx.fillStyle = "yellow";
+		this.ctx.fillRect(this.x - this.camera.x, this.y, spk.WIDTH, spk.WIDTH);
+		this.ctx.fillStyle = "white";
+		this.ctx.fillRect(this.x - this.camera.x + spk.WIDTH / 4, this.y + spk.WIDTH / 4, spk.WIDTH / 2, spk.WIDTH / 2);
 	}
 
 }

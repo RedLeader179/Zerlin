@@ -452,7 +452,7 @@ The End`,
       '                                      d                                                     ------------            b d   d   ',
       '              d                                                                                                      b        ',
       '                                                                                        =      f        d            fd       ', //from ground can force jump to here.
-      '   dddd                                                                                          s      d    ---               ',
+      '                                                                                                s      d    ---               ',
       '                                                                                               d s                            ', //halfway of camera height.
       '                                                                                    H F                     ==                ',
       '                                                                                                                              ',
