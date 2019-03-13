@@ -44,6 +44,7 @@ class SceneManager2 {
     this.Zerlin = new Zerlin(this.game, this.camera, this);
     this.boss = null;
     this.collisionManager = new CollisionManager(this.game, this);
+    /* Edit this to change levels */
     this.levelNumber = 1;
     this.newLevel = true;
     this.canPause = false;

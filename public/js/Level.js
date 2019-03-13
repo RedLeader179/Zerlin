@@ -260,7 +260,7 @@ class FallingTile extends Tile {
       this.lifeSpan += -1 * this.game.clockTick;
     if (this.lifeSpan < 0) { //falling tile
       this.falling = true;
-      this.y += 10 * this.game.clockTick;
+      this.y += 15 * this.game.clockTick; //was 10
       this.boundingBox.updateCoordinates(this.x, this.y);
       this.surface = {
         p1: {
