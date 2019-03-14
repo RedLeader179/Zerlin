@@ -16,6 +16,7 @@ class LeggyDroidBoss extends BasicDroid {
 
     this.spawned = false;
     this.healthStatusBar = null;
+    this.hitWithSaberRecoveryTime = 0;
   }
 
 
