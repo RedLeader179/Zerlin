@@ -461,7 +461,7 @@ class ParallaxFloatingBackground extends ParallaxScrollBackground {
   constructor(game, sceneManager, backgroundImage, scale, distanceFromCamera) {
     super(game, sceneManager, backgroundImage, scale, distanceFromCamera);
     this.camera = sceneManager.camera;
-    this.functionX = 0;
+    this.functionX = Math.random() * Math.PI * 2;
   }
 
   instantiate(game, camera) {

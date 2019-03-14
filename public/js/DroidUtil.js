@@ -73,6 +73,8 @@ class AbstractDroid extends Entity {
 			ent.boundCircle.x, ent.boundCircle.y, ent.boundCircle.radius);
 	}
 
+	
+
 }
 
 

@@ -20,6 +20,8 @@ class Zerlin extends Entity {
     this.ctx = game.ctx;
     this.createAnimations();
     this.reset();
+    this.maxHealth = this.godMode ? 999999: zc.Z_MAX_HEALTH;
+    this.maxForce = this.godMode ? 999999: zc.Z_MAX_FORCE;
 
     /* Fields tracked by the status bar */
   }
@@ -41,9 +43,7 @@ class Zerlin extends Entity {
     this.faceRight();
 
     /* Zerlin Status' */
-    this.maxHealth = this.godMode ? 999999: zc.Z_MAX_HEALTH ;
     this.currentHealth = this.maxHealth;
-    this.maxForce = this.godMode ? 999999: zc.Z_MAX_FORCE;
     this.currentForce = this.maxForce;
 
     this.scale = zc.Z_SCALE;
@@ -63,9 +63,9 @@ class Zerlin extends Entity {
   }
 
   setHealth() {
-    this.maxHealth = this.godMode ? 999999: zc.Z_MAX_HEALTH ;
+    this.maxHealth = this.godMode ? 999999: this.maxHealth;
     this.currentHealth = this.maxHealth;
-    this.maxForce = this.godMode ? 999999: zc.Z_MAX_FORCE;
+    this.maxForce = this.godMode ? 999999: this.maxForce;
     this.currentForce = this.maxForce;
   }
 
@@ -91,8 +91,8 @@ class Zerlin extends Entity {
 
       // manage force regeneration
 
-      if (this.currentForce < zc.Z_MAX_FORCE) {
-        this.currentForce += zc.Z_FORCE_REGEN_PER_SECOND * this.game.clockTick;
+      if (this.currentForce < this.maxForce) {
+        this.currentForce += zc.Z_FORCE_REGEN_PER_SECOND * this.game.clockTick * this.maxForce; // recharge is faster with higher capacity
       }
 
       //check basic status

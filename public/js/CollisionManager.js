@@ -23,7 +23,7 @@ class CollisionManager {
   handleCollisions() {
     // this.droidOnDroid();
     this.droidOnSaber();
-    this.laserOnDroid();
+    // this.laserOnDroid();
     this.laserOnSaber();
     this.laserOnZerlin();
     this.ZerlinOnPowerup();
