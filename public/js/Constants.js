@@ -244,7 +244,7 @@ kyber deposits.
 
 The Council has assigned Zerlin to find him, and stop him at all costs.`,
 
-    CREDITS:
+    CREDITS_1:
       `Zerlin has eliminated the threat to Dagobah and 
 has restored balance to the force. 
 
@@ -253,14 +253,22 @@ and peace can now prosper in the Galaxy.
 
 The End`,
 
+    CREDITS_2:
+      `Game and Art by
+
+Steven Golob
+Joshua Atherton
+Michael Josten`,
+
     OPENING_MESSAGE_TIME: 13,
     OPENING_TITLE_TIME: 8,
     OPENING_SEQUENCE_4_TIME: 10,
-    LEVEL_TRANSITION_TIME: 7,
+    LEVEL_TRANSITION_TIME: 6,
     LEVEL_TRANSITION_OVERLAY_TIME: 3,
     LEVEL_COMPLETE_OVERLAY_TIME: 10,
     NUM_LEVELS: 3,
     PAUSE_TIME_AFTER_START_LEVEL: 1.2,
+    CREDITS_MESSAGE_1_TIME: 9,
 
     GAME_FONT: 'VT323'
   },

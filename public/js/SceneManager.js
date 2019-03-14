@@ -691,7 +691,7 @@ class SceneManager2 {
 
 		this.initiallyPaused = false;
 		this.sceneEntities = [];
-		this.sceneEntities.push(new TextScreen(this.game, smc.CREDITS));
+		this.sceneEntities.push(new TextScreen(this.game, smc.CREDITS_1));
 		this.sceneEntities.push(new Overlay(this.game, true, smc.LEVEL_TRANSITION_OVERLAY_TIME));
 		this.startedFinalOverlay = false;
 	}
@@ -704,6 +704,15 @@ class SceneManager2 {
 				this.sceneEntities.splice(i, 1);
 			}
 		}
+
+    if (!this.startedOverlay && this.creditsTimer > smc.CREDITS_MESSAGE_1_TIME - smc.LEVEL_TRANSITION_OVERLAY_TIME) {
+      this.startedOverlay = true;
+      this.sceneEntities.push(new Overlay(this.game, false, smc.LEVEL_TRANSITION_OVERLAY_TIME));
+    } else if (!this.startedSecondCreditMessage && this.creditsTimer >= smc.CREDITS_MESSAGE_1_TIME) {
+      this.startedSecondCreditMessage = true;
+      this.sceneEntities.push(new TextScreen(this.game, smc.CREDITS_2));
+      this.sceneEntities.push(new Overlay(this.game, true, smc.LEVEL_TRANSITION_OVERLAY_TIME));
+    }
 	}
 
 	creditsDraw() {
