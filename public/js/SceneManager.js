@@ -70,17 +70,17 @@ class SceneManager2 {
   buildLevels() {
     var LEVEL_ONE_BACKGROUNDS = [
       new ParallaxScrollBackground(this.game, this, '../img/backgroundTrees4.png', 1, 5200),
-      new ParallaxFloatingBackground(this.game, this, '../img/backgroundStars3.png', 1, 5000),
+      new ParallaxFloatingBackground(this.game, this, '../img/backgroundStars3.png', 1, 5000, 0),
       new ParallaxGodLightBackground(this.game, this, '../img/god light new 3.png', 4500),
       new ParallaxScrollBackground(this.game, this, '../img/backgroundTrees3.png', 1, 2500),
       new ParallaxBirdBackground(this.game, this, '../img/dagobah bat.png', .17, false, 200, 500),
       new ParallaxBirdBackground(this.game, this, '../img/dagobah bat left.png', .45, true, 1300, 500),
       new ParallaxBirdBackground(this.game, this, '../img/dagobah bat.png', .3, false, 2300, 500),
       new ParallaxGodLightBackground(this.game, this, '../img/god light new 2.png', 1900),
-      new ParallaxFloatingBackground(this.game, this, '../img/backgroundStars1.png', 1, 1650),
+      new ParallaxFloatingBackground(this.game, this, '../img/backgroundStars1.png', 1, 1650, Math.PI/2),
       new ParallaxScrollBackground(this.game, this, '../img/backgroundTrees2.png', 1, 1000),
       new ParallaxGodLightBackground(this.game, this, '../img/god light new 1.png', 800),
-      new ParallaxFloatingBackground(this.game, this, '../img/backgroundStars2.png', 1, 800),
+      new ParallaxFloatingBackground(this.game, this, '../img/backgroundStars2.png', 1, 800, Math.PI*1.2),
       new ParallaxScrollBackground(this.game, this, '../img/backgroundTrees1.png', 1, 600),
     ];
     var LEVEL_ONE_TILES = {
@@ -590,7 +590,7 @@ class SceneManager2 {
         this.sceneEntities.push(new GameOverTextScreen(this.game));
         this.stopLevelTime = this.levelSceneTimer + 6;
         //could play death song or something
-        this.game.audio.playBackgroundSong();
+        // this.game.audio.playBackgroundSong();
         this.startNewScene = true;
       }
     }
@@ -656,6 +656,7 @@ class SceneManager2 {
   }
 
   collectionUpdate() {
+    this.musicMenu.update();
     this.timer += this.game.clockTick;
     this.overlayTimer -= this.game.clockTick;
     for (let i = this.sceneEntities.length - 1; i >= 0; i--) {
@@ -679,6 +680,7 @@ class SceneManager2 {
     for (let i = 0; i < this.sceneEntities.length; i++) {
       this.sceneEntities[i].draw();
     }
+    this.musicMenu.draw();
   }
 
 
@@ -976,30 +978,35 @@ class AttributeCollectionScreen {
       if (this.plusForce(clickPoint)) {
         // console.log("+ F");
         if (this.tokens > 0) {
+          this.game.audio.playSoundFx(this.game.audio.plus);
           this.SceneManager.Zerlin.maxForce += smc.TOKEN_VALUE;
           this.tokens--;
         }
       } else if (this.minusForce(clickPoint)) {
         // console.log("- F");
         if (this.SceneManager.Zerlin.maxForce >= smc.TOKEN_VALUE) {
+          this.game.audio.playSoundFx(this.game.audio.minus);
           this.SceneManager.Zerlin.maxForce -= smc.TOKEN_VALUE;
           this.tokens++;
         }
       } else if (this.plusHealth(clickPoint)) {
         // console.log("+ H");
         if (this.tokens > 0) {
+          this.game.audio.playSoundFx(this.game.audio.plus);
           this.SceneManager.Zerlin.maxHealth += smc.TOKEN_VALUE;
           this.tokens--;
         }
       } else if (this.minusHealth(clickPoint)) {
         // console.log("- H");
         if (this.SceneManager.Zerlin.maxHealth >= smc.TOKEN_VALUE + 1) {
+          this.game.audio.playSoundFx(this.game.audio.minus);
           this.SceneManager.Zerlin.maxHealth -= smc.TOKEN_VALUE;
           this.tokens++;
         }
       } else if (this.pressContinue(clickPoint)) {
         // console.log("cont");
         if (this.enableContinue) {
+          this.game.audio.playSoundFx(this.game.audio.continue);
           this.continue = true;
         }
       }
@@ -1031,7 +1038,7 @@ class AttributeCollectionScreen {
     this.game.ctx.drawImage(this.forceHandImg, 0, 0, 64, 64, 2 * oneThirdWidth - 50, 450, 100, 100);
     this.game.ctx.drawImage(this.plusMinusImg, 0, 0, 74, 30, 2 * oneThirdWidth - 75, 550, 150, 60);
 
-    var forceHeight = this.SceneManager.Zerlin.maxForce * 5;
+    var forceHeight = this.SceneManager.Zerlin.maxForce * 3;
     this.game.ctx.fillStyle = "#0000ff";
     this.game.ctx.fillRect(2 * oneThirdWidth - 30, 430, 60, -forceHeight - 10);
     this.game.ctx.fillStyle = "#8888ff";

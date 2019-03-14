@@ -458,10 +458,10 @@ class ParallaxAnimatedBackground extends Entity {
 
 class ParallaxFloatingBackground extends ParallaxScrollBackground {
 
-  constructor(game, sceneManager, backgroundImage, scale, distanceFromCamera) {
+  constructor(game, sceneManager, backgroundImage, scale, distanceFromCamera, functionStartX) {
     super(game, sceneManager, backgroundImage, scale, distanceFromCamera);
     this.camera = sceneManager.camera;
-    this.functionX = Math.random() * Math.PI * 2;
+    this.functionX = functionStartX;
   }
 
   instantiate(game, camera) {
@@ -472,7 +472,7 @@ class ParallaxFloatingBackground extends ParallaxScrollBackground {
   update() {
     super.update();
     this.functionX += this.game.clockTick;
-    this.y = Math.sin(this.functionX) * 10;
+    this.y = Math.sin(this.functionX) * 13000 / this.distanceFromCamera;
   }
 
   draw() {
