@@ -92,6 +92,7 @@ class SceneManager2 {
 
     var CITY_LEVEL_BACKGROUNDS = [
       new ParallaxScrollBackground(this.game, this, '../img/city_background.png', 1, 5200),
+      new ParallaxFloatingBackground(this.game, this, '../img/city_clouds2.png', 1, 8000, Math.PI*.67),
       new ParallaxScrollBackground(this.game, this, '../img/city_buildings_back.png', 1, 2500),
       new ParallaxHoverHighwayBackground(this.game, this, '../img/highway layer 2.png', 4000, false),
       new ParallaxHoverHighwayBackground(this.game, this, '../img/highway layer 2 right.png', 4000, true),
@@ -101,9 +102,8 @@ class SceneManager2 {
       new ParallaxScrollBackground(this.game, this, '../img/city_buildings_foreground.png', 1, 1000),
       new ParallaxHoverHighwayBackground(this.game, this, '../img/highway layer 3.png', 350, false),
       new ParallaxHoverHighwayBackground(this.game, this, '../img/highway layer 3 right.png', 350, true),
-      new ParallaxFloatingBackground(this.game, this, '../img/city_clouds_left.png', 1, 800),
-      new ParallaxFloatingBackground(this.game, this, '../img/city_clouds2.png', 1, 12000),
-      new ParallaxFloatingBackground(this.game, this, '../img/city_clouds_center.png', 1, 600)
+      new ParallaxFloatingBackground(this.game, this, '../img/city_clouds_left.png', 1, 1000, 0),
+      new ParallaxFloatingBackground(this.game, this, '../img/city_clouds_center.png', 1, 800, Math.PI*1.33)
     ];
     var CITY_LEVEL_TILES = {
       centerTile: '../img/city_tile_center.png',
