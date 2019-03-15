@@ -17,7 +17,7 @@ class Spark extends Entity {
 			this.removeFromWorld = true;
 		}
 
-		this.deltaY += zc.GRAVITATIONAL_ACCELERATION / 3 * this.game.clockTick;
+		// this.deltaY += zc.GRAVITATIONAL_ACCELERATION / 3 * this.game.clockTick;
 
 		this.x += this.deltaX * this.game.clockTick;
 		this.y += this.deltaY * this.game.clockTick;

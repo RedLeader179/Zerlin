@@ -21,8 +21,8 @@ Constants = {
 
   SparkConstants: {
     WIDTH: 3,
-    MAX_TIME_ALIVE: .4,
-    MAX_VELOCITY: 500
+    MAX_TIME_ALIVE: .3,
+    MAX_VELOCITY: 700
   },
 
   DroidBasicConstants: {
@@ -89,9 +89,9 @@ Constants = {
     //PHI : 1.618,
 
     /* Zerlin health and force stats*/
-    Z_MAX_HEALTH: 30, //was 20
-    Z_MAX_FORCE: 15,
-    Z_FORCE_REGEN_PER_SECOND: 1,
+    Z_MAX_HEALTH: 10, //was 20
+    Z_MAX_FORCE: 10,
+    Z_FORCE_REGEN_PER_SECOND: 1/15,
     Z_FORCE_JUMP_FORCE_COST: 3,
     Z_SOMERSAULT_FORCE_COST: 3,
     Z_SABER_THROW_FORCE_COST: 4,
@@ -209,6 +209,8 @@ Constants = {
     OPENING_OVERLAY_TIME: 5,
     OPENING_SCENE_CAMERA_PAN_TIME: 7,
     OPENING_SCENE_FIRST_FADE_OUT_TIME: 10,
+    TOKEN_VALUE: 3,
+
     OPENING_MESSAGE:
       `There is a tremor in the Force on the Dagobah System.
 Legions of mining droids have been unleashed
@@ -218,6 +220,9 @@ destroying Dagobah's biosphere.
 
 A lone Jedi dispatched in the outer rim has
 felt it. A lone warrior against unknown evil...`,
+
+    LEVEL_ONE_TEXT: "Here begins a new journey...",
+
     LEVEL_TWO_MESSAGE:
       `After clearing out many of the droids across the highlands of Dagobah, 
 the Jedi Coucil has placed a movement in the Galactic Senate of the Republic to protect the
@@ -227,6 +232,7 @@ is often lost in the endless beuarocracy.
 Zerlin has set course for Coruscant in order to resolve the matter 
 with aggressive negotiations, but upon arrival, has encountered more 
 resistance than he had expected...`,
+
     LEVEL_THREE_MESSAGE:
       `Coruscant has successfully been secured.
 
@@ -237,15 +243,8 @@ has been preparing an invasion army to use on defenseless planets with
 kyber deposits.
 
 The Council has assigned Zerlin to find him, and stop him at all costs.`,
-    OPENING_MESSAGE_TIME: 13,
-    OPENING_TITLE_TIME: 8,
-    OPENING_SEQUENCE_4_TIME: 10,
-    LEVEL_ONE_TEXT: "Here begins a new journey...",
-    LEVEL_TRANSITION_TIME: 7,
-    LEVEL_TRANSITION_OVERLAY_TIME: 3,
-    LEVEL_COMPLETE_OVERLAY_TIME: 10,
-    NUM_LEVELS: 3,
-    CREDITS:
+
+    CREDITS_1:
       `Zerlin has eliminated the threat to Dagobah and 
 has restored balance to the force. 
 
@@ -253,7 +252,23 @@ The Trade Federation's henchman has been destroyed,
 and peace can now prosper in the Galaxy.
 
 The End`,
+
+    CREDITS_2:
+      `Game and Art by
+
+Steven Golob
+Joshua Atherton
+Michael Josten`,
+
+    OPENING_MESSAGE_TIME: 13,
+    OPENING_TITLE_TIME: 8,
+    OPENING_SEQUENCE_4_TIME: 10,
+    LEVEL_TRANSITION_TIME: 6,
+    LEVEL_TRANSITION_OVERLAY_TIME: 3,
+    LEVEL_COMPLETE_OVERLAY_TIME: 10,
+    NUM_LEVELS: 3,
     PAUSE_TIME_AFTER_START_LEVEL: 1.2,
+    CREDITS_MESSAGE_1_TIME: 9,
 
     GAME_FONT: 'VT323'
   },

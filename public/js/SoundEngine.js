@@ -378,6 +378,27 @@ class SoundEngine {
       loop: false,
       volume: .1
     });
+    this.continue = new Howl({
+      src: [
+        "sound/e6.wav"
+      ],
+      loop: false,
+      volume: .35
+    });
+    this.plus = new Howl({
+      src: [
+        "sound/c7.wav"
+      ],
+      loop: false,
+      volume: .1
+    });
+    this.minus = new Howl({
+      src: [
+        "sound/a6.wav"
+      ],
+      loop: false,
+      volume: .1
+    });
 
 
     /***** set the default sound volumes *****/ //make into constants ?
@@ -398,7 +419,7 @@ class SoundEngine {
       this.enemy, this.beam, this.saberHum, this.wound, this.sizzle,
       this.sizzle2, this.sizzle2, this.jetPack, this.deflectBeam,
       this.droidBossMechanical, this.saberDeflectLaser, this.poisonShot, 
-      this.shipTakeOff, this.campFire, this.lightning
+      this.shipTakeOff, this.campFire, this.lightning, this.continue, this.plus, this.minus
     ];
     this.soundFxMuted = false;
   }

@@ -63,21 +63,24 @@ class SceneManager2 {
     this.startOpeningScene();
     /* skip intro stuff and go strait to the level */
     // this.startLevelScene();
+    // this.startCollectionScene();
     // document.getElementById("formOverlay").style.display = "none"; // hide login if not hid in css (curently is)
   }
 
   buildLevels() {
     var LEVEL_ONE_BACKGROUNDS = [
       new ParallaxScrollBackground(this.game, this, '../img/backgroundTrees4.png', 1, 5200),
+      new ParallaxFloatingBackground(this.game, this, '../img/backgroundStars3.png', 1, 5000, 0),
       new ParallaxGodLightBackground(this.game, this, '../img/god light new 3.png', 4500),
       new ParallaxScrollBackground(this.game, this, '../img/backgroundTrees3.png', 1, 2500),
       new ParallaxBirdBackground(this.game, this, '../img/dagobah bat.png', .17, false, 200, 500),
       new ParallaxBirdBackground(this.game, this, '../img/dagobah bat left.png', .45, true, 1300, 500),
       new ParallaxBirdBackground(this.game, this, '../img/dagobah bat.png', .3, false, 2300, 500),
       new ParallaxGodLightBackground(this.game, this, '../img/god light new 2.png', 1900),
-      new ParallaxFloatingBackground(this.game, this, '../img/backgroundStars.png', 1, 1400),
+      new ParallaxFloatingBackground(this.game, this, '../img/backgroundStars1.png', 1, 1650, Math.PI/2),
       new ParallaxScrollBackground(this.game, this, '../img/backgroundTrees2.png', 1, 1000),
       new ParallaxGodLightBackground(this.game, this, '../img/god light new 1.png', 800),
+      new ParallaxFloatingBackground(this.game, this, '../img/backgroundStars2.png', 1, 800, Math.PI*1.2),
       new ParallaxScrollBackground(this.game, this, '../img/backgroundTrees1.png', 1, 600),
     ];
     var LEVEL_ONE_TILES = {
@@ -89,6 +92,7 @@ class SceneManager2 {
 
     var CITY_LEVEL_BACKGROUNDS = [
       new ParallaxScrollBackground(this.game, this, '../img/city_background.png', 1, 5200),
+      new ParallaxFloatingBackground(this.game, this, '../img/city_clouds2.png', 1, 8000, Math.PI*.67),
       new ParallaxScrollBackground(this.game, this, '../img/city_buildings_back.png', 1, 2500),
       new ParallaxHoverHighwayBackground(this.game, this, '../img/highway layer 2.png', 4000, false),
       new ParallaxHoverHighwayBackground(this.game, this, '../img/highway layer 2 right.png', 4000, true),
@@ -98,9 +102,8 @@ class SceneManager2 {
       new ParallaxScrollBackground(this.game, this, '../img/city_buildings_foreground.png', 1, 1000),
       new ParallaxHoverHighwayBackground(this.game, this, '../img/highway layer 3.png', 350, false),
       new ParallaxHoverHighwayBackground(this.game, this, '../img/highway layer 3 right.png', 350, true),
-      new ParallaxFloatingBackground(this.game, this, '../img/city_clouds_left.png', 1, 800),
-      new ParallaxFloatingBackground(this.game, this, '../img/city_clouds2.png', 1, 12000),
-      new ParallaxFloatingBackground(this.game, this, '../img/city_clouds_center.png', 1, 600)
+      new ParallaxFloatingBackground(this.game, this, '../img/city_clouds_left.png', 1, 1000, 0),
+      new ParallaxFloatingBackground(this.game, this, '../img/city_clouds_center.png', 1, 800, Math.PI*1.33)
     ];
     var CITY_LEVEL_TILES = {
       centerTile: '../img/city_tile_center.png',
@@ -207,39 +210,6 @@ class SceneManager2 {
     this.game.timer.enable();
   }
 
-
-  //________________________________________________________
-  // startLoginScene() {
-  // 	// load login sceneEntities to array
-  // 	this.update = this.loginUpdate;
-  // 	this.draw = this.loginDraw;
-  // 	}
-
-  // 	loginUpdate() {
-  // 		for (let i = 0; i < this.sceneEntities.length; i++) {
-  // 			this.sceneEntities.update();
-  // 		}
-
-  // 		// after user presses 'enter'
-  // 		if (new account) {
-  // 			this.level = 1;
-  // 			this.update = this.openingSceneUpdate;
-  // 			this.draw = this.openingSceneDraw;
-  // 			this.startOpeningScene();
-  // 		} else if (has account) {
-  // 			this.level = account.level;
-  // 			this.update = this.levelUpdate;
-  // 			this.draw = this.levelDraw;
-  // 			this.startOpeningScene();
-  // 		}
-  // 	}
-
-  // 	loginDraw() {
-  // 		for (let i = 0; i < this.sceneEntities.length; i++) {
-  // 			this.sceneEntities.draw();
-  // 		}
-  // 	}
-
   //________________________________________________________
   startOpeningScene() {
     // empty this.sceneEntities array
@@ -274,14 +244,6 @@ class SceneManager2 {
     //link up html buttons to try to login or register a user
     this.playGame = false; //for now use button to start the game
     document.getElementById("loginButton").addEventListener('click', () => {
-      //do user validation here
-      // if (fields not blank) {
-      //   if (is user or can register) {
-      //     set playGame to true
-      //     hide login form
-      //   } else {
-      //     prompt bad info
-      //   }
       // }
 
       //user can't skip opening camera pan down
@@ -295,36 +257,13 @@ class SceneManager2 {
   openingSceneUpdate() {
     if (!this.canPause && this.game.keys['Enter']) {
       this.game.audio.campFire.stop();
-      this.startLevelTransitionScene(); //for going strait into the lvl
+      this.startCollectionScene(); //for going strait into the lvl
       document.getElementById("formOverlay").style.display = "none";
     }
 
     this.musicMenu.update();
 
     this.openingSceneTimer += this.game.clockTick;
-
-    // To start game with login screen
-    // //play the sweet rotating stars until the user clicks play or logs in
-    // if (!this.playGame && this.openingSceneTimer < smc.OPENING_SCENE_STOP_CAMERA_PAN) {
-    //   this.camera.y = -Math.pow(this.openingSceneTimer - smc.OPENING_SCENE_STOP_CAMERA_PAN, 2) * 280;
-    // } else if (this.playGame) {
-    //   //reset the openingSceneTimer ??? to get final transition scene back?
-    //   if (!this.seq1FadeOut && this.openingSceneTimer > smc.OPENING_SCENE_FIRST_FADE_OUT_TIME) {
-    //     this.seq1FadeOut = true;
-    //     this.sceneEntities.push(new Overlay(this.game, false, smc.OPENING_OVERLAY_TIME));
-    //   } else if (!this.seq2 && this.openingSceneTimer > smc.OPENING_OVERLAY_TIME + smc.OPENING_SCENE_FIRST_FADE_OUT_TIME) {
-    //     this.seq2 = true;
-    //     this.sceneEntities.push(new TextScreen(this.game, smc.OPENING_MESSAGE));
-    //     this.sceneEntities.push(new Overlay(this.game, true, smc.OPENING_OVERLAY_TIME));
-    //   } else if (!this.seq2FadeOut && this.openingSceneTimer > smc.OPENING_OVERLAY_TIME + smc.OPENING_SCENE_FIRST_FADE_OUT_TIME + smc.OPENING_MESSAGE_TIME) {
-    //     this.seq2FadeOut = true;
-    //     this.sceneEntities.push(new Overlay(this.game, false, smc.OPENING_OVERLAY_TIME));
-    //   } else if (this.openingSceneTimer > smc.OPENING_OVERLAY_TIME + smc.OPENING_SCENE_FIRST_FADE_OUT_TIME + smc.OPENING_MESSAGE_TIME + smc.OPENING_OVERLAY_TIME) {
-    //     this.startLevelScene();
-    //   }
-    // }
-
-    // to auto play intro scene bit as steven had it and then go to the level
 
     // sequence 1: Camera panning down on Zerlin sitting by the fire
     if (this.openingSceneTimer < smc.OPENING_SCENE_CAMERA_PAN_TIME) {
@@ -399,7 +338,7 @@ class SceneManager2 {
 
       // transition to level
       if (this.openingSceneTimer > this.seq4EndTime) {
-        this.startLevelTransitionScene();
+        this.startCollectionScene();
       }
     }
 
@@ -417,10 +356,17 @@ class SceneManager2 {
       this.sceneEntities[i].draw();
     }
     this.musicMenu.draw();
+
+    // click to continue message
+    // this.game.ctx.fillStyle = "#777777";
+    // this.game.ctx.textAlign = "center";
+    // this.game.ctx.font = '20px ' + smc.GAME_FONT;
+    // this.game.ctx.fillText("click to continue (but seriously, watch the opening scene)", this.game.surfaceWidth / 2, 600);
   }
 
   //________________________________________________________
   startLevelTransitionScene() {
+    this.game.keys['Enter'] = false;
     this.levelTransitionTimer = 0;
     this.update = this.levelTransitionUpdate;
     this.draw = this.levelTransitionDraw;
@@ -444,28 +390,25 @@ class SceneManager2 {
     // this.sceneEntities.push(new TextScreen(this.game, smc.LEVEL_ONE_TEXT));
     this.sceneEntities.push(new Overlay(this.game, true, smc.LEVEL_TRANSITION_OVERLAY_TIME));
     this.startedFinalOverlay = false;
+    this.overlayTimer = 0;
   }
 
   levelTransitionUpdate() {
-    if (!this.canPause && this.game.keys['Enter']) {
-      this.startLevelScene();
+    if (!this.startedFinalOverlay && this.game.keys['Enter']) {
+      this.startedFinalOverlay = true;
+      this.sceneEntities.push(new Overlay(this.game, false, smc.LEVEL_TRANSITION_OVERLAY_TIME));
+      this.overlayTimer = smc.LEVEL_TRANSITION_OVERLAY_TIME;
     }
-
     this.musicMenu.update();
+    this.overlayTimer -= this.game.clockTick;
 
-    this.levelTransitionTimer += this.game.clockTick;
     for (let i = this.sceneEntities.length - 1; i >= 0; i--) {
       this.sceneEntities[i].update();
       if (this.sceneEntities[i].removeFromWorld) {
         this.sceneEntities.splice(i, 1);
       }
     }
-
-    if (!this.startedFinalOverlay && this.levelTransitionTimer > (smc.LEVEL_TRANSITION_TIME - smc.LEVEL_TRANSITION_OVERLAY_TIME)) {
-      this.startedFinalOverlay = true;
-      this.sceneEntities.push(new Overlay(this.game, false, smc.LEVEL_TRANSITION_OVERLAY_TIME));
-    }
-    if (this.levelTransitionTimer > smc.LEVEL_TRANSITION_TIME) {
+    if (this.startedFinalOverlay && this.overlayTimer <= 0) {
       this.startLevelScene();
     }
   }
@@ -475,6 +418,14 @@ class SceneManager2 {
       this.sceneEntities[i].draw();
     }
     this.musicMenu.draw();
+
+    // click to continue message
+    if (!this.startedFinalOverlay) {
+      this.game.ctx.fillStyle = "#777777";
+      this.game.ctx.textAlign = "center";
+      this.game.ctx.font = '20px ' + smc.GAME_FONT;
+      this.game.ctx.fillText("press enter to continue", this.game.surfaceWidth / 2, 600);
+    }
   }
 
 
@@ -508,6 +459,7 @@ class SceneManager2 {
     this.wonLevel = false;
 
     this.initiallyPaused = false;
+    this.canPause = false;
     this.sceneEntities = [];
     if (this.levelNumber == 3) {
       this.sceneEntities.push(new ParallaxSnowBackground(this.game, this, 300));
@@ -600,7 +552,6 @@ class SceneManager2 {
       this.initiallyPaused = true;
       this.canPause = true;
       this.pause();
-      // this.gameEngine.startInput();
     }
 
 
@@ -608,6 +559,7 @@ class SceneManager2 {
           && this.droids.length == 0 && this.Zerlin.x >= this.level.getLengthAtI(5)) && !this.wonLevel) {
             //also need to check if zerlin is near the end of the level when there is no boss.
       console.log("level won");
+      this.canPause = false;
   		this.wonLevel = true;
   		this.boss = null;
   		this.saveProgress();
@@ -626,23 +578,25 @@ class SceneManager2 {
   			if (this.levelNumber > smc.NUM_LEVELS) {
   				this.startCreditsScene();
   			} else {
-  				this.startLevelTransitionScene();
+  				this.startCollectionScene();
   			}
   		}
   	}
-    if (!this.startedFinalOverlay && !this.Zerlin.alive &&
-      this.Zerlin.timeOfDeath + this.Zerlin.deathAnimation.totalTime < this.levelSceneTimer) {
+    if (!this.startedFinalOverlay && !this.Zerlin.alive) {
       this.canPause = false;
-      this.startedFinalOverlay = true;
-      this.sceneEntities.push(new Overlay(this.game, false, smc.LEVEL_TRANSITION_OVERLAY_TIME));
-      this.sceneEntities.push(new GameOverTextScreen(this.game));
-      this.stopLevelTime = this.levelSceneTimer + 6;
-      //could play death song or something
-      this.game.audio.playBackgroundSong();
-      this.startNewScene = true;
+      if (this.levelSceneTimer > this.Zerlin.timeOfDeath + this.Zerlin.deathAnimation.totalTime) {
+        this.startedFinalOverlay = true;
+        this.sceneEntities.push(new Overlay(this.game, false, smc.LEVEL_TRANSITION_OVERLAY_TIME));
+        this.sceneEntities.push(new GameOverTextScreen(this.game));
+        this.stopLevelTime = this.levelSceneTimer + 6;
+        //could play death song or something
+        // this.game.audio.playBackgroundSong();
+        this.startNewScene = true;
+      }
     }
-    if (this.stopLevelTime < this.levelSceneTimer && this.startNewScene ||
-        (!this.canPause && this.game.keys['Enter'])) {
+
+    if ((this.levelSceneTimer > this.stopLevelTime && this.startNewScene)
+     || (!this.Zerlin.alive && this.game.keys['Enter'])) {
       this.game.audio.endAllSoundFX();
       this.startLevelTransitionScene();
       this.startNewScene = false;
@@ -685,16 +639,48 @@ class SceneManager2 {
   }
 
   //________________________________________________________
-  startGameOverScene() {
+  startCollectionScene() {
+    this.update = this.collectionUpdate;
+    this.draw = this.collectionDraw;
+    this.sceneEntities = [];
+    this.canPause = false;
+
+    this.timer = 0;
+    this.collectionScreen = new AttributeCollectionScreen(this.game, this, 5);
+    this.sceneEntities.push(this.collectionScreen);
+    this.sceneEntities.push(new Overlay(this.game, true, smc.LEVEL_TRANSITION_OVERLAY_TIME));
+    this.startedFinalOverlay = false;
+    this.overlayTimer = 0;
+
 
   }
 
-  levelGameOverUpdate() {
+  collectionUpdate() {
+    this.musicMenu.update();
+    this.timer += this.game.clockTick;
+    this.overlayTimer -= this.game.clockTick;
+    for (let i = this.sceneEntities.length - 1; i >= 0; i--) {
+      this.sceneEntities[i].update();
+      if (this.sceneEntities[i].removeFromWorld) {
+        this.sceneEntities.splice(i, 1);
+      }
+    }
 
+    if (this.collectionScreen.continue && !this.startedFinalOverlay) {
+      this.startedFinalOverlay = true;
+      this.sceneEntities.push(new Overlay(this.game, false, smc.LEVEL_TRANSITION_OVERLAY_TIME));
+      this.overlayTimer = smc.LEVEL_TRANSITION_OVERLAY_TIME;
+    }
+    if (this.startedFinalOverlay && this.overlayTimer <= 0) {
+      this.startLevelTransitionScene();
+    }
   }
 
-  levelGameOverDraw() {
-
+  collectionDraw() {
+    for (let i = 0; i < this.sceneEntities.length; i++) {
+      this.sceneEntities[i].draw();
+    }
+    this.musicMenu.draw();
   }
 
 
@@ -707,7 +693,7 @@ class SceneManager2 {
 
 		this.initiallyPaused = false;
 		this.sceneEntities = [];
-		this.sceneEntities.push(new TextScreen(this.game, smc.CREDITS));
+		this.sceneEntities.push(new TextScreen(this.game, smc.CREDITS_1));
 		this.sceneEntities.push(new Overlay(this.game, true, smc.LEVEL_TRANSITION_OVERLAY_TIME));
 		this.startedFinalOverlay = false;
 	}
@@ -720,6 +706,15 @@ class SceneManager2 {
 				this.sceneEntities.splice(i, 1);
 			}
 		}
+
+    if (!this.startedOverlay && this.creditsTimer > smc.CREDITS_MESSAGE_1_TIME - smc.LEVEL_TRANSITION_OVERLAY_TIME) {
+      this.startedOverlay = true;
+      this.sceneEntities.push(new Overlay(this.game, false, smc.LEVEL_TRANSITION_OVERLAY_TIME));
+    } else if (!this.startedSecondCreditMessage && this.creditsTimer >= smc.CREDITS_MESSAGE_1_TIME) {
+      this.startedSecondCreditMessage = true;
+      this.sceneEntities.push(new TextScreen(this.game, smc.CREDITS_2));
+      this.sceneEntities.push(new Overlay(this.game, true, smc.LEVEL_TRANSITION_OVERLAY_TIME));
+    }
 	}
 
 	creditsDraw() {
@@ -865,9 +860,6 @@ class PauseScreen {
     animation.drawFrame(this.game.clockTick, ctx, 730, 580);
     ctx.fillText("Checkpoint", 800, 635);
 
-    
-
-
     ctx.restore();
   }
 }
@@ -959,4 +951,150 @@ class Overlay {
 		this.game.ctx.globalAlpha = 1;
 	}
 
+}
+
+class AttributeCollectionScreen {
+  constructor(game, SceneManager, tokensOffered) {
+    this.game = game;
+    this.SceneManager = SceneManager;
+    this.tokens = tokensOffered;
+    this.timer = 0;
+
+    this.forceHandImg = this.game.assetManager.getAsset('../img/force hand.png');
+    this.healthHeartImg = this.game.assetManager.getAsset('../img/health heart.png');
+    this.plusMinusImg = this.game.assetManager.getAsset('../img/plus minus.png');
+    this.tokenImg = this.game.assetManager.getAsset('../img/token.png');
+  }
+
+  update() {
+    this.timer += this.game.clockTick;
+
+    if (this.game.keys['leftClick']) {
+      var clickPoint = this.game.mouse;
+
+      if (this.plusForce(clickPoint)) {
+        // console.log("+ F");
+        if (this.tokens > 0) {
+          this.game.audio.playSoundFx(this.game.audio.plus);
+          this.SceneManager.Zerlin.maxForce += smc.TOKEN_VALUE;
+          this.tokens--;
+        }
+      } else if (this.minusForce(clickPoint)) {
+        // console.log("- F");
+        if (this.SceneManager.Zerlin.maxForce >= smc.TOKEN_VALUE) {
+          this.game.audio.playSoundFx(this.game.audio.minus);
+          this.SceneManager.Zerlin.maxForce -= smc.TOKEN_VALUE;
+          this.tokens++;
+        }
+      } else if (this.plusHealth(clickPoint)) {
+        // console.log("+ H");
+        if (this.tokens > 0) {
+          this.game.audio.playSoundFx(this.game.audio.plus);
+          this.SceneManager.Zerlin.maxHealth += smc.TOKEN_VALUE;
+          this.tokens--;
+        }
+      } else if (this.minusHealth(clickPoint)) {
+        // console.log("- H");
+        if (this.SceneManager.Zerlin.maxHealth >= smc.TOKEN_VALUE + 1) {
+          this.game.audio.playSoundFx(this.game.audio.minus);
+          this.SceneManager.Zerlin.maxHealth -= smc.TOKEN_VALUE;
+          this.tokens++;
+        }
+      } else if (this.pressContinue(clickPoint)) {
+        // console.log("cont");
+        if (this.enableContinue) {
+          this.game.audio.playSoundFx(this.game.audio.continue);
+          this.continue = true;
+        }
+      }
+      this.game.keys['leftClick'] = false;
+    }
+
+    this.enableContinue = this.tokens === 0;
+  }
+
+  draw() {
+    this.game.ctx.fillStyle = "black";
+    this.game.ctx.fillRect(0, 0, this.game.surfaceWidth, this.game.surfaceHeight);
+
+    var oneThirdWidth = this.game.surfaceWidth / 3;
+    
+    //health
+    this.game.ctx.drawImage(this.healthHeartImg, 0, 0, 64, 64, oneThirdWidth - 50, 450, 100, 100);
+    this.game.ctx.drawImage(this.plusMinusImg, 0, 0, 74, 30, oneThirdWidth - 75, 550, 150, 60);
+
+    var healthHeight = this.SceneManager.Zerlin.maxHealth * 3;
+    this.game.ctx.fillStyle = "#ff0000";
+    this.game.ctx.fillRect(oneThirdWidth - 30, 430, 60, -healthHeight - 10);
+    this.game.ctx.fillStyle = "#ff8888";
+    this.game.ctx.fillRect(oneThirdWidth - 23, 430, 46, -healthHeight - 5);
+    this.game.ctx.fillStyle = "#ffffff";
+    this.game.ctx.fillRect(oneThirdWidth - 16, 430, 32, -healthHeight);
+
+    //force
+    this.game.ctx.drawImage(this.forceHandImg, 0, 0, 64, 64, 2 * oneThirdWidth - 50, 450, 100, 100);
+    this.game.ctx.drawImage(this.plusMinusImg, 0, 0, 74, 30, 2 * oneThirdWidth - 75, 550, 150, 60);
+
+    var forceHeight = this.SceneManager.Zerlin.maxForce * 3;
+    this.game.ctx.fillStyle = "#0000ff";
+    this.game.ctx.fillRect(2 * oneThirdWidth - 30, 430, 60, -forceHeight - 10);
+    this.game.ctx.fillStyle = "#8888ff";
+    this.game.ctx.fillRect(2 * oneThirdWidth - 23, 430, 46, -forceHeight - 5);
+    this.game.ctx.fillStyle = "#ffffff";
+    this.game.ctx.fillRect(2 * oneThirdWidth - 16, 430, 32, -forceHeight);
+
+    // tokens
+    this.game.ctx.fillStyle = "yellow";
+    this.game.ctx.font =  '40px ' + smc.GAME_FONT;
+    this.game.ctx.fillText("Tokens Available (spend them wisely):", 250, 75);
+    this.game.ctx.fillStyle = "yellow";
+    for (let i = 0; i < this.tokens; i++) {
+      this.game.ctx.drawImage(this.tokenImg, 0, 0, 64, 64, (i * 40) + 250, 100 + 7 * Math.sin(2 * (this.timer + i*.7)) , 40, 40);
+    }
+
+    // continue box
+    this.game.ctx.fillStyle = this.continue? "#777777" : "#ffffff";
+    this.game.ctx.fillRect(this.game.surfaceWidth/2 - 50, 625, 100, 50);
+
+    this.game.ctx.fillStyle = this.enableContinue? "#000000" : "#aaaaaa";
+    this.game.ctx.textAlign = "center";
+    this.game.ctx.font =  '25px ' + smc.GAME_FONT;
+    this.game.ctx.fillText("continue", this.game.surfaceWidth/2, 650);
+
+  }
+
+  plusForce(point) {
+    return point.x >= 2 * this.game.surfaceWidth / 3 
+        && point.x <= 2 * this.game.surfaceWidth / 3 + 75
+        && point.y >= 550
+        && point.y <= 610;
+  }
+
+  minusForce(point) {
+    return point.x >= 2 * this.game.surfaceWidth / 3 - 75
+        && point.x < 2 * this.game.surfaceWidth / 3
+        && point.y >= 550
+        && point.y <= 610;
+  }
+
+  plusHealth(point) {
+    return point.x >= this.game.surfaceWidth / 3 
+        && point.x <= this.game.surfaceWidth / 3 + 75
+        && point.y >= 550
+        && point.y <= 610;
+  }
+
+  minusHealth(point) {
+    return point.x >= this.game.surfaceWidth / 3 - 75
+        && point.x < this.game.surfaceWidth / 3
+        && point.y >= 550
+        && point.y <= 610;
+  }
+
+  pressContinue(point) {
+    return point.x >= this.game.surfaceWidth/2 - 50 
+        && point.x <= this.game.surfaceWidth/2 + 50
+        && point.y >= 625
+        && point.y <= 675;
+  }
 }
