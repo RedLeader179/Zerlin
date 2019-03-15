@@ -62,7 +62,7 @@ class SceneManager2 {
     document.getElementById("formOverlay").style.display = "none";
     this.startOpeningScene();
     /* skip intro stuff and go strait to the level */
-    //this.startLevelScene();
+    // this.startLevelScene();
     // document.getElementById("formOverlay").style.display = "none"; // hide login if not hid in css (curently is)
   }
 
