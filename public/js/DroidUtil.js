@@ -72,7 +72,6 @@ class AbstractDroid extends Entity {
 		return ent !== null && collideCircleWithCircle(this.boundCircle.x, this.boundCircle.y, this.boundCircle.radius,
 			ent.boundCircle.x, ent.boundCircle.y, ent.boundCircle.radius);
 	}
-
 }
 
 

@@ -138,6 +138,9 @@ class AssetManager {
 
   // forest
   AM.queueDownload("../img/backgroundStars.png");
+  AM.queueDownload("../img/backgroundStars1.png");
+  AM.queueDownload("../img/backgroundStars2.png");
+  AM.queueDownload("../img/backgroundStars3.png");
   AM.queueDownload("../img/backgroundTrees1.png");
   AM.queueDownload("../img/backgroundTrees2.png");
   AM.queueDownload("../img/backgroundTrees3.png");
@@ -212,6 +215,11 @@ class AssetManager {
   AM.queueDownload('../img/flip_saber.png');
   //powerup icons
   //droid icons?
+
+  AM.queueDownload('../img/health heart.png');
+  AM.queueDownload('../img/force hand.png');
+  AM.queueDownload('../img/plus minus.png');
+  AM.queueDownload('../img/token.png');
 
 
 
