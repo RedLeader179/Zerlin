@@ -860,9 +860,6 @@ class PauseScreen {
     animation.drawFrame(this.game.clockTick, ctx, 730, 580);
     ctx.fillText("Checkpoint", 800, 635);
 
-    
-
-
     ctx.restore();
   }
 }

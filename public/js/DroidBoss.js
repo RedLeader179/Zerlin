@@ -16,6 +16,7 @@ class LeggyDroidBoss extends BasicDroid {
 
     this.spawned = false;
     this.healthStatusBar = null;
+    this.hitWithSaberRecoveryTime = 0;
   }
 
 
@@ -38,18 +39,22 @@ class LeggyDroidBoss extends BasicDroid {
 
   hitWithSaber() {
     // constructor(game, x, y, scale, explosionVolume, speed) {
-    let hit = new DroidExplosion(
-            this.game,
-            this.x + (this.animation.scale * this.animation.frameWidth / 2),
-            this.y + (this.animation.scale * this.animation.frameHeight / 2),
-            .5, .2, .03);
-    this.sceneManager.addEntity(hit);
-    this.currentHealth -= Constants.DroidBossConstants.HIT_WITH_SABER_DAMAGE;
+    if (this.hitWithSaberRecoveryTime <= 0) {
+      let hit = new DroidExplosion(
+              this.game,
+              this.x + (this.animation.scale * this.animation.frameWidth / 2),
+              this.y + (this.animation.scale * this.animation.frameHeight / 2),
+              .5, .2, .03);
+      this.sceneManager.addEntity(hit);
+      this.currentHealth -= Constants.DroidBossConstants.HIT_WITH_SABER_DAMAGE;
+    }
+    this.hitWithSaberRecoveryTime = .5;
     //todo: play soundFx
     // console.log('leggy hit with saber', this.currentHealth);
   }
 
   update() {
+    this.hitWithSaberRecoveryTime -= this.game.clockTick;
     if(!this.spawned) { //create the boss health bar when spawned
       this.healthStatusBar = new DroidBossHealthStatusBar(this.game,
           this.game.surfaceWidth * 0.25,

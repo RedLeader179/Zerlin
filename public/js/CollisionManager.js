@@ -494,16 +494,18 @@ class CollisionManager {
             zerlin.slashZone.innerCircle.y,
             zerlin.slashZone.innerCircle.radius) &&
           bossCenterY < zerlin.y) {
-          this.sceneManager.addEntity(new DroidExplosion(this.game, bossCenterX, bossBox.y + bossBox.height / 2, 2.3, .7));
-          this.sceneManager.boss.hideBox();
-          this.sceneManager.boss.hits += 3;
-          //added ---- below
-          this.sceneManager.boss.currentHealth -= zConst.Z_SLASH_DAMAGE;
+          // this.sceneManager.addEntity(new DroidExplosion(this.game, bossCenterX, bossBox.y + bossBox.height / 2, 2.3, .7));
+          // this.sceneManager.boss.hideBox();
+          // this.sceneManager.boss.hits += 3;
+          // //added ---- below
+          // this.sceneManager.boss.currentHealth -= zConst.Z_SLASH_DAMAGE;
+          this.sceneManager.boss.hitBySaber(2.3);
         }
       } else if (zerlin.lightsaber.throwing) {
         if (collidePointWithCircle(bossCenterX, bossCenterY, zerlin.lightsaber.airbornSaber.x, zerlin.lightsaber.airbornSaber.y, zerlin.lightsaber.airbornSaber.radius)) {
-          this.sceneManager.boss.currentHealth -= zc.AIRBORN_SABER_DAMAGE;
-          this.sceneManager.addEntity(new DroidExplosion(this.game, bossCenterX, bossCenterY, .7, .2));
+          this.sceneManager.boss.hitBySaber(.7);
+          // this.sceneManager.boss.currentHealth -= zc.AIRBORN_SABER_DAMAGE;
+          // this.sceneManager.addEntity(new DroidExplosion(this.game, bossCenterX, bossCenterY, .7, .2));
         }
       }
     }
